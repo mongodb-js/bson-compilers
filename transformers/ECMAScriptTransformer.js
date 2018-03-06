@@ -4,7 +4,7 @@ const ECMAScriptVisitor = require('../lib/ECMAScriptVisitor.js').ECMAScriptVisit
  * This "Transformer" is a visitor that walks the parse tree generated from raw
  * input and returns an AST.
  */
-function Translator () {
+function Translator() {
   ECMAScriptVisitor.call(this);
   return this;
 }

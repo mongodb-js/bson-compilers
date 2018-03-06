@@ -21,16 +21,16 @@ const compileECMAScript = function(input) {
   parser.buildParseTrees = true;
 
   const tree = parser.program();
+  const transformer = new ECMAScriptTransformer();
 
   // Generate AST
+  const AST = transformer.visitProgram(tree);
 
-  // const listener = new ECMAScriptListener();
-  // console.log(JSON.stringify(listener.buildAST(tree, parser.ruleNames), null, 2));
+  console.log('AST----------------------');
+  console.log(JSON.stringify(AST, null, 2));
+  console.log('----------------------');
 
-  const transformer = new ECMAScriptTransformer();
-  /* const AST = */ transformer.visitProgram(tree);
-
-  // Generate code
+  // Generate Сode
   const visitor = new ECMAScriptVisitor();
 
   return visitor.visitProgram(tree);

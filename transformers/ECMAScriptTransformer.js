@@ -13,8 +13,45 @@ Translator.prototype = Object.create(ECMAScriptVisitor.prototype);
 Translator.prototype.constructor = Translator;
 
 Translator.prototype.visitProgram = function(ctx) {
-  console.log('start translator');
-  return this.visitChildren(ctx);
+  return {
+    type: 'START',
+    children: this.visitChildren(ctx).filter((item) => (item !== undefined))
+  };
+};
+
+Translator.prototype.visitAdditiveExpression = function(ctx) {
+  return {
+    type: 'ADD',
+    children: this.visitChildren(ctx).filter((item) => (item !== undefined))
+  };
+};
+
+Translator.prototype.visitLiteral = function(ctx) {
+  return ctx.getText();
+};
+
+Translator.prototype.visitSourceElements = function(ctx) {
+  return this.visitChildren(ctx)[0];
+};
+
+Translator.prototype.visitSourceElement = function(ctx) {
+  return this.visitChildren(ctx)[0];
+};
+
+Translator.prototype.visitStatement = function(ctx) {
+  return this.visitChildren(ctx)[0];
+};
+
+Translator.prototype.visitExpressionStatement = function(ctx) {
+  return this.visitChildren(ctx)[0];
+};
+
+Translator.prototype.visitExpressionSequence = function(ctx) {
+  return this.visitChildren(ctx)[0];
+};
+
+Translator.prototype.visitLiteralExpression = function(ctx) {
+  return this.visitChildren(ctx)[0];
 };
 
 module.exports = Translator;

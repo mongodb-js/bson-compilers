@@ -32,8 +32,7 @@ const compileECMAScript = function(input, generator) {
   return generator.visitExpressionSequence(tree);
 };
 
-// TEST MODE
-const input = 'new Double(3)';
+const input = 'new Long(\'3\', \'3\')';
 const visitor = new Python3Generator();
 const visitor2 = new JavaGenerator();
 

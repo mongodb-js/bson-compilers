@@ -193,11 +193,38 @@ Visitor.prototype.visitBSONDoubleConstructor = function(ctx) {
 Visitor.prototype.visitBSONLongConstructor = function(ctx) {
   const args = ctx.getChild(1);
 
-  if (args.getChildCount() !== 3 || args.getChild(1).getChildCount() !== 1) {
-    return 'Error: Long requires one argument';
+  if (args.getChildCount() !== 3 || args.getChild(1).getChildCount() !== 3) {
+    return 'Error: Long requires two arguments';
   }
 
-  return `Int64(${this.visit(args.getChild(1).getChild(0))})`;
+  const first = this.strToNumber(this.visit(args.getChild(1).getChild(0)));
+  const second = this.strToNumber(this.visit(args.getChild(1).getChild(2)));
+
+  const childArgs = `${first}, ${second}`;
+
+  if (
+    (
+      args.getChild(1).getChild(0).type !== this.types.STRING &&
+      args.getChild(1).getChild(0).type !== this.types.DECIMAL &&
+      args.getChild(1).getChild(0).type !== this.types.INTEGER
+    ) ||
+    isNaN(parseInt(first, 10))
+  ) {
+    return 'Error: Long first argument should be a number';
+  }
+
+  if (
+    (
+      args.getChild(1).getChild(0).type !== this.types.STRING &&
+      args.getChild(1).getChild(2).type !== this.types.DECIMAL &&
+      args.getChild(1).getChild(2).type !== this.types.INTEGER
+    ) ||
+    isNaN(parseInt(second, 10))
+  ) {
+    return 'Error: Long second argument should be a number';
+  }
+
+  return `Int64(${childArgs})`;
 };
 
 module.exports = Visitor;

@@ -10,8 +10,7 @@ const JavaGenerator = require('./codegeneration/JavaGenerator.js');
  * Compiles an ECMAScript string into another language.
  *
  * @param {String} input
- * @param {antlr4.tree.ParseTreeVisitor} Code generator
- * @returns {String}
+ * @param {antlr4.tree.ParseTreeVisitor} generator
  */
 const compileECMAScript = function(input, generator) {
   // Create parse tree
@@ -33,8 +32,12 @@ const compileECMAScript = function(input, generator) {
   console.log(generator.visitExpressionSequence(tree));
 };
 
-const input = 'new ObjectId(1)';
+const input = 'new Double(3)';
 const visitor = new Python3Generator();
 const visitor2 = new JavaGenerator();
 
-compileECMAScript(input, visitor2);
+// compileECMAScript(input, visitor2);
+console.log('input:');
+console.log(input);
+console.log('output:');
+compileECMAScript(input, visitor);

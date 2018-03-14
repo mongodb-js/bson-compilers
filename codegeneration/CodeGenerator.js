@@ -144,6 +144,16 @@ Visitor.prototype.singleQuoteStringify = function(str) {
   return newStr;
 };
 
+/**
+ * Takes in an identifier that may or may not be a string and returns a string
+ * with single quotes.
+ * @param {String} str
+ * @returns {String}
+ */
+Visitor.prototype.strToNumber = function(str) {
+  return str.replace(/["']/g, '');
+};
+
 Visitor.prototype.executeJavascript = function(input) {
   const sandbox = {
     RegExp: RegExp,

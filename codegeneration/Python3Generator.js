@@ -116,18 +116,21 @@ Visitor.prototype.visitBSONCodeConstructor = function(ctx) {
  * @returns {string}
  */
 Visitor.prototype.visitBSONObjectIdConstructor = function(ctx) {
-  const code = 'ObjectId(';
   const args = ctx.getChild(1);
 
-  if (args.getChildCount() === 2) {
-    return `${code})`;
-  }
-
-  if (args.getChildCount() !== 3) {
+  if (
+      (args.getChildCount() !== 2 && args.getChildCount() !== 3) || (
+      args.getChild(1).getChildCount() !== 0 &&
+      args.getChild(1).getChildCount() !== 1
+    )
+  ) {
     return 'Error: ObjectId requires zero or one argument';
   }
 
-  // TODO: do we even have to visit the children? this.visit(args.getChild(1));
+  if (args.getChildCount() === 2) {
+    return 'ObjectId()';
+  }
+
   let hexstr;
 
   try {
@@ -136,7 +139,7 @@ Visitor.prototype.visitBSONObjectIdConstructor = function(ctx) {
     return error.message;
   }
 
-  return `ObjectId(${this.singleQuoteStringify(hexstr) })`;
+  return `ObjectId(${this.singleQuoteStringify(hexstr)})`;
 };
 
 /**

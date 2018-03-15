@@ -151,7 +151,16 @@ Visitor.prototype.singleQuoteStringify = function(str) {
  * @returns {String}
  */
 Visitor.prototype.removeQuotes = function(str) {
-  return str.replace(/["']/g, '');
+  let newStr = str;
+
+  if (
+    (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"') ||
+    (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'')
+  ) {
+    newStr = str.substr(1, str.length - 2);
+  }
+
+  return newStr;
 };
 
 Visitor.prototype.executeJavascript = function(input) {

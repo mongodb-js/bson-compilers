@@ -32,7 +32,8 @@ const compileECMAScript = function(input, generator) {
   return generator.visitExpressionSequence(tree);
 };
 
-const input = 'new Code(\'some code\', {})';
+const input = 'new ObjectId(1)';
+// const input = '/\\w+\\s/g';
 const visitor = new Python3Generator();
 const visitor2 = new JavaGenerator();
 

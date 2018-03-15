@@ -150,7 +150,7 @@ Visitor.prototype.singleQuoteStringify = function(str) {
  * @param {String} str
  * @returns {String}
  */
-Visitor.prototype.strToNumber = function(str) {
+Visitor.prototype.removeQuotes = function(str) {
   return str.replace(/["']/g, '');
 };
 

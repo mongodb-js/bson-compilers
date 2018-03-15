@@ -86,16 +86,14 @@ Visitor.prototype.visitBSONCodeConstructor = function(ctx) {
     return 'Error: Code requires one or two arguments';
   }
 
-  /* NOTE: we have to visit the subtree first before type checking or type may
-     not be set. We might have to just suck it up and do two passes, but maybe
-     we can avoid it for now. */
-
-  const childArgs = this.visit(args.getChild(1));
   const code = this.singleQuoteStringify(
     args.getChild(1).getChild(0).getText()
   );
 
   if (args.getChild(1).getChildCount() === 3) {
+    /* NOTE: we have to visit the subtree first before type checking or type may
+     not be set. We might have to just suck it up and do two passes, but maybe
+     we can avoid it for now. */
     const scope = this.visit(args.getChild(1).getChild(2));
 
     if (args.getChild(1).getChild(2).type !== this.types.OBJECT) {
@@ -105,7 +103,7 @@ Visitor.prototype.visitBSONCodeConstructor = function(ctx) {
     return `new Code(${code}, ${scope})`;
   }
 
-  return `Code(${childArgs})`;
+  return `Code(${code})`;
 };
 
 /**

@@ -141,7 +141,7 @@ Visitor.prototype.visitBSONBinaryConstructor = function(ctx) {
       return 'Error: Binary first argument should be a string';
     }
 
-    const subtype = this.strToNumber(this.visit(childArgs.getChild(2)));
+    const subtype = this.removeQuotes(this.visit(childArgs.getChild(2)));
 
     if (
       (
@@ -172,16 +172,20 @@ Visitor.prototype.visitBSONDoubleConstructor = function(ctx) {
     return 'Error: Double requires one argument';
   }
 
-  const childArgs = this.visit(args.getChild(1));
+  const double = this.removeQuotes(this.visit(args.getChild(1)));
 
   if (
-    args.getChild(1).type !== this.types.DECIMAL &&
-    args.getChild(1).type !== this.types.INTEGER
+    (
+      args.getChild(1).type !== this.types.STRING &&
+      args.getChild(1).type !== this.types.DECIMAL &&
+      args.getChild(1).type !== this.types.INTEGER
+    ) ||
+    isNaN(parseInt(double, 10))
   ) {
     return 'Error: Double requires a number argument';
   }
 
-  return `float(${childArgs})`;
+  return `float(${double})`;
 };
 
 /**
@@ -197,8 +201,8 @@ Visitor.prototype.visitBSONLongConstructor = function(ctx) {
     return 'Error: Long requires two arguments';
   }
 
-  const first = this.strToNumber(this.visit(args.getChild(1).getChild(0)));
-  const second = this.strToNumber(this.visit(args.getChild(1).getChild(2)));
+  const first = this.removeQuotes(this.visit(args.getChild(1).getChild(0)));
+  const second = this.removeQuotes(this.visit(args.getChild(1).getChild(2)));
 
   const childArgs = `${first}, ${second}`;
 

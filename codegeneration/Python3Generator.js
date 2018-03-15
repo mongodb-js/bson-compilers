@@ -150,46 +150,42 @@ Visitor.prototype.visitBSONObjectIdConstructor = function(ctx) {
  */
 Visitor.prototype.visitBSONBinaryConstructor = function(ctx) {
   const args = ctx.getChild(1);
+  let type = '';
+  let binobj = {};
+  const subtypes = {
+    '0': 'bson.binary.BINARY_SUBTYPE',
+    '1': 'bson.binary.FUNCTION_SUBTYPE',
+    '2': 'bson.binary.OLD_BINARY_SUBTYPE',
+    '3': 'bson.binary.OLD_UUID_SUBTYPE',
+    '4': 'bson.binary.UUID_SUBTYPE',
+    '5': 'bson.binary.MD5_SUBTYPE',
+    '6': 'bson.binary.CSHARP_LEGACY',
+    '128': 'bson.binary.USER_DEFINED_SUBTYPE'
+  };
 
-  if (args.getChildCount() !== 3) {
-    return 'Error: Binary requires one or two arguments';
+  if (
+    args.getChildCount() !== 3 || (
+      args.getChild(1).getChildCount() !== 1 &&
+      args.getChild(1).getChildCount() !== 3
+    )
+  ) {
+    return 'Error: Binary requires one or two argument';
   }
 
-  const childArgs = args.getChild(1);
-
-  if (childArgs.getChildCount() === 1) {
-    const data = this.visit(childArgs);
-
-    if (childArgs.type !== this.types.STRING) {
-      return 'Error: Binary first argument should be a string';
-    }
-
-    return `Binary(${data})`;
+  try {
+    binobj = this.executeJavascript(ctx.getText());
+    type = binobj.sub_type;
+  } catch (error) {
+    return error.message;
   }
 
-  if (childArgs.getChildCount() === 3) {
-    const data = this.visit(childArgs.getChild(0));
+  const bytes = this.singleQuoteStringify(binobj.toString());
 
-    if (childArgs.getChild(0).type !== this.types.STRING) {
-      return 'Error: Binary first argument should be a string';
-    }
-
-    const subtype = this.removeQuotes(this.visit(childArgs.getChild(2)));
-
-    if (
-      (
-        childArgs.getChild(0).type !== this.types.STRING &&
-        childArgs.getChild(0).type !== this.types.INTEGER
-      ) ||
-      isNaN(parseInt(subtype, 10))
-    ) {
-      return 'Error: Binary second argument should be a number';
-    }
-
-    return `Binary(${data}, ${subtype})`;
+  if (args.getChild(1).getChildCount() === 1) {
+    return `new Binary(bytes(${bytes}, 'utf-8'))`;
   }
 
-  return 'Error: Binary requires one or two arguments';
+  return `new Binary(bytes(${bytes}, 'utf-8'), ${subtypes[type]})`;
 };
 
 /**

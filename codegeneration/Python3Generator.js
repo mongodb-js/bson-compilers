@@ -215,7 +215,7 @@ Visitor.prototype.visitBSONDoubleConstructor = function(ctx) {
     ) ||
     isNaN(parseInt(double, 10))
   ) {
-    return 'Error: Double requires a number argument';
+    return 'Error: Double requires a number or a string argument';
   }
 
   return `float(${double})`;

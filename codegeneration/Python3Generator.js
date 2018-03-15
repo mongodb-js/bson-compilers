@@ -49,7 +49,11 @@ Visitor.prototype.visitPropertyExpressionAssignment = function(ctx) {
  * @returns {string}
  */
 Visitor.prototype.visitNewExpression = function(ctx) {
-  return this.visitChildren(ctx, {start: 1});
+  const child = this.visitChildren(ctx, {start: 1});
+
+  ctx.type = ctx.getChild(1).type;
+
+  return child;
 };
 
 /**

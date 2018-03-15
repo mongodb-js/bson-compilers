@@ -57,6 +57,18 @@ Visitor.prototype.visitNewExpression = function(ctx) {
 };
 
 /**
+ * Visit Object Literal
+ *
+ * @param {object} ctx
+ * @returns {string}
+ */
+Visitor.prototype.visitObjectLiteral = function(ctx) {
+  ctx.type = this.types.OBJECT;
+
+  return this.visitChildren(ctx);
+};
+
+/**
  * Visit Code Constructor
  *
  * @param {object} ctx
@@ -65,8 +77,13 @@ Visitor.prototype.visitNewExpression = function(ctx) {
 Visitor.prototype.visitBSONCodeConstructor = function(ctx) {
   const args = ctx.getChild(1);
 
-  if (args.getChildCount() !== 3) {
-    return 'Error: Code requires one argument';
+  if (
+    args.getChildCount() !== 3 || (
+      args.getChild(1).getChildCount() !== 1 &&
+      args.getChild(1).getChildCount() !== 3
+    )
+  ) {
+    return 'Error: Code requires one or two arguments';
   }
 
   /* NOTE: we have to visit the subtree first before type checking or type may
@@ -74,9 +91,18 @@ Visitor.prototype.visitBSONCodeConstructor = function(ctx) {
      we can avoid it for now. */
 
   const childArgs = this.visit(args.getChild(1));
+  const code = this.singleQuoteStringify(
+    args.getChild(1).getChild(0).getText()
+  );
 
-  if (args.getChild(1).type !== this.types.STRING) {
-    return 'Error: Code requires a string argument';
+  if (args.getChild(1).getChildCount() === 3) {
+    const scope = this.visit(args.getChild(1).getChild(2));
+
+    if (args.getChild(1).getChild(2).type !== this.types.OBJECT) {
+      return 'Error: Code requires scope to be an object';
+    }
+
+    return `new Code(${code}, ${scope})`;
   }
 
   return `Code(${childArgs})`;

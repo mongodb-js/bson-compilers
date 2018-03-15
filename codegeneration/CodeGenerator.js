@@ -157,6 +157,7 @@ Visitor.prototype.removeQuotes = function(str) {
 Visitor.prototype.executeJavascript = function(input) {
   const sandbox = {
     RegExp: RegExp,
+    BSONRegExp: bson.BSONRegExp,
     Binary: bson.Binary,
     DBRef: bson.DBRef,
     Decimal128: bson.Decimal128,
@@ -189,6 +190,7 @@ Visitor.prototype.executeJavascript = function(input) {
     Date: function(s) {
       return new Date(s);
     },
+    Buffer: Buffer,
     __result: {}
   };
   const ctx = new Context(sandbox);

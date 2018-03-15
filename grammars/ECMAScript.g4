@@ -583,8 +583,8 @@ singleExpression
  | singleExpression '.' identifierName                                    # MemberDotExpression
  | singleExpression arguments                                             # ArgumentsExpression
  | New singleExpression arguments?                                        # NewExpression
- | singleExpression {!this.here(ECMAScriptParser.LineTerminator)}? '++'                         # PostIncrementExpression
- | singleExpression {!this.here(ECMAScriptParser.LineTerminator)}? '--'                         # PostDecreaseExpression
+ | singleExpression {!this.here(ECMAScriptParser.LineTerminator)}? '++'   # PostIncrementExpression
+ | singleExpression {!this.here(ECMAScriptParser.LineTerminator)}? '--'   # PostDecreaseExpression
  | Delete singleExpression                                                # DeleteExpression
  | Void singleExpression                                                  # VoidExpression
  | Typeof singleExpression                                                # TypeofExpression
@@ -616,18 +616,37 @@ singleExpression
  | objectLiteral                                                          # ObjectLiteralExpression
  | '(' expressionSequence ')'                                             # ParenthesizedExpression
  | bsonConstructor                                                        # BSONConstructorExpression
+ | bsonConstant                                                           # BSONConstantExpression
+ | Date arguments                                                         # DateConstructorExpression
+ | RegExp arguments                                                       # RegExpConstructorExpression
  ;
 
 bsonConstructor
  : BSONObjectId arguments            # BSONObjectIdConstructor
  | BSONCode arguments                # BSONCodeConstructor
  | BSONBinary arguments              # BSONBinaryConstructor
+ | BSONDBRef arguments               # BSONDBRefConstructor
  | BSONLong arguments                # BSONLongConstructor
  | BSONDouble arguments              # BSONDoubleConstructor
  | BSONDecimal128 arguments          # BSONDecimal128Constructor
  | BSONMinKey arguments              # BSONMinKeyConstructor
  | BSONMaxKey arguments              # BSONMaxKeyConstructor
  | BSONTimestamp arguments           # BSONTimestampConstructor
+ | BSONRegExp arguments              # BSONRegExpConstructor
+ | BSONSymbol arguments              # BSONSymbolConstructor
+ ;
+
+bsonConstant
+ : BSONBinary '.' BSONBinaryConstant
+ ;
+
+BSONBinaryConstant
+ : BinaryTypeDefault
+ | BinaryTypeFunction
+ | BinaryTypeByteArray
+ | BinaryTypeUUID
+ | BinaryTypeMD5
+ | BinaryTypeUDEF
  ;
 
 /// AssignmentOperator : one of
@@ -884,12 +903,27 @@ Yield      : {this.strictMode}? 'yield';
 BSONObjectId    :   'ObjectId';
 BSONCode        :   'Code';
 BSONBinary      :   'Binary';
+BSONDBRef       :   'DBRef';
 BSONLong        :   'Long';
 BSONDouble      :   'Double';
 BSONDecimal128  :   'Decimal128';
 BSONMinKey      :   'MinKey';
 BSONMaxKey      :   'MaxKey';
 BSONTimestamp   :   'Timestamp';
+BSONRegExp      :   'BSONRegExp';
+BSONSymbol      :   'Symbol';
+
+// BSON constant keywords
+BinaryTypeDefault       : 'SUBTYPE_DEFAULT';
+BinaryTypeFunction      : 'SUBTYPE_FUNCTION';
+BinaryTypeByteArray     : 'SUBTYPE_BYTE_ARRAY';
+BinaryTypeUUID          : 'SUBTYPE_UUID';
+BinaryTypeMD5           : 'SUBTYPE_MD5';
+BinaryTypeUDEF          : 'SUBTYPE_USER_DEFINED';
+
+// Built-in type keywords
+Date    :   'Date';
+RegExp  :   'RegExp';
 
 /// 7.6 Identifier Names and Identifiers
 Identifier

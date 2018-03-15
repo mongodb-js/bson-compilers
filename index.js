@@ -33,6 +33,7 @@ const compileECMAScript = function(input, generator) {
 };
 
 const input = 'new Long(\'3\', \'3\')';
+// const input = '/\\w+\\s/g';
 const visitor = new Python3Generator();
 const visitor2 = new JavaGenerator();
 

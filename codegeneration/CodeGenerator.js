@@ -145,8 +145,8 @@ Visitor.prototype.singleQuoteStringify = function(str) {
 };
 
 /**
- * Takes in an identifier that may or may not be a string and returns a string
- * with single quotes.
+ * Remove quotes from string
+ *
  * @param {String} str
  * @returns {String}
  */

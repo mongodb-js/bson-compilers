@@ -1,7 +1,7 @@
 language: node_js
 sudo: false
 node_js:
-  - 7.9
+  - 8.2
 install: npm install --ignore-scripts
 script: npm run ci
 cache:

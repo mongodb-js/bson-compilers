@@ -13,7 +13,7 @@
     "test": "mocha",
     "prepublish": "npm run compile",
     "check": "mongodb-js-precommit './src/**/*{.js,.jsx}' './test/**/*.js' index.js",
-    "ci": "npm run test"
+    "ci": "npm run check && npm run test"
   },
   "precommit": [
     "check"

@@ -255,6 +255,12 @@ Visitor.prototype.visitBSONLongConstructor = function(ctx) {
  * @returns {string}
  */
 Visitor.prototype.visitDateConstructorExpression = function(ctx) {
+  const args = ctx.getChild(1);
+
+  if (args.getChild(1).getChildCount() === 0) {
+    return 'datetime.date.today()';
+  }
+
   let dateStr = '';
 
   try {

@@ -15,12 +15,9 @@ const compile = {
 const unsupported = {
   java: [
     'RegExp', 'BsonRegExp', 'Decimal128', 'Timestamp',
-    'Number'
+    'Number', 'Date', 'Object', 'Symbol'
   ],
-  python: [
-    'RegExp', 'BsonRegExp', 'DBRef', 'Decimal128', 'Timestamp', 'Symbol',
-    'Number', 'Date'
-  ]
+  python: ['RegExp', 'BsonRegExp', 'DBRef', 'Decimal128', 'Timestamp']
 };
 
 const readJSON = (filename) => {

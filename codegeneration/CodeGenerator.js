@@ -199,7 +199,17 @@ Visitor.prototype.executeJavascript = function(input) {
       return new Date(s);
     },
     Date: function(s) {
-      return new Date(s);
+      if (typeof s !== 'undefined') {
+        const args = Array.from(arguments);
+
+        if (args.length === 1) {
+          return new Date(s);
+        }
+
+        return new Date(...args);
+      }
+
+      return new Date();
     },
     Buffer: Buffer,
     __result: {}

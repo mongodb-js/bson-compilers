@@ -248,4 +248,136 @@ Visitor.prototype.visitBSONLongConstructor = function(ctx) {
   return `Int64(${longstr})`;
 };
 
+/**
+ * Visit Date Constructor
+ *
+ * @param {object} ctx
+ * @returns {string}
+ */
+Visitor.prototype.visitDateConstructorExpression = function(ctx) {
+  let dateStr = '';
+
+  try {
+    const date = new Date(this.executeJavascript(ctx.getText()).toString());
+
+    dateStr = [
+      date.getFullYear(),
+      (date.getMonth() + 1),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds()
+    ].join(', ');
+  } catch (error) {
+    return error.message;
+  }
+
+  return `datetime.datetime(${dateStr})`;
+};
+
+/**
+ * Visit Date Now Constructor
+ *
+ * @param {object} ctx
+ * @returns {string}
+ */
+Visitor.prototype.visitDateNowConstructorExpression = function() {
+  return 'datetime.datetime.now()';
+};
+
+/**
+ * Visit Number Constructor
+ *
+ * @param {object} ctx
+ * @returns {string}
+ */
+Visitor.prototype.visitNumberConstructorExpression = function(ctx) {
+  const args = ctx.getChild(1);
+
+  if (args.getChildCount() !== 3 || args.getChild(1).getChildCount() !== 1) {
+    return 'Error: Number requires one argument';
+  }
+
+  const number = this.removeQuotes(this.visit(args.getChild(1)));
+
+  if (
+    (
+      args.getChild(1).type !== this.types.STRING &&
+      args.getChild(1).type !== this.types.DECIMAL &&
+      args.getChild(1).type !== this.types.INTEGER
+    ) ||
+    isNaN(parseInt(number, 10))
+  ) {
+    return 'Error: Number requires a number or a string argument';
+  }
+
+  return `int(${number})`;
+};
+
+/**
+ * Visit MaxKey Constructor
+ *
+ * @param {object} ctx
+ * @returns {string}
+ */
+Visitor.prototype.visitBSONMaxKeyConstructor = function() {
+  return 'MaxKey()';
+};
+
+/**
+ * Visit MinKey Constructor
+ *
+ * @param {object} ctx
+ * @returns {string}
+ */
+Visitor.prototype.visitBSONMinKeyConstructor = function() {
+  return 'MinKey()';
+};
+
+/**
+ * Visit Symbol Constructor
+ *
+ * @param {object} ctx
+ * @returns {string}
+ */
+Visitor.prototype.visitBSONSymbolConstructor = function(ctx) {
+  const args = ctx.getChild(1);
+
+  if (args.getChildCount() === 2 || args.getChild(1).getChildCount() !== 1) {
+    return 'Error: Symbol requires one argument';
+  }
+
+  const arg = args.getChild(1).getChild(0);
+  const symbol = this.visit(arg);
+
+  if (arg.type !== this.types.STRING) {
+    return 'Error: Symbol requires a string argument';
+  }
+
+  return `unicode(${symbol}, 'utf-8')`;
+};
+
+/**
+ * Visit Object.create() Constructor
+ *
+ * @param {object} ctx
+ * @returns {string}
+ */
+Visitor.prototype.visitObjectCreateConstructorExpression = function(ctx) {
+  const args = ctx.getChild(1);
+
+  if (args.getChildCount() === 2 || args.getChild(1).getChildCount() !== 1) {
+    return 'Error: Object.create() requires one argument';
+  }
+
+  const arg = args.getChild(1).getChild(0);
+  const obj = this.visit(arg);
+
+  if (arg.type !== this.types.OBJECT) {
+    return 'Error: Object.create() requires an object argument';
+  }
+
+  return obj;
+};
+
 module.exports = Visitor;

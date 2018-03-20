@@ -278,7 +278,7 @@ Visitor.prototype.visitDateConstructorExpression = function(ctx) {
     return error.message;
   }
 
-  return `datetime.datetime(${dateStr}, tzinfo=timezone.utc)`;
+  return `datetime.datetime(${dateStr}, tzinfo=datetime.timezone.utc)`;
 };
 
 /**

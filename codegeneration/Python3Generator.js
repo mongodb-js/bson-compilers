@@ -258,7 +258,7 @@ Visitor.prototype.visitDateConstructorExpression = function(ctx) {
   const args = ctx.getChild(1);
 
   if (args.getChild(1).getChildCount() === 0) {
-    return 'datetime.date.today()';
+    return 'datetime.datetime.utcnow().date()';
   }
 
   let dateStr = '';
@@ -278,7 +278,7 @@ Visitor.prototype.visitDateConstructorExpression = function(ctx) {
     return error.message;
   }
 
-  return `datetime.datetime(${dateStr})`;
+  return `datetime.datetime(${dateStr}, tzinfo=timezone.utc)`;
 };
 
 /**
@@ -288,7 +288,7 @@ Visitor.prototype.visitDateConstructorExpression = function(ctx) {
  * @returns {string}
  */
 Visitor.prototype.visitDateNowConstructorExpression = function() {
-  return 'datetime.datetime.now()';
+  return 'datetime.datetime.utcnow()';
 };
 
 /**

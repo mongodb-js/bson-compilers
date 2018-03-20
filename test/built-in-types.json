@@ -27,42 +27,42 @@
       {
         "description": "new Date with ISO String",
         "query": "new Date('December 17, 1995 03:24:00Z')",
-        "python": "datetime.datetime(1995, 12, 17, 3, 24, 0)",
+        "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=timezone.utc)",
         "java": "new java.util.Date(819170640000)",
         "csharp": ""
       },
       {
         "description": "new Date with UTC number",
         "query": "new Date(819167040000)",
-        "python": "datetime.datetime(1995, 12, 17, 2, 24, 0)",
+        "python": "datetime.datetime(1995, 12, 17, 2, 24, 0, tzinfo=timezone.utc)",
         "java": "new java.util.Date(819167040000)",
         "csharp": ""
       },
       {
         "description": "Current date",
         "query": "new Date()",
-        "python": "datetime.date.today()",
+        "python": "datetime.datetime.utcnow().date()",
         "java": "",
         "csharp": ""
       },
       {
         "description": "Current time",
         "query": "Date.now()",
-        "python": "datetime.datetime.now()",
+        "python": "datetime.datetime.utcnow()",
         "java": "",
         "csharp": ""
       },
       {
         "description": "Date from year, month and day",
         "query": "new Date(1995, 11, 17)",
-        "python": "datetime.datetime(1995, 12, 17, 0, 0, 0)",
+        "python": "datetime.datetime(1995, 12, 17, 0, 0, 0, tzinfo=timezone.utc)",
         "java": "",
         "csharp": ""
       },
       {
         "description": "Date from year, month, day, hour, min and sec",
         "query": "new Date(1995, 11, 17, 3, 24, 0)",
-        "python": "datetime.datetime(1995, 12, 17, 3, 24, 0)",
+        "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=timezone.utc)",
         "java": "",
         "csharp": ""
       }

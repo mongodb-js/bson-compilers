@@ -31,6 +31,19 @@ Visitor.prototype.visitObjectLiteral = function(ctx) {
   return doc;
 };
 
+Visitor.prototype.visitUndefinedLiteral = function(ctx) {
+  ctx.type = this.types.UNDEFINED;
+  return "null";
+};
+
+Visitor.prototype.visitOctalIntegerLiteral = function(ctx) {
+  console.log('visiting octal');
+  ctx.type = this.types.OCTAL;
+  const val = this.visitChildren(ctx);
+  console.log(val);
+  return val;
+};
+
 Visitor.prototype.visitPropertyNameAndValueList = function(ctx) {
   return this.visitChildren(ctx, {step: 2});
 };

@@ -859,7 +859,7 @@ HexIntegerLiteral
 
 OctalIntegerLiteral
  : {!this.strictMode}? '0' OctalDigit+
- | {!this.strictMode}? '0o' OctalDigit+
+ | {!this.strictMode}? '0' [oO] OctalDigit+
  ;
 
 /// 7.6.1.1 Keywords

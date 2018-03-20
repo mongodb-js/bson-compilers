@@ -33,15 +33,17 @@ Visitor.prototype.visitObjectLiteral = function(ctx) {
 
 Visitor.prototype.visitUndefinedLiteral = function(ctx) {
   ctx.type = this.types.UNDEFINED;
-  return "null";
+  return 'null';
 };
 
 Visitor.prototype.visitOctalIntegerLiteral = function(ctx) {
-  console.log('visiting octal');
   ctx.type = this.types.OCTAL;
-  const val = this.visitChildren(ctx);
-  console.log(val);
-  return val;
+  let oct = this.visitChildren(ctx);
+  if ((oct.charAt(0) === '0' && oct.charAt(1) === '0') ||
+    (oct.charAt(0) === '0' && (oct.charAt(1) === 'o' || oct.charAt(1) === 'O'))) {
+    oct = '0' + oct.substr(2, oct.length - 1);
+  }
+  return oct;
 };
 
 Visitor.prototype.visitPropertyNameAndValueList = function(ctx) {

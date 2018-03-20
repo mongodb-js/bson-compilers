@@ -237,7 +237,7 @@
         "description": "Symbol from string",
         "query": "Symbol('2')",
         "python": "unicode('2', 'utf-8')",
-        "java": "",
+        "java": "new Symbol(\"2\")",
         "csharp": ""
       }
     ]

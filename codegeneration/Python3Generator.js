@@ -261,16 +261,24 @@ Visitor.prototype.visitDateConstructorExpression = function(ctx) {
     return 'datetime.date.today()';
   }
 
-  let date = '';
+  let dateStr = '';
 
   try {
-    date = this.executeJavascript(ctx.getText())
-      .format('YYYY, MM, DD, H, m, s');
+    const date = this.executeJavascript(ctx.getText());
+
+    dateStr = [
+      date.getUTCFullYear(),
+      (date.getUTCMonth() + 1),
+      date.getUTCDate(),
+      date.getUTCHours(),
+      date.getUTCMinutes(),
+      date.getUTCSeconds()
+    ].join(', ');
   } catch (error) {
     return error.message;
   }
 
-  return `datetime.datetime(${date})`;
+  return `datetime.datetime(${dateStr})`;
 };
 
 /**

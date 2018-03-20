@@ -1,7 +1,6 @@
 const ECMAScriptVisitor = require('../lib/ECMAScriptVisitor').ECMAScriptVisitor;
 const bson = require('bson');
 const Context = require('context-eval');
-const moment = require('moment');
 
 /**
  * This is a Visitor superclass where helper methods used by all language
@@ -203,10 +202,10 @@ Visitor.prototype.executeJavascript = function(input) {
       const args = Array.from(arguments);
 
       if (args.length === 1) {
-        return moment.utc(new Date(s));
+        return new Date(s);
       }
 
-      return moment(args);
+      return new Date(Date.UTC(...args));
     },
     Buffer: Buffer,
     __result: {}

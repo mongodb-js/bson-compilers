@@ -27,14 +27,14 @@
       {
         "description": "new Date with ISO String",
         "query": "new Date('December 17, 1995 03:24:00Z')",
-        "python": "datetime.datetime(1995, 12, 17, 4, 24, 0)",
+        "python": "datetime.datetime(1995, 12, 17, 3, 24, 0)",
         "java": "new java.util.Date(819170640000)",
         "csharp": ""
       },
       {
         "description": "new Date with UTC number",
         "query": "new Date(819167040000)",
-        "python": "datetime.datetime(1995, 12, 17, 3, 24, 0)",
+        "python": "datetime.datetime(1995, 12, 17, 2, 24, 0)",
         "java": "new java.util.Date(819167040000)",
         "csharp": ""
       },

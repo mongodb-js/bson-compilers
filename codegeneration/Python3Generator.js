@@ -261,24 +261,16 @@ Visitor.prototype.visitDateConstructorExpression = function(ctx) {
     return 'datetime.date.today()';
   }
 
-  let dateStr = '';
+  let date = '';
 
   try {
-    const date = new Date(Date.parse(this.executeJavascript(ctx.getText()).toString()));
-
-    dateStr = [
-      date.getFullYear(),
-      (date.getMonth() + 1),
-      date.getDate(),
-      date.getHours(),
-      date.getMinutes(),
-      date.getSeconds()
-    ].join(', ');
+    date = this.executeJavascript(ctx.getText())
+      .format('YYYY, MM, DD, H, m, s');
   } catch (error) {
     return error.message;
   }
 
-  return `datetime.datetime(${dateStr})`;
+  return `datetime.datetime(${date})`;
 };
 
 /**

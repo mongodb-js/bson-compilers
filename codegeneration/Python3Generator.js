@@ -264,7 +264,7 @@ Visitor.prototype.visitDateConstructorExpression = function(ctx) {
   let dateStr = '';
 
   try {
-    const date = new Date(this.executeJavascript(ctx.getText()).toString());
+    const date = new Date(Date.parse(this.executeJavascript(ctx.getText()).toString()));
 
     dateStr = [
       date.getFullYear(),

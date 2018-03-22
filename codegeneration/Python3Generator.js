@@ -32,25 +32,25 @@ Visitor.prototype.visitStringLiteral = function(ctx) {
 /**
  * Visit Property Name And Value List
  *
- * @param {object} ctx
- * @returns {string}
+ * @param {PropertyNameAndValueListContext} ctx
+ * @return {String}
  */
 Visitor.prototype.visitPropertyNameAndValueList = function(ctx) {
-  return this.visitChildren(ctx, {step: 2});
+  return this.visitChildren(ctx, {children: ctx.propertyAssignment()});
 };
 
 /**
- * Visit Property Expression Assignment
- *
- * @param {object} ctx
- * @returns {string}
+ * Child nodes: propertyName singleExpression
+ * @param {PropertyAssignmentExpressionContext} ctx
+ * @return {String}
  */
-Visitor.prototype.visitPropertyExpressionAssignment = function(ctx) {
+Visitor.prototype.visitPropertyAssignmentExpression = function(ctx) {
   const key = this.singleQuoteStringify(this.visit(ctx.propertyName()));
   const value = this.visit(ctx.singleExpression());
 
   return `${key}: ${value}`;
 };
+
 
 /**
  * Because python doesn't need `New`, we can skip the first child
@@ -519,6 +519,114 @@ Visitor.prototype.visitBooleanLiteral = function(ctx) {
   const string = ctx.getText();
 
   return `${string.charAt(0).toUpperCase()}${string.slice(1)}`;
+};
+
+/**
+ * child nodes: arguments
+ * grandchild nodes: argumentList?
+ * great-grandchild nodes: singleExpression+
+ * @param {RegExpConstructorExpressionContext} ctx
+ * @return {String}
+ */
+Visitor.prototype.visitRegExpConstructorExpression =
+Visitor.prototype.visitRegularExpressionLiteral = function(ctx) {
+  const PYTHON_REGEX_FLAGS = {
+    i: 'i', // re.IGNORECASE
+    m: 'm', // re.MULTILINE
+    u: 'a', // re.ASCII
+    y: '', // Sticky flag matches only from the index indicated by the lastIndex property
+    g: 's' // re.DOTALL matches all
+    // re.DEBUG - Display debug information. No corresponding inline flag.
+    // re.LOCALE - Case-insensitive matching dependent on the current locale. Inline flag (?L)
+    // re.VERBOSE - More readable way of writing patterns (eg. with comments)
+  };
+
+  let pattern;
+  let flags;
+
+  try {
+    const regexobj = this.executeJavascript(ctx.getText());
+
+    pattern = regexobj.source;
+    flags = regexobj.flags;
+  } catch (error) {
+    return error.message;
+  }
+
+  // Double escape characters except for slashes
+  const escaped = pattern.replace(/\\(?!\/)/, '\\\\');
+
+  if (flags !== '') {
+    flags = flags
+      .split('')
+      .map((item) => PYTHON_REGEX_FLAGS[item])
+      .sort()
+      .join('');
+
+    return `re.compile(r${this.doubleQuoteStringify(`${escaped}(?${flags})`)})`;
+  }
+
+  return `re.compile(r${this.doubleQuoteStringify(escaped)})`;
+};
+
+/**
+ * Expects two strings as arguments, the second must be valid flag
+ *
+ * child nodes: arguments
+ * grandchild nodes: argumentList?
+ * great-grandchild nodes: singleExpression+
+ * @param {BSONRegExpConstructorContext} ctx
+ * @return {String}
+ */
+Visitor.prototype.visitBSONRegExpConstructor = function(ctx) {
+  const argList = ctx.arguments().argumentList();
+  const BSON_FLAGS = [
+    'i', // Case insensitivity to match
+    'm', // Multiline match
+    'x', // Ignore all white space characters
+    'l', // Case-insensitive matching dependent on the current locale?
+    's', // Matches all
+    'u'  // Unicode?
+  ];
+
+  if (
+    argList === null ||
+    (argList.getChildCount() !== 1 && argList.getChildCount() !== 3)
+  ) {
+    return 'Error: BSONRegExp requires one or two arguments';
+  }
+
+  const args = argList.singleExpression();
+  const pattern = this.visit(args[0]);
+
+  if (args[0].type !== this.types.STRING) {
+    return 'Error: BSONRegExp requires pattern to be a string';
+  }
+
+  if (args.length === 2) {
+    let flags = this.visit(args[1]);
+
+    if (args[1].type !== this.types.STRING) {
+      return 'Error: BSONRegExp requires flags to be a string';
+    }
+
+    if (flags !== '') {
+      flags = this.removeQuotes(flags).split('');
+
+      const isNoValid = flags.find((item) => (
+        BSON_FLAGS.includes(item) === false
+      ));
+
+      if (isNoValid === true) {
+        return 'Error: the regular expression contains unsuppoted flag';
+      }
+    }
+
+    flags = this.singleQuoteStringify(flags.join(''));
+
+    return `RegExp(${pattern}, ${flags})`;
+  }
+  return `RegExp(${pattern})`;
 };
 
 module.exports = Visitor;

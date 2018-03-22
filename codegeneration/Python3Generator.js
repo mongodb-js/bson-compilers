@@ -414,4 +414,111 @@ Visitor.prototype.visitArrayLiteral = function(ctx) {
   return this.visitChildren(ctx);
 };
 
+/**
+ * Visit Undefined Literal
+ *
+ * @param {object} ctx
+ * @returns {string}
+ */
+Visitor.prototype.visitUndefinedLiteral = function(ctx) {
+  ctx.type = this.types.UNDEFINED;
+
+  return 'None';
+};
+
+/**
+ * Visit Elision Literal
+ *
+ * @param {object} ctx
+ * @returns {string}
+ */
+Visitor.prototype.visitElision = function(ctx) {
+  ctx.type = this.types.NULL;
+
+  return 'None';
+};
+
+/**
+ * Visit Null Literal
+ *
+ * @param {object} ctx
+ * @returns {string}
+ */
+Visitor.prototype.visitNullLiteral = function(ctx) {
+  ctx.type = this.types.NULL;
+
+  return 'None';
+};
+
+/**
+ * Visit Octal Integer Literal
+ *
+ * @param {object} ctx
+ * @returns {string}
+ */
+Visitor.prototype.visitOctalIntegerLiteral = function(ctx) {
+  ctx.type = this.types.OCTAL;
+
+  let oct = this.visitChildren(ctx);
+  let offset = 0;
+
+  if (
+    oct.charAt(0) === '0' &&
+    (oct.charAt(1) === '0' || oct.charAt(1) === 'o' || oct.charAt(1) === 'O')
+  ) {
+    offset = 2;
+  } else if (oct.charAt(0) === '0') {
+    offset = 1;
+  }
+
+  oct = `0o${oct.substr(offset, oct.length - 1)}`;
+
+  return oct;
+};
+
+/**
+ * Visit BSON Timestamp Constructor
+ *
+ * @param {object} ctx
+ * @returns {string}
+ */
+Visitor.prototype.visitBSONTimestampConstructor = function(ctx) {
+  const args = ctx.arguments();
+
+  if (
+    args.argumentList() === null || args.argumentList().getChildCount() !== 3
+  ) {
+    return 'Error: Timestamp requires two arguments';
+  }
+
+  const argList = args.argumentList().singleExpression();
+  const low = this.visit(argList[0]);
+
+  if (argList[0].type !== this.types.INTEGER) {
+    return 'Error: Timestamp first argument requires integer arguments';
+  }
+
+  const high = this.visit(argList[1]);
+
+  if (argList[1].type !== this.types.INTEGER) {
+    return 'Error: Timestamp second argument requires integer arguments';
+  }
+
+  return `Timestamp(${low}, ${high})`;
+};
+
+/**
+ * Visit Boolean Literal Literal
+ *
+ * @param {object} ctx
+ * @returns {string}
+ */
+Visitor.prototype.visitBooleanLiteral = function(ctx) {
+  ctx.type = this.types.BOOL;
+
+  const string = ctx.getText();
+
+  return `${string.charAt(0).toUpperCase()}${string.slice(1)}`;
+};
+
 module.exports = Visitor;

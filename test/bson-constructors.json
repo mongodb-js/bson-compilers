@@ -29,10 +29,17 @@
       },
       {
         "description": "Code with function code",
-        "query": "Code(function(test) { console.log(test);  })",
+        "query": "Code(function(test) { console.log(test); })",
         "python": "Code('function(test){console.log(test);}')",
         "java": "new Code(\"function(test){console.log(test);}\")",
         "csharp": "new BsonJavaScript(@\"function(test){console.log(test);}\")"
+      },
+      {
+        "description": "Code with where code",
+        "query": "new Code('this.a > i', { i: 1 })",
+        "python": "Code('this.a > i', {'i': 1})",
+        "java": "new CodeWithScope(\"this.a > i\", new Document().append(\"i\", 1))",
+        "csharp": ""
       }
     ],
     "ObjectId": [
@@ -79,6 +86,20 @@
         "python": "Binary(bytes('a string', 'utf-8'), bson.binary.FUNCTION_SUBTYPE)",
         "java": "new Binary(org.bson.BsonBinarySubType.FUNCTION, \"a string\".getBytes(\"UTF-8\"))",
         "csharp": "new BsonBinaryData(System.Text.Encoding.ASCII.GetBytes(\"a string\"), BsonBinarySubType.Function)"
+      },
+      {
+        "description": "Binary with string args",
+        "query": "Binary('a string')",
+        "python": "Binary(bytes('a string', 'utf-8'))",
+        "java": "new Binary(org.bson.BsonBinarySubType.BINARY, \"a string\".getBytes(\"UTF-8\"))",
+        "csharp": ""
+      },
+      {
+        "description": "Binary with (string, string) args",
+        "query": "Binary('a string', '1')",
+        "python": "Binary(bytes('a string', 'utf-8'), bson.binary.FUNCTION_SUBTYPE)",
+        "java": "new Binary(org.bson.BsonBinarySubType.FUNCTION, \"a string\".getBytes(\"UTF-8\"))",
+        "csharp": ""
       }
     ],
     "DBRef": [
@@ -104,6 +125,13 @@
         "python": "float(3)",
         "java": "new java.lang.Double(3)",
         "csharp": "new BsonDouble(Convert.ToDouble(\"3\"))"
+      },
+      {
+        "description": "new Double with number arg",
+        "query": "new Double(3)",
+        "python": "float(3)",
+        "java": "new java.lang.Double(3)",
+        "csharp": ""
       },
       {
         "description": "Double with valid string arg",
@@ -318,6 +346,13 @@
         "python": "unicode('2', 'utf-8')",
         "java": "new Symbol(\"2\")",
         "csharp": "new BsonString(\"2\")"
+      },
+      {
+        "description": "new Symbol from string",
+        "query": "new Symbol('2')",
+        "python": "unicode('2', 'utf-8')",
+        "java": "new Symbol(\"2\")",
+        "csharp": ""
       }
     ]
   }

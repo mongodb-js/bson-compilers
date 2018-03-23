@@ -106,14 +106,14 @@
       {
         "description": "new DBRef with (string, ObjectID) args",
         "query": "new DBRef('coll', new ObjectId())",
-        "python": "DBRef('coll', ObjectID())",
+        "python": "DBRef('coll', ObjectId())",
         "java": "new DBRef(\"coll\", new ObjectId())",
         "csharp": ""
       },
       {
         "description": "new DBRef with (string, ObjectId, string) args",
         "query": "new DBRef('coll', ObjectId(), 'db'",
-        "python": "DBRef('collection', 'objectID', 'db')",
+        "python": "DBRef('coll', ObjectId(), 'db')",
         "java": "new DBRef(\"coll\", new ObjectId(), \"db\")",
         "csharp": ""
       }
@@ -283,7 +283,7 @@
       {
         "description": "array with trailing comma",
         "query": "[1, 2,]",
-        "python": "[1, 2,]",
+        "python": "[1, 2]",
         "java": "Arrays.asList(1, 2)",
         "csharp": "new BsonArray {1, 2}"
       },
@@ -313,7 +313,7 @@
       {
         "description": "array with leading elision",
         "query": "[,1, 2,]",
-        "python": "[None, 1, 2,]",
+        "python": "[None, 1, 2]",
         "java": "Arrays.asList(null, 1, 2)",
         "csharp": "new BsonArray {BsonNull.Value, 1, 2}"
       },

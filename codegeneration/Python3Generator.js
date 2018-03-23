@@ -79,13 +79,18 @@ Visitor.prototype.visitObjectLiteral = function(ctx) {
 };
 
 /**
- * Visit Element List
+ * TODO: Is it okay to sort by terminal?
+ * Child nodes: (elision* singleExpression*)+
  *
- * @param {object} ctx
- * @returns {string}
+ * @param {ElementListContext} ctx
+ * @return {String}
  */
 Visitor.prototype.visitElementList = function(ctx) {
-  return this.visitChildren(ctx, {step: 2, separator: ', '});
+  const children = ctx.children.filter((child) => (
+    child.constructor.name !== 'TerminalNodeImpl'
+  ));
+
+  return this.visitChildren(ctx, {children, separator: ', '});
 };
 
 /**
@@ -221,10 +226,7 @@ Visitor.prototype.visitBSONDoubleConstructor = function(ctx) {
   const arg = args.argumentList().singleExpression()[0];
   const double = this.removeQuotes(this.visit(arg));
 
-  if (
-    (arg.type !== this.types.STRING && this.isNumericType(arg) === false) ||
-    isNaN(parseInt(double, 10))
-  ) {
+  if (arg.type !== this.types.STRING && this.isNumericType(arg) === false) {
     return 'Error: Double requires a number or a string argument';
   }
 
@@ -322,10 +324,7 @@ Visitor.prototype.visitNumberConstructorExpression = function(ctx) {
   const arg = args.argumentList().singleExpression()[0];
   const number = this.removeQuotes(this.visit(arg));
 
-  if (
-    (arg.type !== this.types.STRING && this.isNumericType(arg) === false) ||
-    isNaN(parseInt(number, 10))
-  ) {
+  if (arg.type !== this.types.STRING && this.isNumericType(arg) === false) {
     return 'Error: Number requires a number or a string argument';
   }
 
@@ -627,6 +626,50 @@ Visitor.prototype.visitBSONRegExpConstructor = function(ctx) {
     return `RegExp(${pattern}, ${flags})`;
   }
   return `RegExp(${pattern})`;
+};
+
+/**
+ * child nodes: arguments
+ * grandchild nodes: argumentList?
+ * great-grandchild nodes: singleExpression+
+ *
+ * @param {BSONDBRefConstructorContext} ctx
+ * @return {String}
+ */
+Visitor.prototype.visitBSONDBRefConstructor = function(ctx) {
+  const argList = ctx.arguments().argumentList();
+
+  if (
+    argList === null ||
+    (argList.getChildCount() !== 3 && argList.getChildCount() !== 5)
+  ) {
+    return 'Error: DBRef requires two or three arguments';
+  }
+
+  const args = argList.singleExpression();
+  const ns = this.visit(args[0]);
+
+  if (args[0].type !== this.types.STRING) {
+    return 'Error: DBRef first argumnet requires string namespace';
+  }
+
+  const oid = this.visit(args[1]);
+
+  if (args[1].type !== this.types.OBJECT) {
+    return 'Error: DBRef requires object OID';
+  }
+
+  if (args.length === 3) {
+    const db = this.visit(args[2]);
+
+    if (args[2].type !== this.types.STRING) {
+      return 'Error: DbRef requires string collection';
+    }
+
+    return `DBRef(${ns}, ${oid}, ${db})`;
+  }
+
+  return `DBRef(${ns}, ${oid})`;
 };
 
 module.exports = Visitor;

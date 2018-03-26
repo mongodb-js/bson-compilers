@@ -324,7 +324,10 @@ Visitor.prototype.visitNumberConstructorExpression = function(ctx) {
   const arg = args.argumentList().singleExpression()[0];
   const number = this.removeQuotes(this.visit(arg));
 
-  if (arg.type !== this.types.STRING && this.isNumericType(arg) === false) {
+  if (
+    (arg.type !== this.types.STRING && this.isNumericType(arg) === false)
+    || isNaN(Number(number))
+  ) {
     return 'Error: Number requires a number or a string argument';
   }
 

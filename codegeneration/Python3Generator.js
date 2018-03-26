@@ -582,14 +582,14 @@ Visitor.prototype.visitRegularExpressionLiteral = function(ctx) {
  */
 Visitor.prototype.visitBSONRegExpConstructor = function(ctx) {
   const argList = ctx.arguments().argumentList();
-  const BSON_FLAGS = [
-    'i', // Case insensitivity to match
-    'm', // Multiline match
-    'x', // Ignore all white space characters
-    'l', // Case-insensitive matching dependent on the current locale?
-    's', // Matches all
-    'u'  // Unicode?
-  ];
+  const BSON_FLAGS = {
+    'i': 'i', // Case insensitivity to match
+    'm': 'm', // Multiline match
+    'x': 'x', // Ignore all white space characters
+    's': 's', // Matches all
+    'l': 'l', // Case-insensitive matching dependent on the current locale?
+    'u': 'u' // Unicode?
+  };
 
   if (
     argList === null ||
@@ -613,18 +613,24 @@ Visitor.prototype.visitBSONRegExpConstructor = function(ctx) {
     }
 
     if (flags !== '') {
-      flags = this.removeQuotes(flags).split('');
+      const unsuppotedFlags = [];
 
-      const isNoValid = flags.find((item) => (
-        BSON_FLAGS.includes(item) === false
-      ));
+      flags = this
+        .removeQuotes(flags).split('')
+        .map((item) => {
+          if (Object.keys(BSON_FLAGS).includes(item) === false) {
+            unsuppotedFlags.push(item);
+          }
 
-      if (isNoValid === true) {
-        return 'Error: the regular expression contains unsuppoted flag';
+          return BSON_FLAGS[item];
+        });
+
+      if (unsuppotedFlags.length > 0) {
+        return `Error: the regular expression contains unsuppoted '${unsuppotedFlags.join('')}' flag`;
       }
-    }
 
-    flags = this.singleQuoteStringify(flags.join(''));
+      flags = this.singleQuoteStringify(flags.join(''));
+    }
 
     return `RegExp(${pattern}, ${flags})`;
   }

@@ -112,7 +112,7 @@
       },
       {
         "description": "new DBRef with (string, ObjectId, string) args",
-        "query": "new DBRef('coll', ObjectId(), 'db'",
+        "query": "new DBRef('coll', ObjectId(), 'db')",
         "python": "DBRef('coll', ObjectId(), 'db')",
         "java": "new DBRef(\"coll\", new ObjectId(), \"db\")",
         "csharp": ""

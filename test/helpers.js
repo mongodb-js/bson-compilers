@@ -21,7 +21,7 @@ const unsupported = {
     'RegExp', 'BSONRegExp', 'DBRef', 'Decimal128', 'Timestamp', 'literals', 'ArrayElision'
   ],
   csharp: [
-    'RegExp', 'BSONRegExp', 'DBRef', 'Decimal128', 'Code', 'ObjectId', 'Binary', 'Double', 'Long', 'Decimal128', 'MinKey/MaxKey', 'Timestamp', 'Document', 'Array', 'ArrayElision', 'Symbol', 'literals', 'Date', 'DateNow', 'RegExp'
+    'RegExp', 'BSONRegExp', 'DBRef', 'Decimal128', 'Code', 'ObjectId', 'Binary', 'Double', 'Long', 'Decimal128', 'MinKey/MaxKey', 'Timestamp', 'Document', 'Array', 'ArrayElision', 'Symbol', 'Date', 'DateNow', 'RegExp'
   ]
 };
 

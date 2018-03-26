@@ -71,42 +71,42 @@
         "query": "01234567",
         "python": "0o1234567",
         "java": "01234567",
-        "csharp": ""
+        "csharp": "1234567"
       },
       {
         "description": "Octal 00-prefix number",
         "query": "001234567",
         "python": "0o1234567",
         "java": "01234567",
-        "csharp": ""
+        "csharp": "1234567"
       },
       {
         "description": "Octal 0o-prefix number",
         "query": "0o1234567",
         "python": "0o1234567",
         "java": "01234567",
-        "csharp": ""
+        "csharp": "0"
       },
       {
         "description": "Octal 0O-prefix number",
         "query": "0o1234567",
         "python": "0o1234567",
         "java": "01234567",
-        "csharp": ""
+        "csharp": "0"
       },
       {
         "description": "Single-quote string",
         "query": "'string'",
         "python": "'string'",
         "java": "\"string\"",
-        "csharp": "@\"string\""
+        "csharp": "\"string\""
       },
       {
         "description": "Double-quote string",
         "query": "\"string\"",
         "python": "'string'",
         "java": "\"string\"",
-        "csharp": "@\"string\""
+        "csharp": "\"string\""
       },
       {
         "description": "null",

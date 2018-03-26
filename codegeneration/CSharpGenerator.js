@@ -51,10 +51,9 @@ Visitor.prototype.visitNumberConstructorExpression = function(ctx) {
   const arg = argList.singleExpression()[0];
   const number = this.removeQuotes(this.visit(arg));
 
-  if (isNaN(parseInt(number, 10)) ||
-    ( arg.type !== this.types.STRING &&
-      arg.type !== this.types.DECIMAL &&
-      arg.type !== this.types.INTEGER)
+  if (
+    (arg.type !== this.types.STRING && this.isNumericType(arg) === false)
+    || isNaN(Number(number))
   ) {
     return 'Error: Number requires a number or a string argument';
   }

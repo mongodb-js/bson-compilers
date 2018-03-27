@@ -36,7 +36,7 @@ Visitor.prototype.visitStringLiteral = function(ctx) {
  * @return {String}
  */
 Visitor.prototype.visitPropertyNameAndValueList = function(ctx) {
-  return this.visitChildren(ctx, {children: ctx.propertyAssignment()});
+  return this.visitChildren(ctx, {children: ctx.propertyAssignment(), separator: ', '});
 };
 
 /**

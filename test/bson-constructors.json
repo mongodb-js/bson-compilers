@@ -352,7 +352,7 @@
         "query": "new Symbol('2')",
         "python": "unicode('2', 'utf-8')",
         "java": "new Symbol(\"2\")",
-        "csharp": ""
+        "csharp": "new BsonString(\"2\")"
       }
     ]
   }

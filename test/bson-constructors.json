@@ -39,7 +39,7 @@
         "query": "new Code('this.a > i', { i: 1 })",
         "python": "Code('this.a > i', {'i': 1})",
         "java": "new CodeWithScope(\"this.a > i\", new Document().append(\"i\", 1))",
-        "csharp": ""
+        "csharp": "new BsonJavaScriptWithScope(@\"this.a > i\", new BsonDocument(\"i\", 1))"
       }
     ],
     "ObjectId": [
@@ -92,14 +92,14 @@
         "query": "Binary('a string')",
         "python": "Binary(bytes('a string', 'utf-8'))",
         "java": "new Binary(org.bson.BsonBinarySubType.BINARY, \"a string\".getBytes(\"UTF-8\"))",
-        "csharp": ""
+        "csharp": "new BsonBinaryData(System.Text.Encoding.ASCII.GetBytes(\"a string\"))"
       },
       {
         "description": "Binary with (string, string) args",
         "query": "Binary('a string', '1')",
         "python": "Binary(bytes('a string', 'utf-8'), bson.binary.FUNCTION_SUBTYPE)",
         "java": "new Binary(org.bson.BsonBinarySubType.FUNCTION, \"a string\".getBytes(\"UTF-8\"))",
-        "csharp": ""
+        "csharp": "new BsonBinaryData(System.Text.Encoding.ASCII.GetBytes(\"a string\"), BsonBinarySubType.Function)"
       }
     ],
     "DBRef": [
@@ -131,7 +131,7 @@
         "query": "new Double(3)",
         "python": "float(3)",
         "java": "new java.lang.Double(3)",
-        "csharp": ""
+        "csharp": "new BsonDouble(Convert.ToDouble(\"3\"))"
       },
       {
         "description": "Double with valid string arg",
@@ -267,7 +267,7 @@
       {
         "description": "Two items in document",
         "query": "{x: 1, n: 4}",
-        "python": "{'x': 1,'n': 4}",
+        "python": "{'x': 1, 'n': 4}",
         "java": "new Document().append(\"x\", 1).append(\"n\", 4)",
         "csharp": "new BsonDocument { { \"x\", 1 }, { \"n\", 4 } }"
       }

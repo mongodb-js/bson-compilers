@@ -6,6 +6,8 @@ const Python3Generator = require('./codegeneration/Python3Generator.js');
 const CSharpGenerator = require('./codegeneration/CSharpGenerator.js');
 const JavaGenerator = require('./codegeneration/JavaGenerator.js');
 
+const ErrorListener = require('./codegeneration/ErrorListener.js');
+
 /**
  * Compiles an ECMAScript string into another language.
  *
@@ -19,8 +21,19 @@ const compileECMAScript = function(input, generator) {
   lexer.strictMode = false;
   const tokens = new antlr4.CommonTokenStream(lexer);
   const parser = new ECMAScriptParser.ECMAScriptParser(tokens);
+  const listener = new ErrorListener();
+
+  // Do this after creating the Parser and before running it
+  parser.removeErrorListeners(); // Remove the default ConsoleErrorListener
+  parser.addErrorListener(listener); // Add back a custom error listener
+
   parser.buildParseTrees = true;
   const tree = parser.expressionSequence();
+
+  if (listener.hasErrors() === true) {
+    console.log(listener.errors);
+  }
+
   return generator.start(tree);
 };
 

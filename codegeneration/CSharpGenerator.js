@@ -1,5 +1,13 @@
 const CodeGenerator = require('./CodeGenerator.js');
 
+const CSHARP_REGEX_FLAGS = {
+  i: 'RegexOptions.IgnoreCase',
+  m: 'RegexOptions.Multiline',
+  u: '',
+  y: '',
+  g: ''
+};
+
 function Visitor() {
   CodeGenerator.call(this);
 
@@ -156,6 +164,37 @@ Visitor.prototype.visitBSONRegExpConstructor = function(ctx) {
     return `new BsonRegularExpression(@${pattern}, ${flags})`;
   }
   return `new BsonRegularExpression(@${pattern})`;
+};
+
+Visitor.prototype.visitRegExpConstructorExpression =
+Visitor.prototype.visitRegularExpressionLiteral = function(ctx) {
+  let pattern;
+  let flags;
+  try {
+    const regexobj = this.executeJavascript(ctx.getText());
+    pattern = regexobj.source;
+    flags = regexobj.flags;
+  } catch (error) {
+    return error.message;
+  }
+
+  // we need to pipe ( "|" ) flags in csharp if there is more than one of them
+  // TODO: make this look smarter
+  const csharpflags = flags.replace(/[imuyg]/g, (m) => {
+    if (m === flags[flags.length - 1]) {
+      return CSHARP_REGEX_FLAGS[m];
+    }
+    if (CSHARP_REGEX_FLAGS[m] !== '' && flags.length > 1) {
+      return CSHARP_REGEX_FLAGS[m] + ' | ';
+    }
+    return CSHARP_REGEX_FLAGS[m];
+  });
+
+  const regex = csharpflags === '' ?
+    `new Regex(${this.doubleQuoteStringify(pattern)})`
+    : `new Regex(${this.doubleQuoteStringify(pattern)}, ${csharpflags})`;
+
+  return regex;
 };
 
 /**

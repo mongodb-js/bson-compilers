@@ -175,7 +175,7 @@
         "query": "RegExp('')",
         "python": "re.compile(r\"(?:)\")",
         "java": "Pattern.compile(\"(?:)\")",
-        "csharp": "new Regex(\"\")"
+        "csharp": "new Regex(\"(?:)\")"
       },
       {
         "description": "RegExp without options",
@@ -203,7 +203,7 @@
         "query": "new RegExp('ab/cd')",
         "python": "re.compile(r\"ab\\/cd\")",
         "java": "Pattern.compile(\"ab\\/cd\")",
-        "csharp": "new Regex(\"ab/cd\")"
+        "csharp": "new Regex(\"ab\\/cd\")"
       },
       {
         "description": "regex object with escaped double quote",
@@ -238,7 +238,7 @@
         "query": "new RegExp(\"\\\\n\")",
         "python": "re.compile(r\"\\\\n\")",
         "java": "Pattern.compile(\"\\\\n\")",
-        "csharp": "new Regex(\"\\\\n\")"
+        "csharp": "new Regex(\"\\n\")"
       },
       {
         "description": "regex literal with ig flags",

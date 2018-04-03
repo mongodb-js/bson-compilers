@@ -11,6 +11,13 @@
         "query": "new Code()",
         "errorCode": "ARGUMENTS_COUNT_MISMATCH"
       }
+    ],
+    "Document": [
+      {
+        "description": "Document without colon",
+        "query": "{x 1}",
+        "errorCode": "SYNTAX_ERROR"
+      }
     ]
   }
 }

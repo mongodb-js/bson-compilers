@@ -9,6 +9,14 @@ class AppError extends Error {
     if (typeof this.payload.payload !== 'undefined') {
       this.payload = this.payload.payload;
     }
+
+    if (typeof this.payload.line !== 'undefined') {
+      this.line = this.payload.line;
+    }
+
+    if (typeof this.payload.column !== 'undefined') {
+      this.column = this.payload.column;
+    }
   }
 }
 

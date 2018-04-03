@@ -1,0 +1,16 @@
+{
+  "languages": [
+    "python",
+    "java",
+    "csharp"
+  ],
+  "bsonTypes": {
+    "Code": [
+      {
+        "description": "Code without arg",
+        "query": "new Code()",
+        "errorCode": "ARGUMENTS_COUNT_MISMATCH"
+      }
+    ]
+  }
+}

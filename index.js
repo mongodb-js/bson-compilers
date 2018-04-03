@@ -15,7 +15,10 @@ const ErrorListener = require('./codegeneration/ErrorListener.js');
  * @param {CodeGenerator} generator
  * @returns {String}
  */
-const compileECMAScript = function(input, generator) {
+const compileECMAScript = (
+  input,
+  generator
+) => new Promise((resolve, reject) => {
   const chars = new antlr4.InputStream(input);
   const lexer = new ECMAScriptLexer.ECMAScriptLexer(chars);
   lexer.strictMode = false;
@@ -28,14 +31,17 @@ const compileECMAScript = function(input, generator) {
   parser.addErrorListener(listener); // Add back a custom error listener
 
   parser.buildParseTrees = true;
+
   const tree = parser.expressionSequence();
 
   if (listener.hasErrors() === true) {
-    console.log(listener.errors);
+    reject(listener.errors);
   }
 
-  return generator.start(tree);
-};
+  const output = generator.start(tree);
+
+  resolve(output);
+});
 
 module.exports = {
   toJava: (input) => { return compileECMAScript(input, new JavaGenerator()); },

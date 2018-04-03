@@ -24,7 +24,7 @@ ErrorListener.prototype.constructor = ErrorListener;
  * @param {int} line Line
  * @param {int} column Char position in line
  * @param {string} message Error message
- * @param {string} e Recognition exception
+ * @param {string} payload Stack trace
  */
 ErrorListener.prototype.syntaxError = function(
   recognizer,

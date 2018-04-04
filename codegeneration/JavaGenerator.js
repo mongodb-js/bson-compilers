@@ -329,4 +329,24 @@ Visitor.prototype.emitLongtoString = function(ctx) {
   return `java.lang.Long.toString(${longstr}, ${arg})`;
 };
 
+/**
+ * child nodes: arguments
+ * grandchild nodes: argumentList?
+ * great-grandchild nodes: singleExpression+
+ * @param {visitBSONDecimal128Constructor} ctx
+ * @return {String}
+ */
+Visitor.prototype.visitBSONDecimal128Constructor = function(ctx) {
+  const argList = ctx.arguments().argumentList();
+
+  if (!argList || argList.singleExpression().length !== 1) {
+    return 'Error: Decimal128 requires one argument';
+  }
+
+  const arg = argList.singleExpression()[0];
+  const decimal = this.visit(arg);
+
+  return `new Decimal128(new BigDecimal(${this.doubleQuoteStringify(decimal)}))`;
+};
+
 module.exports = Visitor;

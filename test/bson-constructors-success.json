@@ -108,14 +108,14 @@
         "query": "new DBRef('coll', new ObjectId())",
         "python": "DBRef('coll', ObjectId())",
         "java": "new DBRef(\"coll\", new ObjectId())",
-        "csharp": ""
+        "csharp": "DBRef(\"coll\", new BsonObjectId())"
       },
       {
         "description": "new DBRef with (string, ObjectId, string) args",
         "query": "new DBRef('coll', ObjectId(), 'db')",
         "python": "DBRef('coll', ObjectId(), 'db')",
         "java": "new DBRef(\"coll\", new ObjectId(), \"db\")",
-        "csharp": ""
+        "csharp": "DBRef(\"coll\", new BsonObjectId(), \"db\")"
       }
     ],
     "Double": [
@@ -154,9 +154,9 @@
       {
         "description": "new Decimal128 with string arg",
         "query": "new Decimal128('5.00000001')",
-        "python": "Decimal128('5.00000001')",
-        "java": "new Decimal128(5.00000001)",
-        "csharp": ""
+        "python": "Decimal128(Decimal('5.00000001'))",
+        "java": "new Decimal128(new BigDecimal(\"5.00000001\"))",
+        "csharp": "new BsonString(\"5.00000001\")"
       }
     ],
     "MinKey/MaxKey": [

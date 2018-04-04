@@ -32,15 +32,14 @@ const compileECMAScript = (
 
   parser.buildParseTrees = true;
 
-  const tree = parser.expressionSequence();
+  try {
+    const tree = parser.expressionSequence();
+    const output = generator.start(tree);
 
-  if (listener.hasErrors() === true) {
-    reject(listener.errors);
+    resolve(output);
+  } catch (error) {
+    reject(error);
   }
-
-  const output = generator.start(tree);
-
-  resolve(output);
 });
 
 module.exports = {

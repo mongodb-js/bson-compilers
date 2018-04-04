@@ -6,61 +6,20 @@ const AppError = require('./AppError.js');
  *
  * @returns {object}
  */
-const ErrorListener = function() {
-  antlr4.error.ErrorListener.call(this);
-  this.errors = [];
-
-  return this;
-};
-
-ErrorListener.prototype = Object.create(antlr4.error.ErrorListener.prototype);
-ErrorListener.prototype.constructor = ErrorListener;
-
-/**
- * Collects syntax error
- *
- * @param {object} recognizer The parsing support code essentially. Most of it is error recovery stuff
- * @param {object} symbol Offending symbol
- * @param {int} line Line
- * @param {int} column Char position in line
- * @param {string} message Error message
- * @param {string} payload Stack trace
- */
-ErrorListener.prototype.syntaxError = function(
-  recognizer,
-  symbol,
-  line,
-  column,
-  message
-) {
-  this.errors.push(new AppError({
-    line,
-    column,
-    message,
-    code: 'SYNTAX_ERROR'
-  }));
-};
-
-/**
- * Checks if errors exist
- *
- * @returns {string}
- */
-ErrorListener.prototype.hasErrors = function() {
-  if (this.errors.length > 0) {
-    return true;
+class ErrorListener extends antlr4.error.ErrorListener {
+  /**
+   * Checks syntax error
+   *
+   * @param {object} recognizer The parsing support code essentially. Most of it is error recovery stuff
+   * @param {object} symbol Offending symbol
+   * @param {int} line Line of offending symbol
+   * @param {int} column Position in line of offending symbol
+   * @param {string} message Error message
+   * @param {string} payload Stack trace
+   */
+  syntaxError(recognizer, symbol, line, column, message) {
+    throw new AppError({line, column, message, code: 'SYNTAX_ERROR'});
   }
-
-  return false;
-};
-
-/**
- * Returns error list
- *
- * @returns {string}
- */
-ErrorListener.prototype.errors = function() {
-  return this.errors;
-};
+}
 
 module.exports = ErrorListener;

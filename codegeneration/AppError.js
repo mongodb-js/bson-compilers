@@ -1,3 +1,8 @@
+/**
+ * Custom Application Error
+ *
+ * @returns {object}
+ */
 class AppError extends Error {
   constructor(payload) {
     super(payload);

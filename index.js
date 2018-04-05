@@ -15,13 +15,12 @@ const ErrorListener = require('./codegeneration/ErrorListener.js');
  * @param {CodeGenerator} generator
  * @returns {String}
  */
-const compileECMAScript = (
-  input,
-  generator
-) => new Promise((resolve, reject) => {
+const compileECMAScript = (input, generator) => {
   const chars = new antlr4.InputStream(input);
   const lexer = new ECMAScriptLexer.ECMAScriptLexer(chars);
+
   lexer.strictMode = false;
+
   const tokens = new antlr4.CommonTokenStream(lexer);
   const parser = new ECMAScriptParser.ECMAScriptParser(tokens);
   const listener = new ErrorListener();
@@ -32,15 +31,11 @@ const compileECMAScript = (
 
   parser.buildParseTrees = true;
 
-  try {
-    const tree = parser.expressionSequence();
-    const output = generator.start(tree);
+  const tree = parser.expressionSequence();
+  const output = generator.start(tree);
 
-    resolve(output);
-  } catch (error) {
-    reject(error);
-  }
-});
+  return output;
+};
 
 module.exports = {
   toJava: (input) => { return compileECMAScript(input, new JavaGenerator()); },

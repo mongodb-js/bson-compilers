@@ -4,9 +4,11 @@
   },
   "semantic": {
     "type": {"message": "Value is not of the expected type"},
-    "argumentsCountMismatch": {"message": "Function requires one or two arguments"},
+    "argumentCountMismatch": {"message": "Argument count mismatch"},
     "undefinedSymbol": {"message": "Undefined Symbol"},
     "generic": {"message": "Something went wrong"},
-    "notYetImplemented": {"message": "Requested funcionality not yet implemented"}
+    "notYetImplemented": {
+      "message": "Requested funcionality not yet implemented"
+    }
   }
 }

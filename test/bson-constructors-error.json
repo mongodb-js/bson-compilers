@@ -9,7 +9,7 @@
       {
         "description": "Code without arg",
         "query": "new Code()",
-        "errorCode": "E_SEMANTIC_ARGUMENTSCOUNTMISMATCH"
+        "errorCode": "E_SEMANTIC_ARGUMENTCOUNTMISMATCH"
       }
     ],
     "Document": [

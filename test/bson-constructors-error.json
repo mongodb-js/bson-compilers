@@ -9,14 +9,14 @@
       {
         "description": "Code without arg",
         "query": "new Code()",
-        "errorCode": "ARGUMENTS_COUNT_MISMATCH"
+        "errorCode": "E_SEMANTIC_ARGUMENTSCOUNTMISMATCH"
       }
     ],
     "Document": [
       {
         "description": "Document without colon",
         "query": "{x 1}",
-        "errorCode": "SYNTAX_ERROR"
+        "errorCode": "E_SYNTAX_GENERIC"
       }
     ]
   }

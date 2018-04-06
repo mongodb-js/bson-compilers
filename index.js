@@ -34,6 +34,9 @@ const compileECMAScript = (input, generator) => {
   const tree = parser.expressionSequence();
   const output = generator.start(tree);
 
+  console.log(output);
+  // console.log(tree.toStringTree(parser.ruleNames));
+
   return output;
 };
 
@@ -42,3 +45,13 @@ module.exports = {
   toCSharp: (input) => { return compileECMAScript(input, new CSharpGenerator()); },
   toPython: (input) => { return compileECMAScript(input, new Python3Generator()); }
 };
+
+try {
+  const input = 'x: new Code()';
+  console.log('input:');
+  console.log(input);
+  console.log('output:');
+  compileECMAScript(input, new Python3Generator());
+} catch (error) {
+  console.log(error);
+}

@@ -1,10 +1,5 @@
 {
-  "languages": [
-    "python",
-    "java",
-    "csharp"
-  ],
-  "bsonTypes": {
+  "tests": {
     "Code": [
       {
         "description": "Code without arg",

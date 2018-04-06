@@ -2,7 +2,9 @@ const path = require('path');
 const CodeGenerator = require('./CodeGenerator.js');
 
 const {
-  SemanticArgumentCountMismatchError
+  SemanticArgumentCountMismatchError,
+  SemanticGenericError,
+  SemanticTypeError
 } = require(path.resolve('helper', 'error'));
 const {Types} = require('./SymbolTable');
 
@@ -111,9 +113,6 @@ class Visitor extends CodeGenerator {
       argumentList === null ||
       (argumentList.getChildCount() !== 1 && argumentList.getChildCount() !== 3)
     ) {
-      console.log('new SemanticArgumentCountMismatchError()----------------------');
-      console.log(new SemanticArgumentCountMismatchError());
-      console.log('----------------------');
       throw new SemanticArgumentCountMismatchError();
     }
 
@@ -127,7 +126,9 @@ class Visitor extends CodeGenerator {
       const scope = this.visit(argList[1]);
 
       if (argList[1].type !== Types._object) {
-        return 'Error: Code requires scope to be an object';
+        throw new SemanticTypeError({
+          message: 'Code requires scope to be an object'
+        });
       }
 
       return `Code(${code}, ${scope})`;
@@ -151,7 +152,9 @@ class Visitor extends CodeGenerator {
     }
 
     if (argumentList.getChildCount() !== 1) {
-      return 'Error: ObjectId requires zero or one argument';
+      throw new SemanticArgumentCountMismatchError({
+        message: 'ObjectId requires zero or one argument'
+      });
     }
 
     let hexstr;
@@ -159,7 +162,7 @@ class Visitor extends CodeGenerator {
     try {
       hexstr = this.executeJavascript(ctx.getText()).toHexString();
     } catch (error) {
-      return error.message;
+      throw new SemanticGenericError({message: error.message});
     }
 
     return `ObjectId(${this.singleQuoteStringify(hexstr)})`;
@@ -190,14 +193,16 @@ class Visitor extends CodeGenerator {
       argumentList === null ||
       (argumentList.getChildCount() !== 1 && argumentList.getChildCount() !== 3)
     ) {
-      return 'Error: Binary requires one or two argument';
+      throw new SemanticArgumentCountMismatchError({
+        message: 'Binary requires one or two argument'
+      });
     }
 
     try {
       binobj = this.executeJavascript(ctx.getText());
       type = binobj.sub_type;
     } catch (error) {
-      return error.message;
+      throw new SemanticGenericError({message: error.message});
     }
 
     const argList = argumentList.singleExpression();
@@ -220,7 +225,9 @@ class Visitor extends CodeGenerator {
     const argumentList = ctx.arguments().argumentList();
 
     if (argumentList === null || argumentList.getChildCount() !== 1) {
-      return 'Error: Double requires one argument';
+      throw new SemanticArgumentCountMismatchError({
+        message: 'Double requires one argument'
+      });
     }
 
     const arg = argumentList.singleExpression()[0];
@@ -231,7 +238,9 @@ class Visitor extends CodeGenerator {
       arg.type !== Types._decimal &&
       arg.type !== Types._integer
     ) {
-      return 'Error: Double requires a number or a string argument';
+      throw new SemanticTypeError({
+        message: 'Double requires a number or a string argument'
+      });
     }
 
     return `float(${double})`;
@@ -250,7 +259,9 @@ class Visitor extends CodeGenerator {
       argumentList === null ||
       (argumentList.getChildCount() !== 1 && argumentList.getChildCount() !== 3)
     ) {
-      return 'Error: Long requires one or two argument';
+      throw new SemanticArgumentCountMismatchError({
+        message: 'Long requires one or two argument'
+      });
     }
 
     let longstr = '';
@@ -258,7 +269,7 @@ class Visitor extends CodeGenerator {
     try {
       longstr = this.executeJavascript(ctx.getText()).toString();
     } catch (error) {
-      return error.message;
+      throw new SemanticGenericError({message: error.message});
     }
 
     return `Int64(${longstr})`;
@@ -291,7 +302,7 @@ class Visitor extends CodeGenerator {
         date.getUTCSeconds()
       ].join(', ');
     } catch (error) {
-      return error.message;
+      throw new SemanticGenericError({message: error.message});
     }
 
     return `datetime.datetime(${dateStr}, tzinfo=datetime.timezone.utc)`;
@@ -317,7 +328,9 @@ class Visitor extends CodeGenerator {
     const argumentList = ctx.arguments().argumentList();
 
     if (argumentList === null || argumentList.getChildCount() !== 1) {
-      return 'Error: Number requires one argument';
+      throw new SemanticArgumentCountMismatchError({
+        message: 'Number requires one argument'
+      });
     }
 
     const arg = argumentList.singleExpression()[0];
@@ -331,7 +344,9 @@ class Visitor extends CodeGenerator {
       )
       || isNaN(Number(number))
     ) {
-      return 'Error: Number requires a number or a string argument';
+      throw new SemanticTypeError({
+        message: 'Number requires a number or a string argument'
+      });
     }
 
     return `int(${number})`;
@@ -367,14 +382,18 @@ class Visitor extends CodeGenerator {
     const argumentList = ctx.arguments().argumentList();
 
     if (argumentList === null || argumentList.getChildCount() !== 1) {
-      return 'Error: Symbol requires one argument';
+      throw new SemanticArgumentCountMismatchError({
+        message: 'Symbol requires one argument'
+      });
     }
 
     const arg = argumentList.singleExpression()[0];
     const symbol = this.visit(arg);
 
     if (arg.type !== Types._string) {
-      return 'Error: Symbol requires a string argument';
+      throw new SemanticTypeError({
+        message: 'Symbol requires a string argument'
+      });
     }
 
     return `unicode(${symbol}, 'utf-8')`;
@@ -390,14 +409,18 @@ class Visitor extends CodeGenerator {
     const argumentList = ctx.arguments().argumentList();
 
     if (argumentList === null || argumentList.getChildCount() !== 1) {
-      return 'Error: Object.create() requires one argument';
+      throw new SemanticArgumentCountMismatchError({
+        message: 'Object.create() requires one argument'
+      });
     }
 
     const arg = argumentList.singleExpression()[0];
     const obj = this.visit(arg);
 
     if (arg.type !== Types._object) {
-      return 'Error: Object.create() requires an object argument';
+      throw new SemanticTypeError({
+        message: 'Object.create() requires an object argument'
+      });
     }
 
     return obj;
@@ -410,7 +433,7 @@ class Visitor extends CodeGenerator {
    * @returns {string}
    */
   visitArrayLiteral(ctx) {
-    ctx.type = this.types.ARRAY;
+    ctx.type = Types._array;
 
     return this.visitChildren(ctx);
   }
@@ -422,7 +445,7 @@ class Visitor extends CodeGenerator {
    * @returns {string}
    */
   visitUndefinedLiteral(ctx) {
-    ctx.type = this.types.UNDEFINED;
+    ctx.type = Types._undefined;
 
     return 'None';
   }
@@ -434,7 +457,7 @@ class Visitor extends CodeGenerator {
    * @returns {string}
    */
   visitElision(ctx) {
-    ctx.type = this.types.NULL;
+    ctx.type = Types._null;
 
     return 'None';
   }
@@ -446,7 +469,7 @@ class Visitor extends CodeGenerator {
    * @returns {string}
    */
   visitNullLiteral(ctx) {
-    ctx.type = this.types.NULL;
+    ctx.type = Types._null;
 
     return 'None';
   }
@@ -458,7 +481,7 @@ class Visitor extends CodeGenerator {
    * @returns {string}
    */
   visitOctalIntegerLiteral(ctx) {
-    ctx.type = this.types.OCTAL;
+    ctx.type = Types._octal;
 
     let oct = this.visitChildren(ctx);
     let offset = 0;
@@ -487,20 +510,26 @@ class Visitor extends CodeGenerator {
     const argumentList = ctx.arguments().argumentList();
 
     if (argumentList === null || argumentList.getChildCount() !== 3) {
-      return 'Error: Timestamp requires two arguments';
+      throw new SemanticArgumentCountMismatchError({
+        message: 'Timestamp requires two arguments'
+      });
     }
 
     const argList = argumentList.singleExpression();
     const low = this.visit(argList[0]);
 
-    if (argList[0].type !== this.types.INTEGER) {
-      return 'Error: Timestamp first argument requires integer arguments';
+    if (argList[0].type !== Types._integer) {
+      throw new SemanticTypeError({
+        message: 'Timestamp first argument requires integer arguments'
+      });
     }
 
     const high = this.visit(argList[1]);
 
-    if (argList[1].type !== this.types.INTEGER) {
-      return 'Error: Timestamp second argument requires integer arguments';
+    if (argList[1].type !== Types._integer) {
+      throw new SemanticTypeError({
+        message: 'Timestamp second argument requires integer arguments'
+      });
     }
 
     return `Timestamp(${low}, ${high})`;
@@ -513,7 +542,7 @@ class Visitor extends CodeGenerator {
    * @returns {string}
    */
   visitBooleanLiteral(ctx) {
-    ctx.type = this.types.BOOL;
+    ctx.type = Types._bool;
 
     const string = ctx.getText();
 
@@ -550,7 +579,7 @@ class Visitor extends CodeGenerator {
       pattern = regexobj.source;
       flags = regexobj.flags;
     } catch (error) {
-      return error.message;
+      throw new SemanticGenericError({message: error.message});
     }
 
     // Double escape characters except for slashes
@@ -613,21 +642,27 @@ class Visitor extends CodeGenerator {
       argumentList === null ||
       (argumentList.getChildCount() !== 1 && argumentList.getChildCount() !== 3)
     ) {
-      return 'Error: BSONRegExp requires one or two arguments';
+      throw new SemanticArgumentCountMismatchError({
+        message: 'BSONRegExp requires one or two arguments'
+      });
     }
 
     const args = argumentList.singleExpression();
     const pattern = this.visit(args[0]);
 
-    if (args[0].type !== this.types.STRING) {
-      return 'Error: BSONRegExp requires pattern to be a string';
+    if (args[0].type !== Types._string) {
+      throw new SemanticTypeError({
+        message: 'BSONRegExp requires pattern to be a string'
+      });
     }
 
     if (args.length === 2) {
       let flags = this.visit(args[1]);
 
-      if (args[1].type !== this.types.STRING) {
-        return 'Error: BSONRegExp requires flags to be a string';
+      if (args[1].type !== Types._string) {
+        throw new SemanticTypeError({
+          message: 'BSONRegExp requires flags to be a string'
+        });
       }
 
       if (flags !== '') {
@@ -644,7 +679,9 @@ class Visitor extends CodeGenerator {
           });
 
         if (unsuppotedFlags.length > 0) {
-          return `Error: the regular expression contains unsuppoted '${unsuppotedFlags.join('')}' flag`;
+          throw new SemanticGenericError({
+            message: `Regular expression contains unsuppoted '${unsuppotedFlags.join('')}' flag`
+          });
         }
 
         flags = this.singleQuoteStringify(flags.join(''));
@@ -671,27 +708,35 @@ class Visitor extends CodeGenerator {
       argumentList === null ||
       (argumentList.getChildCount() !== 3 && argumentList.getChildCount() !== 5)
     ) {
-      return 'Error: DBRef requires two or three arguments';
+      throw new SemanticArgumentCountMismatchError({
+        message: 'DBRef requires two or three arguments'
+      });
     }
 
     const args = argumentList.singleExpression();
     const ns = this.visit(args[0]);
 
-    if (args[0].type !== this.types.STRING) {
-      return 'Error: DBRef first argumnet requires string namespace';
+    if (args[0].type !== Types._string) {
+      throw new SemanticTypeError({
+        message: 'DBRef first argumnet requires string namespace'
+      });
     }
 
     const oid = this.visit(args[1]);
 
-    if (args[1].type !== this.types.OBJECT) {
-      return 'Error: DBRef requires object OID';
+    if (args[1].type !== Types._object) {
+      throw new SemanticTypeError({
+        message: 'DBRef requires object OID'
+      });
     }
 
     if (args.length === 3) {
       const db = this.visit(args[2]);
 
-      if (args[2].type !== this.types.STRING) {
-        return 'Error: DbRef requires string collection';
+      if (args[2].type !== Types._string) {
+        throw new SemanticTypeError({
+          message: 'DbRef requires string collection'
+        });
       }
 
       return `DBRef(${ns}, ${oid}, ${db})`;
@@ -710,7 +755,9 @@ class Visitor extends CodeGenerator {
     const argumentList = ctx.arguments().argumentList();
 
     if (argumentList === null || argumentList.getChildCount() !== 1) {
-      return 'Error: Decimal128 requires one argument';
+      throw new SemanticArgumentCountMismatchError({
+        message: 'Decimal128 requires one argument'
+      });
     }
 
     const arg = argumentList.singleExpression()[0];

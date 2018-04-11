@@ -1,23 +1,23 @@
+# Bson object TypeTemplates
 Templates:
-    # Bson object templates
-    CodeTemplate: &CodeTemplate
-        null
-    StringTemplate: &StringTemplate
-        >
-            (literal) => {
-                return `${doubleQuoteStringify(literal)}`;
-            }
-    RegexTemplate: &RegexTemplate
-        null
-    BoolTemplate: &BoolTemplate
-        null
-    IntegerTemplate: &IntegerTemplate
-        null
-    DecimalTemplate: &DecimalTemplate
-        null
-    HexTemplate: &HexTemplate
-        null
-    OctalTemplate: &OctalTemplate >
+    # Type templates
+    CodeTypeTemplate: &CodeTypeTemplate null
+    StringTypeTemplate: &StringTypeTemplate !!js/function >
+        (str) => {
+          let newStr = str;
+          if (
+            (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
+            (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"')) {
+            newStr = str.substr(1, str.length - 2);
+          }
+          return `"${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}"`;
+        }
+    RegexTypeTemplate: &RegexTypeTemplate null
+    BoolTypeTemplate: &BoolTypeTemplate null
+    IntegerTypeTemplate: &IntegerTypeTemplate null
+    DecimalTypeTemplate: &DecimalTypeTemplate null
+    HexTypeTemplate: &HexTypeTemplate null
+    OctalTypeTemplate: &OctalTypeTemplate !!js/function >
         (literal) => {
             if ((literal.charAt(0) === '0' && literal.charAt(1) === '0') ||
                 (literal.charAt(0) === '0' && (literal.charAt(1) === 'o' || literal.charAt(1) === 'O'))) {
@@ -25,24 +25,36 @@ Templates:
             }
             return literal;
         }
-    NumericTemplate: &NumericTemplate null
-    ArrayTemplate: &ArrayTemplate >
+    NumericTypeTemplate: &NumericTypeTemplate null
+    ArrayTypeTemplate: &ArrayTypeTemplate !!js/function >
         (literal) => {
             return `Arrays.asList(${literal})`;
         }
-    ObjectTemplate: &ObjectTemplate >
+    NullTypeTemplate: &NullTypeTemplate null
+    UndefinedTypeTemplate: &UndefinedTypeTemplate !!js/function >
+        () => {
+            return 'null';
+        }
+    ObjectTypeTemplate: &ObjectTypeTemplate !!js/function >
         (literal) => {
             return `new Document()${literal}`;
         }
-    NullTemplate: &NullTemplate null
-    UndefinedTemplate: &UndefinedTemplate >
-        () => { return 'null'; })
-    ObjectArgsTemplate: &ObjectArgsTemplate >
-        (...args) => {
+    ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate !!js/function >
+        (args) => {
             return args.reduce((str, pair) => {
-                return `${str}.append(${doubleQuoteStringify(pair[0])}, ${pair[1]})`;
+
+                let newStr = pair[0];
+                if (
+                    (pair[0].charAt(0) === '\'' && pair[0].charAt(pair[0].length - 1) === '\'') ||
+                    (pair[0].charAt(0) === '"' && pair[0].charAt(pair[0].length - 1) === '"')) {
+                        newStr = pair[0].substr(1, pair[0].length - 2);
+                }
+                newStr = `"${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}"`;
+
+                return `${str}.append(${newStr}, ${pair[1]})`;
             }, '');
         }
-    # Bson Methods
-    CodeToJSONTemplate: &CodeToJSONTemplate
-        null
+    # Method templates
+    CodeToJSONTemplate: &CodeToJSONTemplate null
+    # Symbol templates
+    CodeSymbolTemplate: &CodeSymbolTemplate null

@@ -2,7 +2,24 @@
 const path = require('path');
 const { doubleQuoteStringify } = require(path.resolve('helper', 'format'));
 
-const SYMBOL_TYPE = { VAR: 0, CONSTRUCTOR: 1, FUNC: 2 };
+// const SYMBOL_TYPE = { VAR: 0, CONSTRUCTOR: 1, FUNC: 2 };
+
+const yaml = require('js-yaml');
+const fs = require('fs');
+
+const files = fs.readdirSync('symbols');
+const contents = files.reduce((str, file) => {
+  return str + fs.readFileSync(path.join('symbols', file));
+}, '');
+
+// write a file so debugging is easier with linenumbers
+fs.writeFileSync('concatted.yaml', contents);
+const doc = yaml.load(contents);
+// console.log(JSON.stringify(doc, null, '    '));
+
+const Types = doc.BasicTypes;
+const YamlBsonTypes = doc.BsonTypes;
+const SYMBOL_TYPE = doc.SymbolTypes;
 
 /**
  * Symbols represent classes, variables, and functions.
@@ -54,7 +71,7 @@ function Scope(attrs) {
  * Symbols representing the basic language types. Eventually the attrs will be
  * expanded to include built-in functions for each type.
  */
-const Types = new Scope({
+const Types2 = new Scope({
   _string:    new Symbol('_string',     SYMBOL_TYPE.VAR, null, null, new Scope({}), (literal) => { return `${doubleQuoteStringify(literal)}`; }),
   _regex:     new Symbol('_regex',      SYMBOL_TYPE.VAR, null, null, new Scope({})),
   _bool:      new Symbol('_bool',       SYMBOL_TYPE.VAR, null, null, new Scope({})),

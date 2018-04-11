@@ -1,16 +1,35 @@
 BsonTypes:
     Code: &CodeType
+        <<: *__type
         id: "Code"
-        callable: *var
-        args: null
         type: *ObjectType
         attr:
             toJSON:
+                <<: *__func
                 id: "CodetoJSON"
-                callable: *func
-                args: []
                 type: *ObjectType
-                attr: {}
                 template: *CodeToJSONTemplate
-        template: *CodeTemplate
+        template: *CodeTypeTemplate
+    ObjectId: &ObjectIdType
+        <<: *__type
+        id: "ObjectId"
+        attr:
+            toHexString:
+                <<: *__func
+                id: "toHexString"
+                type: *StringType
+            toString:
+                <<: *__func
+                type: *StringType
+            toJSON:
+                <<: *__func
+                type: *StringType
+            equals:
+                <<: *__func
+                args:
+                    - [ "ObjectId" ]
+                type: *BoolType
+            getTimestamp:
+                <<: *__func
+                type: *IntegerType
 

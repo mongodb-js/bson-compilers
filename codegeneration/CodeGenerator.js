@@ -93,7 +93,7 @@ Visitor.prototype.visitObjectLiteral = function(ctx) {
   if (ctx.propertyNameAndValueList()) {
     const properties = ctx.propertyNameAndValueList().propertyAssignment();
     if (ctx.type.argsTemplate) {
-      args = ctx.type.argsTemplate(...properties.map((pair) => {
+      args = ctx.type.argsTemplate(properties.map((pair) => {
         return [this.visit(pair.propertyName()), this.visit(pair.singleExpression())];
       }));
     }

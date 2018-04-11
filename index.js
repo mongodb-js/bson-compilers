@@ -37,21 +37,23 @@ const compileECMAScript = (input, generator) => {
   return output;
 };
 
-// TODO: start here, load all files in instead of just main.
-const yaml = require('js-yaml');
-const fs = require('fs');
-const path = require('path');
-
-const files = fs.readdirSync('symbols');
-const contents = files.reduce((str, file) => {
-  return str + fs.readFileSync(path.join('symbols', file));
-}, '');
-
-// write a file so debugging is easier with linenumbers
-fs.writeFileSync('concatted.yaml', contents);
-const doc = yaml.safeLoad(contents);
-console.log(JSON.stringify(doc, null, '    '));
-
+// const yaml = require('js-yaml');
+// const fs = require('fs');
+// const path = require('path');
+//
+// const files = fs.readdirSync('symbols');
+// const contents = files.reduce((str, file) => {
+//   return str + fs.readFileSync(path.join('symbols', file));
+// }, '');
+//
+// // write a file so debugging is easier with linenumbers
+// fs.writeFileSync('concatted.yaml', contents);
+// const doc = yaml.load(contents);
+// // console.log(JSON.stringify(doc, null, '    '));
+//
+// const YamlTypes = doc.BasicTypes;
+// const YamlBsonTypes = doc.BsonTypes;
+// const YamlSYMBOL_TYPE = doc.SymbolTypes;
 module.exports = {
   toJava: (input) => { return compileECMAScript(input, new JavaGenerator()); },
   toCSharp: (input) => { return compileECMAScript(input, new CSharpGenerator()); },

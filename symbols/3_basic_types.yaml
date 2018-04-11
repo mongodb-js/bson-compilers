@@ -1,44 +1,54 @@
 # Universal types
 # Everything inherits from StringType because we haven't implemented any of them.
 BasicTypes:
+    # Universal basic types
     _string: &StringType
-        id: null
-        callable: *var
-        args: null
-        type: null
-        attr: {}
-        template: *StringTemplate
+        <<: *__type
+        id: "_string"
+        template: *StringTypeTemplate
     _regex: &RegexType
-        <<: *StringType
-        template: *RegexTemplate
+        <<: *__type
+        id: "_regex"
+        template: *RegexTypeTemplate
     _bool: &BoolType
-        <<: *StringType
-        template: *BoolTemplate
+        <<: *__type
+        id: "_bool"
+        template: *BoolTypeTemplate
     _integer: &IntegerType
-        <<: *StringType
-        template: *IntegerTemplate
+        <<: *__type
+        id: "_integer"
+        template: *IntegerTypeTemplate
     _decimal: &DecimalType
-        <<: *StringType
-        template: *DecimalTemplate
+        <<: *__type
+        id: "_decimal"
+        template: *DecimalTypeTemplate
     _hex: &HexType
-        <<: *StringType
-        template: *HexTemplate
+        <<: *__type
+        id: "_hex"
+        template: *HexTypeTemplate
     _octal: &OctalType
-        <<: *StringType
-        template: *OctalTemplate
+        <<: *__type
+        id: "_octal"
+        template: *OctalTypeTemplate
     _numeric: &NumericType
-        <<: *StringType
-        template: *NumericTemplate
+        <<: *__type
+        id: "_numeric"
+        template: *NumericTypeTemplate
     _array: &ArrayType
-        <<: *StringType
-        template: *ArrayTemplate
+        <<: *__type
+        id: "_array"
+        template: *ArrayTypeTemplate
     _object: &ObjectType
-        <<: *StringType
-        template: *ObjectTemplate
+        <<: *__type
+        id: "_object"
+        template: *ObjectTypeTemplate
+        argsTemplate: *ObjectTypeArgsTemplate
     _null: &NullType
-        <<: *StringType
-        template: *NullTemplate
+        <<: *__type
+        id: "_null"
+        template: *NullTypeTemplate
     _undefined: &UndefinedType
-        <<: *StringType
-        template: *UndefinedTemplate
+        <<: *__type
+        id: "_undefined"
+        template: *UndefinedTypeTemplate
 

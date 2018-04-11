@@ -3,6 +3,7 @@ BsonSymbols:
         id: "Code"
         callable: *constructor
         args: [ [ *StringType ], [ *ObjectType, null ] ]
-        type: null # TODO: add type
+        type: *CodeType
         attr: {}
-        hash: *CodeType
+        template: *CodeSymbolTemplate
+        argsTemplate: null

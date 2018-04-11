@@ -49,11 +49,7 @@ const compileECMAScript = (input, generator) => {
 // // write a file so debugging is easier with linenumbers
 // fs.writeFileSync('concatted.yaml', contents);
 // const doc = yaml.load(contents);
-// // console.log(JSON.stringify(doc, null, '    '));
-//
-// const YamlTypes = doc.BasicTypes;
-// const YamlBsonTypes = doc.BsonTypes;
-// const YamlSYMBOL_TYPE = doc.SymbolTypes;
+// console.log(JSON.stringify(doc, null, '    '));
 module.exports = {
   toJava: (input) => { return compileECMAScript(input, new JavaGenerator()); },
   toCSharp: (input) => { return compileECMAScript(input, new CSharpGenerator()); },

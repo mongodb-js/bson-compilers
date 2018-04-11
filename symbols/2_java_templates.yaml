@@ -56,5 +56,31 @@ Templates:
         }
     # Method templates
     CodeToJSONTemplate: &CodeToJSONTemplate null
+    ObjectIdToJSONTemplate: &ObjectIdToJSONTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.toHexString`;
+        }
     # Symbol templates
     CodeSymbolTemplate: &CodeSymbolTemplate null
+    CodeSymbolArgsTemplate: &CodeSymbolArgsTemplate null
+    ObjectIdSymbolTemplate: &ObjectIdSymbolTemplate null
+    ObjectIdSymbolArgsTemplate: &ObjectIdSymbolArgsTemplate null
+    # Utils templates
+    ObjectIdCreateFromHexStringTemplate: &ObjectIdCreateFromHexStringTemplate !!js/function >
+        () => {
+            return '';
+        }
+    ObjectIdCreateFromHexStringArgsTemplate: &ObjectIdCreateFromHexStringArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return `new ObjectId(${arg})`;
+        }
+    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function >
+        () => {
+            return '';
+        }
+    ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return `new ObjectId(new java.util.Date(${arg}))`;
+        }
+    ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate null
+    ObjectIdIsValidArgsTemplate: &ObjectIdIsValidArgsTemplate null

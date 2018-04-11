@@ -2,8 +2,42 @@ BsonSymbols:
     Code: &CodeSymbol
         id: "Code"
         callable: *constructor
-        args: [ [ *StringType ], [ *ObjectType, null ] ]
+        args:
+            - [ *StringType ]
+            - [ *ObjectType, null ]
         type: *CodeType
         attr: {}
         template: *CodeSymbolTemplate
-        argsTemplate: null
+        argsTemplate: *CodeSymbolArgsTemplate
+    ObjectId: &ObjectIdSymbol
+        id: "ObjectId"
+        callable: *constructor
+        args:
+            - [ *StringType, *NumericType, null ]
+        attr:
+            createFromHexString:
+                <<: *__func
+                id: "createFromHexString"
+                args:
+                    - [ *StringType ]
+                type: *ObjectIdType
+                template: *ObjectIdCreateFromHexStringTemplate
+                argsTemplate: *ObjectIdCreateFromHexStringArgsTemplate
+            createFromTime:
+                <<: *__func
+                id: "createFromTime"
+                args:
+                    - [ *NumericType ]
+                type: *ObjectIdType
+                template: *ObjectIdCreateFromTimeTemplate
+                argsTemplate: *ObjectIdCreateFromTimeArgsTemplate
+            isValid:
+                <<: *__func
+                id: "isValid"
+                args:
+                    - [ *StringType ]
+                type: *BoolType
+                template: *ObjectIdIsValidTemplate
+                argsTemplate: *ObjectIdIsValidArgsTemplate
+        template: *ObjectIdSymbolTemplate
+        argsTemplate: *CodeSymbolArgsTemplate

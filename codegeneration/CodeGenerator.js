@@ -214,7 +214,7 @@ Visitor.prototype.visitGetAttributeExpression = function(ctx) {
   }
   while (type !== null) {
     if (!(type.attr.hasOwnProperty(rhs))) {
-      if (type.id in BsonSymbols) {
+      if (type.id in BsonSymbols && BsonSymbols.type.id !== null) {
         throw new SemanticArgumentCountMismatchError({
           message: `${rhs} not an attribute of ${type.id}`
         });

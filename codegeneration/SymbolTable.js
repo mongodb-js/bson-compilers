@@ -1,6 +1,5 @@
 /* eslint key-spacing:0, no-multi-spaces:0 */
 const path = require('path');
-const { doubleQuoteStringify } = require(path.resolve('helper', 'format'));
 
 // const SYMBOL_TYPE = { VAR: 0, CONSTRUCTOR: 1, FUNC: 2 };
 
@@ -15,10 +14,10 @@ const contents = files.reduce((str, file) => {
 // write a file so debugging is easier with linenumbers
 fs.writeFileSync('concatted.yaml', contents);
 const doc = yaml.load(contents);
-// console.log(JSON.stringify(doc, null, '    '));
 
 const Types = doc.BasicTypes;
 const YamlBsonTypes = doc.BsonTypes;
+const YamlBsonSymbols = doc.BsonSymbols;
 const SYMBOL_TYPE = doc.SymbolTypes;
 
 /**
@@ -68,31 +67,6 @@ function Scope(attrs) {
 }
 
 /**
- * Symbols representing the basic language types. Eventually the attrs will be
- * expanded to include built-in functions for each type.
- */
-const Types2 = new Scope({
-  _string:    new Symbol('_string',     SYMBOL_TYPE.VAR, null, null, new Scope({}), (literal) => { return `${doubleQuoteStringify(literal)}`; }),
-  _regex:     new Symbol('_regex',      SYMBOL_TYPE.VAR, null, null, new Scope({})),
-  _bool:      new Symbol('_bool',       SYMBOL_TYPE.VAR, null, null, new Scope({})),
-  _integer:   new Symbol('_integer',    SYMBOL_TYPE.VAR, null, null, new Scope({})),
-  _decimal:   new Symbol('_decimal',    SYMBOL_TYPE.VAR, null, null, new Scope({})),
-  _hex:       new Symbol('_hex',        SYMBOL_TYPE.VAR, null, null, new Scope({})),
-  _octal:     new Symbol('_octal',      SYMBOL_TYPE.VAR, null, null, new Scope({}), (literal) => {
-    if ((literal.charAt(0) === '0' && literal.charAt(1) === '0') ||
-        (literal.charAt(0) === '0' && (literal.charAt(1) === 'o' || literal.charAt(1) === 'O'))) {
-      return `0${literal.substr(2, literal.length - 1)}`;
-    }
-    return literal;
-  }),
-  _numeric:   new Symbol('_numeric',    SYMBOL_TYPE.VAR, null, null, new Scope({})),
-  _array:     new Symbol('_array',      SYMBOL_TYPE.VAR, null, null, new Scope({}), (literal) => { return `Arrays.asList(${literal})`; }),
-  _object:    new Symbol('_object',     SYMBOL_TYPE.VAR, null, null, new Scope({}), (literal) => { return `new Document()${literal}`; }, (...args) => { return args.reduce((str, pair) => { return `${str}.append(${doubleQuoteStringify(pair[0])}, ${pair[1]})`; }, ''); }),
-  _null:      new Symbol('_null',       SYMBOL_TYPE.VAR, null, null, new Scope({})),
-  _undefined: new Symbol('_undefined',  SYMBOL_TYPE.VAR, null, null, new Scope({}), () => { return 'null'; })
-});
-
-/**
  * Symbols representing the BSON classes. These are the types for an *instantiated*
  * BSON class, like ObjectId(). There are BsonTypes and BsonSymbols because we
  * need a way to distinguish between the attributes of ObjectId().* and ObjectId.*
@@ -100,25 +74,25 @@ const Types2 = new Scope({
  * separate them into different structures so that it's easier to debug. If a user
  * were to define their own class, it would work exactly the same.
  */
-const BsonTypes = new Scope({
-  Code: new Symbol(
-    'Code',
-    SYMBOL_TYPE.VAR, null, Types._object, // not sure this makes sense
-    new Scope({
-      toJSON:           Symbol('CodetoJSON',        SYMBOL_TYPE.FUNC,   [], Types._object,  new Scope({}))
-    }),
-  ),
-  ObjectId: new Symbol(
-    'ObjectId',
-    SYMBOL_TYPE.VAR, null, Types._object, // not sure this makes sense
-    new Scope({
-      toHexString:      Symbol('toHexString',       SYMBOL_TYPE.FUNC,   [],                   Types._string,  new Scope({})),
-      toString:         Symbol('toString',          SYMBOL_TYPE.FUNC,   [],                   Types._string,  new Scope({})),
-      toJSON:           Symbol('toJSON',            SYMBOL_TYPE.FUNC,   [],                   Types._string,  new Scope({}),  (lhs) => { return `${lhs}.toHexString`; }),
-      equals:           Symbol('equals',            SYMBOL_TYPE.FUNC,   [ [ 'ObjectId' ] ],   Types._bool,    new Scope({})),
-      getTimestamp:     Symbol('getTimestamp',      SYMBOL_TYPE.FUNC,   [],                   Types._integer, new Scope({}))
-    })
-  ),
+const OldBsonTypes = new Scope({
+  // Code: new Symbol(
+  //   'Code',
+  //   SYMBOL_TYPE.VAR, null, Types._object, // not sure this makes sense
+  //   new Scope({
+  //     toJSON:           Symbol('CodetoJSON',        SYMBOL_TYPE.FUNC,   [], Types._object,  new Scope({}))
+  //   }),
+  // ),
+  // ObjectId: new Symbol(
+  //   'ObjectId',
+  //   SYMBOL_TYPE.VAR, null, Types._object, // not sure this makes sense
+  //   new Scope({
+  //     toHexString:      Symbol('toHexString',       SYMBOL_TYPE.FUNC,   [],                   Types._string,  new Scope({})),
+  //     toString:         Symbol('toString',          SYMBOL_TYPE.FUNC,   [],                   Types._string,  new Scope({})),
+  //     toJSON:           Symbol('toJSON',            SYMBOL_TYPE.FUNC,   [],                   Types._string,  new Scope({}),  (lhs) => { return `${lhs}.toHexString`; }),
+  //     equals:           Symbol('equals',            SYMBOL_TYPE.FUNC,   [ [ 'ObjectId' ] ],   Types._bool,    new Scope({})),
+  //     getTimestamp:     Symbol('getTimestamp',      SYMBOL_TYPE.FUNC,   [],                   Types._integer, new Scope({}))
+  //   })
+  // ),
   Binary: new Symbol(
     'Binary',
     SYMBOL_TYPE.VAR, null, Types._object, // not sure this makes sense
@@ -236,30 +210,32 @@ const BsonTypes = new Scope({
   )
 });
 
+const BsonTypes = Object.assign({}, OldBsonTypes, YamlBsonTypes);
+
 /**
  * Symbols representing the BSON symbols, so the built-in methods and utils
  * accessible from calling `ObjectId.*`. It's callable because it includes the
  * constructor of each type.
  */
-const BsonSymbols = new Scope({
-  Code: new Symbol(
-    'Code',
-    SYMBOL_TYPE.CONSTRUCTOR,
-    [ [Types._string], [Types._object, null] ], // This isn't technically correct, since the first argument could be anything. It has an emit method though, so not checked.
-    BsonTypes.Code,
-    new Scope({})
-  ),
-  ObjectId: new Symbol(
-    'ObjectId',
-    SYMBOL_TYPE.CONSTRUCTOR,
-    [ [null, Types._string, Types._numeric] ],
-    BsonTypes.ObjectId,
-    new Scope({
-      createFromHexString: Symbol('createFromHexString', SYMBOL_TYPE.FUNC, [ [Types._string] ],  BsonTypes.ObjectId,  new Scope({}), () => { return ''; }, (lhs, arg) => { return `new ObjectId(${arg})`; }),
-      createFromTime:      Symbol('createFromTime',      SYMBOL_TYPE.FUNC, [ [Types._numeric] ], BsonTypes.ObjectId,  new Scope({}), () => { return ''; }, (lhs, arg) => { return `new ObjectId(new java.util.Date(${arg}))`; }),
-      isValid:             Symbol('isValid',             SYMBOL_TYPE.FUNC, [ [Types._string] ],  Types._bool,           new Scope({}))
-    })
-  ),
+const OldBsonSymbols = new Scope({
+  // Code: new Symbol(
+  //   'Code',
+  //   SYMBOL_TYPE.CONSTRUCTOR,
+  //   [ [Types._string], [Types._object, null] ], // This isn't technically correct, since the first argument could be anything. It has an emit method though, so not checked.
+  //   BsonTypes.Code,
+  //   new Scope({})
+  // ),
+  // ObjectId: new Symbol(
+  //   'ObjectId',
+  //   SYMBOL_TYPE.CONSTRUCTOR,
+  //   [ [null, Types._string, Types._numeric] ],
+  //   BsonTypes.ObjectId,
+  //   new Scope({
+  //     createFromHexString: Symbol('createFromHexString', SYMBOL_TYPE.FUNC, [ [Types._string] ],  BsonTypes.ObjectId,  new Scope({}), () => { return ''; }, (lhs, arg) => { return `new ObjectId(${arg})`; }),
+  //     createFromTime:      Symbol('createFromTime',      SYMBOL_TYPE.FUNC, [ [Types._numeric] ], BsonTypes.ObjectId,  new Scope({}), () => { return ''; }, (lhs, arg) => { return `new ObjectId(new java.util.Date(${arg}))`; }),
+  //     isValid:             Symbol('isValid',             SYMBOL_TYPE.FUNC, [ [Types._string] ],  Types._bool,           new Scope({}))
+  //   })
+  // ),
   Binary: new Symbol(
     'Binary',
     SYMBOL_TYPE.CONSTRUCTOR,
@@ -363,6 +339,8 @@ const BsonSymbols = new Scope({
     })
   )
 });
+
+const BsonSymbols = Object.assign({}, OldBsonSymbols, YamlBsonSymbols);
 
 const JSTypes = new Scope({
   Date: new Symbol(

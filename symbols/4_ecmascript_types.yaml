@@ -24,6 +24,7 @@ BsonTypes:
             toJSON:
                 <<: *__func
                 type: *StringType
+                template: *ObjectIdToJSONTemplate
             equals:
                 <<: *__func
                 args:

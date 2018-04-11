@@ -1,0 +1,48 @@
+Templates:
+    # Bson object templates
+    CodeTemplate: &CodeTemplate
+        null
+    StringTemplate: &StringTemplate
+        >
+            (literal) => {
+                return `${doubleQuoteStringify(literal)}`;
+            }
+    RegexTemplate: &RegexTemplate
+        null
+    BoolTemplate: &BoolTemplate
+        null
+    IntegerTemplate: &IntegerTemplate
+        null
+    DecimalTemplate: &DecimalTemplate
+        null
+    HexTemplate: &HexTemplate
+        null
+    OctalTemplate: &OctalTemplate >
+        (literal) => {
+            if ((literal.charAt(0) === '0' && literal.charAt(1) === '0') ||
+                (literal.charAt(0) === '0' && (literal.charAt(1) === 'o' || literal.charAt(1) === 'O'))) {
+              return `0${literal.substr(2, literal.length - 1)}`;
+            }
+            return literal;
+        }
+    NumericTemplate: &NumericTemplate null
+    ArrayTemplate: &ArrayTemplate >
+        (literal) => {
+            return `Arrays.asList(${literal})`;
+        }
+    ObjectTemplate: &ObjectTemplate >
+        (literal) => {
+            return `new Document()${literal}`;
+        }
+    NullTemplate: &NullTemplate null
+    UndefinedTemplate: &UndefinedTemplate >
+        () => { return 'null'; })
+    ObjectArgsTemplate: &ObjectArgsTemplate >
+        (...args) => {
+            return args.reduce((str, pair) => {
+                return `${str}.append(${doubleQuoteStringify(pair[0])}, ${pair[1]})`;
+            }, '');
+        }
+    # Bson Methods
+    CodeToJSONTemplate: &CodeToJSONTemplate
+        null

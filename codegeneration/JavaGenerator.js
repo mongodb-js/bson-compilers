@@ -2,9 +2,7 @@
 const path = require('path');
 const CodeGenerator = require('./CodeGenerator.js');
 const {
-  Types,
-  JSClasses,
-  BsonClasses
+  AllTypes
 } = require('./SymbolTable');
 
 const {doubleQuoteStringify} = require(path.resolve('helper', 'format'));
@@ -30,7 +28,7 @@ Visitor.prototype.new = 'new ';
 Visitor.prototype.regex_flags = {
   i: 'i', m: 'm', u: 'u', y: '', g: ''
 };
-Visitor.prototype.binary_subtypes = {
+Visitor.prototype.binary_subAllTypes = {
   0: 'org.bson.BsonBinarySubType.BINARY',
   1: 'org.bson.BsonBinarySubType.FUNCTION',
   2: 'org.bson.BsonBinarySubType.BINARY',
@@ -66,7 +64,7 @@ Visitor.prototype.visitNewExpression = function(ctx) {
  * @return {String}
  */
 Visitor.prototype.visitRegularExpressionLiteral = function(ctx) {
-  ctx.type = JSClasses.Regex;
+  ctx.type = AllTypes.Regex;
   let pattern;
   let flags;
   try {
@@ -99,7 +97,7 @@ Visitor.prototype.visitRegularExpressionLiteral = function(ctx) {
  * @return {String}
  */
 Visitor.prototype.emitDate = function(ctx) {
-  ctx.type = JSClasses.Date;
+  ctx.type = AllTypes.Date;
   const args = ctx.arguments();
   if (!args.argumentList()) {
     return 'new java.util.Date()';
@@ -123,9 +121,9 @@ Visitor.prototype.emitDate = function(ctx) {
  * @return {String}
  */
 Visitor.prototype.emitBSONRegExp = function(ctx) {
-  ctx.type = BsonClasses.RegExp;
+  ctx.type = AllTypes.RegExp;
   const argList = ctx.arguments().argumentList();
-  const args = this.checkArguments([[Types._string], [Types._string, null]], argList);
+  const args = this.checkArguments([[AllTypes._string], [AllTypes._string, null]], argList);
 
   if (args.length === 2) {
     const flags = args[1];
@@ -164,7 +162,7 @@ Visitor.prototype.emitRegExp = Visitor.prototype.visitRegularExpressionLiteral;
  * @return {String}
  */
 Visitor.prototype.emitCode = function(ctx) {
-  ctx.type = BsonClasses.Code;
+  ctx.type = AllTypes.Code;
   const argList = ctx.arguments().argumentList();
   if (!argList ||
      !(argList.singleExpression().length === 1 ||
@@ -181,7 +179,7 @@ Visitor.prototype.emitCode = function(ctx) {
        not be set. We might have to just suck it up and do two passes, but maybe
        we can avoid it for now. */
     const scope = this.visit(args[1]);
-    if (args[1].type !== Types._object) {
+    if (args[1].type !== AllTypes._object) {
       throw new SemanticTypeError({
         message: 'Code requires scope to be an object'
       });
@@ -202,7 +200,7 @@ Visitor.prototype.emitCode = function(ctx) {
  * @return {String}
  */
 Visitor.prototype.emitObjectId = function(ctx) {
-  ctx.type = BsonClasses.ObjectId;
+  ctx.type = AllTypes.ObjectId;
   const argList = ctx.arguments().argumentList();
   if (!argList) {
     return 'new ObjectId()';
@@ -226,7 +224,7 @@ Visitor.prototype.emitObjectId = function(ctx) {
  * @return {String}
  */
 Visitor.prototype.emitBinary = function(ctx) {
-  ctx.type = BsonClasses.Binary;
+  ctx.type = AllTypes.Binary;
   let type;
   let binobj;
   try {
@@ -240,7 +238,7 @@ Visitor.prototype.emitBinary = function(ctx) {
   if (argList.length === 1) {
     return `new Binary(${bytes}.getBytes("UTF-8"))`;
   }
-  return `new Binary(${this.binary_subtypes[type]}, ${bytes}.getBytes("UTF-8"))`;
+  return `new Binary(${this.binary_subAllTypes[type]}, ${bytes}.getBytes("UTF-8"))`;
 };
 
 /**
@@ -253,7 +251,7 @@ Visitor.prototype.emitBinary = function(ctx) {
  * @return {String}
  */
 Visitor.prototype.emitLong = function(ctx) {
-  ctx.type = BsonClasses.Long;
+  ctx.type = AllTypes.Long;
   let longstr;
   try {
     longstr = this.executeJavascript(ctx.getText()).toString();
@@ -270,7 +268,7 @@ Visitor.prototype.emitLong = function(ctx) {
  * @return {String}
  */
 Visitor.prototype.emitDecimal128 = function(ctx) {
-  ctx.type = BsonClasses.Decimal128;
+  ctx.type = AllTypes.Decimal128;
   let decobj;
   try {
     decobj = this.executeJavascript(`new ${ctx.getText()}`);
@@ -284,7 +282,7 @@ Visitor.prototype.emitDecimal128 = function(ctx) {
 /*  ************** Object methods **************** */
 
 Visitor.prototype.emitCodetoJSON = function(ctx) {
-  ctx.type = Types._object;
+  ctx.type = AllTypes._object;
   const argsList = ctx.singleExpression().singleExpression().arguments();
   const args = argsList.argumentList().singleExpression();
   const code = doubleQuoteStringify(args[0].getText());
@@ -298,12 +296,12 @@ Visitor.prototype.emitCodetoJSON = function(ctx) {
 };
 
 Visitor.prototype.emitDecimal128toJSON = function(ctx) {
-  ctx.type = Types._object;
+  ctx.type = AllTypes._object;
   return `new Document().append("$numberDecimal", ${this.visit(ctx.singleExpression().singleExpression())}.toString())`;
 };
 
 Visitor.prototype.emitDBReftoJSON = function(ctx) {
-  ctx.type = Types._object;
+  ctx.type = AllTypes._object;
   const argsList = ctx.singleExpression().singleExpression().arguments();
   const args = argsList.argumentList().singleExpression();
 
@@ -319,7 +317,7 @@ Visitor.prototype.emitDBReftoJSON = function(ctx) {
 Visitor.prototype.emitLongfromBits = Visitor.prototype.emitLong;
 
 Visitor.prototype.emitLongtoString = function(ctx) {
-  ctx.type = Types._string;
+  ctx.type = AllTypes._string;
   const lhsType = ctx.singleExpression().type;
   const long = ctx.singleExpression().singleExpression();
   let longstr;

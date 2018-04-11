@@ -1,0 +1,16 @@
+BsonTypes:
+    Code: &CodeType
+        id: "Code"
+        callable: *var
+        args: null
+        type: *ObjectType
+        attr:
+            toJSON:
+                id: "CodetoJSON"
+                callable: *func
+                args: []
+                type: *ObjectType
+                attr: {}
+                template: *CodeToJSONTemplate
+        template: *CodeTemplate
+

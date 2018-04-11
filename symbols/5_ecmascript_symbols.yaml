@@ -1,0 +1,8 @@
+BsonSymbols:
+    Code: &CodeSymbol
+        id: "Code"
+        callable: *constructor
+        args: [ [ *StringType ], [ *ObjectType, null ] ]
+        type: null # TODO: add type
+        attr: {}
+        hash: *CodeType

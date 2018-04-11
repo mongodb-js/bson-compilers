@@ -4,7 +4,6 @@ const bson = require('bson');
 const Context = require('context-eval');
 const path = require('path');
 const {
-  Types,
   SYMBOL_TYPE,
   BsonSymbols,
   Symbols,
@@ -59,7 +58,7 @@ Visitor.prototype.visitChildren = function(ctx, options) {
   /* Set the node's type to the first child, if it's not already set.
      More often than not, type will be set directly by the visitNode method. */
   if (ctx.type === undefined) {
-    ctx.type = opts.children.length ? opts.children[0].type : Types._undefined;
+    ctx.type = opts.children.length ? opts.children[0].type : AllTypes._undefined;
   }
   return code.trim();
 };
@@ -89,7 +88,7 @@ Visitor.prototype.visitLiteralExpression = function(ctx) {
  * @return {String}
  */
 Visitor.prototype.visitObjectLiteral = function(ctx) {
-  ctx.type = Types._object;
+  ctx.type = AllTypes._object;
   let args = '';
   if (ctx.propertyNameAndValueList()) {
     const properties = ctx.propertyNameAndValueList().propertyAssignment();
@@ -110,7 +109,7 @@ Visitor.prototype.visitObjectLiteral = function(ctx) {
  * @return {String}
  */
 Visitor.prototype.visitArrayLiteral = function(ctx) {
-  ctx.type = Types._array;
+  ctx.type = AllTypes._array;
   let args = '';
   if (ctx.elementList()) {
     const children = ctx.elementList().children.filter((child) => {
@@ -133,7 +132,7 @@ Visitor.prototype.visitArrayLiteral = function(ctx) {
  * @return {String}
  */
 Visitor.prototype.visitElision = function(ctx) {
-  ctx.type = Types._null;
+  ctx.type = AllTypes._null;
   if (ctx.type.template) {
     return ctx.type.template();
   }
@@ -229,7 +228,7 @@ Visitor.prototype.visitGetAttributeExpression = function(ctx) {
     }
   }
   if (type === null) {
-    ctx.type = Types._undefined;
+    ctx.type = AllTypes._undefined;
     // TODO: how strict do we want to be?
     return `${lhs}.${rhs}`;
   }
@@ -262,37 +261,37 @@ Visitor.prototype.visitTerminal = function(ctx) {
  */
 Visitor.prototype.getPrimitiveType = function(ctx) {
   if ('NullLiteral' in ctx) {
-    return Types._null;
+    return AllTypes._null;
   }
   if ('UndefinedLiteral' in ctx) {
-    return Types._undefined;
+    return AllTypes._undefined;
   }
   if ('BooleanLiteral' in ctx) {
-    return Types._bool;
+    return AllTypes._bool;
   }
   if ('StringLiteral' in ctx) {
-    return Types._string;
+    return AllTypes._string;
   }
   if ('RegularExpressionLiteral' in ctx) {
-    return Types._regex;
+    return AllTypes._regex;
   }
   if ('numericLiteral' in ctx) {
     const number = ctx.numericLiteral();
     if ('IntegerLiteral' in number) {
-      return Types._integer;
+      return AllTypes._integer;
     }
     if ('DecimalLiteral' in number) {
-      return Types._decimal;
+      return AllTypes._decimal;
     }
     if ('HexIntegerLiteral' in number) {
-      return Types._hex;
+      return AllTypes._hex;
     }
     if ('OctalIntegerLiteral' in number) {
-      return Types._octal;
+      return AllTypes._octal;
     }
   }
   // TODO: or raise error?
-  return Types._undefined;
+  return AllTypes._undefined;
 };
 
 Visitor.prototype.executeJavascript = function(input) {
@@ -374,11 +373,11 @@ Visitor.prototype.checkArguments = function(expected, argumentList) {
       throw new SemanticArgumentCountMismatchError({message: 'too few arguments'});
     }
     argStr.push(this.visit(args[i]));
-    if (expected[i].indexOf(Types._numeric) !== -1 && (
-        args[i].type === Types._integer ||
-        args[i].type === Types._decimal ||
-        args[i].type === Types._hex ||
-        args[i].type === Types._octal)) {
+    if (expected[i].indexOf(AllTypes._numeric) !== -1 && (
+        args[i].type === AllTypes._integer ||
+        args[i].type === AllTypes._decimal ||
+        args[i].type === AllTypes._hex ||
+        args[i].type === AllTypes._octal)) {
       continue;
     }
     if (expected[i].indexOf(args[i].type) === -1 && expected[i].indexOf(args[i].type.id) === -1) {

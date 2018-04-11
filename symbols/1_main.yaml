@@ -1,0 +1,5 @@
+SymbolTypes:
+    _symbol_type:
+        var: &var 0
+        constructor: &constructor 1
+        func: &func 2

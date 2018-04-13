@@ -55,10 +55,209 @@ Templates:
             }, '');
         }
     # Method templates
-    CodeToJSONTemplate: &CodeToJSONTemplate null
     ObjectIdToJSONTemplate: &ObjectIdToJSONTemplate !!js/function >
         (lhs) => {
             return `${lhs}.toHexString`;
+        }
+    BinaryValueTemplate: &BinaryValueTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.getData`;
+        }
+    BinaryToJSONTemplate: &BinaryToJSONTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.toString`;
+        }
+    DoubleToJSONTemplate: &DoubleToJSONTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.doubleValue`;
+        }
+    DoubleValueOfTemplate: &DoubleValueOfTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.doubleValue`;
+        }
+    Int32ToJSONTemplate: &Int32ToJSONTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.intValue`;
+        }
+    Int32ValueOfTemplate: &Int32ValueOfTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.intValue`;
+        }
+    LongToJSONTemplate: &LongToJSONTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.toString`;
+        }
+    LongToIntTemplate: &LongToIntTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.intValue`;
+        }
+    LongToNumberTemplate: &LongToNumberTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.floatValue`;
+        }
+    LongCompareTemplate: &LongCompareTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.compareTo`;
+        }
+    LongIsOddTemplate: &LongIsOddTemplate !!js/function >
+        (lhs) => {
+            return lhs;
+        }
+    LongIsOddArgsTemplate: &LongIsOddArgsTemplate !!js/function >
+        () => {
+            return ' % 2 == 0';
+        }
+    LongIsZeroTemplate: &LongIsZeroTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.equals`;
+        }
+    LongIsZeroArgsTemplate: &LongIsZeroArgsTemplate !!js/function >
+        () => {
+            return '(new java.lang.Long(0))';
+        }
+    LongIsNegativeTemplate: &LongIsNegativeTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.compareTo`;
+        }
+    LongIsNegativeArgsTemplate: &LongIsNegativeArgsTemplate !!js/function >
+        () => {
+            return '(new java.lang.Long(0)) < 0';
+        }
+    LongNegateTemplate: &LongNegateTemplate !!js/function >
+        () => {
+            return '';
+        }
+    LongNegateArgsTemplate: &LongNegateArgsTemplate !!js/function >
+        (lhs) => {
+            return `-${lhs}`;
+        }
+    LongNotTemplate: &LongNotTemplate !!js/function >
+        () => {
+            return '';
+        }
+    LongNotArgsTemplate: &LongNotArgsTemplate !!js/function >
+        (lhs) => {
+            return `~${lhs}`;
+        }
+    LongNotEqualsTemplate: &LongNotEqualsTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.compareTo`;
+        }
+    LongNotEqualsArgsTemplate: &LongNotEqualsArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return `(${arg}) != 0`;
+        }
+    LongGreaterThanTemplate: &LongGreaterThanTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.compareTo`;
+        }
+    LongGreaterThanArgsTemplate: &LongGreaterThanArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return `(${arg}) > 0`;
+        }
+    LongGreaterThanOrEqualTemplate: &LongGreaterThanOrEqualTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.compareTo`;
+        }
+    LongGreaterThanOrEqualArgsTemplate: &LongGreaterThanOrEqualArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return `(${arg}) >= 0`;
+        }
+    LongLessThanTemplate: &LongLessThanTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.compareTo`;
+        }
+    LongLessThanArgsTemplate: &LongLessThanArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return `(${arg}) < 0`;
+        }
+    LongLessThanOrEqualTemplate: &LongLessThanOrEqualTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.compareTo`;
+        }
+    LongLessThanOrEqualArgsTemplate: &LongLessThanOrEqualArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return `(${arg}) <= 0`;
+        }
+    LongAddTemplate: &LongAddTemplate !!js/function >
+        (lhs) => {
+            return lhs;
+        }
+    LongAddArgsTemplate: &LongAddArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return ` + ${arg}`;
+        }
+    LongSubtractTemplate: &LongSubtractTemplate !!js/function >
+        (lhs) => {
+            return lhs;
+        }
+    LongSubtractArgsTemplate: &LongSubtractArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return ` - ${arg}`;
+        }
+    LongMultiplyTemplate: &LongMultiplyTemplate !!js/function >
+        (lhs) => {
+            return lhs;
+        }
+    LongMultiplyArgsTemplate: &LongMultiplyArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return ` * ${arg}`;
+        }
+    LongDivTemplate: &LongDivTemplate !!js/function >
+        (lhs) => {
+            return lhs;
+        }
+    LongDivArgsTemplate: &LongDivArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return ` / ${arg}`;
+        }
+    LongModuloTemplate: &LongModuloTemplate !!js/function >
+        (lhs) => {
+            return lhs;
+        }
+    LongModuloArgsTemplate: &LongModuloArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return ` % ${arg}`;
+        }
+    LongAndTemplate: &LongAndTemplate !!js/function >
+        (lhs) => {
+            return lhs;
+        }
+    LongAndArgsTemplate: &LongAndArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return ` & ${arg}`;
+        }
+    LongOrTemplate: &LongOrTemplate !!js/function >
+        (lhs) => {
+            return lhs;
+        }
+    LongOrArgsTemplate: &LongOrArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return ` | ${arg}`;
+        }
+    LongXorTemplate: &LongXorTemplate !!js/function >
+        (lhs) => {
+            return lhs;
+        }
+    LongXorArgsTemplate: &LongXorArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return ` ^ ${arg}`;
+        }
+    LongShiftLeftTemplate: &LongShiftLeftTemplate !!js/function >
+        () => {
+            return 'java.lang.Long.rotateLeft';
+        }
+    LongShiftLeftArgsTemplate: &LongShiftLeftArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return `(${lhs}, ${arg})`;
+        }
+    LongShiftRightTemplate: &LongShiftRightTemplate !!js/function >
+        () => {
+            return 'java.lang.Long.rotateRight';
+        }
+    LongShiftRightArgsTemplate: &LongShiftRightArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return `(${lhs}, ${arg})`;
         }
     # Symbol templates
     CodeSymbolTemplate: &CodeSymbolTemplate null
@@ -82,5 +281,3 @@ Templates:
         (lhs, arg) => {
             return `new ObjectId(new java.util.Date(${arg}))`;
         }
-    ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate null
-    ObjectIdIsValidArgsTemplate: &ObjectIdIsValidArgsTemplate null

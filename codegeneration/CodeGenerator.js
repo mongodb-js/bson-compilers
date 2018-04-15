@@ -52,7 +52,7 @@ Visitor.prototype.visitChildren = function(ctx, options) {
   /* Set the node's type to the first child, if it's not already set.
      More often than not, type will be set directly by the visitNode method. */
   if (ctx.type === undefined) {
-    ctx.type = opts.children.length ? opts.children[0].type : this.AllTypes._undefined;
+    ctx.type = opts.children.length ? opts.children[0].type : this.Types._undefined;
   }
   return code.trim();
 };
@@ -82,7 +82,7 @@ Visitor.prototype.visitLiteralExpression = function(ctx) {
  * @return {String}
  */
 Visitor.prototype.visitObjectLiteral = function(ctx) {
-  ctx.type = this.AllTypes._object;
+  ctx.type = this.Types._object;
   let args = '';
   if (ctx.propertyNameAndValueList()) {
     const properties = ctx.propertyNameAndValueList().propertyAssignment();
@@ -103,7 +103,7 @@ Visitor.prototype.visitObjectLiteral = function(ctx) {
  * @return {String}
  */
 Visitor.prototype.visitArrayLiteral = function(ctx) {
-  ctx.type = this.AllTypes._array;
+  ctx.type = this.Types._array;
   let args = '';
   if (ctx.elementList()) {
     const children = ctx.elementList().children.filter((child) => {
@@ -126,7 +126,7 @@ Visitor.prototype.visitArrayLiteral = function(ctx) {
  * @return {String}
  */
 Visitor.prototype.visitElision = function(ctx) {
-  ctx.type = this.AllTypes._null;
+  ctx.type = this.Types._null;
   if (ctx.type.template) {
     return ctx.type.template();
   }
@@ -143,7 +143,7 @@ Visitor.prototype.visitFuncCallExpression = function(ctx) {
   const lhs = this.visit(ctx.singleExpression());
   let lhsType = ctx.singleExpression().type;
   if (typeof lhsType === 'string') {
-    lhsType = this.AllTypes[lhsType];
+    lhsType = this.Types[lhsType];
   }
 
   // Special case types
@@ -204,7 +204,7 @@ Visitor.prototype.visitGetAttributeExpression = function(ctx) {
 
   let type = ctx.singleExpression().type;
   if (typeof type === 'string') {
-    type = this.AllTypes[type];
+    type = this.Types[type];
   }
   while (type !== null) {
     if (!(type.attr.hasOwnProperty(rhs))) {
@@ -215,14 +215,14 @@ Visitor.prototype.visitGetAttributeExpression = function(ctx) {
       }
       type = type.type;
       if (typeof type === 'string') {
-        type = this.AllTypes[type];
+        type = this.Types[type];
       }
     } else {
       break;
     }
   }
   if (type === null) {
-    ctx.type = this.AllTypes._undefined;
+    ctx.type = this.Types._undefined;
     // TODO: how strict do we want to be?
     return `${lhs}.${rhs}`;
   }
@@ -255,37 +255,37 @@ Visitor.prototype.visitTerminal = function(ctx) {
  */
 Visitor.prototype.getPrimitiveType = function(ctx) {
   if ('NullLiteral' in ctx) {
-    return this.AllTypes._null;
+    return this.Types._null;
   }
   if ('UndefinedLiteral' in ctx) {
-    return this.AllTypes._undefined;
+    return this.Types._undefined;
   }
   if ('BooleanLiteral' in ctx) {
-    return this.AllTypes._bool;
+    return this.Types._bool;
   }
   if ('StringLiteral' in ctx) {
-    return this.AllTypes._string;
+    return this.Types._string;
   }
   if ('RegularExpressionLiteral' in ctx) {
-    return this.AllTypes._regex;
+    return this.Types._regex;
   }
   if ('numericLiteral' in ctx) {
     const number = ctx.numericLiteral();
     if ('IntegerLiteral' in number) {
-      return this.AllTypes._integer;
+      return this.Types._integer;
     }
     if ('DecimalLiteral' in number) {
-      return this.AllTypes._decimal;
+      return this.Types._decimal;
     }
     if ('HexIntegerLiteral' in number) {
-      return this.AllTypes._hex;
+      return this.Types._hex;
     }
     if ('OctalIntegerLiteral' in number) {
-      return this.AllTypes._octal;
+      return this.Types._octal;
     }
   }
   // TODO: or raise error?
-  return this.AllTypes._undefined;
+  return this.Types._undefined;
 };
 
 Visitor.prototype.executeJavascript = function(input) {
@@ -367,11 +367,11 @@ Visitor.prototype.checkArguments = function(expected, argumentList) {
       throw new SemanticArgumentCountMismatchError({message: 'too few arguments'});
     }
     argStr.push(this.visit(args[i]));
-    if (expected[i].indexOf(this.AllTypes._numeric) !== -1 && (
-        args[i].type === this.AllTypes._integer ||
-        args[i].type === this.AllTypes._decimal ||
-        args[i].type === this.AllTypes._hex ||
-        args[i].type === this.AllTypes._octal)) {
+    if (expected[i].indexOf(this.Types._numeric) !== -1 && (
+        args[i].type === this.Types._integer ||
+        args[i].type === this.Types._decimal ||
+        args[i].type === this.Types._hex ||
+        args[i].type === this.Types._octal)) {
       continue;
     }
     if (expected[i].indexOf(args[i].type) === -1 && expected[i].indexOf(args[i].type.id) === -1) {

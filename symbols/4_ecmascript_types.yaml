@@ -284,4 +284,135 @@ BsonTypes:
                 type: "Long"
                 template: *LongShiftRightTemplate
                 argsTemplate: *LongShiftRightArgsTemplate
+    MinKeyType: &MinKeyType
+        <<: *__type
+        id: "MinKey"
+        type: *ObjectType
+    MaxKeyType: &MaxKeyType
+        <<: *__type
+        id: "MaxKey"
+        type: *ObjectType
+    BSONRegExpType: &BSONRegExpType
+        <<: *__type
+        id: "BSONRegExp"
+        type: *ObjectType
+    Timestamp: &TimestampType
+        <<: *__type
+        id: "Timestamp"
+        type: *ObjectType
+        attr:
+            toString:
+                <<: *__func
+                id: "toString"
+                type: *StringType
+            equals:
+                <<: *__func
+                id: "equals"
+                args:
+                    - [ "Timestamp" ]
+                type: *BoolType
+            getLowBits:
+                <<: *__func
+                id: "getLowBits"
+                type: *IntegerType
+                template: *TimestampGetLowBitsTemplate
+            getHighBits:
+                <<: *__func
+                id: "getHighBits"
+                type: *IntegerType
+                template: *TimestampGetHighBitsTemplate
+            toJSON:
+                <<: *__func
+                id: "toJSON"
+                type: *StringType
+                template: *TimestampToJSONTemplate
+            compare:
+                <<: *__func
+                id: "compare"
+                args:
+                    - [ "Timestamp" ]
+                type: *StringType
+                template: *TimestampCompareTemplate
+            notEquals:
+                <<: *__func
+                id: "notEquals"
+                args:
+                    - [ "Timestamp" ]
+                type: *BoolType
+                template: *TimestampNotEqualsTemplate
+                argsTemplate: *TimestampNotEqualsArgsTemplate
+            greaterThan:
+                <<: *__func
+                id: "greaterThan"
+                args:
+                    - [ "Timestamp" ]
+                type: *BoolType
+                template: *TimestampGreaterThanTemplate
+                argsTemplate: *TimestampGreaterThanArgsTemplate
+            greaterThanOrEqual:
+                <<: *__func
+                id: "greaterThanOrEqual"
+                args:
+                    - [ "Timestamp" ]
+                type: *BoolType
+                template: *TimestampGreaterThanOrEqualTemplate
+                argsTemplate: *TimestampGreaterThanOrEqualArgsTemplate
+            lessThan:
+                <<: *__func
+                id: "lessThan"
+                args:
+                    - [ "Timestamp" ]
+                type: *BoolType
+                template: *TimestampLessThanTemplate
+                argsTemplate: *TimestampLessThanArgsTemplate
+            lessThanOrEqual:
+                <<: *__func
+                id: "lessThanOrEqual"
+                args:
+                    - [ "Timestamp" ]
+                type: *BoolType
+                template: *TimestampLessThanOrEqualTemplate
+                argsTemplate: *TimestampLessThanOrEqualArgsTemplate
+    Symbol: &SymbolType
+        <<: *__type
+        id: "Symbol"
+        type: *ObjectType
+        attr:
+            valueOf:
+                <<: *__func
+                id: "valueOf"
+                type: *StringType
+                template: *SymbolValueOfTemplate
+            toString:
+                <<: *__func
+                id: "toString"
+                type: *StringType
+                template: *SymbolToStringTemplate
+            toJSON:
+                <<: *__func
+                id: "toJSON"
+                type: *StringType
+                template: *SymbolToJSONTemplate
+            inspect:
+                <<: *__func
+                id: "inspect"
+                type: *StringType
+                template: *SymbolInspectTemplate
+    Decimal128: &Decimal128Type
+        <<: *__type
+        id: "Decimal128"
+        type: *ObjectType
+        attr:
+            toString:
+                <<: *__func
+                id: "toString"
+                type: *StringType
+            toJSON:
+                <<: *__func
+                id: "Decimal128toJSON"
+                type: *ObjectType
+
+
+
+
 

@@ -17,7 +17,7 @@ const doc = yaml.load(contents);
 
 const Types = doc.BasicTypes;
 const BsonTypes = doc.BsonTypes;
-const YamlBsonSymbols = doc.BsonSymbols;
+const BsonSymbols = doc.BsonSymbols;
 const SYMBOL_TYPE = doc.SymbolTypes;
 
 /**
@@ -66,135 +66,6 @@ function Scope(attrs) {
   return attrs;
 }
 
-/**
- * Symbols representing the BSON symbols, so the built-in methods and utils
- * accessible from calling `ObjectId.*`. It's callable because it includes the
- * constructor of each type.
- */
-const OldBsonSymbols = new Scope({
-  // Code: new Symbol(
-  //   'Code',
-  //   SYMBOL_TYPE.CONSTRUCTOR,
-  //   [ [Types._string], [Types._object, null] ], // This isn't technically correct, since the first argument could be anything. It has an emit method though, so not checked.
-  //   BsonTypes.Code,
-  //   new Scope({})
-  // ),
-  // ObjectId: new Symbol(
-  //   'ObjectId',
-  //   SYMBOL_TYPE.CONSTRUCTOR,
-  //   [ [null, Types._string, Types._numeric] ],
-  //   BsonTypes.ObjectId,
-  //   new Scope({
-  //     createFromHexString: Symbol('createFromHexString', SYMBOL_TYPE.FUNC, [ [Types._string] ],  BsonTypes.ObjectId,  new Scope({}), () => { return ''; }, (lhs, arg) => { return `new ObjectId(${arg})`; }),
-  //     createFromTime:      Symbol('createFromTime',      SYMBOL_TYPE.FUNC, [ [Types._numeric] ], BsonTypes.ObjectId,  new Scope({}), () => { return ''; }, (lhs, arg) => { return `new ObjectId(new java.util.Date(${arg}))`; }),
-  //     isValid:             Symbol('isValid',             SYMBOL_TYPE.FUNC, [ [Types._string] ],  Types._bool,           new Scope({}))
-  //   })
-  // ),
-  Binary: new Symbol(
-    'Binary',
-    SYMBOL_TYPE.CONSTRUCTOR,
-    [ [Types._string, Types._numeric, Types._object], [Types._numeric, null] ],
-    BsonTypes.Binary,
-    new Scope({
-      SUBTYPE_DEFAULT:    Symbol('SUBTYPE_DEFAULT',      SYMBOL_TYPE.VAR,   null,                 Types._integer,       new Scope({}), () => { return 'org.bson.BsonBinarySubType.BINARY'; }),
-      SUBTYPE_FUNCTION:   Symbol('SUBTYPE_FUNCTION',     SYMBOL_TYPE.VAR,   null,                 Types._integer,       new Scope({}), () => { return 'org.bson.BsonBinarySubType.FUNCTION'; }),
-      SUBTYPE_BYTE_ARRAY: Symbol('SUBTYPE_BYTE_ARRAY',   SYMBOL_TYPE.VAR,   null,                 Types._integer,       new Scope({}), () => { return 'org.bson.BsonBinarySubType.OLD_BINARY'; }),
-      SUBTYPE_UUID_OLD:   Symbol('SUBTYPE_UUID_OLD',     SYMBOL_TYPE.VAR,   null,                 Types._integer,       new Scope({}), () => { return 'org.bson.BsonBinarySubType.UUID_LEGACY'; }),
-      SUBTYPE_UUID:       Symbol('SUBTYPE_UUID',         SYMBOL_TYPE.VAR,   null,                 Types._integer,       new Scope({}), () => { return 'org.bson.BsonBinarySubType.UUID'; }),
-      SUBTYPE_MD5:        Symbol('SUBTYPE_MD5',          SYMBOL_TYPE.VAR,   null,                 Types._integer,       new Scope({}), () => { return 'org.bson.BsonBinarySubType.MD5'; }),
-      SUBTYPE_USER_DEFINED: Symbol('SUBTYPE_USER_DEFINED', SYMBOL_TYPE.VAR, null,                 Types._integer,       new Scope({}), () => { return 'org.bson.BsonBinarySubType.USER_DEFINED'; })
-    })
-  ),
-  DBRef: new Symbol(
-    'DBRef',
-    SYMBOL_TYPE.CONSTRUCTOR,
-    [ [Types._string], [BsonTypes.ObjectId], [Types._string, null] ],
-    BsonTypes.DBRef,
-    new Scope({})
-  ),
-  Double: new Symbol(
-    'Double',
-    SYMBOL_TYPE.CONSTRUCTOR,
-    [ [Types._numeric, Types._string] ],
-    BsonTypes.Double,
-    new Scope({}),
-    () => { return 'java.lang.Double'; }
-  ),
-  Int32: new Symbol(
-    'Int32',
-    SYMBOL_TYPE.CONSTRUCTOR,
-    [ [Types._numeric, Types._string] ],
-    BsonTypes.Int32,
-    new Scope({}),
-    () => { return 'java.lang.Integer'; }
-  ),
-  Long: new Symbol(
-    'Long',
-    SYMBOL_TYPE.CONSTRUCTOR,
-    [ [Types._numeric], [Types._numeric] ],
-    BsonTypes.Long,
-    new Scope({
-      MAX_VALUE:          Symbol('MAX_VALUE',            SYMBOL_TYPE.VAR,   null,                 BsonTypes.Long,     new Scope({})),
-      MIN_VALUE:          Symbol('MIN_VALUE',            SYMBOL_TYPE.VAR,   null,                 BsonTypes.Long,     new Scope({})),
-      ZERO:               Symbol('ZERO',                 SYMBOL_TYPE.VAR,   null,                 BsonTypes.Long,     new Scope({}), () => { return 'new java.lang.Long(0)'; }),
-      ONE:                Symbol('ONE',                  SYMBOL_TYPE.VAR,   null,                 BsonTypes.Long,     new Scope({}), () => { return 'new java.lang.Long(1)'; }),
-      NEG_ONE:            Symbol('NEG_ONE',              SYMBOL_TYPE.VAR,   null,                 BsonTypes.Long,     new Scope({}), () => { return 'new java.lang.Long(-1)'; }),
-      fromBits:           Symbol('LongfromBits',         SYMBOL_TYPE.FUNC,  [ [Types._integer],
-                                                                              [Types._integer] ], BsonTypes.Long,     new Scope({})),
-      fromInt:            Symbol('fromInt',              SYMBOL_TYPE.FUNC,  [ [Types._integer] ], BsonTypes.Long,     new Scope({}), () => { return 'new java.lang.Long'; }),
-      fromNumber:         Symbol('fromNumber',           SYMBOL_TYPE.FUNC,  [ [Types._numeric] ], BsonTypes.Long,     new Scope({}), () => { return 'new java.lang.Long'; }),
-      fromString:         Symbol('fromString',           SYMBOL_TYPE.FUNC,  [ [Types._string], [Types._integer, null] ], BsonTypes.Long, new Scope({}), (lhs) => { return `${lhs}.parseLong`; })
-    }),
-    () => { return 'java.lang.Long'; },
-  ),
-  MinKey: new Symbol(
-    'MinKey',
-    SYMBOL_TYPE.CONSTRUCTOR,
-    [],
-    BsonTypes.MinKey,
-    new Scope({})
-  ),
-  MaxKey: new Symbol(
-    'MaxKey',
-    SYMBOL_TYPE.CONSTRUCTOR,
-    [],
-    BsonTypes.MaxKey,
-    new Scope({})
-  ),
-  Timestamp: new Symbol(
-    'Timestamp',
-    SYMBOL_TYPE.CONSTRUCTOR,
-    [ [Types._numeric ], [Types._numeric] ],
-    BsonTypes.Timestamp,
-    new Scope({}),
-    () => { return 'BSONTimestamp'; },
-  ),
-  Symbol: new Symbol(
-    'Symbol',
-    SYMBOL_TYPE.CONSTRUCTOR,
-    [ [Types._string] ],
-    BsonTypes.Symbol,
-    new Scope({})
-  ),
-  BSONRegExp: new Symbol(
-    'BSONRegExp',
-    SYMBOL_TYPE.CONSTRUCTOR,
-    [ [Types._string], [BsonTypes._string, null] ],
-    BsonTypes.BSONRegExp,
-    new Scope({})
-  ),
-  Decimal128: new Symbol(
-    'Decimal128',
-    SYMBOL_TYPE.CONSTRUCTOR,
-    [ [Types._object] ],
-    BsonTypes.Decimal128,
-    new Scope({
-      fromString:         Symbol('fromString',           SYMBOL_TYPE.FUNC,  [ [Types._string] ],  BsonTypes.Decimal128, new Scope({}), (lhs) => { return `${lhs}.parse`; })
-    })
-  )
-});
-
-const BsonSymbols = Object.assign({}, OldBsonSymbols, YamlBsonSymbols);
 
 const JSTypes = new Scope({
   Date: new Symbol(

@@ -336,6 +336,109 @@ Templates:
     CodeSymbolArgsTemplate: &CodeSymbolArgsTemplate null
     ObjectIdSymbolTemplate: &ObjectIdSymbolTemplate null
     ObjectIdSymbolArgsTemplate: &ObjectIdSymbolArgsTemplate null
+    BinarySymbolTemplate: &BinarySymbolTemplate null
+    BinarySymbolArgsTemplate: &BinarySymbolArgsTemplate null
+    BinarySymbolSubtypeDefaultTemplate: &BinarySymbolSubtypeDefaultTemplate !!js/function >
+        () => {
+            return 'org.bson.BsonBinarySubType.BINARY';
+        }
+    BinarySymbolSubtypeFunctionTemplate: &BinarySymbolSubtypeFunctionTemplate !!js/function >
+        () => {
+            return 'org.bson.BsonBinarySubType.FUNCTION';
+        }
+    BinarySymbolSubtypeByteArrayTemplate: &BinarySymbolSubtypeByteArrayTemplate !!js/function >
+        () => {
+            return 'org.bson.BsonBinarySubType.OLD_BINARY';
+        }
+    BinarySymbolSubtypeUuidOldTemplate: &BinarySymbolSubtypeUuidOldTemplate !!js/function >
+        () => {
+            return 'org.bson.BsonBinarySubType.UUID_LEGACY';
+        }
+    BinarySymbolSubtypeUuidTemplate: &BinarySymbolSubtypeUuidTemplate !!js/function >
+        () => {
+            return 'org.bson.BsonBinarySubType.UUID';
+        }
+    BinarySymbolSubtypeMd5Template: &BinarySymbolSubtypeMd5Template !!js/function >
+        () => {
+            return 'org.bson.BsonBinarySubType.MD5';
+        }
+    BinarySymbolSubtypeUserDefinedTemplate: &BinarySymbolSubtypeUserDefinedTemplate !!js/function >
+        () => {
+            return 'org.bson.BsonBinarySubType.USER_DEFINED';
+        }
+    DBRefSymbolTemplate: &DBRefSymbolTemplate null
+    DBRefSymbolArgsTemplate: &DBRefSymbolArgsTemplate null
+    DoubleSymbolTemplate: &DoubleSymbolTemplate !!js/function >
+        () => {
+            return 'java.lang.Double';
+        }
+    DoubleSymbolArgsTemplate: &DoubleSymbolArgsTemplate null
+    Int32SymbolTemplate: &Int32SymbolTemplate !!js/function >
+        () => {
+            return 'java.lang.Integer';
+        }
+    Int32SymbolArgsTemplate: &Int32SymbolArgsTemplate null
+    LongSymbolTemplate: &LongSymbolTemplate !!js/function >
+        () => {
+            return 'java.lang.Long';
+        }
+    LongSymbolArgsTemplate: &LongSymbolArgsTemplate null
+    LongSymbolMaxTemplate: &LongSymbolMaxTemplate null
+    LongSymbolMaxArgsTemplate: &LongSymbolMaxArgsTemplate null
+    LongSymbolMinTemplate: &LongSymbolMinTemplate null
+    LongSymbolMinArgsTemplate: &LongSymbolMinArgsTemplate null
+    LongSymbolZeroTemplate: &LongSymbolZeroTemplate !!js/function >
+        () => {
+            return 'new java.lang.Long(0)';
+        }
+    LongSymbolZeroArgsTemplate: &LongSymbolZeroArgsTemplate null
+    LongSymbolOneTemplate: &LongSymbolOneTemplate !!js/function >
+        () => {
+            return 'new java.lang.Long(1)';
+        }
+    LongSymbolOneArgsTemplate: &LongSymbolOneArgsTemplate null
+    LongSymbolNegOneTemplate: &LongSymbolNegOneTemplate !!js/function >
+        () => {
+            return 'new java.lang.Long(-1)';
+        }
+    LongSymbolNegOneArgsTemplate: &LongSymbolNegOneArgsTemplate null
+    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate null
+    LongSymbolFromBitsArgsTemplate: &LongSymbolFromBitsArgsTemplate null
+    LongSymbolFromIntTemplate: &LongSymbolFromIntTemplate !!js/function >
+        () => {
+            return 'new java.lang.Long';
+        }
+    LongSymbolFromIntArgsTemplate: &LongSymbolFromIntArgsTemplate null
+    LongSymbolFromNumberTemplate: &LongSymbolFromNumberTemplate !!js/function >
+        () => {
+            return 'new java.lang.Long';
+        }
+    LongSymbolFromNumberArgsTemplate: &LongSymbolFromNumberArgsTemplate null
+    LongSymbolFromStringTemplate: &LongSymbolFromStringTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.parseLong`;
+        }
+    LongSymbolFromStringArgsTemplate: &LongSymbolFromStringArgsTemplate null
+    MinKeySymbolTemplate: &MinKeySymbolTemplate null
+    MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate null
+    MaxKeySymbolTemplate: &MaxKeySymbolTemplate null
+    MaxKeySymbolArgsTemplate: &MaxKeySymbolArgsTemplate null
+    TimestampSymbolTemplate: &TimestampSymbolTemplate !!js/function >
+        () => {
+            return 'BSONTimestamp';
+        }
+    TimestampSymbolArgsTemplate: &TimestampSymbolArgsTemplate null
+    SymbolSymbolTemplate: &SymbolSymbolTemplate null
+    SymbolSymbolArgsTemplate: &SymbolSymbolArgsTemplate null
+    BSONRegExpSymbolTemplate: &BSONRegExpSymbolTemplate null
+    BSONRegExpSymbolArgsTemplate: &BSONRegExpSymbolArgsTemplate null
+    Decimal128SymbolTemplate: &Decimal128SymbolTemplate null
+    Decimal128SymbolArgsTemplate: &Decimal128SymbolArgsTemplate null
+    Decimal128SymbolFromStringTemplate: &Decimal128SymbolFromStringTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.parse`;
+        }
+    Decimal128SymbolFromStringArgsTemplate: &Decimal128SymbolFromStringArgsTemplate null
     # Utils templates
     ObjectIdCreateFromHexStringTemplate: &ObjectIdCreateFromHexStringTemplate !!js/function >
         () => {

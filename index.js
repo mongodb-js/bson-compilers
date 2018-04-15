@@ -5,53 +5,65 @@ const ECMAScriptParser = require('./lib/ECMAScriptParser.js');
 const Python3Generator = require('./codegeneration/Python3Generator.js');
 const CSharpGenerator = require('./codegeneration/CSharpGenerator.js');
 const JavaGenerator = require('./codegeneration/JavaGenerator.js');
+const CodeGenerator = require('./codegeneration/CodeGenerator.js');
 
 const ErrorListener = require('./codegeneration/ErrorListener.js');
+
+const { loadSymbolTable } = require('./codegeneration/SymbolTable');
 
 /**
  * Compiles an ECMAScript string into another language.
  *
- * @param {String} input
- * @param {CodeGenerator} generator
+ * @param {String} input - Code to compile
+ * @param {CodeGenerator} generator - Target language generator
  * @returns {String}
  */
 const compileECMAScript = (input, generator) => {
   const chars = new antlr4.InputStream(input);
   const lexer = new ECMAScriptLexer.ECMAScriptLexer(chars);
-
   lexer.strictMode = false;
 
   const tokens = new antlr4.CommonTokenStream(lexer);
   const parser = new ECMAScriptParser.ECMAScriptParser(tokens);
-  const listener = new ErrorListener();
+  parser.buildParseTrees = true;
 
-  // Do this after creating the Parser and before running it
+  const listener = new ErrorListener();
   parser.removeErrorListeners(); // Remove the default ConsoleErrorListener
   parser.addErrorListener(listener); // Add back a custom error listener
 
-  parser.buildParseTrees = true;
-
   const tree = parser.expressionSequence();
-  const output = generator.start(tree);
 
-  return output;
+  return generator.start(tree);
 };
 
-const yaml = require('js-yaml');
-const fs = require('fs');
-const path = require('path');
+const toJava = (input) => {
+  const symbols = loadSymbolTable('ecmascript', 'java');
+  CodeGenerator.prototype.SYMBOL_TYPE = symbols[0];
+  CodeGenerator.prototype.BsonTypes = symbols[1];
+  CodeGenerator.prototype.Symbols = symbols[2];
+  CodeGenerator.prototype.AllTypes = symbols[3];
+  return compileECMAScript(
+    input,
+    new JavaGenerator(),
+  );
+};
+const toCSharp = (input) => {
+  return compileECMAScript(
+    input,
+    new CSharpGenerator(),
+    loadSymbolTable('ecmascript', 'csharp')
+  );
+};
+const toPython = (input) => {
+  return compileECMAScript(
+    input,
+    new Python3Generator(),
+    loadSymbolTable('ecmascript', 'python')
+  );
+};
 
-const files = fs.readdirSync('symbols');
-const contents = files.reduce((str, file) => {
-  return str + fs.readFileSync(path.join('symbols', file));
-}, '');
+console.log(toJava('{x: 1}'));
 
-// write a file so debugging is easier with linenumbers
-fs.writeFileSync('concatted.yaml', contents);
-const doc = yaml.load(contents);
-console.log(JSON.stringify(doc.BsonTypes.Timestamp.attr, null, '    '));
 module.exports = {
-  toJava: (input) => { return compileECMAScript(input, new JavaGenerator()); },
-  toCSharp: (input) => { return compileECMAScript(input, new CSharpGenerator()); },
-  toPython: (input) => { return compileECMAScript(input, new Python3Generator()); }
+  toJava, toCSharp, toPython
 };

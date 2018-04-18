@@ -29,9 +29,9 @@ BsonTypes:
             getTimestamp:
                 <<: *__func
                 type: *IntegerType
-    Binary: &BinaryType
+    BinData: &BinaryType
         <<: *__type
-        id: "Binary"
+        id: "BinData"
         type: *ObjectType
         attr:
             value:

@@ -21,7 +21,7 @@ const unsupported = {
     },
     shell: {
       java: {
-        'bson-constructors': [ 'Code', 'ObjectId', 'Binary', 'DBRef', 'Double', 'Int32', 'Long', 'MinKey/MaxKey', 'BSONRegExp', 'Timestamp', 'Decimal128', 'Symbol', 'ArrayElision', 'Document', 'Array'],
+        'bson-constructors': [ 'DBRef', 'Double', 'Int32', 'Long', 'MinKey/MaxKey', 'BSONRegExp', 'Timestamp', 'Decimal128', 'Symbol', 'ArrayElision', 'Document', 'Array'],
         'js-constructors': [ '*' ],
         'bson-object-methods': [ '*' ],
         'bson-utils': [ '*' ],

@@ -89,6 +89,7 @@ const make = (inputLang, outputLang) => {
   };
 };
 
+console.log(make('shell', 'java')("BinData(0, '12354')"));
 module.exports = {
   javascript: {
     java: make('javascript', 'java')

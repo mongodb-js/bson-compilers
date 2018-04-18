@@ -211,7 +211,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * @param {FuncCallExpressionContext} ctx
    * @return {String}
    */
-  emitBinary(ctx) {
+  emitBinaryFromJS(ctx) {
     ctx.type = this.Types.Binary;
     let type;
     let binobj;
@@ -227,6 +227,22 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
       return `new Binary(${bytes}.getBytes("UTF-8"))`;
     }
     return `new Binary(${this.binary_subTypes[type]}, ${bytes}.getBytes("UTF-8"))`;
+  }
+
+  emitBinData(ctx) {
+    ctx.type = this.Types.BinData;
+    const argList = ctx.arguments().argumentList();
+    const args = this.checkArguments(this.Symbols.BinData.args, argList);
+
+    const subtype = parseInt(args[0], 10);
+    const bindata = args[1];
+    if (!(subtype >= 0 && subtype <= 5 || subtype === 128)) {
+      throw new SemanticGenericError({message: 'BinData subtype must be a Number between 0-5 or 128'});
+    }
+    if (bindata.match(/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/)) {
+      throw new SemanticGenericError({message: 'invalid base64'});
+    }
+    return `new Binary(${this.binary_subTypes[subtype]}, ${bindata}.getBytes("UTF-8"))`;
   }
 
   /**

@@ -332,8 +332,14 @@ Templates:
             return `${lhs}.toString`;
         }
     # Symbol Templates
-    CodeSymbolTemplate: &CodeSymbolTemplate null # Has emit method
-    CodeSymbolArgsTemplate: &CodeSymbolArgsTemplate null
+    CodeSymbolTemplate: &CodeSymbolTemplate  !!js/function >
+        () => {
+            return '';
+        }
+    CodeSymbolArgsTemplate: &CodeSymbolArgsTemplate !!js/function >
+        (lhs, code, scope) => {
+            return (scope === undefined) ? `Code(${code})` : `CodeWithScope(${code}, ${scope})`;
+        }
     ObjectIdSymbolTemplate: &ObjectIdSymbolTemplate null # Has emit method
     ObjectIdSymbolArgsTemplate: &ObjectIdSymbolArgsTemplate null
     BinarySymbolTemplate: &BinarySymbolTemplate null # Has emit method

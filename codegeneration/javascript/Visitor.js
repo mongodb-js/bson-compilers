@@ -330,7 +330,7 @@ class Visitor extends ECMAScriptVisitor {
         return new bson.Code(c, s);
       },
       NumberDecimal: function(s) {
-        return bson.Decimal128.fromString(s);
+        return bson.Decimal128.fromString(s.toString());
       },
       NumberInt: function(s) {
         return parseInt(s, 10);

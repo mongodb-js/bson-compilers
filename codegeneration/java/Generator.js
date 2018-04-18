@@ -232,7 +232,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     const argList = ctx.arguments().argumentList();
     const args = this.checkArguments(this.Symbols.BinData.args, argList);
 
-    const subtype = parseInt(args[0], 10);
+    const subtype = parseInt(argList.singleExpression()[0].getText(), 10);
     const bindata = args[1];
     if (!(subtype >= 0 && subtype <= 5 || subtype === 128)) {
       throw new SemanticGenericError({message: 'BinData subtype must be a Number between 0-5 or 128'});
@@ -261,6 +261,45 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
       throw new SemanticGenericError({message: error.message});
     }
     return `new java.lang.Long(${doubleQuoteStringify(longstr)})`;
+  }
+
+  /**
+   * Emit NumberInt because we don't want to visit the child node
+   * regularly, or we'd get java.lang.Integer(java.lang.Double(1))
+   * @param {FuncCallExpressionContext} ctx
+   * @return {string}
+   */
+  emitNumberInt(ctx) {
+    let intstr;
+    ctx.type = this.Types.NumberInt;
+    try {
+      intstr = this.executeJavascript(ctx.getText()).toString();
+    } catch (error) {
+      throw new SemanticGenericError({message: error.message});
+    }
+    return `new java.lang.Integer(${doubleQuoteStringify(intstr)})`;
+  }
+
+  emitTimestampFromShell(ctx) {
+    ctx.type = this.Types.Code;
+    const argList = ctx.arguments().argumentList();
+    if (!(!argList || argList.singleExpression().length === 2)) {
+      throw new SemanticArgumentCountMismatchError({
+        message: 'Timestamp requires zero or two arguments'
+      });
+    }
+    if (!argList) {
+      return 'new BSONTimestamp(0, 0)';
+    }
+    let arg1 = this.visit(argList.singleExpression()[0]);
+    let arg2 = this.visit(argList.singleExpression()[1]);
+    if (argList.singleExpression()[0].type.id === 'Double') {
+      arg1 = argList.singleExpression()[0].getText();
+    }
+    if (argList.singleExpression()[1].type.id === 'Double') {
+      arg2 = argList.singleExpression()[1].getText();
+    }
+    return `new BSONTimestamp(${arg1}, ${arg2})`;
   }
 
   /**

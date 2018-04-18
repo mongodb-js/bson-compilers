@@ -16,6 +16,64 @@ class Visitor extends JavascriptVisitor {
     this.new = '';
   }
 
+  /**
+   * Child nodes: literal
+   * @param {LiteralExpressionContext} ctx
+   * @return {String}
+   */
+  visitLiteralExpression(ctx) {
+    ctx.type = this.getPrimitiveType(ctx.literal());
+
+    if (`emit${ctx.type.id}` in this) {
+      return this[`emit${ctx.type.id}`](ctx);
+    }
+
+    if (ctx.type.template) {
+      return ctx.type.template(this.visitChildren(ctx));
+    }
+
+    return this.visitChildren(ctx);
+  }
+
+  /**
+   * Get the type of a node. TODO: nicer way to write it?
+   * @param {LiteralContext} ctx
+   * @return {Symbol}
+   */
+  getPrimitiveType(ctx) {
+    if ('NullLiteral' in ctx) {
+      return this.Types._null;
+    }
+    if ('UndefinedLiteral' in ctx) {
+      return this.Types._undefined;
+    }
+    if ('BooleanLiteral' in ctx) {
+      return this.Types._bool;
+    }
+    if ('StringLiteral' in ctx) {
+      return this.Types._string;
+    }
+    if ('RegularExpressionLiteral' in ctx) {
+      return this.Types._regex;
+    }
+    if ('numericLiteral' in ctx) {
+      const number = ctx.numericLiteral();
+      if ('IntegerLiteral' in number) {
+        return this.Types.Double;
+      }
+      if ('DecimalLiteral' in number) {
+        return this.Types._decimal;
+      }
+      if ('HexIntegerLiteral' in number) {
+        return this.Types._hex;
+      }
+      if ('OctalIntegerLiteral' in number) {
+        return this.Types._octal;
+      }
+    }
+    // TODO: or raise error?
+    return this.Types._undefined;
+  }
   executeJavascript(input) {
     const sandbox = {
       RegExp: RegExp,
@@ -30,12 +88,18 @@ class Visitor extends JavascriptVisitor {
         return new bson.Code(c, s);
       },
       NumberDecimal: function(s) {
-        return bson.Decimal128.fromString(s);
+        if (s === undefined) {
+          s = '0';
+        }
+        return bson.Decimal128.fromString(s.toString());
       },
       NumberInt: function(s) {
         return parseInt(s, 10);
       },
       NumberLong: function(v) {
+        if (v === undefined) {
+          v = 0;
+        }
         return bson.Long.fromNumber(v);
       },
       ISODate: function(s) {

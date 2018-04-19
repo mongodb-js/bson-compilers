@@ -54,6 +54,16 @@ Templates:
                 return `${str}.append(${newStr}, ${pair[1]})`;
             }, '');
         }
+    DoubleTypeTemplate: &DoubleTypeTemplate !!js/function >
+        (literal) => {
+            return `new java.lang.Double(${literal})`;
+        }
+    DoubleTypeArgsTemplate: &DoubleTypeArgsTemplate null
+    LongTypeTemplate: &LongTemplate !!js/function >
+        () => {
+            return 'java.lang.Long';
+        }
+    LongTypeArgsTemplate: &LongSymbolArgsTemplate null
     # BSON Object Method templates
     ObjectIdToJSONTemplate: &ObjectIdToJSONTemplate !!js/function >
         (lhs) => {
@@ -332,8 +342,14 @@ Templates:
             return `${lhs}.toString`;
         }
     # Symbol Templates
-    CodeSymbolTemplate: &CodeSymbolTemplate null # Has emit method
-    CodeSymbolArgsTemplate: &CodeSymbolArgsTemplate null
+    CodeSymbolTemplate: &CodeSymbolTemplate  !!js/function >
+        () => {
+            return '';
+        }
+    CodeSymbolArgsTemplate: &CodeSymbolArgsTemplate !!js/function >
+        (lhs, code, scope) => {
+            return (scope === undefined) ? `Code(${code})` : `CodeWithScope(${code}, ${scope})`;
+        }
     ObjectIdSymbolTemplate: &ObjectIdSymbolTemplate null # Has emit method
     ObjectIdSymbolArgsTemplate: &ObjectIdSymbolArgsTemplate null
     BinarySymbolTemplate: &BinarySymbolTemplate null # Has emit method
@@ -419,10 +435,22 @@ Templates:
             return `${lhs}.parseLong`;
         }
     LongSymbolFromStringArgsTemplate: &LongSymbolFromStringArgsTemplate null
-    MinKeySymbolTemplate: &MinKeySymbolTemplate null
-    MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate null
-    MaxKeySymbolTemplate: &MaxKeySymbolTemplate null
-    MaxKeySymbolArgsTemplate: &MaxKeySymbolArgsTemplate null
+    MinKeySymbolTemplate: &MinKeySymbolTemplate !!js/function >
+        () => {
+            return 'new MinKey()';
+        }
+    MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate !!js/function >
+        () => {
+            return '';
+        }
+    MaxKeySymbolTemplate: &MaxKeySymbolTemplate !!js/function >
+        () => {
+            return 'new MaxKey()';
+        }
+    MaxKeySymbolArgsTemplate: &MaxKeySymbolArgsTemplate !!js/function >
+        () => {
+            return '';
+        }
     TimestampSymbolTemplate: &TimestampSymbolTemplate !!js/function >
         () => {
             return 'BSONTimestamp';

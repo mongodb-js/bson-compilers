@@ -41,7 +41,7 @@ BsonSymbols:
         template: *ObjectIdSymbolTemplate
         argsTemplate: *CodeSymbolArgsTemplate
     Binary: &BinarySymbol
-        id: "Binary"
+        id: "BinaryFromJS"
         callable: *constructor
         args:
             - [ *StringType, *NumericType, *ObjectType ]
@@ -211,7 +211,7 @@ BsonSymbols:
         argsTemplate: *LongSymbolArgsTemplate
     MinKey:
         id: "MinKey"
-        callable: *constructor
+        callable: *func
         args: []
         type: *MinKeyType
         attr: {}
@@ -219,7 +219,7 @@ BsonSymbols:
         argsTemplate: *MinKeySymbolArgsTemplate
     MaxKey:
         id: "MaxKey"
-        callable: *constructor
+        callable: *func
         args: []
         type: *MaxKeyType
         attr: {}

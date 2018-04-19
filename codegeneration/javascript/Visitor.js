@@ -328,7 +328,7 @@ class Visitor extends ECMAScriptVisitor {
         return new bson.Code(c, s);
       },
       NumberDecimal: function(s) {
-        return bson.Decimal128.fromString(s);
+        return bson.Decimal128.fromString(s.toString());
       },
       NumberInt: function(s) {
         return parseInt(s, 10);
@@ -391,7 +391,11 @@ class Visitor extends ECMAScriptVisitor {
           args[i].type === this.Types._integer ||
           args[i].type === this.Types._decimal ||
           args[i].type === this.Types._hex ||
-          args[i].type === this.Types._octal)) {
+          args[i].type === this.Types._octal ||
+          args[i].type === this.Types.Double ||
+          args[i].type === this.Types.Int32 ||
+          args[i].type === this.Types.Long ||
+          args[i].type === this.Types.Decimal128)) {
         continue;
       }
       if (expected[i].indexOf(args[i].type) === -1 && expected[i].indexOf(args[i].type.id) === -1) {

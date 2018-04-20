@@ -140,7 +140,7 @@ class Visitor extends ECMAScriptVisitor {
    * @param {FuncCallExpressionContext} ctx
    * @return {String}
    */
-  visitFuncCallExpression(ctx) {
+  visitFuncCallExpression(ctx, ignoreLong) {
     const lhs = this.visit(ctx.singleExpression());
     let lhsType = ctx.singleExpression().type;
     if (typeof lhsType === 'string') {
@@ -148,7 +148,7 @@ class Visitor extends ECMAScriptVisitor {
     }
 
     // Special case
-    if (`emit${lhsType.id}` in this) {
+    if (!ignoreLong && `emit${lhsType.id}` in this) {
       return this[`emit${lhsType.id}`](ctx);
     }
 
@@ -162,7 +162,7 @@ class Visitor extends ECMAScriptVisitor {
 
     // Check arguments
     const expectedArgs = lhsType.args;
-    let rhs = this.checkArguments(expectedArgs, ctx.arguments().argumentList());
+    let rhs = this.checkArguments(expectedArgs, ctx.arguments().argumentList(), ignoreLong);
 
     // Add new if needed
     const newStr = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR ? this.new : '';
@@ -388,10 +388,12 @@ class Visitor extends ECMAScriptVisitor {
         }
         throw new SemanticArgumentCountMismatchError({message: 'too few arguments'});
       }
-      if (ignoreLong && 'numericLiteral' in args[i] && 'IntegerLiteral' in args[i].numericLiteral()) {
+      if (ignoreLong && 'literal' in args[i] && 'numericLiteral' in args[i].literal() && 'IntegerLiteral' in args[i].literal().numericLiteral()) {
         args[i].type = this.Types._integer;
+        argStr.push(this.visit(args[i].literal()));
+      } else {
+        argStr.push(this.visit(args[i]));
       }
-      argStr.push(this.visit(args[i]));
       if (expected[i].indexOf(this.Types._numeric) !== -1 && (
           args[i].type === this.Types._integer ||
           args[i].type === this.Types._decimal ||

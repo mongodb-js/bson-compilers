@@ -303,6 +303,30 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   emitLongfromBits(ctx) {
     return this.emitLong(ctx);
   }
+  emitInt32(ctx) {
+    return this.visitFuncCallExpression(ctx, true);
+  }
+  emitDouble(ctx) {
+    return this.visitFuncCallExpression(ctx, true);
+  }
+  emitNumber(ctx) {
+    return this.visitFuncCallExpression(ctx, true);
+  }
+  emitTimestamp(ctx) {
+    return this.visitFuncCallExpression(ctx, true);
+  }
+  emitshiftLeft(ctx) {
+    return this.visitFuncCallExpression(ctx, true);
+  }
+  emitshiftRight(ctx) {
+    return this.visitFuncCallExpression(ctx, true);
+  }
+  emitfromInt(ctx) {
+    return this.visitFuncCallExpression(ctx, true);
+  }
+  emitfromString(ctx) {
+    return this.visitFuncCallExpression(ctx, true);
+  }
 
   /*
    * This is a bit weird because we can just convert to string directly.

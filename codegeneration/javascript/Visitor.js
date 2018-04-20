@@ -290,7 +290,7 @@ class Visitor extends ECMAScriptVisitor {
     if ('numericLiteral' in ctx) {
       const number = ctx.numericLiteral();
       if ('IntegerLiteral' in number) {
-        return this.Types._integer;
+        return this.Types.Long;
       }
       if ('DecimalLiteral' in number) {
         return this.Types._decimal;
@@ -362,10 +362,12 @@ class Visitor extends ECMAScriptVisitor {
    * @param {Array} expected - An array of arrays where each subarray represents
    * possible argument types for that index.
    * @param {ArgumentListContext} argumentList - null if empty.
+   * @param {Boolean} ignoreLong - if defined, then don't generate arguments that
+   * are integer literals as long. Required so we don't have "new Long(1) --> new Long(new Long(1))"
    *
    * @returns {Array}
    */
-  checkArguments(expected, argumentList) {
+  checkArguments(expected, argumentList, ignoreLong) {
     const argStr = [];
     if (!argumentList) {
       if (expected.length === 0) {
@@ -385,6 +387,9 @@ class Visitor extends ECMAScriptVisitor {
           return argStr;
         }
         throw new SemanticArgumentCountMismatchError({message: 'too few arguments'});
+      }
+      if (ignoreLong && 'numericLiteral' in args[i] && 'IntegerLiteral' in args[i].numericLiteral()) {
+        args[i].type = this.Types._integer;
       }
       argStr.push(this.visit(args[i]));
       if (expected[i].indexOf(this.Types._numeric) !== -1 && (

@@ -104,7 +104,7 @@ BsonTypes:
                 <<: *__func
                 id: "LongtoString" # Needs emit method
                 args:
-                    - [ *IntegerType, null ]
+                    - [ *IntegerType, *LongType, null ]
                 type: *StringType
             equals:
                 <<: *__func
@@ -272,7 +272,7 @@ BsonTypes:
                 <<: *__func
                 id: "shiftLeft"
                 args:
-                    - [ *IntegerType ]
+                    - [ *IntegerType, *LongType ]
                 type: "Long"
                 template: *LongShiftLeftTemplate
                 argsTemplate: *LongShiftLeftArgsTemplate
@@ -280,7 +280,7 @@ BsonTypes:
                 <<: *__func
                 id: "shiftRight"
                 args:
-                    - [ *IntegerType ]
+                    - [ *IntegerType, *LongType ]
                 type: "Long"
                 template: *LongShiftRightTemplate
                 argsTemplate: *LongShiftRightArgsTemplate

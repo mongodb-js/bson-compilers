@@ -140,7 +140,7 @@ class Visitor extends ECMAScriptVisitor {
    * @param {FuncCallExpressionContext} ctx
    * @return {String}
    */
-  visitFuncCallExpression(ctx) {
+  visitFuncCallExpression(ctx, ignoreLong) {
     const lhs = this.visit(ctx.singleExpression());
     let lhsType = ctx.singleExpression().type;
     if (typeof lhsType === 'string') {
@@ -148,7 +148,7 @@ class Visitor extends ECMAScriptVisitor {
     }
 
     // Special case
-    if (`emit${lhsType.id}` in this) {
+    if (!ignoreLong && `emit${lhsType.id}` in this) {
       return this[`emit${lhsType.id}`](ctx);
     }
 
@@ -162,7 +162,7 @@ class Visitor extends ECMAScriptVisitor {
 
     // Check arguments
     const expectedArgs = lhsType.args;
-    let rhs = this.checkArguments(expectedArgs, ctx.arguments().argumentList());
+    let rhs = this.checkArguments(expectedArgs, ctx.arguments().argumentList(), ignoreLong);
 
     // Add new if needed
     const newStr = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR ? this.new : '';
@@ -290,7 +290,7 @@ class Visitor extends ECMAScriptVisitor {
     if ('numericLiteral' in ctx) {
       const number = ctx.numericLiteral();
       if ('IntegerLiteral' in number) {
-        return this.Types._integer;
+        return this.Types.Long;
       }
       if ('DecimalLiteral' in number) {
         return this.Types._decimal;
@@ -362,10 +362,12 @@ class Visitor extends ECMAScriptVisitor {
    * @param {Array} expected - An array of arrays where each subarray represents
    * possible argument types for that index.
    * @param {ArgumentListContext} argumentList - null if empty.
+   * @param {Boolean} ignoreLong - if defined, then don't generate arguments that
+   * are integer literals as long. Required so we don't have "new Long(1) --> new Long(new Long(1))"
    *
    * @returns {Array}
    */
-  checkArguments(expected, argumentList) {
+  checkArguments(expected, argumentList, ignoreLong) {
     const argStr = [];
     if (!argumentList) {
       if (expected.length === 0) {
@@ -386,7 +388,12 @@ class Visitor extends ECMAScriptVisitor {
         }
         throw new SemanticArgumentCountMismatchError({message: 'too few arguments'});
       }
-      argStr.push(this.visit(args[i]));
+      if (ignoreLong && 'literal' in args[i] && 'numericLiteral' in args[i].literal() && 'IntegerLiteral' in args[i].literal().numericLiteral()) {
+        args[i].type = this.Types._integer;
+        argStr.push(this.visit(args[i].literal()));
+      } else {
+        argStr.push(this.visit(args[i]));
+      }
       if (expected[i].indexOf(this.Types._numeric) !== -1 && (
           args[i].type === this.Types._integer ||
           args[i].type === this.Types._decimal ||

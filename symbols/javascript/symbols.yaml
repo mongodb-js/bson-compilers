@@ -173,8 +173,8 @@ BsonSymbols:
                 id: "LongfromBits" # Needs emit method
                 callable: *func
                 args:
-                    - [ *IntegerType ]
-                    - [ *IntegerType ]
+                    - [ *IntegerType, *LongType ]
+                    - [ *IntegerType, *LongType ]
                 type: *LongType
                 attr: {}
                 template: *LongSymbolFromBitsTemplate
@@ -183,7 +183,7 @@ BsonSymbols:
                 id: "fromInt"
                 callable: *func
                 args:
-                    - [ *IntegerType ]
+                    - [ *IntegerType, *LongType ]
                 type: *LongType
                 attr: {}
                 template: *LongSymbolFromIntTemplate
@@ -202,7 +202,7 @@ BsonSymbols:
                 callable: *func
                 args:
                     - [ *StringType ]
-                    - [ *IntegerType, null ]
+                    - [ *IntegerType, *LongType, null ]
                 type: *LongType
                 attr: {}
                 template: *LongSymbolFromStringTemplate

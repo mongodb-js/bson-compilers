@@ -76,8 +76,6 @@ BsonTypes:
                 id: "toJSON"
                 type: *IntegerType
                 template: *DoubleToJSONTemplate
-        template: *DoubleTypeTemplate
-        argsTemplate: *DoubleTypeArgsTemplate
     NumberInt: &Int32Type
         <<: *__type
         id: "NumberInt"

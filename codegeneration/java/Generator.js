@@ -256,7 +256,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     ctx.type = this.Types.Long;
     let longstr;
     try {
-      longstr = this.executeJavascript(ctx.getText()).toString();
+      longstr = this.executeJavascript(`new ${ctx.getText()}`).toString();
     } catch (error) {
       throw new SemanticGenericError({message: error.message});
     }

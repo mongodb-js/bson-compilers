@@ -44,7 +44,7 @@
         "description": "Decimal 2.001",
         "javascript": "2.001",
         "python": "2.001",
-        "java": "new java.lang.Float(2.001)",
+        "java": "new java.lang.Double(2.001)",
         "csharp": "2.001"
       },
       {

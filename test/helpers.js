@@ -21,8 +21,6 @@ const unsupported = {
     },
     shell: {
       java: {
-        'bson-constructors': [],
-        'js-constructors': [ '*' ],
         'bson-object-methods': [ '*' ],
         'bson-utils': [ '*' ],
         'js-utils': [ '*' ]

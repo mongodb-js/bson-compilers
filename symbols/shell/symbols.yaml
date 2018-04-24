@@ -62,7 +62,7 @@ BsonSymbols:
         template: *DBRefSymbolTemplate
         argsTemplate: *DBRefSymbolArgsTemplate
     NumberInt:
-        id: "NumberInt"
+        id: "Int32"
         callable: *constructor
         args:
             - [ *IntegerType, *StringType, null ]
@@ -233,7 +233,7 @@ JSSymbols:
         id: "Number"
         callable: *constructor
         args:
-            - [ *NumericType, *StringType, null ]
+            - [ *IntegerType, *StringType, null ]
         type: *NumericType
         attr: {} # TODO: no built-in number funcs added yet
         template: *NumberSymbolTemplate

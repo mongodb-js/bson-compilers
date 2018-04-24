@@ -22,6 +22,7 @@ class Visitor extends JavascriptVisitor {
    * @return {String}
    */
   visitNewExpression(ctx) {
+    ctx.singleExpression().wasNew = true;
     if (!('arguments' in ctx.singleExpression())) {
       ctx.arguments = () => { return { argumentList: () => { return false; }}; };
       ctx.type = ctx.singleExpression().type;

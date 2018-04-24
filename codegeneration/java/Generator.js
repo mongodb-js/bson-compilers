@@ -85,10 +85,16 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * @return {String}
    */
   emitDate(ctx) {
+    let toStr = '';
     ctx.type = this.Types.Date;
+    if (!ctx.wasNew) {
+      ctx.type = this.Types._string;
+      toStr = '.toString()';
+    }
+
     const args = ctx.arguments();
     if (!args.argumentList()) {
-      return 'new java.util.Date()';
+      return `new java.util.Date()${toStr}`;
     }
     let epoch;
     try {
@@ -96,7 +102,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     } catch (error) {
       throw new SemanticGenericError({message: error.message});
     }
-    return `new java.util.Date(${epoch})`;
+    return `new java.util.Date(new java.lang.Long(${epoch}))${toStr}`;
   }
 
   /**

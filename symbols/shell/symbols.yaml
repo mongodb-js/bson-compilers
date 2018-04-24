@@ -254,6 +254,22 @@ JSSymbols:
                 argsTemplate: *DateSymbolNowArgsTemplate
         template: *DateSymbolTemplate
         argsTemplate: *DateSymbolArgsTemplate
+    ISODate: # Needs emit method
+        id: "Date"
+        callable: *constructor
+        args: null
+        type: *DateType
+        attr:
+            now:
+                id: "now"
+                callable: *constructor
+                args: []
+                type: *DateType
+                attr: {}
+                template: *DateSymbolNowTemplate
+                argsTemplate: *DateSymbolNowArgsTemplate
+        template: *DateSymbolTemplate
+        argsTemplate: *DateSymbolArgsTemplate
     RegExp: # Needs emit method
         id: "RegExp"
         callable: *constructor

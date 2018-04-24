@@ -87,7 +87,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   emitDate(ctx) {
     let toStr = '';
     ctx.type = this.Types.Date;
-    if (!ctx.wasNew) {
+    if (!ctx.wasNew && this.visit(ctx.singleExpression()) !== 'ISODate') {
       ctx.type = this.Types._string;
       toStr = '.toString()';
     }

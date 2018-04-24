@@ -3,7 +3,7 @@ BsonSymbols:
         id: "Code"
         callable: *constructor
         args:
-            - [ *StringType ]
+            - [ *StringType, null ]
             - [ *ObjectType, null ]
         type: *CodeType
         attr: {}
@@ -44,7 +44,7 @@ BsonSymbols:
         id: "BinData"
         callable: *constructor
         args:
-            - [ *NumericType ]
+            - [ *IntegerType ]
             - [ *StringType ]
         type: *BinaryType
         attr: {}
@@ -61,20 +61,11 @@ BsonSymbols:
         attr: {}
         template: *DBRefSymbolTemplate
         argsTemplate: *DBRefSymbolArgsTemplate
-    Double:
-        id: "Double"
-        callable: *constructor
-        args:
-            - [ *NumericType, *StringType ]
-        type: *DoubleType
-        attr: {}
-        template: *DoubleSymbolTemplate
-        argsTemplate: *DoubleSymbolArgsTemplate
     NumberInt:
         id: "NumberInt"
         callable: *constructor
         args:
-            - [ *NumericType, *StringType ]
+            - [ *IntegerType, *StringType, null ]
         type: *Int32Type
         attr: {}
         template: *Int32SymbolTemplate
@@ -183,11 +174,11 @@ BsonSymbols:
         template: *MaxKeySymbolTemplate
         argsTemplate: *MaxKeySymbolArgsTemplate
     Timestamp:
-        id: "TimestampFromShell"
+        id: "Timestamp"
         callable: *constructor
         args:
-            - [ *NumericType, null ]
-            - [ *NumericType, null ]
+            - [ *IntegerType, null ]
+            - [ *IntegerType, null ]
         type: *TimestampType
         attr: {}
         template: *TimestampSymbolTemplate
@@ -242,7 +233,7 @@ JSSymbols:
         id: "Number"
         callable: *constructor
         args:
-            - [ *NumericType, *StringType ]
+            - [ *NumericType, *StringType, null ]
         type: *NumericType
         attr: {} # TODO: no built-in number funcs added yet
         template: *NumberSymbolTemplate

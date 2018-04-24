@@ -61,21 +61,6 @@ BsonTypes:
                 <<: *__func
                 id: "DBReftoJSON" # Needs emit method
                 type: *ObjectType
-    Double: &DoubleType
-        <<: *__type
-        id: "Double"
-        type: *ObjectType
-        attr:
-            valueOf:
-                <<: *__func
-                id: "valueOf"
-                type: *IntegerType
-                template: *DoubleValueOfTemplate
-            toJSON:
-                <<: *__func
-                id: "toJSON"
-                type: *IntegerType
-                template: *DoubleToJSONTemplate
     NumberInt: &Int32Type
         <<: *__type
         id: "NumberInt"

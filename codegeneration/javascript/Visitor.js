@@ -409,7 +409,7 @@ class Visitor extends ECMAScriptVisitor {
   checkArguments(expected, argumentList) {
     const argStr = [];
     if (!argumentList) {
-      if (expected.length === 0) {
+      if (expected.length === 0 || expected[0].indexOf(null) !== -1) {
         return argStr;
       }
       throw new SemanticArgumentCountMismatchError({message: 'arguments required'});

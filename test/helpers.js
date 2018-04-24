@@ -11,7 +11,6 @@ const unsupported = {
     javascript: {
       java: {},
       python: {
-        'js-constructors': [ '*' ],
         'bson-object-methods': [ '*' ],
         'bson-utils': [ '*' ],
         'js-utils': [ '*' ]

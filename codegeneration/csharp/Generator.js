@@ -1,9 +1,5 @@
 /* eslint complexity: 0 */
-<<<<<<< HEAD
 const { doubleQuoteStringify, removeQuotes } = require('../../helper/format');
-=======
-const {doubleQuoteStringify} = require('../../helper/format');
->>>>>>> work with objects and arrays
 const {
   SemanticArgumentCountMismatchError,
   SemanticGenericError,
@@ -256,6 +252,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
   /**
    * BSON Decimal128 Constructor
    *
+<<<<<<< HEAD
    * @param {Decimal128ConstructorObject} ctx
    *
    * @returns {string} - new Decimal128(val)
@@ -278,7 +275,6 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
   // TODO: not sure if we should still set the type to OCTAL or INTEGER
   visitOctalIntegerLiteral(ctx) {
     ctx.type = this.Types._octal;
-
     return parseInt(this.visitChildren(ctx), 10);
   }
 

@@ -213,7 +213,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * Manually check arguments here because first argument can be any JS, and we
    * don't want to ever visit that node.
    *
-   * TODO: could move this to CodeGenerator and use template.
+   * TODO: could move this to javascript/visitor and use template.
    *
    * child nodes: arguments
    * grandchild nodes: argumentList?
@@ -259,7 +259,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   }
 
   /**
-   * TODO: Could move this to CodeGenerator and use template
+   * TODO: Could move this to javascript/Visitor and use template
    *
    * child nodes: arguments
    * grandchild nodes: argumentList?
@@ -288,7 +288,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   }
 
   /**
-   * TODO: Maybe move this to CodeGenerator and use template?
+   * TODO: Maybe move this to javascript/Visitor and use template?
    *
    * child nodes: arguments
    * grandchild nodes: argumentList?
@@ -320,7 +320,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   }
 
   /**
-   * TODO: Maybe move this to CodeGenerator and use template?
+   * TODO: Maybe move this to javascript/Visitor and use template?
    *
    * child nodes: arguments
    * grandchild nodes: argumentList?
@@ -343,7 +343,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   }
 
   /**
-   * TODO: Could move this to CodeGenerator and use template
+   * TODO: Could move this to javascript/Visitor and use template
    *
    * @param {FuncCallExpressionContext} ctx
    * @return {String}

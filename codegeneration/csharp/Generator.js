@@ -236,9 +236,9 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
   visitDateConstructorExpression(ctx) {
     const argumentList = ctx.arguments().argumentList();
 
-    if (argumentList === null) {
-      return 'DateTime.Now';
-    }
+  emitDate(ctx) {
+    ctx.type = this.Types.Date;
+    if (!ctx.arguments().argumentList()) return 'DateTime.Now';
 
     let dateStr;
 
@@ -259,6 +259,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
 
     return `new DateTime(${dateStr})`;
   }
+
   /**
    * BSON RegExp Constructor
    *

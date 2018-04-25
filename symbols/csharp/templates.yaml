@@ -42,16 +42,8 @@ Templates:
         }
     ObjectTypeTemplate: &ObjectTypeTemplate !!js/function >
         (literal) => {
-<<<<<<< HEAD
           if (literal === '') return `new BsonDocument()`;
           return `new BsonDocument${literal}`;
-=======
-          if (literal === '') {
-            return `new BsonDocument()`;
-          } else {
-            return `new BsonDocument${literal}`;
-          }
->>>>>>> get numbers working csharp with symbol + emit
         }
     ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate !!js/function >
         (args) => {
@@ -74,7 +66,6 @@ Templates:
           }, '');
         }
     # BSON Object Method templates
-<<<<<<< HEAD
     ObjectIdToStringTemplate: &ObjectIdToStringTemplate null
     ObjectIdToStringArgsTemplate: &ObjectIdToStringArgsTemplate null
     ObjectIdEqualsTemplate: &ObjectIdEqualsTemplate null
@@ -112,48 +103,6 @@ Templates:
           return `${lhs}.ToDouble`;
         }
     LongToNumberArgsTemplate: &LongToNumberArgsTemplate null
-=======
-    ObjectIdToJSONTemplate: &ObjectIdToJSONTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.toHexString`;
-        }
-    BinaryValueTemplate: &BinaryValueTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.getData`;
-        }
-    BinaryToJSONTemplate: &BinaryToJSONTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.toString`;
-        }
-    DoubleToJSONTemplate: &DoubleToJSONTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.doubleValue`;
-        }
-    DoubleValueOfTemplate: &DoubleValueOfTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.doubleValue`;
-        }
-    Int32ToJSONTemplate: &Int32ToJSONTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.intValue`;
-        }
-    Int32ValueOfTemplate: &Int32ValueOfTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.intValue`;
-        }
-    LongToJSONTemplate: &LongToJSONTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.toString`;
-        }
-    LongToIntTemplate: &LongToIntTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.intValue`;
-        }
-    LongToNumberTemplate: &LongToNumberTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.floatValue`;
-        }
->>>>>>> get numbers working csharp with symbol + emit
     LongAddTemplate: &LongAddTemplate !!js/function >
         (lhs) => {
           return lhs;
@@ -220,7 +169,6 @@ Templates:
         }
     LongShiftLeftTemplate: &LongShiftLeftTemplate !!js/function >
         () => {
-<<<<<<< HEAD
           return '';
         }
     LongShiftLeftArgsTemplate: &LongShiftLeftArgsTemplate !!js/function >
@@ -240,26 +188,6 @@ Templates:
           return `${lhs}.CompareTo`;
         }
     LongCompareArgsTemplate: &LongCompareArgsTemplate null
-=======
-          return 'java.lang.Long.rotateLeft';
-        }
-    LongShiftLeftArgsTemplate: &LongShiftLeftArgsTemplate !!js/function >
-        (lhs, arg) => {
-          return `(${lhs}, ${arg})`;
-        }
-    LongShiftRightTemplate: &LongShiftRightTemplate !!js/function >
-        () => {
-          return 'java.lang.Long.rotateRight';
-        }
-    LongShiftRightArgsTemplate: &LongShiftRightArgsTemplate !!js/function >
-        (lhs, arg) => {
-          return `(${lhs}, ${arg})`;
-        }
-    LongCompareTemplate: &LongCompareTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.compareTo`;
-        }
->>>>>>> get numbers working csharp with symbol + emit
     LongIsOddTemplate: &LongIsOddTemplate !!js/function >
         (lhs) => {
           return lhs;
@@ -270,7 +198,6 @@ Templates:
         }
     LongIsZeroTemplate: &LongIsZeroTemplate !!js/function >
         (lhs) => {
-<<<<<<< HEAD
           return `${lhs}.Equals`;
         }
     LongIsZeroArgsTemplate: &LongIsZeroArgsTemplate !!js/function >
@@ -284,21 +211,6 @@ Templates:
     LongIsNegativeArgsTemplate: &LongIsNegativeArgsTemplate !!js/function >
         () => {
           return '(new BsonInt64(Convert.ToInt32((0))) < 0';
-=======
-          return `${lhs}.equals`;
-        }
-    LongIsZeroArgsTemplate: &LongIsZeroArgsTemplate !!js/function >
-        () => {
-          return '(new java.lang.Long(0))';
-        }
-    LongIsNegativeTemplate: &LongIsNegativeTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.compareTo`;
-        }
-    LongIsNegativeArgsTemplate: &LongIsNegativeArgsTemplate !!js/function >
-        () => {
-          return '(new java.lang.Long(0)) < 0';
->>>>>>> get numbers working csharp with symbol + emit
         }
     LongNegateTemplate: &LongNegateTemplate !!js/function >
         () => {
@@ -318,11 +230,7 @@ Templates:
         }
     LongNotEqualsTemplate: &LongNotEqualsTemplate !!js/function >
         (lhs) => {
-<<<<<<< HEAD
           return `${lhs}.CompareTo`;
-=======
-          return `${lhs}.compareTo`;
->>>>>>> get numbers working csharp with symbol + emit
         }
     LongNotEqualsArgsTemplate: &LongNotEqualsArgsTemplate !!js/function >
         (lhs, arg) => {
@@ -330,11 +238,7 @@ Templates:
         }
     LongGreaterThanTemplate: &LongGreaterThanTemplate !!js/function >
         (lhs) => {
-<<<<<<< HEAD
           return `${lhs}.CompareTo`;
-=======
-          return `${lhs}.compareTo`;
->>>>>>> get numbers working csharp with symbol + emit
         }
     LongGreaterThanArgsTemplate: &LongGreaterThanArgsTemplate !!js/function >
         (lhs, arg) => {
@@ -342,11 +246,7 @@ Templates:
         }
     LongGreaterThanOrEqualTemplate: &LongGreaterThanOrEqualTemplate !!js/function >
         (lhs) => {
-<<<<<<< HEAD
           return `${lhs}.CompareTo`;
-=======
-          return `${lhs}.compareTo`;
->>>>>>> get numbers working csharp with symbol + emit
         }
     LongGreaterThanOrEqualArgsTemplate: &LongGreaterThanOrEqualArgsTemplate !!js/function >
         (lhs, arg) => {
@@ -354,11 +254,7 @@ Templates:
         }
     LongLessThanTemplate: &LongLessThanTemplate !!js/function >
         (lhs) => {
-<<<<<<< HEAD
           return `${lhs}.CompareTo`;
-=======
-          return `${lhs}.compareTo`;
->>>>>>> get numbers working csharp with symbol + emit
         }
     LongLessThanArgsTemplate: &LongLessThanArgsTemplate !!js/function >
         (lhs, arg) => {
@@ -366,17 +262,12 @@ Templates:
         }
     LongLessThanOrEqualTemplate: &LongLessThanOrEqualTemplate !!js/function >
         (lhs) => {
-<<<<<<< HEAD
           return `${lhs}.CompareTo`;
-=======
-          return `${lhs}.compareTo`;
->>>>>>> get numbers working csharp with symbol + emit
         }
     LongLessThanOrEqualArgsTemplate: &LongLessThanOrEqualArgsTemplate !!js/function >
         (lhs, arg) => {
           return `(${arg}) <= 0`;
         }
-<<<<<<< HEAD
     TimestampToStringTemplate: &TimestampToStringTemplate null
     TimestampToStringArgsTemplate: &TimestampToStringArgsTemplate null
     TimestampEqualsTemplate: &TimestampEqualsTemplate null
@@ -399,27 +290,6 @@ Templates:
     TimestampNotEqualsTemplate: &TimestampNotEqualsTemplate !!js/function >
         (lhs) => {
           return `${lhs}.CompareTo`;
-=======
-    TimestampGetLowBitsTemplate: &TimestampGetLowBitsTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.getTime`;
-        }
-    TimestampGetHighBitsTemplate: &TimestampGetHighBitsTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.getInc`;
-        }
-    TimestampToJSONTemplate: &TimestampToJSONTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.toString`;
-        }
-    TimestampCompareTemplate: &TimestampCompareTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.compareTo`;
-        }
-    TimestampNotEqualsTemplate: &TimestampNotEqualsTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.compareTo`;
->>>>>>> get numbers working csharp with symbol + emit
         }
     TimestampNotEqualsArgsTemplate: &TimestampNotEqualsArgsTemplate !!js/function >
         (lhs, arg) => {
@@ -427,11 +297,7 @@ Templates:
         }
     TimestampGreaterThanTemplate: &TimestampGreaterThanTemplate !!js/function >
         (lhs) => {
-<<<<<<< HEAD
           return `${lhs}.CompareTo`;
-=======
-          return `${lhs}.compareTo`;
->>>>>>> get numbers working csharp with symbol + emit
         }
     TimestampGreaterThanArgsTemplate: &TimestampGreaterThanArgsTemplate !!js/function >
         (lhs, arg) => {
@@ -439,11 +305,7 @@ Templates:
         }
     TimestampGreaterThanOrEqualTemplate: &TimestampGreaterThanOrEqualTemplate !!js/function >
         (lhs) => {
-<<<<<<< HEAD
           return `${lhs}.CompareTo`;
-=======
-          return `${lhs}.compareTo`;
->>>>>>> get numbers working csharp with symbol + emit
         }
     TimestampGreaterThanOrEqualArgsTemplate: &TimestampGreaterThanOrEqualArgsTemplate !!js/function >
         (lhs, arg) => {
@@ -451,11 +313,7 @@ Templates:
         }
     TimestampLessThanTemplate: &TimestampLessThanTemplate !!js/function >
         (lhs) => {
-<<<<<<< HEAD
           return `${lhs}.CompareTo`;
-=======
-          return `${lhs}.compareTo`;
->>>>>>> get numbers working csharp with symbol + emit
         }
     TimestampLessThanArgsTemplate: &TimestampLessThanArgsTemplate !!js/function >
         (lhs, arg) => {
@@ -463,11 +321,7 @@ Templates:
         }
     TimestampLessThanOrEqualTemplate: &TimestampLessThanOrEqualTemplate !!js/function >
         (lhs) => {
-<<<<<<< HEAD
           return `${lhs}.CompareTo`;
-=======
-          return `${lhs}.compareTo`;
->>>>>>> get numbers working csharp with symbol + emit
         }
     TimestampLessThanOrEqualArgsTemplate: &TimestampLessThanOrEqualArgsTemplate !!js/function >
         (lhs, arg) => {
@@ -475,7 +329,6 @@ Templates:
         }
     SymbolValueOfTemplate: &SymbolValueOfTemplate !!js/function >
         (lhs) => {
-<<<<<<< HEAD
           return `${lhs}.AsBsonSymbol`;
         }
     SymbolValueOfArgsTemplate: &SymbolValueOfArgsTemplate null
@@ -489,22 +342,6 @@ Templates:
           return `${lhs}.ToString`;
         }
     SymbolToStringArgsTemplate: &SymbolToStringArgsTemplate null
-=======
-          return `${lhs}.getSymbol`;
-        }
-    SymbolInspectTemplate: &SymbolInspectTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.getSymbol`;
-        }
-    SymbolToJSONTemplate: &SymbolToJSONTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.toString`;
-        }
-    SymbolToStringTemplate: &SymbolToStringTemplate !!js/function >
-        (lhs) => {
-          return `${lhs}.toString`;
-        }
->>>>>>> get numbers working csharp with symbol + emit
     # Symbol Templates
     CodeSymbolTemplate: &CodeSymbolTemplate null # Has emit method
     CodeSymbolArgsTemplate: &CodeSymbolArgsTemplate null # Has emit method
@@ -540,14 +377,10 @@ Templates:
         () => {
           return 'BsonBinarySubType.UserDefined';
         }
-<<<<<<< HEAD
     DBRefSymbolTemplate: &DBRefSymbolTemplate !!js/function >
         () => {
           return 'MongoDBRef'
         }
-=======
-    DBRefSymbolTemplate: &DBRefSymbolTemplate null
->>>>>>> get numbers working csharp with symbol + emit
     DBRefSymbolArgsTemplate: &DBRefSymbolArgsTemplate null
     DoubleSymbolTemplate: &DoubleSymbolTemplate !!js/function >
         (literal) => {
@@ -583,17 +416,10 @@ Templates:
     LongSymbolFromNumberArgsTemplate: &LongSymbolFromNumberArgsTemplate null
     LongSymbolFromStringTemplate: &LongSymbolFromStringTemplate null
     LongSymbolFromStringArgsTemplate: &LongSymbolFromStringArgsTemplate null
-<<<<<<< HEAD
     MinKeySymbolTemplate: &MinKeySymbolTemplate null # Has emit method
     MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate null # Has emit method
     MaxKeySymbolTemplate: &MaxKeySymbolTemplate null # Has emit method
     MaxKeySymbolArgsTemplate: &MaxKeySymbolArgsTemplate null # Has emit method
-=======
-    MinKeySymbolTemplate: &MinKeySymbolTemplate null
-    MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate null
-    MaxKeySymbolTemplate: &MaxKeySymbolTemplate null
-    MaxKeySymbolArgsTemplate: &MaxKeySymbolArgsTemplate null
->>>>>>> get numbers working csharp with symbol + emit
     TimestampSymbolTemplate: &TimestampSymbolTemplate !!js/function >
         () => {
             return 'BsonTimestamp';
@@ -610,11 +436,7 @@ Templates:
     Decimal128SymbolArgsTemplate: &Decimal128SymbolArgsTemplate null
     Decimal128SymbolFromStringTemplate: &Decimal128SymbolFromStringTemplate !!js/function >
         (lhs) => {
-<<<<<<< HEAD
             return `${lhs}.TryParse`;
-=======
-            return `${lhs}.parse`;
->>>>>>> get numbers working csharp with symbol + emit
         }
     Decimal128SymbolFromStringArgsTemplate: &Decimal128SymbolFromStringArgsTemplate null
     Decimal128ToStringTemplate: &Decimal128ToStringTemplate null

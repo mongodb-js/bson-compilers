@@ -12,6 +12,10 @@ const unsupported = {
       java: {},
       python: {},
       csharp: {
+<<<<<<< HEAD
+=======
+        'bson-constructors': [ 'DBRef', 'BSONRegExp', 'Decimal128' ],
+>>>>>>> make min/max key emit in generator
         'js-constructors': [ '*' ],
         'bson-object-methods': [ '*' ],
         'bson-utils': [ '*' ],

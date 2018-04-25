@@ -167,6 +167,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
     return `new BsonInt64(Convert.ToInt32(${longstr}))`;
   }
 
+<<<<<<< HEAD
   /**
    * BSON MinKey Constructor
    * needs to be in emit, since does not need a 'new' keyword
@@ -178,6 +179,83 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
   emitMinKey(ctx) {
     ctx.type = this.Types.MinKey;
     return 'BsonMinKey.Value';
+=======
+  emitMinKey(ctx) {
+    ctx.type = this.Types.MinKey;
+    return 'BsonMinKey.Value';
+  }
+
+  emitMaxKey(ctx) {
+    ctx.type = this.Types.MaxKey;
+    return 'BsonMaxKey.Value';
+  }
+
+  // c# does not have octal numbers, so we need to convert it to reg integer
+  // TODO: not sure if we should still set the type to OCTAL or INTEGER
+  visitOctalIntegerLiteral(ctx) {
+    ctx.type = this.Types._octal;
+
+    return parseInt(this.visitChildren(ctx), 10);
+  }
+
+  /*  ************** built-in js identifiers **************** */
+
+  // adjust the Number constructor;
+  // returns new int(num)
+  visitNumberConstructorExpression(ctx) {
+    const argList = ctx.arguments().argumentList();
+
+    if (!argList || argList.singleExpression().length !== 1) {
+      throw new SemanticArgumentCountMismatchError({
+        message: 'Number requires one argument'
+      });
+    }
+
+    const arg = argList.singleExpression()[0];
+    const number = this.removeQuotes(this.visit(arg));
+
+    if (
+      (
+        arg.type !== this.Types._string &&
+        arg.type !== this.Types._decimal &&
+        arg.type !== this.Types._integer
+      )
+      || isNaN(Number(number))
+    ) {
+      throw new SemanticTypeError({
+        message: 'Number requires a number or a string argument'
+      });
+    }
+
+    return `new int(${number})`;
+  }
+
+  visitDateConstructorExpression(ctx) {
+    const argumentList = ctx.arguments().argumentList();
+
+    if (argumentList === null) {
+      return 'DateTime.Now';
+    }
+
+    let dateStr;
+
+    try {
+      const epoch = this.executeJavascript(ctx.getText());
+
+      dateStr = [
+        epoch.getUTCFullYear(),
+        (epoch.getUTCMonth() + 1),
+        epoch.getUTCDate(),
+        epoch.getUTCHours(),
+        epoch.getUTCMinutes(),
+        epoch.getUTCSeconds()
+      ].join(', ');
+    } catch (error) {
+      throw new SemanticGenericError({message: error.message});
+    }
+
+    return `new DateTime(${dateStr})`;
+>>>>>>> make min/max key emit in generator
   }
 
   /**
@@ -250,6 +328,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
   }
 
   /**
+<<<<<<< HEAD
    * BSON Decimal128 Constructor
    *
 <<<<<<< HEAD
@@ -279,6 +358,52 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
   }
 
   /*  ************** built-in js identifiers **************** */
+=======
+   * Visit Code Constructor
+   *
+   * @param {object} ctx
+   * @returns {string}
+   */
+  visitBSONCodeConstructor(ctx) {
+    const argumentList = ctx.arguments().argumentList();
+
+    if (
+      argumentList === null ||
+      (argumentList.getChildCount() !== 1 && argumentList.getChildCount() !== 3)
+    ) {
+      throw new SemanticArgumentCountMismatchError();
+    }
+
+    const argumentListExpression = argumentList.singleExpression();
+    const code = doubleQuoteStringify(argumentListExpression[0].getText());
+
+    if (argumentListExpression.length === 2) {
+      /* NOTE: we have to visit the subtree first before type checking or type may
+      not be set. We might have to just suck it up and do two passes, but maybe
+      we can avoid it for now. */
+      const scope = this.visit(argumentListExpression[1]);
+
+      if (argumentListExpression[1].type !== this.Types._object) {
+        throw new SemanticTypeError({
+          message: 'Code requires scope to be an object'
+        });
+      }
+
+      return `new BsonJavaScriptWithScope(@${code}, ${scope})`;
+    }
+
+    return `new BsonJavaScript(@${code})`;
+  }
+
+  /**
+   * Visit Double Constructor
+   *
+   * @param {object} ctx
+   * @returns {string}
+   */
+  visitBSONDoubleConstructor(ctx) {
+    const argumentList = ctx.arguments().argumentList();
+>>>>>>> make min/max key emit in generator
 
   // adjust the Number constructor;
   // returns new int(num)
@@ -307,10 +432,25 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
       });
     }
 
+<<<<<<< HEAD
     return `new int(${number})`;
   }
 
   visitDateConstructorExpression(ctx) {
+=======
+    double = doubleQuoteStringify(double);
+
+    return `new BsonDouble(Convert.ToDouble(${double}))`;
+  }
+
+  /**
+   * Visit BSON Timestamp Constructor
+   *
+   * @param {object} ctx
+   * @returns {string}
+   */
+  visitBSONTimestampConstructor(ctx) {
+>>>>>>> make min/max key emit in generator
     const argumentList = ctx.arguments().argumentList();
 
     if (argumentList === null) {
@@ -369,4 +509,58 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
 
     return obj;
   }
+<<<<<<< HEAD
+=======
+
+  /**
+   * TODO: Is it okay to sort by terminal?
+   * Child nodes: (elision* singleExpression*)+
+   *
+   * @param {ElementListContext} ctx
+   * @return {String}
+   */
+  visitElementList(ctx) {
+    const children = ctx.children.filter((child) => (
+      child.constructor.name !== 'TerminalNodeImpl'
+    ));
+
+    return this.visitChildren(ctx, {children, separator: ', '});
+  }
+
+  /**
+   * TODO: Is it okay to sort by terminal?
+   * Child nodes: (elision* singleExpression*)+
+   *
+   * @param {ElementListContext} ctx
+   * @return {String}
+   */
+  visitArgumentList(ctx) {
+    const children = ctx.children.filter((child) => (
+      child.constructor.name !== 'TerminalNodeImpl'
+    ));
+
+    return this.visitChildren(ctx, {children, separator: ', '});
+  }
+
+  /**
+   * Visit BSON Decimal128 Constructor
+   *
+   * @param {object} ctx
+   * @returns {string}
+   */
+  visitBSONDecimal128Constructor(ctx) {
+    const argumentList = ctx.arguments().argumentList();
+
+    if (argumentList === null || argumentList.getChildCount() !== 1) {
+      throw new SemanticArgumentCountMismatchError({
+        message: 'Decimal128 requires one argument'
+      });
+    }
+
+    const arg = argumentList.singleExpression()[0];
+    const string = this.visit(arg);
+
+    return `new BsonString(${string})`;
+  }
+>>>>>>> make min/max key emit in generator
 };

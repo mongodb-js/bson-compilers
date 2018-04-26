@@ -336,4 +336,45 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
 
     return `new Decimal128(${value})`;
   }
+
+  /**
+   * Date Now. This doesn't need a keyword 'new', nor is 'Now' a callable
+   * function, so we need to adjust this.
+   *
+   * @param {DateNowConstructorObject} ctx
+   *
+   * @returns {string} - DateTime.Now
+   */
+
+  emitnow(ctx) {
+    ctx.type = this.Types.Now;
+    return 'DateTime.Now';
+  }
+
+  /**
+   * Visit Object.create() Constructor
+   *
+   * @param {object} ctx
+   * @returns {string}
+   */
+  visitObjectCreateConstructorExpression(ctx) {
+    const argumentList = ctx.arguments().argumentList();
+
+    if (argumentList === null || argumentList.getChildCount() !== 1) {
+      throw new SemanticArgumentCountMismatchError({
+        message: 'Object.create() requires one argument'
+      });
+    }
+
+    const arg = argumentList.singleExpression()[0];
+    const obj = this.visit(arg);
+
+    if (arg.type !== this.Types._object) {
+      throw new SemanticTypeError({
+        message: 'Object.create() requires an object argument'
+      });
+    }
+
+    return obj;
+  }
 };

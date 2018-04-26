@@ -86,11 +86,11 @@ Templates:
         (lhs, rhs) => {
             return `${lhs} == ${rhs}`;
         }
-    ObjectGetTimestampTemplate: &ObjectGetTimestampTemplate !!js/function >
+    ObjectIdGetTimestampTemplate: &ObjectIdGetTimestampTemplate !!js/function >
         () => {
             return '';
         }
-    ObjectGetTimestampArgsTemplate: &ObjectGetTimestampArgsTemplate !!js/function >
+    ObjectIdGetTimestampArgsTemplate: &ObjectIdGetTimestampArgsTemplate !!js/function >
         (lhs) => {
             return `${lhs}.generation_time`;
         }

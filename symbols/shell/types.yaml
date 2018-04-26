@@ -34,8 +34,8 @@ BsonTypes:
             getTimestamp:
                 <<: *__func
                 type: *IntegerType
-                template: *ObjectGetTimestampTemplate
-                argsTemplate: *ObjectGetTimestampArgsTemplate
+                template: *ObjectIdGetTimestampTemplate
+                argsTemplate: *ObjectIdGetTimestampArgsTemplate
     BinData: &BinaryType
         <<: *__type
         id: "BinData"

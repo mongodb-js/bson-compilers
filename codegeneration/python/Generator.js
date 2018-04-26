@@ -120,9 +120,14 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    */
   emitDate(ctx) {
     const argumentList = ctx.arguments().argumentList();
+    let toStr = '';
+    if (!ctx.wasNew && this.visit(ctx.singleExpression()) !== 'ISODate') {
+      ctx.type = this.Types._string;
+      toStr = '.strftime(\'%a %b %d %Y %H:%M:%S %Z\')';
+    }
 
     if (argumentList === null) {
-      return 'datetime.datetime.utcnow().date()';
+      return `datetime.datetime.utcnow().date()${toStr}`;
     }
 
     let dateStr = '';
@@ -142,7 +147,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
       throw new SemanticGenericError({message: error.message});
     }
 
-    return `datetime.datetime(${dateStr}, tzinfo=datetime.timezone.utc)`;
+    return `datetime.datetime(${dateStr}, tzinfo=datetime.timezone.utc)${toStr}`;
   }
 
   /**
@@ -302,7 +307,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * @param {FuncCallExpressionContext} ctx
    * @return {String}
    */
-  emitBinary(ctx) {
+  emitBinaryFromJS(ctx) {
     ctx.type = this.Types.Binary;
 
     let type;

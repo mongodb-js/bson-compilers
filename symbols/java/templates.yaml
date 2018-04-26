@@ -445,22 +445,10 @@ Templates:
             return `${lhs}.parseLong`;
         }
     LongSymbolFromStringArgsTemplate: &LongSymbolFromStringArgsTemplate null
-    MinKeySymbolTemplate: &MinKeySymbolTemplate !!js/function >
-        () => {
-            return 'new MinKey()';
-        }
-    MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate !!js/function >
-        () => {
-            return '';
-        }
-    MaxKeySymbolTemplate: &MaxKeySymbolTemplate !!js/function >
-        () => {
-            return 'new MaxKey()';
-        }
-    MaxKeySymbolArgsTemplate: &MaxKeySymbolArgsTemplate !!js/function >
-        () => {
-            return '';
-        }
+    MinKeySymbolTemplate: &MinKeySymbolTemplate null
+    MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate null
+    MaxKeySymbolTemplate: &MaxKeySymbolTemplate null
+    MaxKeySymbolArgsTemplate: &MaxKeySymbolArgsTemplate null
     TimestampSymbolTemplate: &TimestampSymbolTemplate !!js/function >
         () => {
             return 'BSONTimestamp';

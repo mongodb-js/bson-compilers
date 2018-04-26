@@ -241,8 +241,19 @@ class Visitor extends ECMAScriptVisitor {
     return `${lhs}.${rhs}`;
   }
 
+  /**
+   * New in the shell/js is the same as calling without arguments.
+   * @param {NewExpressionContext} ctx
+   * @return {String}
+   */
   visitNewExpression(ctx) {
     ctx.singleExpression().wasNew = true;
+    if (!('arguments' in ctx.singleExpression())) {
+      ctx.arguments = () => { return { argumentList: () => { return false; }}; };
+      ctx.type = ctx.singleExpression().type;
+      ctx.getText = () => { return `${ctx.singleExpression().getText()}`; };
+      return this.visitFuncCallExpression(ctx);
+    }
     if ('emitNew' in this) {
       return this.emitNew(ctx);
     }

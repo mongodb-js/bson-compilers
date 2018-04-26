@@ -159,7 +159,7 @@ BsonSymbols:
         argsTemplate: *LongSymbolArgsTemplate
     MinKey:
         id: "MinKey"
-        callable: *func
+        callable: *constructor
         args: []
         type: *MinKeyType
         attr: {}
@@ -167,7 +167,7 @@ BsonSymbols:
         argsTemplate: *MinKeySymbolArgsTemplate
     MaxKey:
         id: "MaxKey"
-        callable: *func
+        callable: *constructor
         args: []
         type: *MaxKeyType
         attr: {}

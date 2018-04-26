@@ -100,7 +100,7 @@ Templates:
         }
     BinaryValueArgsTemplate: &BinaryValueArgsTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.decode('utf-8')`;
+            return `str(${lhs})`;
         }
     BinaryLengthTemplate: &BinaryLengthTemplate !!js/function >
         () => {
@@ -116,7 +116,7 @@ Templates:
         }
     BinaryToStringArgsTemplate: &BinaryToStringArgsTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.decode('utf-8')`;
+            return `str(${lhs})`;
         }
     BinaryToJSONTemplate: &BinaryToJSONTemplate !!js/function >
         () => {
@@ -476,7 +476,7 @@ Templates:
         }
     SymbolToStringArgsTemplate: &SymbolToStringArgsTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.encode('utf-8')`;
+            return `str(${lhs})`;
         }
     # Symbol Templates
     CodeSymbolTemplate: &CodeSymbolTemplate null # Has emit method

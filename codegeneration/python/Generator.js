@@ -206,10 +206,10 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
         flags = singleQuoteStringify(flags.join(''));
       }
 
-      return `RegExp(${pattern}, ${flags})`;
+      return `Regex(${pattern}, ${flags})`;
     }
 
-    return `RegExp(${pattern})`;
+    return `Regex(${pattern})`;
   }
 
   /**
@@ -319,10 +319,10 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     const argList = ctx.arguments().argumentList().singleExpression();
 
     if (argList.length === 1) {
-      return `Binary(${bytes}.encode('utf-8'))`;
+      return `Binary(b${bytes})`;
     }
 
-    return `Binary(${bytes}.encode('utf-8'), ${this.binarySubTypes[type]})`;
+    return `Binary(b${bytes}, ${this.binarySubTypes[type]})`;
   }
 
   /**

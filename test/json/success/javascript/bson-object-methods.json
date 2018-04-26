@@ -64,28 +64,28 @@
       {
         "description": "length",
         "javascript": "Binary(Buffer.from('a string')).length()",
-        "python": "len(bytearray(Binary('a string'.encode('utf-8'))))",
+        "python": "len(bytearray(Binary(b'a string')))",
         "java": "new Binary(\"a string\".getBytes(\"UTF-8\")).length()",
         "csharp": ""
       },
       {
         "description": "value",
         "javascript": "Binary(Buffer.from('a string')).value()",
-        "python": "Binary('a string'.encode('utf-8')).decode('utf-8')",
+        "python": "str(Binary(b'a string'))",
         "java": "new Binary(\"a string\".getBytes(\"UTF-8\")).getData()",
         "csharp": ""
       },
       {
         "description": "toString",
         "javascript": "Binary(Buffer.from('a string')).toString()",
-        "python": "Binary('a string'.encode('utf-8')).decode('utf-8')",
+        "python": "str(Binary(b'a string'))",
         "java": "new Binary(\"a string\".getBytes(\"UTF-8\")).toString()",
         "csharp": ""
       },
       {
         "description": "toJSON",
         "javascript": "Binary(Buffer.from('a string')).toJSON()",
-        "python": "json_util.dumps(Binary('a string'.encode('utf-8')))",
+        "python": "json_util.dumps(Binary(b'a string'))",
         "java": "new Binary(\"a string\".getBytes(\"UTF-8\")).toString()",
         "csharp": ""
       }
@@ -435,7 +435,7 @@
       {
         "description": "toString",
         "javascript": "Symbol('2').toString()",
-        "python": "unicode('2', 'utf-8').encode('utf-8')",
+        "python": "str(unicode('2', 'utf-8'))",
         "java": "new Symbol(\"2\").toString()",
         "csharp": ""
       },

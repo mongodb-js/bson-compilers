@@ -66,6 +66,14 @@
         "java": "new ObjectId(\"5a7382114ec1f67ae445f778\")",
         "csharp": "",
         "shell": "new ObjectId('5a7382114ec1f67ae445f778')"
+      },
+      {
+        "description": "new ObjectId",
+        "javascript": "ObjectId()",
+        "python": "ObjectId()",
+        "java": "new ObjectId()",
+        "csharp": "",
+        "shell": "new ObjectId"
       }
     ],
     "Binary": [
@@ -200,6 +208,14 @@
         "java": "new MinKey()",
         "csharp": "",
         "shell": "MinKey()"
+      },
+      {
+        "description": "new MinKey",
+        "javascript": "new MinKey()",
+        "python": "MinKey()",
+        "java": "new MinKey()",
+        "csharp": "",
+        "shell": "new MinKey()"
       },
       {
         "description": "maxKey",

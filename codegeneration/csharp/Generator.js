@@ -193,49 +193,6 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
     return 'BsonMaxKey.Value';
   }
 
-  // c# does not have octal numbers, so we need to convert it to reg integer
-  // TODO: not sure if we should still set the type to OCTAL or INTEGER
-  visitOctalIntegerLiteral(ctx) {
-    ctx.type = this.Types._octal;
-
-    return parseInt(this.visitChildren(ctx), 10);
-  }
-
-  /*  ************** built-in js identifiers **************** */
-
-  // adjust the Number constructor;
-  // returns new int(num)
-  visitNumberConstructorExpression(ctx) {
-    const argList = ctx.arguments().argumentList();
-
-    if (!argList || argList.singleExpression().length !== 1) {
-      throw new SemanticArgumentCountMismatchError({
-        message: 'Number requires one argument'
-      });
-    }
-
-    const arg = argList.singleExpression()[0];
-    const number = this.removeQuotes(this.visit(arg));
-
-    if (
-      (
-        arg.type !== this.Types._string &&
-        arg.type !== this.Types._decimal &&
-        arg.type !== this.Types._integer
-      )
-      || isNaN(Number(number))
-    ) {
-      throw new SemanticTypeError({
-        message: 'Number requires a number or a string argument'
-      });
-    }
-
-    return `new int(${number})`;
-  }
-
-  visitDateConstructorExpression(ctx) {
-    const argumentList = ctx.arguments().argumentList();
-
   emitDate(ctx) {
     ctx.type = this.Types.Date;
     if (!ctx.arguments().argumentList()) return 'DateTime.Now';

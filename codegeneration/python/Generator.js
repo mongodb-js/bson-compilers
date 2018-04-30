@@ -201,4 +201,150 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
 
     return `Binary(b${bytes}, ${this.binarySubTypes[type]})`;
   }
+
+  /**
+   * TODO: Maybe move this to javascript/Visitor and use template?
+   *
+   * child nodes: arguments
+   * grandchild nodes: argumentList?
+   * great-grandchild nodes: singleExpression+
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @return {String}
+   */
+  emitLong(ctx) {
+    ctx.type = this.Types.Long;
+
+    let longstr;
+
+    try {
+      longstr = this.executeJavascript(ctx.getText()).toString();
+    } catch (error) {
+      throw new SemanticGenericError({message: error.message});
+    }
+
+    return `Int64(${longstr})`;
+  }
+
+  /**
+   * TODO: Could move this to javascript/Visitor and use template.
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @return {String}
+   */
+  emitDecimal128(ctx) {
+    ctx.type = this.Types.Decimal128;
+
+    let decimal;
+
+    try {
+      decimal = this.executeJavascript(`new ${ctx.getText()}`);
+    } catch (error) {
+      throw new SemanticGenericError({message: error.message});
+    }
+
+    const str = singleQuoteStringify(decimal.toString());
+
+    return `Decimal128(${str})`;
+  }
+
+  emitDecimal128Str(ctx) {
+    ctx.type = this.Types.Decimal128;
+
+    const str = singleQuoteStringify(ctx.getText());
+
+    return `Decimal128(Decimal(${str})`;
+  }
+
+  /* ************** Object methods **************** */
+
+  /**
+   * LongfromBits method
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @return {String}
+   */
+  emitLongfromBits(ctx) {
+    return this.emitLong(ctx);
+  }
+
+  /**
+   * Decimal128toJSON method
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @return {String}
+   */
+  emitDecimal128toJSON(ctx) {
+    ctx.type = this.Types._object;
+
+    return `json_util.dumps(${this.visit(ctx.singleExpression().singleExpression())})`;
+  }
+
+  /**
+   * LongtoString method
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @return {String}
+   */
+  emitLongtoString(ctx) {
+    ctx.type = this.Types._string;
+
+    const long = ctx.singleExpression().singleExpression();
+    let longstr;
+
+    try {
+      longstr = this.executeJavascript(long.getText()).toString();
+    } catch (error) {
+      throw new SemanticGenericError({message: error.message});
+    }
+
+    return `str(Int64(${longstr}))`;
+  }
+
+  /**
+   * DBReftoJSON method
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @return {String}
+   */
+  emitDBReftoJSON(ctx) {
+    ctx.type = this.Types._object;
+
+    const argsList = ctx.singleExpression().singleExpression().arguments();
+    const args = argsList.argumentList().singleExpression();
+    const ns = this.visit(args[0]);
+    const oid = this.visit(args[1]);
+    let db = '""';
+
+    if (args.length === 3) {
+      db = this.visit(args[2]);
+
+      return `json_util.dumps(DBRef(${ns}, ${oid}, ${db}))`;
+    }
+
+    return `json_util.dumps(DBRef(${ns}, ${oid}))`;
+  }
+
+  /**
+   * CodetoJSON method
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @return {String}
+   */
+  emitCodetoJSON(ctx) {
+    ctx.type = this.Types._object;
+
+    const argsList = ctx.singleExpression().singleExpression().arguments();
+    const args = argsList.argumentList().singleExpression();
+    const code = singleQuoteStringify(args[0].getText());
+    let scope = 'undefined';
+
+    if (args.length === 2) {
+      scope = this.visit(args[1]);
+
+      return `json_util.dumps(Code(${code}, ${scope}))`;
+    }
+
+    return `json_util.dumps(Code(${code}))`;
+  }
 };

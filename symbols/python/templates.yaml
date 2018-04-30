@@ -622,7 +622,10 @@ Templates:
         () => {
             return 'Timestamp';
         }
-    TimestampSymbolArgsTemplate: &TimestampSymbolArgsTemplate null
+    TimestampSymbolArgsTemplate: &TimestampSymbolArgsTemplate !!js/function >
+        (lhs, arg1, arg2) => {
+            return `(${arg1 === undefined ? 0 : arg1}, ${arg2 === undefined ? 0 : arg2})`;
+        }
     SymbolSymbolTemplate: &SymbolSymbolTemplate !!js/function >
         () => {
             return 'unicode';
@@ -646,9 +649,12 @@ Templates:
         }
     Decimal128SymbolFromStringTemplate: &Decimal128SymbolFromStringTemplate !!js/function >
         () => {
-            return `Decimal128`;
+            return '';
         }
-    Decimal128SymbolFromStringArgsTemplate: &Decimal128SymbolFromStringArgsTemplate null
+    Decimal128SymbolFromStringArgsTemplate: &Decimal128SymbolFromStringArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return `Decimal128(Decimal(${arg}))`;
+        }
     Decimal128ToStringTemplate: &Decimal128ToStringTemplate !!js/function >
         () => {
             return '';

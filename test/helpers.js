@@ -12,10 +12,8 @@ const unsupported = {
       java: {},
       python: {},
       csharp: {
-        'js-constructors': [ '*' ],
         'bson-object-methods': [ '*' ],
-        'bson-utils': [ '*' ],
-        'js-utils': [ '*' ]
+        'bson-utils': [ '*' ]
       }
     },
     shell: {

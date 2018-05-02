@@ -6,7 +6,7 @@
         "javascript": "new Code('some code')",
         "python": "Code('some code')",
         "java": "new Code(\"some code\")",
-        "csharp": "",
+        "csharp": "new BsonJavaScript(@\"some code\")",
         "shell": "Code('some code')"
       },
       {
@@ -14,7 +14,7 @@
         "javascript": "Code('some code')",
         "python": "Code('some code')",
         "java": "new Code(\"some code\")",
-        "csharp": "",
+        "csharp": "new BsonJavaScript(@\"some code\")",
         "shell": "Code('some code')"
       },
       {
@@ -22,7 +22,7 @@
         "javascript": "Code('string', {x: '1'})",
         "python": "Code('string', {'x': '1'})",
         "java": "new CodeWithScope(\"string\", new Document().append(\"x\", \"1\"))",
-        "csharp": "",
+        "csharp": "new BsonJavaScriptWithScope(@\"string\", new BsonDocument(\"x\", \"1\"))",
         "shell": "Code('string', {x: '1'})"
       },
       {
@@ -30,7 +30,7 @@
         "javascript": "Code(function(test) { console.log(test); })",
         "python": "Code('function(test){console.log(test);}')",
         "java": "new Code(\"function(test){console.log(test);}\")",
-        "csharp": "",
+        "csharp": "new BsonJavaScript(@\"function(test){console.log(test);}\")",
         "shell": "Code('function(test){console.log(test);}')"
       },
       {
@@ -38,7 +38,7 @@
         "javascript": "new Code('this.a > i', { i: '1' })",
         "python": "Code('this.a > i', {'i': '1'})",
         "java": "new CodeWithScope(\"this.a > i\", new Document().append(\"i\", \"1\"))",
-        "csharp": "",
+        "csharp": "new BsonJavaScriptWithScope(@\"this.a > i\", new BsonDocument(\"i\", \"1\"))",
         "shell": "Code('this.a > i', {i: '1'})"
       }
     ],
@@ -48,7 +48,7 @@
         "javascript": "ObjectId()",
         "python": "ObjectId()",
         "java": "new ObjectId()",
-        "csharp": "",
+        "csharp": "new BsonObjectId()",
         "shell": "ObjectId()"
       },
       {
@@ -56,7 +56,7 @@
         "javascript": "new ObjectId()",
         "python": "ObjectId()",
         "java": "new ObjectId()",
-        "csharp": "",
+        "csharp": "new BsonObjectId()",
         "shell": "new ObjectId()"
       },
       {
@@ -64,7 +64,7 @@
         "javascript": "ObjectId('5a7382114ec1f67ae445f778')",
         "python": "ObjectId('5a7382114ec1f67ae445f778')",
         "java": "new ObjectId(\"5a7382114ec1f67ae445f778\")",
-        "csharp": "",
+        "csharp": "new BsonObjectId(\"5a7382114ec1f67ae445f778\")",
         "shell": "new ObjectId('5a7382114ec1f67ae445f778')"
       },
       {
@@ -72,7 +72,7 @@
         "javascript": "ObjectId()",
         "python": "ObjectId()",
         "java": "new ObjectId()",
-        "csharp": "",
+        "csharp": "new BsonBinaryData(System.Text.Encoding.ASCII.GetBytes(\"a string\"))",
         "shell": "new ObjectId"
       }
     ],
@@ -206,23 +206,15 @@
         "javascript": "MinKey()",
         "python": "MinKey()",
         "java": "new MinKey()",
-        "csharp": "",
+        "csharp": "BsonMinKey.Value",
         "shell": "MinKey()"
-      },
-      {
-        "description": "new MinKey",
-        "javascript": "new MinKey()",
-        "python": "MinKey()",
-        "java": "new MinKey()",
-        "csharp": "",
-        "shell": "new MinKey()"
       },
       {
         "description": "maxKey",
         "javascript": "MaxKey()",
         "python": "MaxKey()",
         "java": "new MaxKey()",
-        "csharp": "",
+        "csharp": "BsonMaxKey.Value",
         "shell": "MaxKey()"
       },
       {
@@ -230,7 +222,7 @@
         "javascript": "new MaxKey()",
         "python": "MaxKey()",
         "java": "new MaxKey()",
-        "csharp": "",
+        "csharp": "BsonMaxKey.Value",
         "shell": "new MaxKey()"
       },
       {

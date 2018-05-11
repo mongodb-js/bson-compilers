@@ -6,7 +6,7 @@
         "javascript": "Code('test code', {x: 1}).scope",
         "python": "Code('test code', {'x': 1}).scope",
         "java": "new CodeWithScope(\"test code\", new Document().append(\"x\", new java.lang.Long(\"1\"))).getScope()",
-        "csharp": "",
+        "csharp": "new BsonJavaScriptWithScope(@\"test code\", new BsonDocument(\"x\", 1)).Scope",
         "shell": "Code('test code', {x: 1}).scope"
       },
       {
@@ -14,7 +14,7 @@
         "javascript": "Code('test code').code",
         "python": "str(Code('test code'))",
         "java": "new Code(\"test code\").getCode()",
-        "csharp": "",
+        "csharp": "new BsonJavaScript(@\"test code\").Code",
         "shell": "Code('test code').code"
       },
       {
@@ -22,7 +22,7 @@
         "javascript": "Code('test code').toString()",
         "python": "repr(Code('test code'))",
         "java": "new Code(\"test code\").toString()",
-        "csharp": "",
+        "csharp": "new BsonJavaScript(@\"test code\").ToString()",
         "shell": "Code('test code').toString()"
       }
     ],
@@ -32,7 +32,7 @@
         "javascript": "ObjectId().toString()",
         "python": "str(ObjectId())",
         "java": "new ObjectId().toString()",
-        "csharp": "",
+        "csharp": "new BsonObjectId().ToString()",
         "shell": "Code('test code').toString()"
 
       },
@@ -41,7 +41,7 @@
         "javascript": "ObjectId('5ab901c29ee65f5c8550c5b9').toString()",
         "python": "str(ObjectId('5ab901c29ee65f5c8550c5b9'))",
         "java": "new ObjectId(\"5ab901c29ee65f5c8550c5b9\").toString()",
-        "csharp": "",
+        "csharp": "new BsonObjectId(\"5ab901c29ee65f5c8550c5b9\").ToString()",
         "shell": "ObjectId().toString()"
       },
       {
@@ -49,7 +49,7 @@
         "javascript": "ObjectId('5ab901c29ee65f5c8550c5b9').getTimestamp()",
         "python": "ObjectId('5ab901c29ee65f5c8550c5b9').generation_time",
         "java": "new ObjectId(\"5ab901c29ee65f5c8550c5b9\").getTimestamp()",
-        "csharp": "",
+        "csharp": "new BsonObjectId(\"5ab901c29ee65f5c8550c5b9\").ToUniversalTime()",
         "shell": "ObjectId('5ab901c29ee65f5c8550c5b9').getTimestamp()"
       },
       {
@@ -57,7 +57,7 @@
         "javascript": "ObjectId().equals(ObjectId())",
         "python": "ObjectId() == ObjectId()",
         "java": "new ObjectId().equals(new ObjectId())",
-        "csharp": "",
+        "csharp": "BsonObjectId().Equals(BsonObjectId())",
         "shell": "ObjectId().equals(ObjectId())"
       }
     ],
@@ -67,7 +67,7 @@
         "javascript": "Binary(Buffer.from('a string')).length()",
         "python": "len(bytearray(Binary(b'a string')))",
         "java": "new Binary(\"a string\".getBytes(\"UTF-8\")).length()",
-        "csharp": "",
+        "csharp": "new BsonBinaryData(System.Text.Encoding.ASCII.GetBytes(\"a string\")).Length",
         "shell": "BinData(1, '0001').length()"
       },
       {
@@ -75,7 +75,7 @@
         "javascript": "Binary(Buffer.from('0001')).sub_type",
         "python": "Binary(b'0001').subtype",
         "java": "new Binary(\"0001\".getBytes(\"UTF-8\")).getType()",
-        "csharp": "",
+        "csharp": "new BsonBinaryData(System.Text.Encoding.ASCII.GetBytes(\"0001\")).SubType",
         "shell": "BinData(0, '0001').subtype()"
       },
       {
@@ -83,7 +83,7 @@
         "javascript": "Binary(Buffer.from('a string')).value()",
         "python": "str(Binary(b'a string'))",
         "java": "new Binary(\"a string\".getBytes(\"UTF-8\")).getData()",
-        "csharp": "",
+        "csharp": "new BsonBinaryData(System.Text.Encoding.ASCII.GetBytes(\"a string\")).ToString()",
         "shell": "BinData(1, '0001').hex()"
       },
       {
@@ -91,7 +91,7 @@
         "javascript": "Binary(Buffer.from('a string')).toString()",
         "python": "str(Binary(b'a string'))",
         "java": "new Binary(\"a string\".getBytes(\"UTF-8\")).toString()",
-        "csharp": "",
+        "csharp": "new BsonBinaryData(System.Text.Encoding.ASCII.GetBytes(\"a string\")).ToString()",
         "shell": "BinData(1, '0001').toString()"
       }
     ],
@@ -101,7 +101,7 @@
         "javascript": "new DBRef('coll', new ObjectId()).toString()",
         "python": "str(DBRef('coll', ObjectId()))",
         "java": "new DBRef(\"coll\", new ObjectId()).toString()",
-        "csharp": "",
+        "csharp": "new MongoDBRef(\"coll\", new BsonObjectId()).ToString()",
         "shell": "new DBRef('coll', new ObjectId()).toString()"
       },
       {
@@ -109,7 +109,7 @@
         "javascript": "new DBRef('coll', new ObjectId()).db",
         "python": "DBRef('coll', ObjectId()).database",
         "java": "new DBRef(\"coll\", new ObjectId()).getDatabaseName()",
-        "csharp": "",
+        "csharp": "new MongoDBRef(\"coll\", new BsonObjectId()).DatabaseName",
         "shell": "new DBRef('coll', new ObjectId()).getDb()"
       },
       {
@@ -117,7 +117,7 @@
         "javascript": "new DBRef('coll', new ObjectId()).namespace",
         "python": "DBRef('coll', ObjectId()).collection",
         "java": "new DBRef(\"coll\", new ObjectId()).getCollectionName()",
-        "csharp": "",
+        "csharp": "new MongoDBRef(\"coll\", new BsonObjectId()).CollectionName",
         "shell": "new DBRef('coll', new ObjectId()).getCollection()"
       },
       {
@@ -125,7 +125,7 @@
         "javascript": "new DBRef('coll', new ObjectId()).oid",
         "python": "DBRef('coll', ObjectId()).id",
         "java": "new DBRef(\"coll\", new ObjectId()).getId()",
-        "csharp": "",
+        "csharp": "new MongoDBRef(\"coll\", new BsonObjectId()).Id",
         "shell": "new DBRef('coll', new ObjectId()).getId()"
       }
     ],
@@ -135,7 +135,7 @@
         "javascript": "Int32(3).valueOf()",
         "python": "int(3)",
         "java": "new java.lang.Integer(3).intValue()",
-        "csharp": ""
+        "csharp": "Convert.ToInt32(3)"
       }
     ],
     "Double": [
@@ -144,7 +144,7 @@
         "javascript": "Double(3).valueOf()",
         "python": "float(3)",
         "java": "new java.lang.Double(3).doubleValue()",
-        "csharp": "",
+        "csharp": "new BsonDouble(\"3\").Value",
         "shell": "NumberInt(3).valueOf()"
       }
     ],
@@ -154,7 +154,7 @@
         "javascript": "Long(1, 100).toInt()",
         "python": "int(Int64(429496729601))",
         "java": "new java.lang.Long(\"429496729601\").intValue()",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601).ToInt32()",
         "shell": "NumberLong(429496729601).valueOf()"
       },
       {
@@ -162,7 +162,7 @@
         "javascript": "Long(1, 100).toNumber()",
         "python": "float(Int64(429496729601))",
         "java": "new java.lang.Long(\"429496729601\").floatValue()",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601).Value",
         "shell": "NumberLong(429496729601).floatApprox"
       },
       {
@@ -170,7 +170,7 @@
         "javascript": "Long(1, 100).toString()",
         "python": "'429496729601'",
         "java": "\"429496729601\"",
-        "csharp": "",
+        "csharp": "\"429496729601\"",
         "shell": ""
       },
       {
@@ -178,7 +178,7 @@
         "javascript": "Long(1, 100).toString(10)",
         "python": "'429496729601'",
         "java": "\"429496729601\"",
-        "csharp": "",
+        "csharp": "\"429496729601\"",
         "shell": ""
       },
       {
@@ -186,7 +186,7 @@
         "javascript": "Long(1, 100).isZero()",
         "python": "Int64(429496729601) == 0",
         "java": "new java.lang.Long(\"429496729601\").equals(new java.lang.Long(0))",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) == 0",
         "shell": "NumberLong(429496729601) === 0"
       },
       {
@@ -194,7 +194,7 @@
         "javascript": "Long(1, 100).isNegative()",
         "python": "Int64(429496729601) < 0",
         "java": "new java.lang.Long(\"429496729601\").compareTo(new java.lang.Long(0)) < 0",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) < 0",
         "shell": "NumberLong(429496729601) < 0"
       },
       {
@@ -202,7 +202,7 @@
         "javascript": "Long(1, 100).isOdd()",
         "python": "(Int64(429496729601) % 2) == 0",
         "java": "new java.lang.Long(\"429496729601\") % 2 == 0",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) % 2 == 0",
         "shell": "(NumberLong(429496729601) % 2) === 0"
       },
       {
@@ -210,7 +210,7 @@
         "javascript": "Long(1, 100).equals(Long(9, 1))",
         "python": "(Int64(429496729601) - Int64(4294967305)) == 0",
         "java": "new java.lang.Long(\"429496729601\").equals(new java.lang.Long(\"4294967305\"))",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601).Equals(new BsonInt64.ToInt64(4294967305))",
         "shell": "NumberLong(429496729601) === NumberLong(4294967305)"
       },
       {
@@ -218,7 +218,7 @@
         "javascript": "Long(1, 100).notEquals(Long(9, 1))",
         "python": "(Int64(429496729601) - Int64(4294967305)) != 0",
         "java": "new java.lang.Long(\"429496729601\").compareTo(new java.lang.Long(\"4294967305\")) != 0",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) != new BsonInt64.ToInt64(4294967305)",
         "shell": "NumberLong(429496729601) !== NumberLong(4294967305)"
       },
       {
@@ -226,7 +226,7 @@
         "javascript": "Long(1, 100).compare(Long(9, 1))",
         "python": "Int64(429496729601) - Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\").compareTo(new java.lang.Long(\"4294967305\"))",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601).CompareTo(new BsonInt64.ToInt64(4294967305))",
         "shell": "NumberLong(429496729601) - NumberLong(4294967305)"
       },
       {
@@ -234,7 +234,7 @@
         "javascript": "Long(1, 100).greaterThan(Long(9, 1))",
         "python": "(Int64(429496729601) - Int64(4294967305)) > 0",
         "java": "new java.lang.Long(\"429496729601\").compareTo(new java.lang.Long(\"4294967305\")) > 0",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) > new BsonInt64.ToInt64(4294967305)",
         "shell": "NumberLong(429496729601) > NumberLong(4294967305)"
       },
       {
@@ -242,7 +242,7 @@
         "javascript": "Long(1, 100).greaterThanOrEqual(Long(9, 1))",
         "python": "(Int64(429496729601) - Int64(4294967305)) >= 0",
         "java": "new java.lang.Long(\"429496729601\").compareTo(new java.lang.Long(\"4294967305\")) >= 0",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) >= new BsonInt64.ToInt64(4294967305)",
         "shell": "NumberLong(429496729601) >= NumberLong(4294967305)"
       },
       {
@@ -250,7 +250,7 @@
         "javascript": "Long(1, 100).lessThan(Long(9, 1))",
         "python": "(Int64(429496729601) - Int64(4294967305)) < 0",
         "java": "new java.lang.Long(\"429496729601\").compareTo(new java.lang.Long(\"4294967305\")) < 0",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) < new BsonInt64.ToInt64(4294967305)",
         "shell": "NumberLong(429496729601) < NumberLong(4294967305)"
       },
       {
@@ -258,7 +258,7 @@
         "javascript": "Long(1, 100).lessThanOrEqual(Long(9, 1))",
         "python": "(Int64(429496729601) - Int64(4294967305)) <= 0",
         "java": "new java.lang.Long(\"429496729601\").compareTo(new java.lang.Long(\"4294967305\")) <= 0",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) <= new BsonInt64.ToInt64(4294967305)",
         "shell": "NumberLong(429496729601) <= NumberLong(4294967305)"
       },
       {
@@ -266,7 +266,7 @@
         "javascript": "Long(1, 100).negate())",
         "python": "-Int64(429496729601)",
         "java": "-new java.lang.Long(\"429496729601\")",
-        "csharp": "",
+        "csharp": "-new BsonInt64.ToInt64(429496729601)",
         "shell": "-NumberLong(429496729601)"
       },
       {
@@ -274,7 +274,7 @@
         "javascript": "Long(1, 100).add(Long(9, 1))",
         "python": "Int64(429496729601) + Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\") + new java.lang.Long(\"4294967305\")",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) + new BsonInt64.ToInt64(4294967305)",
         "shell": "NumberLong(429496729601) + NumberLong(4294967305)"
       },
       {
@@ -282,7 +282,7 @@
         "javascript": "Long(1, 100).subtract(Long(9, 1))",
         "python": "Int64(429496729601) - Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\") - new java.lang.Long(\"4294967305\")",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) - new BsonInt64.ToInt64(4294967305)",
         "shell": "NumberLong(429496729601) - NumberLong(4294967305)"
       },
       {
@@ -290,7 +290,7 @@
         "javascript": "Long(1, 100).multiply(Long(9, 1))",
         "python": "Int64(429496729601) * Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\") * new java.lang.Long(\"4294967305\")",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) * new BsonInt64.ToInt64(4294967305)",
         "shell": "NumberLong(429496729601) * NumberLong(4294967305)"
       },
       {
@@ -298,7 +298,7 @@
         "javascript": "Long(1, 100).div(Long(9, 1))",
         "python": "Int64(429496729601) / Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\") / new java.lang.Long(\"4294967305\")",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) / new BsonInt64.ToInt64(4294967305)",
         "shell": "NumberLong(429496729601) / NumberLong(4294967305)"
       },
       {
@@ -306,7 +306,7 @@
         "javascript": "Long(1, 100).modulo(Long(9, 1))",
         "python": "Int64(429496729601) % Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\") % new java.lang.Long(\"4294967305\")",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) % new BsonInt64.ToInt64(4294967305)",
         "shell": "NumberLong(429496729601) % NumberLong(4294967305)"
       },
       {
@@ -314,7 +314,7 @@
         "javascript": "Long(1, 100).not()",
         "python": "~Int64(429496729601)",
         "java": "~new java.lang.Long(\"429496729601\")",
-        "csharp": "",
+        "csharp": "!new BsonInt64.ToInt64(429496729601)",
         "shell": "~NumberLong(429496729601)"
       },
       {
@@ -322,7 +322,7 @@
         "javascript": "Long(1, 100).and(Long(9, 1))",
         "python": "Int64(429496729601) & Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\") & new java.lang.Long(\"4294967305\")",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) & new BsonInt64.ToInt64(4294967305)",
         "shell": "NumberLong(429496729601) & NumberLong(4294967305)"
       },
       {
@@ -330,7 +330,7 @@
         "javascript": "Long(1, 100).or(Long(9, 1))",
         "python": "Int64(429496729601) | Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\") | new java.lang.Long(\"4294967305\")",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) | new BsonInt64.ToInt64(4294967305)",
         "shell": "NumberLong(429496729601) <= NumberLong(4294967305)"
       },
       {
@@ -338,7 +338,7 @@
         "javascript": "Long(1, 100).xor(Long(9, 1))",
         "python": "Int64(429496729601) ^ Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\") ^ new java.lang.Long(\"4294967305\")",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) ^ new BsonInt64.ToInt64(4294967305)",
         "shell": "NumberLong(429496729601) ^ NumberLong(4294967305)"
       },
       {
@@ -346,7 +346,7 @@
         "javascript": "Long(1, 100).shiftLeft(10)",
         "python": "Int64(429496729601) << 10",
         "java": "java.lang.Long.rotateLeft(new java.lang.Long(\"429496729601\"), 10)",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) << 10",
         "shell": "NumberLong(429496729601) << 10"
       },
       {
@@ -354,7 +354,7 @@
         "javascript": "Long(1, 100).shiftRight(10)",
         "python": "Int64(429496729601) >> 10",
         "java": "java.lang.Long.rotateRight(new java.lang.Long(\"429496729601\"), 10)",
-        "csharp": "",
+        "csharp": "new BsonInt64.ToInt64(429496729601) >> 10",
         "shell": "NumberLong(429496729601) >> 10"
       }
     ],
@@ -364,7 +364,7 @@
         "javascript": "new Decimal128(Buffer.from('5')).toString()",
         "python": "str(Decimal128('5.3E-6175'))",
         "java": "Decimal128.parse(\"5.3E-6175\").toString()",
-        "csharp": "",
+        "csharp": "new Decimal128(5).ToString()",
         "shell": "NumberDecimal(0).toString()"
       }
     ],
@@ -374,7 +374,7 @@
         "javascript": "Timestamp(1, 100).toString()",
         "python": "str(Timestamp(1, 100))",
         "java": "new BSONTimestamp(1, 100).toString()",
-        "csharp": "",
+        "csharp": "new BsonTimestamp(1, 100).ToString()",
         "shell": "Timestamp(1, 100).toString()"
       },
       {
@@ -382,7 +382,7 @@
         "javascript": "Timestamp(1, 100).equals(Timestamp(2, 99))",
         "python": "(Timestamp(1, 100).time - Timestamp(2, 99).time) == 0",
         "java": "new BSONTimestamp(1, 100).equals(new BSONTimestamp(2, 99))",
-        "csharp": "",
+        "csharp": "new BsonTimestamp(1, 100).Equals(new BsonTimestamp(2, 99))",
         "shell": "Timestamp(1, 100) === Timestamp(2, 99)"
       },
       {
@@ -390,7 +390,7 @@
         "javascript": "Timestamp(1, 100).compare(Timestamp(2, 99))",
         "python": "Timestamp(1, 100).time - Timestamp(2, 99).time",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99))",
-        "csharp": "",
+        "csharp": "new BsonTimestamp(1, 100).CompareTo(new BsonTimestamp(2, 99))",
         "shell": "Timestamp(1, 100) - Timestamp(2, 99)"
       },
       {
@@ -398,7 +398,7 @@
         "javascript": "Timestamp(1, 100).notEquals(Timestamp(2, 99))",
         "python": "(Timestamp(1, 100).time - Timestamp(2, 99).time) != 0",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) != 0",
-        "csharp": "",
+        "csharp": "new BsonTimestamp(1, 100) != new BsonTimestamp(2, 99)",
         "shell": "Timestamp(1, 100) !== Timestamp(2, 99)"
       },
       {
@@ -406,7 +406,7 @@
         "javascript": "Timestamp(1, 100).greaterThan(Timestamp(2, 99))",
         "python": "(Timestamp(1, 100).time - Timestamp(2, 99).time) > 0",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) > 0",
-        "csharp": "",
+        "csharp": "new BsonTimestamp(1, 100) > new BsonTimestamp(2, 99)",
         "shell": "Timestamp(1, 100) > Timestamp(2, 99)"
       },
       {
@@ -414,7 +414,7 @@
         "javascript": "Timestamp(1, 100).greaterThanOrEqual(Timestamp(2, 99))",
         "python": "(Timestamp(1, 100).time - Timestamp(2, 99).time) >= 0",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) >= 0",
-        "csharp": "",
+        "csharp": "new BsonTimestamp(1, 100) >= new BsonTimestamp(2, 99)",
         "shell": "Timestamp(1, 100) >= Timestamp(2, 99)"
       },
       {
@@ -422,7 +422,7 @@
         "javascript": "Timestamp(1, 100).lessThan(Timestamp(2, 99))",
         "python": "(Timestamp(1, 100).time - Timestamp(2, 99).time) < 0",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) < 0",
-        "csharp": "",
+        "csharp": "new BsonTimestamp(1, 100) < new BsonTimestamp(2, 99)",
         "shell": "Timestamp(1, 100) < Timestamp(2, 99)"
       },
       {
@@ -430,7 +430,7 @@
         "javascript": "Timestamp(1, 100).lessThanOrEqual(Timestamp(2, 99))",
         "python": "(Timestamp(1, 100).time - Timestamp(2, 99).time) <= 0",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) <= 0",
-        "csharp": "",
+        "csharp": "new BsonTimestamp(1, 100) <= new BsonTimestamp(2, 99)",
         "shell": "Timestamp(1, 100) <= Timestamp(2, 99)"
       },
       {
@@ -438,7 +438,7 @@
         "javascript": "Timestamp(1, 100).getLowBits()",
         "python": "Timestamp(1, 100).time",
         "java": "new BSONTimestamp(1, 100).getTime()",
-        "csharp": "",
+        "csharp": "new BsonTimestamp(1, 100).ToUniversalTime()",
         "shell": "Timestamp(1, 100).getTime()"
       },
       {
@@ -446,7 +446,7 @@
         "javascript": "Timestamp(1, 100).getHighBits()",
         "python": "Timestamp(1, 100).inc",
         "java": "new BSONTimestamp(1, 100).getInc()",
-        "csharp": "",
+        "csharp": "new BsonTimestamp(1, 100).Increment",
         "shell": "Timestamp(1, 100).getInc()"
       }
     ],
@@ -456,7 +456,7 @@
         "javascript": "Symbol('2').valueOf()",
         "python": "unicode('2', 'utf-8')",
         "java": "new Symbol(\"2\").getSymbol()",
-        "csharp": "",
+        "csharp": "new BsonString(\"2\").AsBsonSymbol",
         "shell": "'2'"
       },
       {
@@ -464,7 +464,7 @@
         "javascript": "Symbol('2').toString()",
         "python": "str(unicode('2', 'utf-8'))",
         "java": "new Symbol(\"2\").toString()",
-        "csharp": "",
+        "csharp": "new BsonString(\"2\").ToString()",
         "shell": "'2'"
       },
       {
@@ -472,7 +472,7 @@
         "javascript": "Symbol('2').inspect()",
         "python": "unicode('2', 'utf-8')",
         "java": "new Symbol(\"2\").getSymbol()",
-        "csharp": "",
+        "csharp": "new BsonString(\"2\").Value",
         "shell": "'2'"
       }
     ]

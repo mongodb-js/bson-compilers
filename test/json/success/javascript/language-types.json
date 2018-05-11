@@ -6,7 +6,7 @@
         "javascript": "2+5",
         "python": "2+5",
         "java": "new java.lang.Long(\"2\")+new java.lang.Long(\"5\")",
-        "csharp": "2+5",
+        "csharp": "",
         "shell": "2+5"
       },
       {
@@ -14,7 +14,7 @@
         "javascript": "2+(4*36)/3",
         "python": "2+(4*36)/3",
         "java": "new java.lang.Long(\"2\")+(new java.lang.Long(\"4\")*new java.lang.Long(\"36\"))/new java.lang.Long(\"3\")",
-        "csharp": "2+(4*36)/3",
+        "csharp": "",
         "shell": "2+(4*36)/3"
       }
     ],
@@ -24,7 +24,7 @@
         "javascript": "new Number(2)",
         "python": "int(2)",
         "java": "new java.lang.Long(\"2\")",
-        "csharp": "(int)2",
+        "csharp": "",
         "shell": "new Number(2)"
       },
       {
@@ -32,7 +32,7 @@
         "javascript": "new Number('2')",
         "python": "int('2')",
         "java": "new java.lang.Long(\"2\")",
-        "csharp": "(int)2",
+        "csharp": "",
         "shell": "Number('2')"
       }
     ],
@@ -42,7 +42,7 @@
         "javascript": "2",
         "python": "2",
         "java": "new java.lang.Long(\"2\")",
-        "csharp": "2",
+        "csharp": "",
         "shell": "2"
       },
       {
@@ -50,7 +50,7 @@
         "javascript": "429496729601",
         "python": "429496729601",
         "java": "new java.lang.Long(\"429496729601\")",
-        "csharp": "429496729601",
+        "csharp": "",
         "shell": "429496729601"
       },
       {
@@ -58,7 +58,7 @@
         "javascript": "2.001",
         "python": "2.001",
         "java": "new java.lang.Double(2.001)",
-        "csharp": "2.001",
+        "csharp": "",
         "shell": "2.001"
       },
       {
@@ -66,7 +66,7 @@
         "javascript": "0X123ABC",
         "python": "0X123ABC",
         "java": "0X123ABC",
-        "csharp": "0X123ABC",
+        "csharp": "",
         "shell": "0X123ABC"
       },
       {
@@ -74,7 +74,7 @@
         "javascript": "0x123abc",
         "python": "0x123abc",
         "java": "0x123abc",
-        "csharp": "0x123abc",
+        "csharp": "",
         "shell": "0x123abc"
       },
       {
@@ -82,7 +82,7 @@
         "javascript": "01234567",
         "python": "0o1234567",
         "java": "01234567",
-        "csharp": "342391",
+        "csharp": "",
         "shell": "01234567"
       },
       {
@@ -90,7 +90,7 @@
         "javascript": "001234567",
         "python": "0o1234567",
         "java": "01234567",
-        "csharp": "342391",
+        "csharp": "",
         "shell": "0o1234567"
       },
       {
@@ -98,7 +98,7 @@
         "javascript": "0o1234567",
         "python": "0o1234567",
         "java": "01234567",
-        "csharp": "342391",
+        "csharp": "",
         "shell": "0o1234567"
       },
       {
@@ -106,7 +106,7 @@
         "javascript": "0o1234567",
         "python": "0o1234567",
         "java": "01234567",
-        "csharp": "342391",
+        "csharp": "",
         "shell": "0o1234567"
       },
       {
@@ -114,7 +114,7 @@
         "javascript": "'string'",
         "python": "'string'",
         "java": "\"string\"",
-        "csharp": "\"string\"",
+        "csharp": "",
         "shell": "'string'"
       },
       {
@@ -122,7 +122,7 @@
         "javascript": "\"string\"",
         "python": "'string'",
         "java": "\"string\"",
-        "csharp": "\"string\"",
+        "csharp": "",
         "shell": "\"string\""
       },
       {
@@ -130,7 +130,7 @@
         "javascript": "null",
         "python": "None",
         "java": "null",
-        "csharp": "BsonNull.Value",
+        "csharp": "",
         "shell": "null"
       },
       {
@@ -138,7 +138,7 @@
         "javascript": "undefined",
         "python": "None",
         "java": "null",
-        "csharp": "BsonUndefined.Value",
+        "csharp": "",
         "shell": "undefined"
       },
       {
@@ -146,7 +146,7 @@
         "javascript": "true",
         "python": "True",
         "java": "true",
-        "csharp": "true",
+        "csharp": "",
         "shell": "true"
       },
       {
@@ -154,7 +154,7 @@
         "javascript": "false",
         "python": "False",
         "java": "false",
-        "csharp": "false",
+        "csharp": "",
         "shell": "false"
       }
     ],
@@ -164,7 +164,7 @@
         "javascript": "new Date('December 17, 1995 03:24:00Z')",
         "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc)",
         "java": "new java.util.Date(new java.lang.Long(\"819170640000\"))",
-        "csharp": "new DateTime(1995, 12, 17, 3, 24, 0)",
+        "csharp": "",
         "shell": "new Date('December 17, 1995 03:24:00Z')"
       },
       {
@@ -172,7 +172,7 @@
         "javascript": "new Date(819167040000)",
         "python": "datetime.datetime(1995, 12, 17, 2, 24, 0, tzinfo=datetime.timezone.utc)",
         "java": "new java.util.Date(new java.lang.Long(\"819167040000\"))",
-        "csharp": "new DateTime(1995, 12, 17, 2, 24, 0)",
+        "csharp": "",
         "shell": "new Date(819167040000)"
       },
       {
@@ -180,7 +180,7 @@
         "javascript": "new Date()",
         "python": "datetime.datetime.utcnow().date()",
         "java": "new java.util.Date()",
-        "csharp": "DateTime.Now",
+        "csharp": "",
         "shell": "new Date()"
       },
       {
@@ -188,7 +188,7 @@
         "javascript": "new Date(1995, 11, 17)",
         "python": "datetime.datetime(1995, 12, 17, 0, 0, 0, tzinfo=datetime.timezone.utc)",
         "java": "new java.util.Date(new java.lang.Long(\"819158400000\"))",
-        "csharp": "new DateTime(1995, 12, 17, 0, 0, 0)",
+        "csharp": "",
         "shell": "new Date(1995, 11, 17)"
       },
       {
@@ -196,7 +196,7 @@
         "javascript": "new Date(1995, 11, 17, 3, 24, 0)",
         "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc)",
         "java": "new java.util.Date(new java.lang.Long(\"819170640000\"))",
-        "csharp": "new DateTime(1995, 12, 17, 3, 24, 0)",
+        "csharp": "",
         "shell": "new Date(1995, 11, 17, 3, 24, 0)"
       },
       {
@@ -204,7 +204,7 @@
         "javascript": "Date('December 17, 1995 03:24:00Z')",
         "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
         "java": "new java.util.Date(new java.lang.Long(\"819170640000\")).toString()",
-        "csharp": "new DateTime(1995, 12, 17, 3, 24, 0).ToString()",
+        "csharp": "",
         "shell": "Date('December 17, 1995 03:24:00Z')"
       },
       {
@@ -212,7 +212,7 @@
         "javascript": "Date(819167040000)",
         "python": "datetime.datetime(1995, 12, 17, 2, 24, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
         "java": "new java.util.Date(new java.lang.Long(\"819167040000\")).toString()",
-        "csharp": "new DateTime(1995, 12, 17, 2, 24, 0).ToString()",
+        "csharp": "",
         "shell": "Date(819167040000)"
       },
       {
@@ -220,7 +220,7 @@
         "javascript": "Date()",
         "python": "datetime.datetime.utcnow().date().strftime('%a %b %d %Y %H:%M:%S %Z')",
         "java": "new java.util.Date().toString()",
-        "csharp": "DateTime.Now.ToString()",
+        "csharp": "",
         "shell": "Date()"
       },
       {
@@ -228,7 +228,7 @@
         "javascript": "Date(1995, 11, 17)",
         "python": "datetime.datetime(1995, 12, 17, 0, 0, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
         "java": "new java.util.Date(new java.lang.Long(\"819158400000\")).toString()",
-        "csharp": "new DateTime(1995, 12, 17, 0, 0, 0).ToString()",
+        "csharp": "",
         "shell": "Date(1995, 11, 17)"
       },
       {
@@ -236,7 +236,7 @@
         "javascript": "Date(1995, 11, 17, 3, 24, 0)",
         "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
         "java": "new java.util.Date(new java.lang.Long(\"819170640000\")).toString()",
-        "csharp": "new DateTime(1995, 12, 17, 3, 24, 0).ToString()",
+        "csharp": "",
         "shell": "Date(1995, 11, 17, 3, 24, 0)"
       },
       {
@@ -244,7 +244,7 @@
         "javascript": "Date.now()",
         "python": "datetime.datetime.utcnow()",
         "java": "new java.util.Date()",
-        "csharp": "DateTime.Now",
+        "csharp": "",
         "shell": "Date.now()"
       }
     ],
@@ -254,7 +254,7 @@
         "javascript": "RegExp('')",
         "python": "re.compile(r\"(?:)\")",
         "java": "Pattern.compile(\"(?:)\")",
-        "csharp": "new Regex(\"(?:)\")",
+        "csharp": "",
         "shell": "RegExp('')"
       },
       {
@@ -262,7 +262,7 @@
         "javascript": "RegExp('abc')",
         "python": "re.compile(r\"abc\")",
         "java": "Pattern.compile(\"abc\")",
-        "csharp": "new Regex(\"abc\")",
+        "csharp": "",
         "shell": "RegExp('abc')"
       },
       {
@@ -270,7 +270,7 @@
         "javascript": "new RegExp('ab+c', 'im')",
         "python": "re.compile(r\"ab+c(?im)\")",
         "java": "Pattern.compile(\"ab+c(?im)\")",
-        "csharp": "new Regex(\"(?im)ab+c\")",
+        "csharp": "",
         "shell": "new RegExp('ab+c', 'im')"
       },
       {
@@ -278,7 +278,7 @@
         "javascript": "new RegExp('ab+c', 'ig')",
         "python": "re.compile(r\"ab+c(?is)\")",
         "java": "Pattern.compile(\"ab+c(?i)\")",
-        "csharp": "new Regex(\"(?i)ab+c\")",
+        "csharp": "",
         "shell": "new RegExp('ab+c', 'ig')"
       },
       {
@@ -286,7 +286,7 @@
         "javascript": "new RegExp('ab/cd')",
         "python": "re.compile(r\"ab\\/cd\")",
         "java": "Pattern.compile(\"ab\\\\/cd\")",
-        "csharp": "new Regex(\"ab\\/cd\")",
+        "csharp": "",
         "shell": "new RegExp('ab/cd')"
       },
       {
@@ -294,7 +294,7 @@
         "javascript": "new RegExp('ab\\\"ab')",
         "python": "re.compile(r\"ab\\\"ab\")",
         "java": "Pattern.compile(\"ab\\\"ab\")",
-        "csharp": "new Regex(\"ab\\\"ab\")",
+        "csharp": "",
         "shell": "new RegExp('ab\\\"ab')"
       },
       {
@@ -302,7 +302,7 @@
         "javascript": "new RegExp('ab\"ab')",
         "python": "re.compile(r\"ab\\\"ab\")",
         "java": "Pattern.compile(\"ab\\\"ab\")",
-        "csharp": "new Regex(\"ab\\\"ab\")",
+        "csharp": "",
         "shell": "new RegExp('ab\"ab')"
       },
       {
@@ -310,7 +310,7 @@
         "javascript": "new RegExp('ab\\'ab')",
         "python": "re.compile(r\"ab'ab\")",
         "java": "Pattern.compile(\"ab'ab\")",
-        "csharp": "new Regex(\"ab'ab\")",
+        "csharp": "",
         "shell": "new RegExp('ab\\'ab')"
       },
       {
@@ -318,7 +318,7 @@
         "javascript": "new RegExp(\"ab'ab\")",
         "python": "re.compile(r\"ab'ab\")",
         "java": "Pattern.compile(\"ab'ab\")",
-        "csharp": "new Regex(\"ab'ab\")",
+        "csharp": "",
         "shell": "new RegExp(\"ab'ab\")"
       },
       {
@@ -326,7 +326,7 @@
         "javascript": "new RegExp(\"\\\\n\")",
         "python": "re.compile(r\"\\\\n\")",
         "java": "Pattern.compile(\"\\\\n\")",
-        "csharp": "new Regex(\"\\n\")",
+        "csharp": "",
         "shell": "new RegExp(\"\\\\n\")"
       },
       {
@@ -334,7 +334,7 @@
         "javascript": "/ab+c/ig",
         "python": "re.compile(r\"ab+c(?is)\")",
         "java": "Pattern.compile(\"ab+c(?i)\")",
-        "csharp": "new Regex(\"(?i)ab+c\")",
+        "csharp": "",
         "shell": "/ab+c/ig"
       },
       {
@@ -342,7 +342,7 @@
         "javascript": "new RegExp(/ab+c/, 'i')",
         "python": "re.compile(r\"ab+c(?i)\")",
         "java": "Pattern.compile(\"ab+c(?i)\")",
-        "csharp": "new Regex(\"(?i)ab+c\")",
+        "csharp": "",
         "shell": "new RegExp(/ab+c/, 'i')"
       }
     ]

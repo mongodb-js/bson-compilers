@@ -202,6 +202,29 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     return `Binary(b${bytes}, ${this.binarySubTypes[type]})`;
   }
 
+   /**
+   * @param {FuncCallExpressionContext} ctx
+   * @return {String}
+   */
+  emitBinData(ctx) {
+    ctx.type = this.Types.BinData;
+
+    const argList = ctx.arguments().argumentList();
+    const args = this.checkArguments(this.Symbols.BinData.args, argList);
+    const subtype = parseInt(argList.singleExpression()[0].getText(), 10);
+    const bindata = args[1];
+
+    if (!(subtype >= 0 && subtype <= 5 || subtype === 128)) {
+      throw new SemanticGenericError({message: 'BinData subtype must be a Number between 0-5 or 128'});
+    }
+
+    if (bindata.match(/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/)) {
+      throw new SemanticGenericError({message: 'invalid base64'});
+    }
+
+    return `Binary(b${bindata}, ${this.binarySubTypes[subtype]})`;
+  }
+
   /**
    * TODO: Maybe move this to javascript/Visitor and use template?
    *
@@ -232,28 +255,11 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * @param {FuncCallExpressionContext} ctx
    * @return {String}
    */
-  emitDecimal128(ctx) {
-    ctx.type = this.Types.Decimal128;
-
-    let decimal;
-
-    try {
-      decimal = this.executeJavascript(`new ${ctx.getText()}`);
-    } catch (error) {
-      throw new SemanticGenericError({message: error.message});
-    }
-
-    const str = singleQuoteStringify(decimal.toString());
-
-    return `Decimal128(${str})`;
+  emitDecimal128(ctx, str) {
+    return `Decimal128(Decimal(${singleQuoteStringify(str)}))`;
   }
-
-  emitDecimal128Str(ctx) {
-    ctx.type = this.Types.Decimal128;
-
-    const str = singleQuoteStringify(ctx.getText());
-
-    return `Decimal128(Decimal(${str})`;
+  emitNumberDecimal(ctx, str) {
+    return `Decimal128(Decimal(${singleQuoteStringify(str)}))`;
   }
 
   /* ************** Object methods **************** */

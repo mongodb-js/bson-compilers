@@ -18,19 +18,9 @@ const unsupported = {
       }
     },
     shell: {
-      java: {
-        'bson-methods': [ 'DBRef' ]
-      },
-      javascript: {
-        'bson-constructors': [ 'Timestamp', 'MinKeyMaxKey', 'NumberLong', 'DBRef', 'BinData', 'ObjectId', 'Code' ],
-        'language-types': [ 'RegExp', 'ISODate', 'Date', 'Number' ],
-        'bson-utils': [ 'ObjectId' ],
-        'bson-methods': [ 'DBRef', 'BinData' ]
-      },
-      python: {
-        'bson-constructors': [ 'MinKey/MaxKey' ],
-        'bson-methods': [ 'DBRef' ]
-      },
+      java: {},
+      javascript: {},
+      python: {},
       csharp: {
         'bson-constructors': [ '*' ],
         'language-types': [ '*' ],

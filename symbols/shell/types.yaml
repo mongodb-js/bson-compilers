@@ -90,6 +90,8 @@ BsonTypes:
                 <<: *__func
                 id: "toString"
                 type: *StringType
+                template: *DBRefToStringTemplate
+                argsTemplate: *DBRefToStringArgsTemplate
             getDb:
                 <<: *__func
                 id: "getDb"

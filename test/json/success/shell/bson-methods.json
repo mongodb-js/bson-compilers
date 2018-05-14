@@ -82,7 +82,7 @@
       {
         "description": "toString",
         "javascript": "new DBRef('coll', new ObjectId()).toString()",
-        "python": "",
+        "python": "str(DBRef('coll', ObjectId()))",
         "java": "new DBRef(\"coll\", new ObjectId()).toString()",
         "csharp": "",
         "shell": "new DBRef('coll', new ObjectId()).toString()"
@@ -90,7 +90,7 @@
       {
         "description": "getDb",
         "javascript": "new DBRef('coll', new ObjectId()).db",
-        "python": "",
+        "python": "DBRef('coll', ObjectId()).database",
         "java": "new DBRef(\"coll\", new ObjectId()).getDatabaseName()",
         "csharp": "",
         "shell": "new DBRef('coll', new ObjectId()).getDb()"
@@ -98,7 +98,7 @@
       {
         "description": "$db",
         "javascript": "new DBRef('coll', new ObjectId()).db",
-        "python": "",
+        "python": "DBRef('coll', ObjectId()).database",
         "java": "new DBRef(\"coll\", new ObjectId()).getDatabaseName()",
         "csharp": "",
         "shell": "new DBRef('coll', new ObjectId()).$db"
@@ -106,7 +106,7 @@
       {
         "description": "getCollection",
         "javascript": "new DBRef('coll', new ObjectId()).namespace",
-        "python": "",
+        "python": "DBRef('coll', ObjectId()).collection",
         "java": "new DBRef(\"coll\", new ObjectId()).getCollectionName()",
         "csharp": "",
         "shell": "new DBRef('coll', new ObjectId()).getCollection()"
@@ -114,7 +114,7 @@
       {
         "description": "getRef",
         "javascript": "new DBRef('coll', new ObjectId()).namespace",
-        "python": "",
+        "python": "DBRef('coll', ObjectId()).collection",
         "java": "new DBRef(\"coll\", new ObjectId()).getCollectionName()",
         "csharp": "",
         "shell": "new DBRef('coll', new ObjectId()).getRef()"
@@ -122,7 +122,7 @@
       {
         "description": "$ref",
         "javascript": "new DBRef('coll', new ObjectId()).namespace",
-        "python": "",
+        "python": "DBRef('coll', ObjectId()).collection",
         "java": "new DBRef(\"coll\", new ObjectId()).getCollectionName()",
         "csharp": "",
         "shell": "new DBRef('coll', new ObjectId()).$ref"
@@ -130,7 +130,7 @@
       {
         "description": "getId",
         "javascript": "new DBRef('coll', new ObjectId()).oid",
-        "python": "",
+        "python": "DBRef('coll', ObjectId()).id",
         "java": "new DBRef(\"coll\", new ObjectId()).getId()",
         "csharp": "",
         "shell": "new DBRef('coll', new ObjectId()).getId()"

@@ -697,7 +697,7 @@ Templates:
         }
     Decimal128SymbolFromStringArgsTemplate: &Decimal128SymbolFromStringArgsTemplate !!js/function >
         (lhs, arg) => {
-            return `Decimal128(Decimal(${arg}))`;
+            return `Decimal128(${arg})`;
         }
     Decimal128ToStringTemplate: &Decimal128ToStringTemplate !!js/function >
         () => {

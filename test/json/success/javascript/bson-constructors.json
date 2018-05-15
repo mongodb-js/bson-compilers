@@ -186,7 +186,7 @@
       {
         "description": "new Decimal128 with string arg",
         "javascript": "new Decimal128(Buffer.from('5'))",
-        "python": "Decimal128(Decimal('5.3E-6175'))",
+        "python": "Decimal128('5.3E-6175')",
         "java": "Decimal128.parse(\"5.3E-6175\")",
         "csharp": "new Decimal128(5)",
         "shell": "new NumberDecimal(5.3E-6175)"

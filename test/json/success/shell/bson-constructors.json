@@ -162,7 +162,7 @@
       {
         "description": "Decimal128 with string arg",
         "javascript": "Decimal128.fromString('5')",
-        "python": "Decimal128(Decimal('5'))",
+        "python": "Decimal128('5')",
         "java": "Decimal128.parse(\"5\")",
         "csharp": "new BsonString(\"5\")",
         "shell": "NumberDecimal('5')"
@@ -170,7 +170,7 @@
       {
         "description": "Decimal128 with num arg",
         "javascript": "Decimal128.fromString('5')",
-        "python": "Decimal128(Decimal('5'))",
+        "python": "Decimal128('5')",
         "java": "Decimal128.parse(\"5\")",
         "csharp": "new BsonString(\"5\")",
         "shell": "NumberDecimal(5)"
@@ -178,7 +178,7 @@
       {
         "description": "Decimal128 with no arg",
         "javascript": "Decimal128.fromString('0')",
-        "python": "Decimal128(Decimal('0'))",
+        "python": "Decimal128('0')",
         "java": "Decimal128.parse(\"0\")",
         "csharp": "new BsonString(\"0\")",
         "shell": "NumberDecimal()"

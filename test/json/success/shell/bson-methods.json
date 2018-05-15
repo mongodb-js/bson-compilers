@@ -208,7 +208,7 @@
       {
         "description": "toString",
         "javascript": "Decimal128.fromString('0').toString()",
-        "python": "str(Decimal128(Decimal('0')))",
+        "python": "str(Decimal128('0'))",
         "java": "Decimal128.parse(\"0\").toString()",
         "csharp": "",
         "shell": "NumberDecimal(0).toString()"

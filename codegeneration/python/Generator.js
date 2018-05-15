@@ -256,10 +256,10 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * @return {String}
    */
   emitDecimal128(ctx, str) {
-    return `Decimal128(Decimal(${singleQuoteStringify(str)}))`;
+    return `Decimal128(${singleQuoteStringify(str)})`;
   }
   emitNumberDecimal(ctx, str) {
-    return `Decimal128(Decimal(${singleQuoteStringify(str)}))`;
+    return `Decimal128(${singleQuoteStringify(str)})`;
   }
 
   /* ************** Object methods **************** */

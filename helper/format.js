@@ -5,12 +5,18 @@
  * @returns {String}
  */
 const doubleQuoteStringify = function(str) {
-  let newStr = str;
+  const safeStr = str.toString();
+  let newStr = safeStr;
+
   if (
-    (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
-    (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"')) {
-    newStr = str.substr(1, str.length - 2);
+    (
+      safeStr.charAt(0) === '\'' && safeStr.charAt(safeStr.length - 1) === '\''
+    ) ||
+    (safeStr.charAt(0) === '"' && safeStr.charAt(safeStr.length - 1) === '"')
+  ) {
+    newStr = safeStr.substr(1, safeStr.length - 2);
   }
+
   return `"${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}"`;
 };
 
@@ -21,12 +27,18 @@ const doubleQuoteStringify = function(str) {
  * @returns {String}
  */
 const singleQuoteStringify = function(str) {
-  let newStr = str;
+  const safeStr = str.toString();
+  let newStr = safeStr;
+
   if (
-    (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
-    (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"')) {
-    newStr = str.substr(1, str.length - 2);
+    (
+      safeStr.charAt(0) === '\'' && safeStr.charAt(safeStr.length - 1) === '\''
+    ) ||
+    (safeStr.charAt(0) === '"' && safeStr.charAt(safeStr.length - 1) === '"')
+  ) {
+    newStr = str.substr(1, safeStr.length - 2);
   }
+
   return `'${newStr.replace(/\\([\s\S])|(')/g, '\\$1$2')}'`;
 };
 
@@ -37,14 +49,16 @@ const singleQuoteStringify = function(str) {
  * @returns {String}
  */
 const removeQuotes = function(str) {
-  let newStr = str;
+  const safeStr = str.toString();
+  let newStr = safeStr;
 
   if (
-    (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"') ||
-    (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'')
+    (safeStr.charAt(0) === '"' && safeStr.charAt(safeStr.length - 1) === '"') ||
+    (safeStr.charAt(0) === '\'' && safeStr.charAt(safeStr.length - 1) === '\'')
   ) {
-    newStr = str.substr(1, str.length - 2);
+    newStr = safeStr.substr(1, safeStr.length - 2);
   }
+
   return newStr;
 };
 

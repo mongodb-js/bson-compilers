@@ -1,4 +1,3 @@
-
 /* eslint complexity: 0 */
 // cannot use path.resolve as it will not work with webpack in the browser
 const {
@@ -62,7 +61,9 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    */
   emitDate(ctx, date) {
     ctx.type = this.Types.Date;
+
     let toStr = '';
+
     if (!ctx.wasNew && this.visit(ctx.singleExpression()) !== 'ISODate') {
       ctx.type = this.Types._string;
       toStr = '.strftime(\'%a %b %d %Y %H:%M:%S %Z\')';
@@ -71,6 +72,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     if (date === undefined) {
       return `datetime.datetime.utcnow().date()${toStr}`;
     }
+
     const dateStr = [
       date.getUTCFullYear(),
       date.getUTCMonth() + 1,

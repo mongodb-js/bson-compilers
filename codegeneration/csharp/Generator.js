@@ -48,6 +48,20 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
   }
 
   /**
+   * Number doesn't need a new keyword, so need to handle via emit
+   *
+   * @param {NumberContextObject} ctx
+   *
+   * @returns {string} - (int)value
+   */
+  emitNumber(ctx) {
+    ctx.type = this.Types.Number;
+    const args = ctx.arguments().argumentList().singleExpression();
+    const expr = args[0].getText().replace(/['"]+/g, '');
+    return `(int)${expr}`;
+  }
+
+  /**
    * BSON Binary Constructor
    * needs to execute JS to get value first
    *
@@ -79,7 +93,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    * @param {BSONRegExpConstructorObject} ctx - expects two strings as
    * arguments, where the second are flags
    *
-   * @returns {string} - new BSONRegularExpession(patter)
+   * @returns {string} - new BSONRegularExpession(pattern)
    */
   emitBSONRegExp(ctx) {
     ctx.type = this.Types.RegExp;

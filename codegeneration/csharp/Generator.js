@@ -30,13 +30,80 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
   emitNew(ctx) {
     const expr = this.visit(ctx.singleExpression());
     ctx.type = ctx.singleExpression().type;
+
     return expr;
+  }
+
+  /**
+   * Symbol is just used a string in c#
+   *
+   * @param {ctxObject} ctx
+   *
+   * @returns {string} - value
+   */
+  emitSymbol(ctx) {
+    ctx.type = this.Types.Symbol;
+    const args = ctx.arguments().argumentList().singleExpression();
+    const expr = args[0].getText();
+
+    return doubleQuoteStringify(expr.toString());
+  }
+
+  /**
+   * Long should just be the number + letter 'L'
+   *
+   * @param {ctxObject} ctx
+   *
+   * @returns {string} - valueL
+   */
+  emitLong(ctx, longstr) {
+    ctx.type = this.Types.Long;
+
+    return `${longstr}L`;
+  }
+
+  /**
+   * Double can be expressed with an extra decimal point
+   *
+   * @param {ctxObject} ctx
+   *
+   * @returns {string} - valueL
+   */
+  emitDouble(ctx) {
+    ctx.type = this.Types.Double;
+    const args = ctx.arguments().argumentList().singleExpression();
+    let text = args[0].getText();
+    if (text.indexOf('\'') === 0 || text.indexOf('"') === 0) {
+      text = text.replace(/['"]+/g, '');
+    }
+
+    return Math.round(parseInt(text, 10)).toFixed(1);
+  }
+
+  /**
+   * all of the .NET langs have implicit conversion, so we just need to
+   * parseInt and return the number for Int32
+   *
+   * @param {ctxObject} ctx
+   *
+   * @returns {string} - value
+   */
+  emitInt32(ctx) {
+    ctx.type = this.Types.Int32;
+    const args = ctx.arguments().argumentList().singleExpression();
+    let text = args[0].getText();
+    if (text.indexOf('\'') === 0 || text.indexOf('"') === 0) {
+      text = text.replace(/['"]+/g, '');
+    }
+    const expr = parseInt(text, 10);
+
+    return `${expr}`;
   }
 
   /**
    * Number doesn't need a new keyword, so need to handle via emit
    *
-   * @param {NumberContextObject} ctx
+   * @param {ctxObject} ctx
    *
    * @returns {string} - (int)value
    */
@@ -56,6 +123,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    */
   emitDecimal128(ctx, decimal) {
     const value = parseInt(decimal.toString(), 10);
+
     return `new Decimal128(${value})`;
   }
 
@@ -69,6 +137,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    */
   emitMinKey(ctx) {
     ctx.type = this.Types.MinKey;
+
     return 'BsonMinKey.Value';
   }
 
@@ -76,33 +145,14 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    * BSON MaxKey Constructor
    * needs to be in emit, since does not need a 'new' keyword
    *
-   * @param {BSONMaxKeyObject} ctx
+   * @param {ctxObject} ctx
    *
    * @returns {string} - BsonMaxKey.Value
    */
   emitMaxKey(ctx) {
     ctx.type = this.Types.MaxKey;
+
     return 'BsonMaxKey.Value';
-  }
-
-  /**
-   * BSON Int32 Constructor
-   * depending on whether the initial value is a string or a int, need to parse
-   * or convert
-   *
-   * @param {BSONInt32Object} ctx
-   *
-   * @returns {string} - Int32.Parse("value") OR Convert.ToInt32(value)
-   */
-  emitInt32(ctx) {
-    ctx.type = this.Types.Int32;
-    const args = ctx.arguments().argumentList().singleExpression();
-    const expr = args[0].getText();
-    if (expr.indexOf('\'') >= 0 || expr.indexOf('"') >= 0) {
-      return `Int32.Parse(${doubleQuoteStringify(expr.toString())})`;
-    }
-
-    return `Convert.ToInt32(${expr})`;
   }
 
   /**

@@ -115,7 +115,7 @@
         "python": "Int64(0)",
         "java": "0L",
         "shell": "0",
-        "csharp": "new BsonInt64(0)"
+        "csharp": "0L"
       },
       {
         "description": "ONE",
@@ -123,7 +123,7 @@
         "python": "Int64(1)",
         "java": "1L",
         "shell": "1",
-        "csharp": "new BsonInt64(1)"
+        "csharp": "1L"
       },
       {
         "description": "NEG_ONE",
@@ -131,7 +131,7 @@
         "python": "Int64(-1)",
         "java": "-1L",
         "shell": "-1",
-        "csharp": "new BsonInt64(-1)"
+        "csharp": "-1L"
       },
       {
         "description": "fromInt",
@@ -139,7 +139,7 @@
         "python": "Int64(5)",
         "java": "5L",
         "shell": "NumberLong(5)",
-        "csharp": "new BsonInt64(5)"
+        "csharp": "5L"
       },
       {
         "description": "fromString without radix",
@@ -147,7 +147,7 @@
         "python": "Int64(int('5'))",
         "java": "Long.parseLong(\"5\")",
         "shell": "NumberLong('5')",
-        "csharp": "new BsonInt64(5)"
+        "csharp": "5L"
       },
       {
         "description": "fromString with radix",
@@ -162,7 +162,7 @@
         "javascript": "Long.fromBits(-1, 2147483647)",
         "python": "Int64(9223372036854775807)",
         "java": "9223372036854775807L",
-        "csharp": "new BsonInt64(9223372036854775807)",
+        "csharp": "9223372036854775807L"
         "shell": "NumberLong(9223372036854775807)"
       }
     ],

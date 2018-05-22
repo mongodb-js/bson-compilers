@@ -129,7 +129,7 @@ Templates:
         }
     BinaryLengthArgsTemplate: &BinaryLengthArgsTemplate !!js/function >
         (lhs) => {
-          return `${lhs}.Length`;
+          return `${lhs}.Bytes.Length`;
         }
     BinaryToStringTemplate: &BinaryToStringTemplate !!js/function >
         (lhs) => {
@@ -163,7 +163,7 @@ Templates:
     DBRefToStringArgsTemplate: &DBRefToStringArgsTemplate null
     DoubleValueOfTemplate: &DoubleValueOfTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.Value`;
+            return `${lhs}`;
         }
     DoubleValueOfArgsTemplate: &DoubleValueOfArgsTemplate !!js/function >
         (lhs) => {
@@ -181,96 +181,99 @@ Templates:
     Int32ToStringArgsTemplate: &Int32ToStringArgsTemplate null
     LongEqualsTemplate: &LongEqualsTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToInt64() == `;
+            return `${lhs} == `;
         }
     LongEqualsArgsTemplate: &LongEqualsArgsTemplate !!js/function >
         (lhs, arg) => {
-              return `${arg}.ToInt64()`;
+              return `${arg}`;
         }
     LongToIntTemplate: &LongToIntTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToInt32`;
+            return `Convert.ToInt32(${lhs})`;
         }
-    LongToIntArgsTemplate: &LongToIntArgsTemplate null
+    LongToIntArgsTemplate: &LongToIntArgsTemplate !!js/function >
+        () => {
+            return '';
+        }
     LongValueOfTemplate: &LongValueOfTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToInt32`;
+            return `${lhs}`;
         }
     LongValueOfArgsTemplate: &LongValueOfArgsTemplate !!js/function >
-        (lhs) => {
+        () => {
             return '';
         }
     LongToNumberTemplate: &LongToNumberTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.Value`;
+            return `${lhs}`;
         }
     LongToNumberArgsTemplate: &LongToNumberArgsTemplate !!js/function >
-        (lhs) => {
+        () => {
             return '';
         }
     LongAddTemplate: &LongAddTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToInt64()`;
+            return `${lhs}`;
         }
     LongAddArgsTemplate: &LongAddArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` + ${arg}.ToInt64()`;
+            return ` + ${arg}`;
         }
     LongSubtractTemplate: &LongSubtractTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToInt64()`;
+            return `${lhs}`;
         }
     LongSubtractArgsTemplate: &LongSubtractArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` - ${arg}.ToInt64()`;
+            return ` - ${arg}`;
         }
     LongMultiplyTemplate: &LongMultiplyTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToInt64()`;
+            return `${lhs}`;
         }
     LongMultiplyArgsTemplate: &LongMultiplyArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` * ${arg}.ToInt64()`;
+            return ` * ${arg}`;
         }
     LongDivTemplate: &LongDivTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToInt64()`;
+            return `${lhs}`;
         }
     LongDivArgsTemplate: &LongDivArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` / ${arg}.ToInt64()`;
+            return ` / ${arg}`;
         }
     LongModuloTemplate: &LongModuloTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToInt64()`;
+            return `${lhs}`;
         }
     LongModuloArgsTemplate: &LongModuloArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` % ${arg}.ToInt64()`;
+            return ` % ${arg}`;
         }
     LongAndTemplate: &LongAndTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToInt64()`;
+            return `${lhs}`;
         }
     LongAndArgsTemplate: &LongAndArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` & ${arg}.ToInt64()`;
+            return ` & ${arg}`;
         }
     LongOrTemplate: &LongOrTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToInt64()`;
+            return `${lhs}`;
         }
     LongOrArgsTemplate: &LongOrArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` | ${arg}.ToInt64()`;
+            return ` | ${arg}`;
         }
     LongXorTemplate: &LongXorTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToInt64()`;
+            return `${lhs}`;
         }
     LongXorArgsTemplate: &LongXorArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` ^ ${arg}.ToInt64()`;
+            return ` ^ ${arg}`;
         }
     LongShiftLeftTemplate: &LongShiftLeftTemplate !!js/function >
         () => {
@@ -278,7 +281,7 @@ Templates:
         }
     LongShiftLeftArgsTemplate: &LongShiftLeftArgsTemplate !!js/function >
         (lhs, arg) => {
-            return `${lhs}.ToInt32() << ${arg}`;
+            return `${lhs} << ${arg}`;
         }
     LongShiftRightTemplate: &LongShiftRightTemplate !!js/function >
         () => {
@@ -286,16 +289,19 @@ Templates:
         }
     LongShiftRightArgsTemplate: &LongShiftRightArgsTemplate !!js/function >
         (lhs, arg) => {
-            return `${lhs}.ToInt32() >> ${arg}`;
+            return `${lhs} >> ${arg}`;
         }
     LongCompareTemplate: &LongCompareTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.CompareTo`;
+            return `${lhs} - `;
         }
-    LongCompareArgsTemplate: &LongCompareArgsTemplate null
+    LongCompareArgsTemplate: &LongCompareArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return arg;
+        }
     LongIsOddTemplate: &LongIsOddTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToInt64()`;
+            return `${lhs}`;
         }
     LongIsOddArgsTemplate: &LongIsOddArgsTemplate !!js/function >
         () => {
@@ -323,7 +329,7 @@ Templates:
         }
     LongNegateArgsTemplate: &LongNegateArgsTemplate !!js/function >
         (lhs) => {
-            return `-${lhs}.ToInt64()`;
+            return `-${lhs}`;
         }
     LongNotTemplate: &LongNotTemplate !!js/function >
         () => {
@@ -331,15 +337,15 @@ Templates:
         }
     LongNotArgsTemplate: &LongNotArgsTemplate !!js/function >
         (lhs) => {
-            return `!${lhs}.ToInt64()`;
+            return `!${lhs}`;
         }
     LongNotEqualsTemplate: &LongNotEqualsTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToInt64() !=`;
+            return `${lhs} !=`;
         }
     LongNotEqualsArgsTemplate: &LongNotEqualsArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` ${arg}.ToInt64()`;
+            return ` ${arg}`;
         }
     LongGreaterThanTemplate: &LongGreaterThanTemplate !!js/function >
         (lhs) => {
@@ -448,7 +454,7 @@ Templates:
         }
     SymbolValueOfTemplate: &SymbolValueOfTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.AsBsonSymbol`;
+            return `${lhs}`;
         }
     SymbolValueOfArgsTemplate: &SymbolValueOfArgsTemplate !!js/function >
         () => {
@@ -456,17 +462,20 @@ Templates:
         }
     SymbolInspectTemplate: &SymbolInspectTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.Value`;
+            return `${lhs}`;
         }
     SymbolInspectArgsTemplate: &SymbolInspectArgsTemplate !!js/function >
-        (lhs) => {
+        () => {
             return '';
         }
     SymbolToStringTemplate: &SymbolToStringTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToString`;
+            return `${lhs}`;
         }
-    SymbolToStringArgsTemplate: &SymbolToStringArgsTemplate null
+    SymbolToStringArgsTemplate: &SymbolToStringArgsTemplate !!js/function >
+        () => {
+            return '';
+        }
     # Symbol Templates
     CodeSymbolTemplate: &CodeSymbolTemplate  !!js/function >
         () => {
@@ -483,7 +492,7 @@ Templates:
                 newStr = str.substr(1, str.length - 2);
             }
             code = `"${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}"`;
-            return (scope === undefined) ? `BsonJavaScript(@${code})` : `BsonJavaScriptWithScope(@${code}, ${scope})`;
+            return (scope === undefined) ? `BsonJavaScript(${code})` : `BsonJavaScriptWithScope(${code}, ${scope})`;
         }
     ObjectIdSymbolTemplate: &ObjectIdSymbolTemplate !!js/function >
         () => {
@@ -552,22 +561,18 @@ Templates:
             return 'MongoDBRef';
         }
     DBRefSymbolArgsTemplate: &DBRefSymbolArgsTemplate null
-    DoubleSymbolTemplate: &DoubleSymbolTemplate !!js/function >
-        (literal) => {
-            return 'BsonDouble';
-        }
-    DoubleSymbolArgsTemplate: &DoubleSymbolArgsTemplate !!js/function >
-        (lhs, arg) => {
-            arg = arg.replace(/['"]+/g, '');
-            return `(${arg})`;
-        }
+    DoubleSymbolTemplate: &DoubleSymbolTemplate null # Has emit method
+    DoubleSymbolArgsTemplate: &DoubleSymbolArgsTemplate null # Has emit method 
     Int32SymbolTemplate: &Int32SymbolTemplate null # Has emit method
     Int32SymbolArgsTemplate: &Int32SymbolArgsTemplate null # Has emit method
     LongSymbolTemplate: &LongSymbolTemplate !!js/function >
         () => {
-            return 'BsonInt64';
+            return '';
         }
-    LongSymbolArgsTemplate: &LongSymbolArgsTemplate null
+    LongSymbolArgsTemplate: &LongSymbolArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return `${arg}L`;
+        }
     LongSymbolMaxTemplate: &LongSymbolMaxTemplate !!js/function >
         () => {
             return 'Int64.MaxValue';
@@ -580,30 +585,33 @@ Templates:
     LongSymbolMinArgsTemplate: &LongSymbolMinArgsTemplate null
     LongSymbolZeroTemplate: &LongSymbolZeroTemplate !!js/function >
         (lhs) => {
-            return `new ${lhs}(0)`;
+            return '0L';
         }
     LongSymbolZeroArgsTemplate: &LongSymbolZeroArgsTemplate null
     LongSymbolOneTemplate: &LongSymbolOneTemplate !!js/function >
         (lhs) => {
-            return `new ${lhs}(1)`;
+            return '1L';
         }
     LongSymbolOneArgsTemplate: &LongSymbolOneArgsTemplate null
     LongSymbolNegOneTemplate: &LongSymbolNegOneTemplate !!js/function >
         (lhs) => {
-            return `new ${lhs}(-1)`;
+            return '-1L';
         }
     LongSymbolNegOneArgsTemplate: &LongSymbolNegOneArgsTemplate null
     LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate null
     LongSymbolFromBitsArgsTemplate: &LongSymbolFromBitsArgsTemplate null
     LongSymbolFromIntTemplate: &LongSymbolFromIntTemplate !!js/function >
-        (lhs) => {
-            return `new ${lhs}`;
+        () => {
+            return '';
         }
-    LongSymbolFromIntArgsTemplate: &LongSymbolFromIntArgsTemplate null
+    LongSymbolFromIntArgsTemplate: &LongSymbolFromIntArgsTemplate !!js/function >
+        (lhs, arg) => {
+            return `${arg}L`;
+        }
     LongSymbolFromNumberTemplate: &LongSymbolFromNumberTemplate null
     LongSymbolFromNumberArgsTemplate: &LongSymbolFromNumberArgsTemplate null
     LongSymbolFromStringTemplate: &LongSymbolFromStringTemplate !!js/function >
-        (lhs) => {
+        () => {
             return '';
         }
     LongSymbolFromStringArgsTemplate: &LongSymbolFromStringArgsTemplate !!js/function >
@@ -612,7 +620,7 @@ Templates:
                 return `Convert.ToInt64(${arg1}, ${arg2})`;
             }
             arg1 = arg1.replace(/['"]+/g, '');
-            return `new BsonInt64(${arg1})`;
+            return `${arg1}L`;
         }
     MinKeySymbolTemplate: &MinKeySymbolTemplate null # Has emit method
     MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate null # Has emit method
@@ -623,22 +631,13 @@ Templates:
             return 'BsonTimestamp';
         }
     TimestampSymbolArgsTemplate: &TimestampSymbolArgsTemplate null
-    SymbolSymbolTemplate: &SymbolSymbolTemplate !!js/function >
-        () => {
-            return `BsonString`
-        }
-    SymbolSymbolArgsTemplate: &SymbolSymbolArgsTemplate null
-    BSONRegExpSymbolTemplate: &BSONRegExpSymbolTemplate !!js/function >
-        () => {
-            return 'BsonRegularExpression';
-        }
-    BSONRegExpSymbolArgsTemplate: &BSONRegExpSymbolArgsTemplate !!js/function >
-        (lhs, pattern, flags) => {
-            return `(@${pattern}${flags ? ', ' + flags : ''})`;
-        }
+    SymbolSymbolTemplate: &SymbolSymbolTemplate null # Has emit method 
+    SymbolSymbolArgsTemplate: &SymbolSymbolArgsTemplate null # Has emit method
+    BSONRegExpSymbolTemplate: &BSONRegExpSymbolTemplate null # Has emit method
+    BSONRegExpSymbolArgsTemplate: &BSONRegExpSymbolArgsTemplate null # Has emit method
     Decimal128SymbolTemplate: &Decimal128SymbolTemplate null # Has emit method
     Decimal128SymbolArgsTemplate: &Decimal128SymbolArgsTemplate !!js/function >
-        () => {
+        (lhs) => {
             return '';
         }
     Decimal128SymbolFromStringTemplate: &Decimal128SymbolFromStringTemplate !!js/function >

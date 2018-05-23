@@ -20,7 +20,6 @@ class Visitor extends ECMAScriptVisitor {
   constructor() {
     super();
     this.new = '';
-    this.numeric_types = [];
   }
 
   start(ctx) {
@@ -391,13 +390,13 @@ class Visitor extends ECMAScriptVisitor {
       return result;
     }
 
-    this.numeric_types = [
+    const numeric_types = [
       this.Types._integer, this.Types._decimal, this.Types._hex, this.Types._octal, this.Types._long, this.Types._numeric
     ];
 
     // If the expected type is numeric, accept the numeric basic types + numeric bson types
     if (expected.indexOf(this.Types._numeric) !== -1 &&
-       (this.numeric_types.indexOf(actual.type) !== -1 ||
+       (numeric_types.indexOf(actual.type) !== -1 ||
          (actual.type.id === 'Long' ||
           actual.type.id === 'Int32' ||
           actual.type.id === 'Double'))) {
@@ -406,8 +405,8 @@ class Visitor extends ECMAScriptVisitor {
 
     // Check if the arguments are both numeric. If so then cast to expected type.
     for (let i = 0; i < expected.length; i++) {
-      if (this.numeric_types.indexOf(actual.type) !== -1 &&
-      this.numeric_types.indexOf(expected[i]) !== -1) {
+      if (numeric_types.indexOf(actual.type) !== -1 &&
+        numeric_types.indexOf(expected[i]) !== -1) {
         actual.type = expected[i];
         return this.visit(original);
       }
@@ -583,29 +582,14 @@ class Visitor extends ECMAScriptVisitor {
    */
   processObjectId(ctx) {
     ctx.type = this.Types.ObjectId;
-
     const symbolType = this.Symbols.ObjectId;
     const argList = ctx.arguments().argumentList();
     const lhs = symbolType.template ? symbolType.template() : 'ObjectId';
-
     if (!argList) {
       return `${this.new}${lhs}()`;
     }
-
-    const args = argList.singleExpression();
-    let hexstr = this.visit(args[0]);
-    const isNumericType = this.numeric_types
-      .find((numeric) => (numeric === args[0].type));
-
-    if (
-      args[0].type !== this.Types._string &&
-      typeof isNumericType === 'undefined'
-    ) {
-      throw new SemanticTypeError({
-        message: 'ObjectId requires id to be a string or numeric type'
-      });
-    }
-
+    this.checkArguments(symbolType.args, argList);
+    let hexstr;
     try {
       hexstr = this.executeJavascript(ctx.getText()).toHexString();
     } catch (error) {

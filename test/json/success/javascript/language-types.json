@@ -4,7 +4,7 @@
       {
         "description": "simple addition",
         "javascript": "2+5",
-        "python": "2+5",
+        "python": "",
         "java": "new java.lang.Long(\"2\")+new java.lang.Long(\"5\")",
         "csharp": "2+5",
         "shell": "2+5"
@@ -12,7 +12,7 @@
       {
         "description": "multiplication and division",
         "javascript": "2+(4*36)/3",
-        "python": "2+(4*36)/3",
+        "python": "",
         "java": "new java.lang.Long(\"2\")+(new java.lang.Long(\"4\")*new java.lang.Long(\"36\"))/new java.lang.Long(\"3\")",
         "csharp": "2+(4*36)/3",
         "shell": "2+(4*36)/3"
@@ -22,7 +22,7 @@
       {
         "description": "Number with number arg",
         "javascript": "new Number(2)",
-        "python": "int(2)",
+        "python": "",
         "java": "new java.lang.Long(\"2\")",
         "csharp": "(int)2",
         "shell": "new Number(2)"
@@ -30,7 +30,7 @@
       {
         "description": "Number with valid string arg",
         "javascript": "new Number('2')",
-        "python": "int('2')",
+        "python": "",
         "java": "new java.lang.Long(\"2\")",
         "csharp": "(int)2",
         "shell": "new Number('2')"
@@ -40,7 +40,7 @@
       {
         "description": "Integer 2",
         "javascript": "2",
-        "python": "2",
+        "python": "",
         "java": "new java.lang.Long(\"2\")",
         "csharp": "2",
         "shell": "2"
@@ -48,7 +48,7 @@
       {
         "description": "larger than int32",
         "javascript": "429496729601",
-        "python": "429496729601",
+        "python": "",
         "java": "new java.lang.Long(\"429496729601\")",
         "csharp": "429496729601",
         "shell": "429496729601"
@@ -56,7 +56,7 @@
       {
         "description": "Decimal 2.001",
         "javascript": "2.001",
-        "python": "2.001",
+        "python": "",
         "java": "new java.lang.Double(2.001)",
         "csharp": "2.001",
         "shell": "2.001"
@@ -64,7 +64,7 @@
       {
         "description": "Hex number caps",
         "javascript": "0X123ABC",
-        "python": "0X123ABC",
+        "python": "",
         "java": "0X123ABC",
         "csharp": "0X123ABC",
         "shell": "0X123ABC"
@@ -72,7 +72,7 @@
       {
         "description": "Hex number lower",
         "javascript": "0x123abc",
-        "python": "0x123abc",
+        "python": "",
         "java": "0x123abc",
         "csharp": "0x123abc",
         "shell": "0x123abc"
@@ -80,7 +80,7 @@
       {
         "description": "Octal 0-prefix number",
         "javascript": "01234567",
-        "python": "0o1234567",
+        "python": "",
         "java": "01234567",
         "csharp": "342391",
         "shell": "01234567"
@@ -88,7 +88,7 @@
       {
         "description": "Octal 00-prefix number",
         "javascript": "001234567",
-        "python": "0o1234567",
+        "python": "",
         "java": "01234567",
         "csharp": "342391",
         "shell": "001234567"
@@ -96,7 +96,7 @@
       {
         "description": "Octal 0o-prefix number",
         "javascript": "0o1234567",
-        "python": "0o1234567",
+        "python": "",
         "java": "01234567",
         "csharp": "342391",
         "shell": "0o1234567"
@@ -104,7 +104,7 @@
       {
         "description": "Octal 0O-prefix number",
         "javascript": "0o1234567",
-        "python": "0o1234567",
+        "python": "",
         "java": "01234567",
         "csharp": "342391",
         "shell": "0o1234567"
@@ -112,7 +112,7 @@
       {
         "description": "Single-quote string",
         "javascript": "'string'",
-        "python": "'string'",
+        "python": "",
         "java": "\"string\"",
         "csharp": "\"string\"",
         "shell": "'string'"
@@ -120,7 +120,7 @@
       {
         "description": "Double-quote string",
         "javascript": "\"string\"",
-        "python": "'string'",
+        "python": "",
         "java": "\"string\"",
         "csharp": "\"string\"",
         "shell": "\"string\""
@@ -128,7 +128,7 @@
       {
         "description": "null",
         "javascript": "null",
-        "python": "None",
+        "python": "",
         "java": "null",
         "csharp": "BsonNull.Value",
         "shell": "null"
@@ -136,7 +136,7 @@
       {
         "description": "undefined",
         "javascript": "undefined",
-        "python": "None",
+        "python": "",
         "java": "null",
         "csharp": "BsonUndefined.Value",
         "shell": "undefined"
@@ -144,7 +144,7 @@
       {
         "description": "true",
         "javascript": "true",
-        "python": "True",
+        "python": "",
         "java": "true",
         "csharp": "true",
         "shell": "true"
@@ -152,7 +152,7 @@
       {
         "description": "false",
         "javascript": "false",
-        "python": "False",
+        "python": "",
         "java": "false",
         "csharp": "false",
         "shell": "false"
@@ -162,7 +162,7 @@
       {
         "description": "new Date with ISO String",
         "javascript": "new Date('December 17, 1995 03:24:00Z')",
-        "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc)",
+        "python": "",
         "java": "new java.util.Date(new java.lang.Long(\"819170640000\"))",
         "csharp": "new DateTime(1995, 12, 17, 3, 24, 0)",
         "shell": "new Date('Sun, 17 Dec 1995 03:24:00 GMT')"
@@ -170,7 +170,7 @@
       {
         "description": "new Date with UTC number",
         "javascript": "new Date(819167040000)",
-        "python": "datetime.datetime(1995, 12, 17, 2, 24, 0, tzinfo=datetime.timezone.utc)",
+        "python": "",
         "java": "new java.util.Date(new java.lang.Long(\"819167040000\"))",
         "csharp": "new DateTime(1995, 12, 17, 2, 24, 0)",
         "shell": "new Date('Sun, 17 Dec 1995 02:24:00 GMT')"
@@ -178,7 +178,7 @@
       {
         "description": "Current date",
         "javascript": "new Date()",
-        "python": "datetime.datetime.utcnow().date()",
+        "python": "",
         "java": "new java.util.Date()",
         "csharp": "DateTime.Now",
         "shell": "new Date()"
@@ -186,7 +186,7 @@
       {
         "description": "Date from year, month and day",
         "javascript": "new Date(1995, 11, 17)",
-        "python": "datetime.datetime(1995, 12, 17, 0, 0, 0, tzinfo=datetime.timezone.utc)",
+        "python": "",
         "java": "new java.util.Date(new java.lang.Long(\"819158400000\"))",
         "csharp": "new DateTime(1995, 12, 17, 0, 0, 0)",
         "shell": "new Date('Sun, 17 Dec 1995 00:00:00 GMT')"
@@ -194,7 +194,7 @@
       {
         "description": "Date from year, month, day, hour, min and sec",
         "javascript": "new Date(1995, 11, 17, 3, 24, 0)",
-        "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc)",
+        "python": "",
         "java": "new java.util.Date(new java.lang.Long(\"819170640000\"))",
         "csharp": "new DateTime(1995, 12, 17, 3, 24, 0)",
         "shell": "new Date('Sun, 17 Dec 1995 03:24:00 GMT')"
@@ -202,7 +202,7 @@
       {
         "description": "Date string with ISO String",
         "javascript": "Date('December 17, 1995 03:24:00Z')",
-        "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
+        "python": "",
         "java": "new java.util.Date(new java.lang.Long(\"819170640000\")).toString()",
         "csharp": "new DateTime(1995, 12, 17, 3, 24, 0).ToString()",
         "shell": "Date('Sun, 17 Dec 1995 03:24:00 GMT')"
@@ -210,7 +210,7 @@
       {
         "description": "Date string with UTC number",
         "javascript": "Date(819167040000)",
-        "python": "datetime.datetime(1995, 12, 17, 2, 24, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
+        "python": "",
         "java": "new java.util.Date(new java.lang.Long(\"819167040000\")).toString()",
         "csharp": "new DateTime(1995, 12, 17, 2, 24, 0).ToString()",
         "shell": "Date('Sun, 17 Dec 1995 02:24:00 GMT')"
@@ -218,7 +218,7 @@
       {
         "description": "Current date string",
         "javascript": "Date()",
-        "python": "datetime.datetime.utcnow().date().strftime('%a %b %d %Y %H:%M:%S %Z')",
+        "python": "",
         "java": "new java.util.Date().toString()",
         "csharp": "DateTime.Now.ToString()",
         "shell": "Date()"
@@ -226,7 +226,7 @@
       {
         "description": "Date string from year, month and day",
         "javascript": "Date(1995, 11, 17)",
-        "python": "datetime.datetime(1995, 12, 17, 0, 0, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
+        "python": "",
         "java": "new java.util.Date(new java.lang.Long(\"819158400000\")).toString()",
         "csharp": "new DateTime(1995, 12, 17, 0, 0, 0).ToString()",
         "shell": "Date('Sun, 17 Dec 1995 00:00:00 GMT')"
@@ -234,7 +234,7 @@
       {
         "description": "Date string from year, month, day, hour, min and sec",
         "javascript": "Date(1995, 11, 17, 3, 24, 0)",
-        "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
+        "python": "",
         "java": "new java.util.Date(new java.lang.Long(\"819170640000\")).toString()",
         "csharp": "new DateTime(1995, 12, 17, 3, 24, 0).ToString()",
         "shell": "Date('Sun, 17 Dec 1995 03:24:00 GMT')"
@@ -242,7 +242,7 @@
       {
         "description": "Current time",
         "javascript": "Date.now()",
-        "python": "datetime.datetime.utcnow()",
+        "python": "",
         "java": "new java.util.Date()",
         "csharp": "DateTime.Now",
         "shell": "Date.now()"
@@ -252,7 +252,7 @@
       {
         "description": "empty RegExp",
         "javascript": "RegExp('')",
-        "python": "re.compile(r\"(?:)\")",
+        "python": "",
         "java": "Pattern.compile(\"(?:)\")",
         "csharp": "new Regex(\"(?:)\")",
         "shell": "RegExp('(?:)')"
@@ -260,7 +260,7 @@
       {
         "description": "RegExp without options",
         "javascript": "RegExp('abc')",
-        "python": "re.compile(r\"abc\")",
+        "python": "",
         "java": "Pattern.compile(\"abc\")",
         "csharp": "new Regex(\"abc\")",
         "shell": "RegExp('abc')"
@@ -268,7 +268,7 @@
       {
         "description": "regex object with im flags as args",
         "javascript": "new RegExp('ab+c', 'im')",
-        "python": "re.compile(r\"ab+c(?im)\")",
+        "python": "",
         "java": "Pattern.compile(\"ab+c(?im)\")",
         "csharp": "new Regex(\"(?im)ab+c\")",
         "shell": "new RegExp('ab+c', 'im')"
@@ -276,7 +276,7 @@
       {
         "description": "regex object with ig flags as args",
         "javascript": "new RegExp('ab+c', 'ig')",
-        "python": "re.compile(r\"ab+c(?is)\")",
+        "python": "",
         "java": "Pattern.compile(\"ab+c(?i)\")",
         "csharp": "new Regex(\"(?i)ab+c\")",
         "shell": "new RegExp('ab+c', 'gi')"
@@ -284,7 +284,7 @@
       {
         "description": "regex object with forward slash",
         "javascript": "new RegExp('ab/cd')",
-        "python": "re.compile(r\"ab\\/cd\")",
+        "python": "",
         "java": "Pattern.compile(\"ab\\\\/cd\")",
         "csharp": "new Regex(\"ab\\/cd\")",
         "shell": "new RegExp('ab\\/cd')"
@@ -292,7 +292,7 @@
       {
         "description": "regex object with escaped double quote",
         "javascript": "new RegExp('ab\\\"ab')",
-        "python": "re.compile(r\"ab\\\"ab\")",
+        "python": "",
         "java": "Pattern.compile(\"ab\\\"ab\")",
         "csharp": "new Regex(\"ab\\\"ab\")",
         "shell": "new RegExp('ab\"ab')"
@@ -300,7 +300,7 @@
       {
         "description": "regex object with nonescaped double quote",
         "javascript": "new RegExp('ab\"ab')",
-        "python": "re.compile(r\"ab\\\"ab\")",
+        "python": "",
         "java": "Pattern.compile(\"ab\\\"ab\")",
         "csharp": "new Regex(\"ab\\\"ab\")",
         "shell": "new RegExp('ab\"ab')"
@@ -308,7 +308,7 @@
       {
         "description": "regex object with escaped single quote",
         "javascript": "new RegExp('ab\\'ab')",
-        "python": "re.compile(r\"ab'ab\")",
+        "python": "",
         "java": "Pattern.compile(\"ab'ab\")",
         "csharp": "new Regex(\"ab'ab\")",
         "shell": "new RegExp('ab\\'ab')"
@@ -316,7 +316,7 @@
       {
         "description": "regex object with nonescaped single quote",
         "javascript": "new RegExp(\"ab'ab\")",
-        "python": "re.compile(r\"ab'ab\")",
+        "python": "",
         "java": "Pattern.compile(\"ab'ab\")",
         "csharp": "new Regex(\"ab'ab\")",
         "shell": "new RegExp('ab\\'ab')"
@@ -324,7 +324,7 @@
       {
         "description": "regex object with newline",
         "javascript": "new RegExp(\"\\\\n\")",
-        "python": "re.compile(r\"\\\\n\")",
+        "python": "",
         "java": "Pattern.compile(\"\\\\n\")",
         "csharp": "new Regex(\"\\n\")",
         "shell": "new RegExp('\\n')"
@@ -332,7 +332,7 @@
       {
         "description": "regex literal with ig flags",
         "javascript": "/ab+c/ig",
-        "python": "re.compile(r\"ab+c(?is)\")",
+        "python": "",
         "java": "Pattern.compile(\"ab+c(?i)\")",
         "csharp": "new Regex(\"(?i)ab+c\")",
         "shell": "RegExp('ab+c', 'gi')"
@@ -340,7 +340,7 @@
       {
         "description": "regex object with regex literal arg",
         "javascript": "new RegExp(/ab+c/, 'i')",
-        "python": "re.compile(r\"ab+c(?i)\")",
+        "python": "",
         "java": "Pattern.compile(\"ab+c(?i)\")",
         "csharp": "new Regex(\"(?i)ab+c\")",
         "shell": "new RegExp('ab+c', 'i')"

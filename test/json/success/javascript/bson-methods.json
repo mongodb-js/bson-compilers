@@ -454,7 +454,7 @@
       {
         "description": "valueOf",
         "javascript": "Symbol('2').valueOf()",
-        "python": "unicode('2', 'utf-8')",
+        "python": "'2'",
         "java": "new Symbol(\"2\").getSymbol()",
         "csharp": "new BsonString(\"2\").AsBsonSymbol",
         "shell": "'2'"
@@ -462,7 +462,7 @@
       {
         "description": "toString",
         "javascript": "Symbol('2').toString()",
-        "python": "str(unicode('2', 'utf-8'))",
+        "python": "'2'",
         "java": "new Symbol(\"2\").toString()",
         "csharp": "new BsonString(\"2\").ToString()",
         "shell": "'2'"
@@ -470,7 +470,7 @@
       {
         "description": "inspect",
         "javascript": "Symbol('2').inspect()",
-        "python": "unicode('2', 'utf-8')",
+        "python": "'2'",
         "java": "new Symbol(\"2\").getSymbol()",
         "csharp": "new BsonString(\"2\").Value",
         "shell": "'2'"

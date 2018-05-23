@@ -20,7 +20,7 @@
       {
         "description": "createFromTime with date",
         "javascript": "ObjectId.createFromTime(new Date())",
-        "python": "ObjectId.from_datetime(datetime.datetime.fromtimestamp(datetime.datetime.utcnow().date()/1000.0))",
+         "python": "ObjectId.from_datetime(datetime.datetime.utcnow())",
         "java": "new ObjectId(new java.util.Date())",
         "csharp": "new ObjectId().GenerateNewId(DateTime.Now)",
         "shell": "ObjectId.fromDate(new Date())"
@@ -38,7 +38,7 @@
       {
         "description": "subtype default",
         "javascript": "Binary.SUBTYPE_DEFAULT",
-        "python": "bson.binary.BINARY_SUBTYPE",
+        "python": "binary.BINARY_SUBTYPE",
         "java": "org.bson.BsonBinarySubType.BINARY",
         "shell": "0",
         "csharp": "BsonBinarySubType.Binary"
@@ -46,7 +46,7 @@
       {
         "description": "subtype function",
         "javascript": "Binary.SUBTYPE_FUNCTION",
-        "python": "bson.binary.FUNCTION_SUBTYPE",
+        "python": "binary.FUNCTION_SUBTYPE",
         "java": "org.bson.BsonBinarySubType.FUNCTION",
         "shell": "1",
         "csharp": "BsonBinarySubType.Function"
@@ -54,7 +54,7 @@
       {
         "description": "subtype byte array",
         "javascript": "Binary.SUBTYPE_BYTE_ARRAY",
-        "python": "bson.binary.OLD_BINARY_SUBTYPE",
+        "python": "binary.OLD_BINARY_SUBTYPE",
         "java": "org.bson.BsonBinarySubType.OLD_BINARY",
         "shell": "2",
         "csharp": "BsonBinarySubType.OldBinary"
@@ -62,7 +62,7 @@
       {
         "description": "subtype uuid old",
         "javascript": "Binary.SUBTYPE_UUID_OLD",
-        "python": "bson.binary.OLD_UUID_SUBTYPE",
+        "python": "binary.OLD_UUID_SUBTYPE",
         "java": "org.bson.BsonBinarySubType.UUID_LEGACY",
         "shell": "3",
         "csharp": "BsonBinarySubType.UuidLegacy"
@@ -70,7 +70,7 @@
       {
         "description": "subtype uuid",
         "javascript": "Binary.SUBTYPE_UUID",
-        "python": "bson.binary.UUID_SUBTYPE",
+        "python": "binary.UUID_SUBTYPE",
         "java": "org.bson.BsonBinarySubType.UUID_STANDARD",
         "shell": "4",
         "csharp": "BsonBinarySubType.UuidStandard"
@@ -78,7 +78,7 @@
       {
         "description": "subtype md5",
         "javascript": "Binary.SUBTYPE_MD5",
-        "python": "bson.binary.MD5_SUBTYPE",
+        "python": "binary.MD5_SUBTYPE",
         "java": "org.bson.BsonBinarySubType.MD5",
         "shell": "5",
         "csharp": "BsonBinarySubType.MD5"
@@ -86,7 +86,7 @@
       {
         "description": "subtype udef",
         "javascript": "Binary.SUBTYPE_USER_DEFINED",
-        "python": "bson.binary.USER_DEFINED_SUBTYPE",
+        "python": "binary.USER_DEFINED_SUBTYPE",
         "java": "org.bson.BsonBinarySubType.USER_DEFINED",
         "shell": "80",
         "csharp": "BsonBinarySubType.UserDefined"

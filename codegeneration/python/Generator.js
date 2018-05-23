@@ -19,12 +19,12 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
       // re.VERBOSE - More readable way of writing patterns (eg. with comments)
     };
     this.bsonRegexFlags = {
-      'i': 'i', // Case insensitivity to match
-      'm': 'm', // Multiline match
-      'x': 'x', // Ignore all white space characters
-      's': 's', // Matches all
-      'l': 'l', // Case-insensitive matching dependent on the current locale?
-      'u': 'u' // Unicode?
+      i: 'i', // Case insensitivity to match
+      m: 'm', // Multiline match
+      x: 'x', // Ignore all white space characters
+      s: 's', // Matches all
+      l: 'l', // Case-insensitive matching dependent on the current locale?
+      u: 'u' // Unicode?
     };
   }
 

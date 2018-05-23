@@ -631,11 +631,7 @@ class Visitor extends ECMAScriptVisitor {
     const argList = ctx.arguments().argumentList();
     let longstr;
 
-    if (!argList || argList.singleExpression().length !== 2) {
-      throw new SemanticArgumentCountMismatchError({
-        message: 'Long requires two arguments'
-      });
-    }
+    this.checkArguments(symbolType.args, argList);
 
     try {
       longstr = this.executeJavascript(`new ${ctx.getText()}`).toString();

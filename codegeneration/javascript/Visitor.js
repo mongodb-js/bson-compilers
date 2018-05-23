@@ -393,7 +393,6 @@ class Visitor extends ECMAScriptVisitor {
     const numericTypes = [
       this.Types._integer, this.Types._decimal, this.Types._hex, this.Types._octal, this.Types._long, this.Types._numeric
     ];
-
     // If the expected type is numeric, accept the numeric basic types + numeric bson types
     if (expected.indexOf(this.Types._numeric) !== -1 &&
        (numericTypes.indexOf(actual.type) !== -1 ||
@@ -407,6 +406,7 @@ class Visitor extends ECMAScriptVisitor {
     for (let i = 0; i < expected.length; i++) {
       if (numericTypes.indexOf(actual.type) !== -1 &&
         numericTypes.indexOf(expected[i]) !== -1) {
+        original.type = expected[i];
         actual.type = expected[i];
         return this.visit(original);
       }
@@ -610,26 +610,20 @@ class Visitor extends ECMAScriptVisitor {
    */
   processLong(ctx) {
     ctx.type = this.Types.Long;
-
     const symbolType = this.Symbols.Long;
     const argList = ctx.arguments().argumentList();
     let longstr;
-
     this.checkArguments(symbolType.args, argList);
-
     try {
       longstr = this.executeJavascript(`new ${ctx.getText()}`).toString();
     } catch (error) {
       throw new SemanticGenericError({message: error.message});
     }
-
     if ('emitLong' in this) {
       return this.emitLong(ctx, longstr);
     }
-
     const lhs = symbolType.template ? symbolType.template() : 'Long';
     const rhs = symbolType.argsTemplate ? symbolType.argsTemplate(lhs, longstr) : `(${longstr})`;
-
     return `${this.new}${lhs}${rhs}`;
   }
 

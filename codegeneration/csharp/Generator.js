@@ -115,16 +115,17 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
   }
 
   /**
-   * Special case because need to parse decimal.
+   * We don't need `new` since we are always using a .Parse
    *
-   * @param {FuncCallExpressionContext} ctx
+   * @param {ctxObject} ctx
    * @param {String} decimal
-   * @returns {string} - new Decimal128(val)
+   *
+   * @returns {string} - Decimal128.Parse(val)
    */
   emitDecimal128(ctx, decimal) {
-    const value = parseInt(decimal.toString(), 10);
+    const expr = parseInt(decimal.toString(), 10);
 
-    return `new Decimal128(${value})`;
+    return `Decimal128.Parse(${doubleQuoteStringify(expr.toString())})`;
   }
 
   /**

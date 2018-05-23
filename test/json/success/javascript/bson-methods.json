@@ -330,7 +330,7 @@
         "javascript": "Long(1, 100).not()",
         "python": "~Int64(429496729601)",
         "java": "~429496729601L",
-        "csharp": "!429496729601L",
+        "csharp": "~429496729601L",
         "shell": "~NumberLong(429496729601)"
       },
       {
@@ -380,7 +380,7 @@
         "javascript": "new Decimal128(Buffer.from('5')).toString()",
         "python": "str(Decimal128('5.3E-6175'))",
         "java": "Decimal128.parse(\"5.3E-6175\").toString()",
-        "csharp": "new Decimal128(5).ToString()",
+        "csharp": "Decimal128.Parse(\"5\").ToString()",
         "shell": "new NumberDecimal(5.3E-6175).toString()"
       }
     ],

@@ -337,7 +337,7 @@ Templates:
         }
     LongNotArgsTemplate: &LongNotArgsTemplate !!js/function >
         (lhs) => {
-            return `!${lhs}`;
+            return `~${lhs}`;
         }
     LongNotEqualsTemplate: &LongNotEqualsTemplate !!js/function >
         (lhs) => {
@@ -616,12 +616,12 @@ Templates:
         }
     LongSymbolFromStringArgsTemplate: &LongSymbolFromStringArgsTemplate !!js/function >
         (lhs, arg1, arg2) => {
-            if (arg2) {
-                return `Convert.ToInt64(${arg1}, ${arg2})`;
-            }
-            arg1 = arg1.replace(/['"]+/g, '');
-            return `${arg1}L`;
+          if (arg2) {
+            return `Convert.ToInt64(${arg1}, ${arg2})`
+          }
+          return `Convert.ToInt64(${arg1}, 10)`
         }
+
     MinKeySymbolTemplate: &MinKeySymbolTemplate null # Has emit method
     MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate null # Has emit method
     MaxKeySymbolTemplate: &MaxKeySymbolTemplate null # Has emit method
@@ -642,21 +642,17 @@ Templates:
             return `(${pattern}${flags ? ', ' + flags : ''})`;
         }
     Decimal128SymbolTemplate: &Decimal128SymbolTemplate null # Has emit method
-    Decimal128SymbolArgsTemplate: &Decimal128SymbolArgsTemplate !!js/function >
-        (lhs) => {
-            return '';
-        }
+    Decimal128SymbolArgsTemplate: &Decimal128SymbolArgsTemplate null # Has emit method
     Decimal128SymbolFromStringTemplate: &Decimal128SymbolFromStringTemplate !!js/function >
+        (lhs) => {
+            return lhs;
+        }
+    Decimal128SymbolFromStringArgsTemplate: &Decimal128SymbolFromStringArgsTemplate !!js/function > 
         () => {
             return '';
         }
-    Decimal128SymbolFromStringArgsTemplate: &Decimal128SymbolFromStringArgsTemplate !!js/function >
-        (lhs, arg) => {
-            arg = arg.replace(/['"]+/g, '');
-            return `new ${lhs}(${arg})`;
-        }
     Decimal128ToStringTemplate: &Decimal128ToStringTemplate !!js/function >
-        (lhs, arg) => {
+        (lhs) => {
             return `${lhs}.ToString`;
         }
     Decimal128ToStringArgsTemplate: &Decimal128ToStringArgsTemplate null
@@ -673,9 +669,9 @@ Templates:
     ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate !!js/function >
         (lhs, arg) => {
             if (!Number.isNaN(parseInt(arg, 10))) {
-              return `new ${lhs}().GenerateNewId(Convert.ToInt32(${arg}))`;
+              return `new ${lhs}.GenerateNewId(Convert.ToInt32(${arg}))`;
             }
-            return `new ${lhs}().GenerateNewId(${arg})`;
+            return `new ${lhs}.GenerateNewId(${arg})`;
         }
     ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate !!js/function >
         (lhs) => {

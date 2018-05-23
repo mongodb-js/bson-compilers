@@ -14,7 +14,7 @@
         "javascript": "ObjectId.createFromTime(1522075031642)",
         "python": "ObjectId.from_datetime(datetime.datetime.fromtimestamp(1522075031642/1000.0))",
         "java": "new ObjectId(new java.util.Date(1522075031642L))",
-        "csharp": "new ObjectId().GenerateNewId(Convert.ToInt32(1522075031642))",
+        "csharp": "new ObjectId.GenerateNewId(Convert.ToInt32(1522075031642))",
         "shell": "ObjectId.fromDate(new Date(1522075031642))"
       },
       {
@@ -22,7 +22,7 @@
         "javascript": "ObjectId.createFromTime(new Date())",
         "python": "ObjectId.from_datetime(datetime.datetime.fromtimestamp(datetime.datetime.utcnow().date()/1000.0))",
         "java": "new ObjectId(new java.util.Date())",
-        "csharp": "new ObjectId().GenerateNewId(DateTime.Now)",
+        "csharp": "new ObjectId.GenerateNewId(DateTime.Now)",
         "shell": "ObjectId.fromDate(new Date())"
       },
       {
@@ -147,7 +147,7 @@
         "python": "Int64(int('5'))",
         "java": "Long.parseLong(\"5\")",
         "shell": "NumberLong('5')",
-        "csharp": "5L"
+        "csharp": "Convert.ToInt64(\"5\", 10)"
       },
       {
         "description": "fromString with radix",
@@ -172,8 +172,8 @@
         "javascript": "Decimal128.fromString(\"5\")",
         "python": "Decimal128('5')",
         "java": "Decimal128.parse(\"5\")",
-        "csharp": "new Decimal128(5)",
-        "shell": "NumberDecimal(\"5\")"
+        "csharp": "Decimal128.Parse(\"5\")",
+        "shell": "NumberDecimal(5)"
       }
     ]
   }

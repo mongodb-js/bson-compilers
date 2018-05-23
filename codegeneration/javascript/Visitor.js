@@ -748,9 +748,22 @@ class Visitor extends ECMAScriptVisitor {
       5: symbolType.attr.SUBTYPE_MD5.template,
       128: symbolType.attr.SUBTYPE_USER_DEFINED.template
     };
-
     let type;
     let binobj;
+    const argList = ctx.arguments().argumentList();
+
+    if (
+      !argList ||
+      !(
+        argList.singleExpression().length === 1 ||
+        argList.singleExpression().length === 2
+      )
+    ) {
+      throw new SemanticArgumentCountMismatchError({
+        message: 'Binary requires one or two arguments'
+      });
+    }
+
     try {
       binobj = this.executeJavascript(ctx.getText());
       type = binobj.sub_type;
@@ -758,9 +771,9 @@ class Visitor extends ECMAScriptVisitor {
       throw new SemanticGenericError({message: error.message});
     }
     const bytes = binobj.toString();
-    const argList = ctx.arguments().argumentList().singleExpression();
+    const args = argList.singleExpression();
     const templatedType = binaryTypes[type] !== null ? binaryTypes[type]() : type;
-    const typeStr = argList.length === 1 ? null : templatedType;
+    const typeStr = args.length === 1 ? null : templatedType;
 
     if ('emitBinary' in this) {
       return this.emitBinary(bytes, typeStr);

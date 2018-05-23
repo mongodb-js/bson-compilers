@@ -1,9 +1,4 @@
 /* eslint complexity: 0 */
-// cannot use path.resolve as it will not work with webpack in the browser
-const {
-  singleQuoteStringify
-} = require('../../helper/format');
-
 /**
  * Handling emit methods binded with visitor.
  *
@@ -83,20 +78,5 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     ].join(', ');
 
     return `datetime.datetime(${dateStr}, tzinfo=datetime.timezone.utc)${toStr}`;
-  }
-
-
-  /**
-   * TODO: Could move this to javascript/Visitor and use template.
-   *
-   * @param {FuncCallExpressionContext} ctx
-   * @param {String} str
-   * @return {String}
-   */
-  emitDecimal128(ctx, str) {
-    return `Decimal128(${singleQuoteStringify(str)})`;
-  }
-  emitNumberDecimal(ctx, str) {
-    return `Decimal128(${singleQuoteStringify(str)})`;
   }
 };

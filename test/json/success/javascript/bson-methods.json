@@ -63,11 +63,11 @@
     "Binary": [
       {
         "description": "length",
-        "javascript": "Binary(Buffer.from('a string')).length()",
-        "python": "len(bytearray(Binary(b'a string')))",
-        "java": "new Binary(\"a string\".getBytes(\"UTF-8\")).length()",
-        "csharp": "new BsonBinaryData(System.Text.Encoding.ASCII.GetBytes(\"a string\")).Bytes.Length",
-        "shell": "BinData(1, '0001').length()"
+        "javascript": "Binary(Buffer.from('0404')).length()",
+        "python": "len(bytearray(Binary(b'0404')))",
+        "java": "new Binary(\"0404\".getBytes(\"UTF-8\")).length()",
+        "csharp": "new BsonBinaryData(System.Text.Encoding.ASCII.GetBytes(\"0404\")).Bytes.Length",
+        "shell": "BinData(0, '0404').length()"
       },
       {
         "description": "subtype",

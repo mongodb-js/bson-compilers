@@ -633,8 +633,14 @@ Templates:
     TimestampSymbolArgsTemplate: &TimestampSymbolArgsTemplate null
     SymbolSymbolTemplate: &SymbolSymbolTemplate null # Has emit method 
     SymbolSymbolArgsTemplate: &SymbolSymbolArgsTemplate null # Has emit method
-    BSONRegExpSymbolTemplate: &BSONRegExpSymbolTemplate null # Has emit method
-    BSONRegExpSymbolArgsTemplate: &BSONRegExpSymbolArgsTemplate null # Has emit method
+    BSONRegExpSymbolTemplate: &BSONRegExpSymbolTemplate !!js/function >
+        () => {
+            return 'BsonRegularExpression';
+        }
+    BSONRegExpSymbolArgsTemplate: &BSONRegExpSymbolArgsTemplate !!js/function >
+        (lhs, pattern, flags) => {
+            return `(${pattern}${flags ? ', ' + flags : ''})`;
+        }
     Decimal128SymbolTemplate: &Decimal128SymbolTemplate null # Has emit method
     Decimal128SymbolArgsTemplate: &Decimal128SymbolArgsTemplate !!js/function >
         (lhs) => {

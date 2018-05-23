@@ -7,7 +7,7 @@
         "python": "Code('some code')",
         "java": "new Code(\"some code\")",
         "csharp": "new BsonJavaScript(\"some code\")",
-        "shell": "Code('some code')"
+        "shell": "new Code('some code')"
       },
       {
         "description": "Code with string code",
@@ -39,7 +39,7 @@
         "python": "Code('this.a > i', {'i': '1'})",
         "java": "new CodeWithScope(\"this.a > i\", new Document().append(\"i\", \"1\"))",
         "csharp": "new BsonJavaScriptWithScope(\"this.a > i\", new BsonDocument(\"i\", \"1\"))",
-        "shell": "Code('this.a > i', {i: '1'})"
+        "shell": "new Code('this.a > i', {i: '1'})"
       }
     ],
     "ObjectId": [
@@ -265,7 +265,7 @@
         "python": "Regex('^[a-z0-9_-]{3,16}$')",
         "java": "new BsonRegularExpression(\"^[a-z0-9_-]{3,16}$\")",
         "csharp": "new BsonRegularExpression(\"^[a-z0-9_-]{3,16}$\")",
-        "shell": "new BSONRegExp('^[a-z0-9_-]{3,16}$')"
+        "shell": "new RegExp('^[a-z0-9_-]{3,16}$')"
       },
       {
         "description": "new BSONRegExp with string arg and flags",
@@ -273,7 +273,7 @@
         "python": "Regex('^[a-z0-9_-]{3,16}$', 'imuxls')",
         "java": "new BsonRegularExpression(\"^[a-z0-9_-]{3,16}$\", \"imuxls\")",
         "csharp": "new BsonRegularExpression(\"^[a-z0-9_-]{3,16}$\", \"imxs\")",
-        "shell": "new BSONRegExp('^[a-z0-9_-]{3,16}$', 'imuxls')"
+        "shell": "new RegExp('^[a-z0-9_-]{3,16}$', 'imuxls')"
       }
     ],
     "Timestamp": [

@@ -10,24 +10,16 @@ const javaFileTemplate = (code) => {
   return `
 package com.example.test;
 
+import com.mongodb.DBRef;
 import org.bson.BsonBinarySubType;
 import org.bson.BsonRegularExpression;
 import org.bson.Document;
 import org.bson.types.*;
-import org.bson.codecs.PatternCodec;
+import org.bson.BsonUndefined;
 
-import com.mongodb.*;
-
-
-import javax.print.Doc;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-import java.net.UnknownHostException;
-import java.io.UnsupportedEncodingException;
 
 public class Test {
     public void all() throws Exception {

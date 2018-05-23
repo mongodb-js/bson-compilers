@@ -186,7 +186,7 @@
       {
         "description": "new Current date",
         "javascript": "new Date()",
-        "python": "datetime.datetime.utcnow().date()",
+        "python": "datetime.datetime.utcnow()",
         "java": "new java.util.Date()",
         "csharp": "DateTime.Now",
         "shell": "new Date()"
@@ -226,7 +226,7 @@
       {
         "description": "Current date string",
         "javascript": "Date()",
-        "python": "datetime.datetime.utcnow().date().strftime('%a %b %d %Y %H:%M:%S %Z')",
+        "python": "datetime.datetime.utcnow().strftime('%a %b %d %Y %H:%M:%S %Z')",
         "java": "new SimpleDateFormat(\"EEE MMMMM dd yyyy HH:mm:ss\").format(new java.util.Date())",
         "csharp": "",
         "shell": "Date()"
@@ -276,7 +276,7 @@
       {
         "description": "new ISODate without arg",
         "javascript": "new Date()",
-        "python": "datetime.datetime.utcnow().date()",
+        "python": "datetime.datetime.utcnow()",
         "java": "new java.util.Date()",
         "csharp": "DateTime.Now",
         "shell": "new ISODate()"
@@ -284,7 +284,7 @@
       {
         "description": "ISODate without arg",
         "javascript": "new Date()",
-        "python": "datetime.datetime.utcnow().date()",
+        "python": "datetime.datetime.utcnow()",
         "java": "new java.util.Date()",
         "csharp": "DateTime.Now",
         "shell": "ISODate()"

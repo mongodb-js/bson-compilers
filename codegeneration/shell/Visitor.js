@@ -1,4 +1,3 @@
-/* eslint complexity: 0 */
 const JavascriptVisitor = require('../javascript/Visitor');
 const bson = require('bson');
 const Context = require('context-eval');
@@ -21,32 +20,42 @@ class Visitor extends JavascriptVisitor {
 
   visitIdentifierExpression(ctx) {
     const name = this.visitChildren(ctx);
+
     ctx.type = this.Symbols[name];
+
     if (ctx.type === undefined) {
       throw new SemanticReferenceError({
         message: `symbol "${name}" is undefined`
       });
     }
+
     // Special case MinKey/MaxKey because they don't have to be called in shell
-    if (!ctx.visited && (ctx.type.id === 'MinKey' || ctx.type.id === 'MaxKey') &&
-        ctx.parentCtx.constructor.name !== 'FuncCallExpressionContext' &&
-        ctx.parentCtx.constructor.name !== 'NewExpressionContext') {
+    if (
+      !ctx.visited
+      && (ctx.type.id === 'MinKey' || ctx.type.id === 'MaxKey')
+      && ctx.parentCtx.constructor.name !== 'FuncCallExpressionContext'
+      && ctx.parentCtx.constructor.name !== 'NewExpressionContext'
+    ) {
       const node = {
-        arguments: () => { return { argumentList: () => { return false; }}; },
-        singleExpression: () => { return ctx; }
+        arguments: () => ({argumentList: () => false}),
+        singleExpression: () => ctx
       };
+
       ctx.visited = true;
+
       return this.visitFuncCallExpression(node);
     }
+
     if (ctx.type.template) {
       return ctx.type.template();
     }
+
     return name;
   }
 
   executeJavascript(input) {
     const sandbox = {
-      RegExp: RegExp,
+      RegExp,
       DBRef: bson.DBRef,
       Map: bson.Map,
       MaxKey: bson.MaxKey,
@@ -58,19 +67,25 @@ class Visitor extends JavascriptVisitor {
         return new bson.Code(c, s);
       },
       NumberDecimal: function(s) {
-        if (s === undefined) {
-          s = '0';
+        let numberS = s;
+
+        if (numberS === undefined) {
+          numberS = '0';
         }
-        return bson.Decimal128.fromString(s.toString());
+
+        return bson.Decimal128.fromString(numberS.toString());
       },
       NumberInt: function(s) {
         return parseInt(s, 10);
       },
       NumberLong: function(v) {
-        if (v === undefined) {
-          v = 0;
+        let numberV = v;
+
+        if (numberV === undefined) {
+          numberV = 0;
         }
-        return bson.Long.fromNumber(v);
+
+        return bson.Long.fromNumber(numberV);
       },
       ISODate: function(s) {
         return new Date(s);
@@ -84,12 +99,15 @@ class Visitor extends JavascriptVisitor {
 
         return new Date(Date.UTC(...args));
       },
-      Buffer: Buffer,
+      Buffer,
       __result: {}
     };
+
     const ctx = new Context(sandbox);
-    const res = ctx.evaluate('__result = ' + input);
+    const res = ctx.evaluate(`__result = ${input}`);
+
     ctx.destroy();
+
     return res;
   }
 
@@ -102,6 +120,7 @@ class Visitor extends JavascriptVisitor {
    */
   processBinData(ctx) {
     ctx.type = this.Types.BinData;
+
     const symbolType = this.Symbols.BinData;
 
     const binaryTypes = {
@@ -115,25 +134,28 @@ class Visitor extends JavascriptVisitor {
     };
     const argList = ctx.arguments().argumentList();
     const args = this.checkArguments(this.Symbols.BinData.args, argList);
-
     const subtype = parseInt(argList.singleExpression()[0].getText(), 10);
     const bindata = args[1];
-    if (!(subtype >= 0 && subtype <= 5 || subtype === 128)) {
+
+    if (!((subtype >= 0 && subtype <= 5) || subtype === 128)) {
       throw new SemanticGenericError({message: 'BinData subtype must be a Number between 0-5 or 128'});
     }
+
     if (bindata.match(/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/)) {
       throw new SemanticGenericError({message: 'invalid base64'});
     }
+
     const typeStr = binaryTypes[subtype] !== null ? binaryTypes[subtype]() : subtype;
 
     if ('emitBinary' in this) {
       return this.emitBinData(bindata, typeStr);
     }
+
     const lhs = symbolType.template ? symbolType.template() : 'Binary';
     const rhs = symbolType.argsTemplate ? symbolType.argsTemplate(lhs, bindata, typeStr) : `(${bindata}, ${typeStr})`;
+
     return `${this.new}${lhs}${rhs}`;
   }
-
 
   /**
    * Needs preprocessing because must be executed in javascript.
@@ -143,18 +165,23 @@ class Visitor extends JavascriptVisitor {
    */
   processNumberLong(ctx) {
     ctx.type = this.Types.NumberLong;
+
     const symbolType = this.Symbols.NumberLong;
     let longstr;
+
     try {
       longstr = this.executeJavascript(`new ${ctx.getText()}`).toString();
     } catch (error) {
       throw new SemanticGenericError({message: error.message});
     }
+
     if ('emitNumberLong' in this) {
       return this.emitNumberLong(ctx, longstr);
     }
+
     const lhs = symbolType.template ? symbolType.template() : 'NumberLong';
     const rhs = symbolType.argsTemplate ? symbolType.argsTemplate(lhs, longstr) : `(${longstr})`;
+
     return `${this.new}${lhs}${rhs}`;
   }
 
@@ -166,8 +193,10 @@ class Visitor extends JavascriptVisitor {
    */
   processNumberDecimal(ctx) {
     ctx.type = this.Types.NumberDecimal;
+
     const symbolType = this.Symbols.NumberDecimal;
     let decstr;
+
     try {
       decstr = this.executeJavascript(`new ${ctx.getText()}`).toString();
     } catch (error) {
@@ -177,8 +206,10 @@ class Visitor extends JavascriptVisitor {
     if ('emitNumberDecimal' in this) {
       return this.emitNumberDecimal(ctx, decstr);
     }
+
     const lhs = symbolType.template ? symbolType.template() : 'NumberDecimal';
     const rhs = symbolType.argsTemplate ? symbolType.argsTemplate(lhs, decstr) : `(${decstr})`;
+
     return `${this.new}${lhs}${rhs}`;
   }
 

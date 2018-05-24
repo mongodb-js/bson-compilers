@@ -1,24 +1,23 @@
-/* eslint complexity: 0 */
-const { doubleQuoteStringify } = require('../../helper/format');
+const {doubleQuoteStringify} = require('../../helper/format');
 
 module.exports = (superclass) => class ExtendedVisitor extends superclass {
   constructor() {
     super();
     this.new = 'new ';
     this.regexFlags = {
-      i: 'i',  // ignore case
-      m: 'm',  // multiline
+      i: 'i', // ignore case
+      m: 'm', // multiline
       u: '', // unicode
-      y: '',   // sticky search
-      g: ''    // global
+      y: '', // sticky search
+      g: '' // global
     };
     this.bsonRegexFlags = {
-      'i': 'i', // Case insensitivity to match
-      'm': 'm', // Multiline match
-      'x': 'x', // Ignore all white space characters
-      's': 's', // Matches all
-      'l': '', // Case-insensitive matching dependent on the current locale?
-      'u': '' // Unicode?
+      i: 'i', // Case insensitivity to match
+      m: 'm', // Multiline match
+      x: 'x', // Ignore all white space characters
+      s: 's', // Matches all
+      l: '', // Case-insensitive matching dependent on the current locale?
+      u: '' // Unicode?
     };
   }
 
@@ -29,7 +28,9 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    */
   emitNew(ctx) {
     const expr = this.visit(ctx.singleExpression());
+
     ctx.type = ctx.singleExpression().type;
+
     return expr;
   }
 
@@ -42,8 +43,10 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    */
   emitNumber(ctx) {
     ctx.type = this.Types.Number;
+
     const args = ctx.arguments().argumentList().singleExpression();
     const expr = args[0].getText().replace(/['"]+/g, '');
+
     return `(int)${expr}`;
   }
 
@@ -56,6 +59,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    */
   emitDecimal128(ctx, decimal) {
     const value = parseInt(decimal.toString(), 10);
+
     return `new Decimal128(${value})`;
   }
 
@@ -69,6 +73,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    */
   emitMinKey(ctx) {
     ctx.type = this.Types.MinKey;
+
     return 'BsonMinKey.Value';
   }
 
@@ -82,6 +87,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    */
   emitMaxKey(ctx) {
     ctx.type = this.Types.MaxKey;
+
     return 'BsonMaxKey.Value';
   }
 
@@ -96,8 +102,10 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    */
   emitInt32(ctx) {
     ctx.type = this.Types.Int32;
+
     const args = ctx.arguments().argumentList().singleExpression();
     const expr = args[0].getText();
+
     if (expr.indexOf('\'') >= 0 || expr.indexOf('"') >= 0) {
       return `Int32.Parse(${doubleQuoteStringify(expr.toString())})`;
     }
@@ -119,6 +127,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    */
   emitDate(ctx, date) {
     let toStr = '';
+
     ctx.type = this.Types.Date;
 
     // we need to return a string if just the Date() gets called
@@ -155,6 +164,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
 
   emitnow(ctx) {
     ctx.type = this.Types.Now;
+
     return 'DateTime.Now';
   }
 };

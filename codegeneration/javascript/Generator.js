@@ -6,40 +6,52 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   constructor() {
     super();
     this.regexFlags = {
-      i: 'i',  // ignore case
-      m: 'm',  // multiline
+      i: 'i', // ignore case
+      m: 'm', // multiline
       u: '', // unicode
-      y: '',   // sticky search
-      g: ''    // global
+      y: '', // sticky search
+      g: '' // global
     };
   }
   emitISODate(ctx) {
     let newstr = '';
+
     ctx.type = this.Types.Date;
+
     if (!ctx.wasNew) {
       newstr = 'new ';
     }
+
     const args = ctx.arguments();
+
     if (!args.argumentList()) {
       return `${newstr}Date()`;
     }
+
     const argstr = this.checkArguments([[this.Types._string]], args.argumentList());
+
     return `${newstr}Date(${argstr[0]})`;
   }
 
   emitDate(ctx, date) {
     let newstr = '';
+
     if (!ctx.wasNew && this.visit(ctx.singleExpression()) === 'ISODate') {
       newstr = 'new ';
     }
+
     if (date === undefined) {
       return `${newstr}Date()`;
     }
+
     const args = ctx.arguments();
+
     if (!args.argumentList()) {
       return ctx.getText();
     }
+
     const argstr = this.checkArguments(this.Symbols.Date.args, args.argumentList());
+
     return `${newstr}Date(${argstr.join(', ')})`;
   }
 };

@@ -1,4 +1,3 @@
-/* eslint complexity: 0 */
 const {doubleQuoteStringify} = require('../../helper/format');
 
 /**
@@ -29,7 +28,9 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    */
   emitNew(ctx) {
     const expr = this.visit(ctx.singleExpression());
+
     ctx.type = ctx.singleExpression().type;
+
     return expr;
   }
 
@@ -43,13 +44,16 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    */
   emitDate(ctx, date) {
     let toStr = '';
+
     if (!ctx.wasNew && this.visit(ctx.singleExpression()) !== 'ISODate') {
       ctx.type = this.Types._string;
       toStr = '.toString()';
     }
+
     if (date === undefined) {
       return `new java.util.Date()${toStr}`;
     }
+
     return `new java.util.Date(new java.lang.Long("${date.getTime()}"))${toStr}`;
   }
   emitISODate(ctx) {
@@ -77,13 +81,17 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * @return {String}
    */
   emitObjectIdCreateFromTime(ctx) {
-    ctx.type = 'createFromTime' in this.Symbols.ObjectId.attr ? this.Symbols.ObjectId.attr.createFromTime : this.Symbols.ObjectId.attr.fromDate;
+    ctx.type = 'createFromTime' in this.Symbols.ObjectId.attr
+      ? this.Symbols.ObjectId.attr.createFromTime
+      : this.Symbols.ObjectId.attr.fromDate;
+
     const argList = ctx.arguments().argumentList();
     const args = this.checkArguments(ctx.type.args, argList);
+
     if (argList.singleExpression()[0].type.id === 'Date') {
       return ctx.type.argsTemplate('', args[0]);
     }
+
     return ctx.type.argsTemplate('', `new java.util.Date(${args[0]})`);
   }
-
 };

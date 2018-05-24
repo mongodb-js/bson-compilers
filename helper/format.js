@@ -11,8 +11,8 @@ const doubleQuoteStringify = function(str) {
   if (
     (
       safeStr.charAt(0) === '\'' && safeStr.charAt(safeStr.length - 1) === '\''
-    ) ||
-    (safeStr.charAt(0) === '"' && safeStr.charAt(safeStr.length - 1) === '"')
+    )
+    || (safeStr.charAt(0) === '"' && safeStr.charAt(safeStr.length - 1) === '"')
   ) {
     newStr = safeStr.substr(1, safeStr.length - 2);
   }
@@ -33,8 +33,8 @@ const singleQuoteStringify = function(str) {
   if (
     (
       safeStr.charAt(0) === '\'' && safeStr.charAt(safeStr.length - 1) === '\''
-    ) ||
-    (safeStr.charAt(0) === '"' && safeStr.charAt(safeStr.length - 1) === '"')
+    )
+    || (safeStr.charAt(0) === '"' && safeStr.charAt(safeStr.length - 1) === '"')
   ) {
     newStr = str.substr(1, safeStr.length - 2);
   }
@@ -53,8 +53,8 @@ const removeQuotes = function(str) {
   let newStr = safeStr;
 
   if (
-    (safeStr.charAt(0) === '"' && safeStr.charAt(safeStr.length - 1) === '"') ||
-    (safeStr.charAt(0) === '\'' && safeStr.charAt(safeStr.length - 1) === '\'')
+    (safeStr.charAt(0) === '"' && safeStr.charAt(safeStr.length - 1) === '"')
+    || (safeStr.charAt(0) === '\'' && safeStr.charAt(safeStr.length - 1) === '\'')
   ) {
     newStr = safeStr.substr(1, safeStr.length - 2);
   }

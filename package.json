@@ -25,9 +25,11 @@
   ],
   "license": "Apache-2.0",
   "devDependencies": {
+    "babel-eslint": "^8.2.3",
+    "eslint": "^4.19.1",
     "eslint-config-mongodb-js": "^2.1.0",
-    "pre-commit": "^1.2.2",
-    "mongodb-js-precommit": "^0.2.8"
+    "mongodb-js-precommit": "^0.2.8",
+    "pre-commit": "^1.2.2"
   },
   "dependencies": {
     "antlr4": "^4.7.1",

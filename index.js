@@ -35,13 +35,16 @@ const loadTree = (input) => {
   // TODO: swap out lexer/parser/etc depending on input lang
   const chars = new antlr4.InputStream(input);
   const lexer = new ECMAScriptLexer.ECMAScriptLexer(chars);
+
   lexer.strictMode = false;
 
   const tokens = new antlr4.CommonTokenStream(lexer);
   const parser = new ECMAScriptParser.ECMAScriptParser(tokens);
+
   parser.buildParseTrees = true;
 
   const listener = new ErrorListener();
+
   parser.removeErrorListeners(); // Remove the default ConsoleErrorListener
   parser.addErrorListener(listener); // Add back a custom error listener
 
@@ -53,18 +56,20 @@ const getCompiler = (visitor, generator, symbols) => {
   const compiler = new Compiler();
 
   const doc = yaml.load(symbols);
+
   Object.assign(compiler, {
     SYMBOL_TYPE: doc.SymbolTypes,
     BsonTypes: doc.BsonTypes,
     Symbols: Object.assign({}, doc.BsonSymbols, doc.JSSymbols),
     Types: Object.assign({}, doc.BasicTypes, doc.BsonTypes, doc.JSTypes)
   });
+
   return (input) => {
     const tree = loadTree(input);
+
     return compiler.start(tree);
   };
 };
-
 
 module.exports = {
   javascript: {

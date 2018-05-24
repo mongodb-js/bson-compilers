@@ -1,6 +1,5 @@
 const antlr4 = require('antlr4');
-
-const { SyntaxGenericError } = require('../helper/error');
+const {SyntaxGenericError} = require('../helper/error');
 
 /**
  * Custom Error Listener

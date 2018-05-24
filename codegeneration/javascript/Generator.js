@@ -3,6 +3,9 @@
  * For every input language, can "inherit" the generated visitNode methods.
  */
 module.exports = (superClass) => class ExtendedVisitor extends superClass {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
     this.regexFlags = {
@@ -13,6 +16,13 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
       g: '' // global
     };
   }
+
+  /**
+   * Emit ISODate
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @return {String}
+   */
   emitISODate(ctx) {
     let newstr = '';
 
@@ -33,6 +43,14 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     return `${newstr}Date(${argstr[0]})`;
   }
 
+  /**
+   * Special cased because different target languages need different info out
+   * of the constructed date.
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @param {Date} date
+   * @return {String}
+   */
   emitDate(ctx, date) {
     let newstr = '';
 

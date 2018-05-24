@@ -5,6 +5,9 @@
 const {removeQuotes} = require('../../helper/format');
 
 module.exports = (superClass) => class ExtendedVisitor extends superClass {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
     this.regexFlags = {
@@ -15,6 +18,11 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     };
   }
 
+  /**
+   * Emit New
+   * @param {FuncCallExpressionContext} ctx
+   * @return {String}
+   */
   emitNew(ctx) {
     const expr = this.visit(ctx.singleExpression());
 
@@ -41,6 +49,14 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     return removeQuotes(arg);
   }
 
+  /**
+   * Special cased because different target languages need different info out
+   * of the constructed date.
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @param {Date} date
+   * @return {String}
+   */
   emitDate(ctx, date) {
     if (date === undefined) {
       return 'Date()';

@@ -6,6 +6,9 @@
  * @returns {object}
  */
 module.exports = (superClass) => class ExtendedVisitor extends superClass {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
     this.regexFlags = {

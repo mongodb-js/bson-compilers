@@ -1,6 +1,9 @@
 const {doubleQuoteStringify} = require('../../helper/format');
 
 module.exports = (superclass) => class ExtendedVisitor extends superclass {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
     this.new = 'new ';
@@ -161,7 +164,6 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    *
    * @returns {string} - DateTime.Now
    */
-
   emitnow(ctx) {
     ctx.type = this.Types.Now;
 

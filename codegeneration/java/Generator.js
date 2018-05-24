@@ -5,6 +5,9 @@ const {doubleQuoteStringify} = require('../../helper/format');
  * @returns {Generator}
  */
 module.exports = (superClass) => class ExtendedVisitor extends superClass {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
     this.new = 'new ';
@@ -56,6 +59,13 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
 
     return `new java.util.Date(new java.lang.Long("${date.getTime()}"))${toStr}`;
   }
+
+  /**
+   * Emit ISODate
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @return {String}
+   */
   emitISODate(ctx) {
     return this.emitDate(ctx);
   }
@@ -70,6 +80,14 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   emitDecimal128(ctx, str) {
     return `Decimal128.parse(${doubleQuoteStringify(str)})`;
   }
+
+  /**
+   * Special cased because don't want 'new' here.
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @param {String} str - the number as a string.
+   * @return {String}
+   */
   emitNumberDecimal(ctx, str) {
     return `Decimal128.parse(${doubleQuoteStringify(str)})`;
   }

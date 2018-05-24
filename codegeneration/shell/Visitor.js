@@ -13,11 +13,19 @@ const {
  * @returns {object}
  */
 class Visitor extends JavascriptVisitor {
+  /**
+   * Constructor
+   */
   constructor() {
     super();
     this.new = '';
   }
 
+  /**
+   * Visit IdentifierExpression
+   * @param {FuncCallExpressionContext} ctx
+   * @return {String}
+   */
   visitIdentifierExpression(ctx) {
     const name = this.visitChildren(ctx);
 
@@ -53,6 +61,11 @@ class Visitor extends JavascriptVisitor {
     return name;
   }
 
+  /**
+   * Execute Javascript
+   * @param {JSCode} input
+   * @return {String}
+   */
   executeJavascript(input) {
     const sandbox = {
       RegExp,

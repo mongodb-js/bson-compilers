@@ -35,7 +35,25 @@
       },
       {"blankLine": "any", "prev": ["const", "let"], "next": ["const", "let"]}
     ],
-    "multiline-ternary": ["error", "always-multiline"]
+    "multiline-ternary": ["error", "always-multiline"],
+    "require-jsdoc": [
+      "error", {
+        "require": {
+            "FunctionDeclaration": true,
+            "MethodDefinition": true,
+            "ClassDeclaration": true,
+            "ArrowFunctionExpression": false,
+            "FunctionExpression": false
+        }
+      }
+    ],
+    "lines-between-class-members": ["error", "always"],
+    "no-unneeded-ternary": "error",
+    "no-whitespace-before-property": "error",
+    "semi-style": ["error", "last"],
+    "space-in-parens": ["error", "never"],
+    "space-unary-ops": "error",
+    "arrow-spacing": "error"
   },
   "extends": [
     "mongodb-js/node",

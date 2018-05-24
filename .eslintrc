@@ -5,7 +5,37 @@
     "es6": true
   },
   "rules": {
-    "camelcase": 1
+    "camelcase": 1,
+    "prefer-template": 1,
+    "object-curly-spacing": ["error", "never"],
+    "array-bracket-spacing": ["error", "never"],
+    "arrow-parens": ["error", "always"],
+    "no-multiple-empty-lines": ["error", {"max": 1, "maxEOF": 1}],
+    "operator-linebreak": ["error", "before"],
+    "arrow-body-style": ["error", "as-needed"],
+    "quote-props": ["error", "as-needed"],
+    "object-shorthand": ["error", "always", {"ignoreConstructors": true}],
+    "newline-per-chained-call": ["error", {"ignoreChainWithDepth": 3}],
+    "no-mixed-operators": "error",
+    "dot-location": ["error", "property"],
+    "max-len": ["error", {"code": 120, "ignoreStrings": true}],
+    "no-param-reassign": "error",
+    "no-const-assign": "error",
+    "padding-line-between-statements": [
+      "error",
+      {
+        "blankLine": "always",
+        "prev": "*",
+        "next": ["const", "let", "return", "block", "block-like"]
+      },
+      {
+        "blankLine": "always",
+        "prev": ["const", "let", "block", "block-like"],
+        "next": "*"
+      },
+      {"blankLine": "any", "prev": ["const", "let"], "next": ["const", "let"]}
+    ],
+    "multiline-ternary": ["error", "always-multiline"]
   },
   "extends": [
     "mongodb-js/node",

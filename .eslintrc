@@ -5,8 +5,8 @@
     "es6": true
   },
   "rules": {
-    "camelcase": 1,
-    "prefer-template": 1,
+    "camelcase": "error",
+    "prefer-template": "error",
     "object-curly-spacing": ["error", "never"],
     "array-bracket-spacing": ["error", "never"],
     "arrow-parens": ["error", "always"],

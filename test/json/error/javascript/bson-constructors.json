@@ -148,7 +148,7 @@
         "errorCode": "E_SEMANTIC_ARGUMENTCOUNTMISMATCH"
       },
       {
-        "description": "RegExp with unsuppoted flag",
+        "description": "RegExp with unsupported flag",
         "query": "new BSONRegExp('^[a-z0-9_-]{3,16}$', 'wrong')",
         "errorCode": "E_SEMANTIC_GENERIC"
       },

@@ -23,7 +23,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
   }
 
   /**
-   * @param {NewExpressionContextObject} ctx
+   * @param {FuncCallExpressionContext} ctx
    *
    * @returns {string} - visited expression
    */
@@ -37,7 +37,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
   /**
    * Symbol is just used a string in c#
    *
-   * @param {ctxObject} ctx
+   * @param {FuncCallExpressionContext} ctx
    *
    * @returns {string} - value
    */
@@ -52,77 +52,83 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
   /**
    * Long should just be the number + letter 'L'
    *
-   * @param {ctxObject} ctx
+   * @param {FuncCallExpressionContext} ctx
    *
    * @returns {string} - valueL
    */
   emitLong(ctx, longstr) {
     ctx.type = this.Types.Long;
-
     return `${longstr}L`;
   }
 
   /**
-   * Double can be expressed with an extra decimal point
+   * Double can be expressed with an extra decimal point, so run a Math.round.
+   * If passed in as a string, convert it instead.
    *
-   * @param {ctxObject} ctx
+   * @param {FuncCallExpressionContext} ctx
    *
    * @returns {string} - valueL
    */
   emitDouble(ctx) {
     ctx.type = this.Types.Double;
     const args = ctx.arguments().argumentList().singleExpression();
-    let text = args[0].getText();
+    const text = args[0].getText();
     if (text.indexOf('\'') === 0 || text.indexOf('"') === 0) {
-      text = text.replace(/['"]+/g, '');
+      return `Convert.ToDouble(${doubleQuoteStringify(text)})`;
     }
 
-    return Math.round(parseInt(text, 10)).toFixed(1);
+    return Math.round(text).toFixed(1);
   }
 
   /**
-   * all of the .NET langs have implicit conversion, so we just need to
-   * parseInt and return the number for Int32
+   * Int32 is just a number. However, if passed in as a string, will need to
+   * convert
    *
-   * @param {ctxObject} ctx
+   * @param {FuncCallExpressionContext} ctx
    *
    * @returns {string} - value
    */
   emitInt32(ctx) {
     ctx.type = this.Types.Int32;
     const args = ctx.arguments().argumentList().singleExpression();
-    let text = args[0].getText();
+    const text = args[0].getText();
     if (text.indexOf('\'') === 0 || text.indexOf('"') === 0) {
-      text = text.replace(/['"]+/g, '');
+      return `Convert.ToInt32(${doubleQuoteStringify(text)})`;
     }
-    const expr = parseInt(text, 10);
 
-    return `${expr}`;
+    return `${text}`;
   }
 
   /**
-   * Number doesn't need a new keyword, so need to handle via emit
+   * Number doesn't need a new keyword, so need to handle via emit. Depending
+   * on whether it's passed in as a string, we will need to parse
    *
-   * @param {ctxObject} ctx
+   * @param {FuncCallExpressionContext} ctx
    *
    * @returns {string} - (int)value
    */
   emitNumber(ctx) {
     ctx.type = this.Types.Number;
     const args = ctx.arguments().argumentList().singleExpression();
-    const expr = args[0].getText().replace(/['"]+/g, '');
-    return `(int)${expr}`;
+    const text = args[0].getText();
+    if (text.indexOf('\'') === 0 || text.indexOf('"') === 0) {
+      return `int.Parse(${doubleQuoteStringify(text)})`;
+    }
+
+    return `(int)${text}`;
   }
 
   /**
    * We don't need `new` since we are always using a .Parse
    *
-   * @param {ctxObject} ctx
+   * @param {FuncCallExpressionContext} ctx
    * @param {String} decimal
    *
    * @returns {string} - Decimal128.Parse(val)
    */
   emitDecimal128(ctx, decimal) {
+    ctx.type = this.Types.Decimal128;
+    // decimal is always a number here
     const expr = parseInt(decimal.toString(), 10);
 
     return `Decimal128.Parse(${doubleQuoteStringify(expr.toString())})`;
@@ -132,13 +138,12 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    * BSON MinKey Constructor
    * needs to be in emit, since does not need a 'new' keyword
    *
-   * @param {BSONMinKeyObject} ctx
+   * @param {FuncCallExpressionContext} ctx
    *
    * @returns {string} - BsonMinKey.Value
    */
   emitMinKey(ctx) {
     ctx.type = this.Types.MinKey;
-
     return 'BsonMinKey.Value';
   }
 
@@ -146,13 +151,12 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    * BSON MaxKey Constructor
    * needs to be in emit, since does not need a 'new' keyword
    *
-   * @param {ctxObject} ctx
+   * @param {FuncCallExpressionContext} ctx
    *
    * @returns {string} - BsonMaxKey.Value
    */
   emitMaxKey(ctx) {
     ctx.type = this.Types.MaxKey;
-
     return 'BsonMaxKey.Value';
   }
 
@@ -199,7 +203,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    * Date Now. This doesn't need a keyword 'new', nor is 'Now' a callable
    * function, so we need to adjust this.
    *
-   * @param {DateNowConstructorObject} ctx
+   * @param {FuncCallExpressionContext} ctx
    *
    * @returns {string} - DateTime.Now
    */

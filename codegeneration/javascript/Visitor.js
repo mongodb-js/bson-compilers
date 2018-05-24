@@ -473,6 +473,10 @@ class Visitor extends ECMAScriptVisitor {
       pattern = regexobj.source;
       flags = regexobj.flags;
     } catch (error) {
+      if (error.name === 'TypeError') {
+        throw new SemanticTypeError({message: error.message});
+      }
+
       throw new SemanticGenericError({message: error.message});
     }
 
@@ -593,6 +597,10 @@ class Visitor extends ECMAScriptVisitor {
     try {
       hexstr = this.executeJavascript(ctx.getText()).toHexString();
     } catch (error) {
+      if (error.name === 'TypeError') {
+        throw new SemanticTypeError({message: error.message});
+      }
+
       throw new SemanticGenericError({message: error.message});
     }
     if ('emitObjectId' in this) {
@@ -617,6 +625,10 @@ class Visitor extends ECMAScriptVisitor {
     try {
       longstr = this.executeJavascript(`new ${ctx.getText()}`).toString();
     } catch (error) {
+      if (error.name === 'TypeError') {
+        throw new SemanticTypeError({message: error.message});
+      }
+
       throw new SemanticGenericError({message: error.message});
     }
     if ('emitLong' in this) {
@@ -644,6 +656,10 @@ class Visitor extends ECMAScriptVisitor {
     try {
       decstr = this.executeJavascript(`new ${ctx.getText()}`).toString();
     } catch (error) {
+      if (error.name === 'TypeError') {
+        throw new SemanticTypeError({message: error.message});
+      }
+
       throw new SemanticGenericError({message: error.message});
     }
 
@@ -668,6 +684,10 @@ class Visitor extends ECMAScriptVisitor {
     try {
       longstr = this.executeJavascript(long.getText()).toString();
     } catch (error) {
+      if (error.name === 'TypeError') {
+        throw new SemanticTypeError({message: error.message});
+      }
+
       throw new SemanticGenericError({message: error.message});
     }
     return ctx.type.template ? ctx.type.template(longstr) : `'${longstr}'`;
@@ -696,6 +716,10 @@ class Visitor extends ECMAScriptVisitor {
     try {
       date = this.executeJavascript(text);
     } catch (error) {
+      if (error.name === 'TypeError') {
+        throw new SemanticTypeError({message: error.message});
+      }
+
       throw new SemanticGenericError({message: error.message});
     }
     if ('emitDate' in this) {
@@ -742,6 +766,10 @@ class Visitor extends ECMAScriptVisitor {
       binobj = this.executeJavascript(ctx.getText());
       type = binobj.sub_type;
     } catch (error) {
+      if (error.name === 'TypeError') {
+        throw new SemanticTypeError({message: error.message});
+      }
+
       throw new SemanticGenericError({message: error.message});
     }
     const bytes = binobj.toString();

@@ -34,6 +34,21 @@
         "description": "Binary with extra argumnets",
         "query": "new Binary(Buffer.from(\"1234\"), Binary.SUBTYPE_UUID, 5)",
         "errorCode": "E_SEMANTIC_ARGUMENTCOUNTMISMATCH"
+      },
+      {
+        "description": "Binary with wrong buffer",
+        "query": "new Binary(Buffer.from(1), Binary.SUBTYPE_UUID)",
+        "errorCode": "E_SEMANTIC_TYPE"
+      },
+      {
+        "description": "Binary withot with empty Buffer.from()",
+        "query": "new Binary(Buffer.from(), Binary.SUBTYPE_UUID)",
+        "errorCode": "E_SEMANTIC_TYPE"
+      },
+      {
+        "description": "Binary withot with empty Buffer.from()",
+        "query": "new Binary(Buffer.from('1', '2'), Binary.SUBTYPE_UUID)",
+        "errorCode": "E_SEMANTIC_TYPE"
       }
     ],
     "DBRef": [

@@ -45,7 +45,7 @@ class Visitor extends JavascriptVisitor {
       && ctx.parentCtx.constructor.name !== 'NewExpressionContext'
     ) {
       const node = {
-        arguments: () => ({argumentList: () => false}),
+        arguments: () => ({ argumentList: () => false }),
         singleExpression: () => ctx
       };
 
@@ -151,11 +151,11 @@ class Visitor extends JavascriptVisitor {
     const bindata = args[1];
 
     if (!((subtype >= 0 && subtype <= 5) || subtype === 128)) {
-      throw new SemanticGenericError({message: 'BinData subtype must be a Number between 0-5 or 128'});
+      throw new SemanticGenericError();
     }
 
     if (bindata.match(/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/)) {
-      throw new SemanticGenericError({message: 'invalid base64'});
+      throw new SemanticGenericError({ message: 'invalid base64' });
     }
 
     const typeStr = binaryTypes[subtype] !== null ? binaryTypes[subtype]() : subtype;
@@ -185,7 +185,7 @@ class Visitor extends JavascriptVisitor {
     try {
       longstr = this.executeJavascript(`new ${ctx.getText()}`).toString();
     } catch (error) {
-      throw new SemanticGenericError({message: error.message});
+      throw new SemanticGenericError({ message: error.message });
     }
 
     if ('emitNumberLong' in this) {
@@ -213,7 +213,7 @@ class Visitor extends JavascriptVisitor {
     try {
       decstr = this.executeJavascript(`new ${ctx.getText()}`).toString();
     } catch (error) {
-      throw new SemanticGenericError({message: error.message});
+      throw new SemanticGenericError({ message: error.message });
     }
 
     if ('emitNumberDecimal' in this) {

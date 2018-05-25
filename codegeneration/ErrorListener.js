@@ -1,5 +1,5 @@
 const antlr4 = require('antlr4');
-const {SyntaxGenericError} = require('../helper/error');
+const { SyntaxGenericError } = require('../helper/error');
 
 /**
  * Custom Error Listener
@@ -18,7 +18,7 @@ class ErrorListener extends antlr4.error.ErrorListener {
    * @param {string} payload Stack trace
    */
   syntaxError(recognizer, symbol, line, column, message) {
-    throw new SyntaxGenericError({line, column, message});
+    throw new SyntaxGenericError({ line, column, message });
   }
 }
 

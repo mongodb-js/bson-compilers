@@ -15,6 +15,10 @@ Object.keys(config).forEach((group) => {
     const message = config[group][definition].message;
 
     errors[name] = class extends Error {
+      /**
+      * Constructor
+      * @param {Object} payload
+      */
       constructor(payload) {
         super(payload);
 

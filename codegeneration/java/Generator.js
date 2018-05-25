@@ -1,4 +1,4 @@
-const {doubleQuoteStringify} = require('../../helper/format');
+const { doubleQuoteStringify } = require('../../helper/format');
 
 /**
  * @param {class} superClass - where the `visitX` methods live.

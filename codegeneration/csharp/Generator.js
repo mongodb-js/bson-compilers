@@ -1,4 +1,4 @@
-const {doubleQuoteStringify} = require('../../helper/format');
+const { doubleQuoteStringify } = require('../../helper/format');
 
 module.exports = (superclass) => class ExtendedVisitor extends superclass {
   /**

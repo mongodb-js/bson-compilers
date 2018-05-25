@@ -30,16 +30,16 @@ const unsupported = {
   },
   error: {
     javascript: {
-      java: {'bson-constructors': ['*']},
+      java: { 'bson-constructors': ['*'] },
       python: {},
-      shell: {'bson-constructors': ['*']},
-      csharp: {'bson-constructors': ['*']}
+      shell: { 'bson-constructors': ['*'] },
+      csharp: { 'bson-constructors': ['*'] }
     },
     shell: {
-      java: {'bson-constructors': ['*']},
+      java: { 'bson-constructors': ['*'] },
       python: {},
-      csharp: {'bson-constructors': ['*']},
-      javascript: {'bson-constructors': ['*']}
+      csharp: { 'bson-constructors': ['*'] },
+      javascript: { 'bson-constructors': ['*'] }
     }
   }
 };
@@ -95,4 +95,4 @@ const runTest = function(mode, testname, inputLang, outputLang, tests) {
   });
 };
 
-module.exports = {inputLanguages, outputLanguages, readJSON, runTest};
+module.exports = { inputLanguages, outputLanguages, readJSON, runTest };

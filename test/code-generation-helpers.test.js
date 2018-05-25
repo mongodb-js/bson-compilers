@@ -7,7 +7,7 @@ const {
   removeQuotes
 } = require(path.resolve('helper', 'format'));
 
-const {getTree} = require('../');
+const { getTree } = require('../');
 const yaml = require('js-yaml');
 const JavascriptVisitor = require('../codegeneration/javascript/Visitor');
 const javaGenerator = require('../codegeneration/java/Generator');
@@ -63,7 +63,7 @@ describe('CodeGeneration helper functions', () => {
 
     compiler.Types = Object.assign({}, doc.BasicTypes, doc.BsonTypes);
     compiler.Symbols = Object.assign(
-      {TestFunc: {callable: 2, args: [], template: null, argsTemplate: null, id: 'TestFunc', type: null}},
+      { TestFunc: { callable: 2, args: [], template: null, argsTemplate: null, id: 'TestFunc', type: null } },
       doc.BsonSymbols, doc.JSSymbols);
     compiler.SYMBOL_TYPE = doc.SymbolTypes;
     it('defaults to long', () => {

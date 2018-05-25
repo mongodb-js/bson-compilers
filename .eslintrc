@@ -7,7 +7,7 @@
   "rules": {
     "camelcase": "error",
     "prefer-template": "error",
-    "object-curly-spacing": ["error", "never"],
+    "object-curly-spacing": ["error", "always"],
     "array-bracket-spacing": ["error", "never"],
     "arrow-parens": ["error", "always"],
     "no-multiple-empty-lines": ["error", {"max": 1, "maxEOF": 1}],
@@ -19,7 +19,6 @@
     "no-mixed-operators": "error",
     "dot-location": ["error", "property"],
     "max-len": ["error", {"code": 120, "ignoreStrings": true}],
-    "no-param-reassign": "error",
     "no-const-assign": "error",
     "padding-line-between-statements": [
       "error",

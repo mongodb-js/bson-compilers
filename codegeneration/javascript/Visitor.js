@@ -20,6 +20,8 @@ class Visitor extends ECMAScriptVisitor {
   constructor() {
     super();
     this.new = '';
+    this.processInt32 = this.processNumber;
+    this.processDouble = this.processNumber;
   }
 
   start(ctx) {
@@ -69,6 +71,7 @@ class Visitor extends ECMAScriptVisitor {
     if (!ctx.type) {
       ctx.type = this.getPrimitiveType(ctx.literal());
     }
+    const type = ctx.actualType === undefined ? ctx.type : ctx.actualType;
     if (`process${ctx.type.id}` in this) {
       return this[`process${ctx.type.id}`](ctx);
     }
@@ -77,7 +80,7 @@ class Visitor extends ECMAScriptVisitor {
     }
 
     if (ctx.type.template) {
-      return ctx.type.template(this.visitChildren(ctx));
+      return ctx.type.template(this.visitChildren(ctx), type.id);
     }
 
     return this.visitChildren(ctx);
@@ -406,6 +409,8 @@ class Visitor extends ECMAScriptVisitor {
     for (let i = 0; i < expected.length; i++) {
       if (numericTypes.indexOf(actual.type) !== -1 &&
         numericTypes.indexOf(expected[i]) !== -1) {
+        original.actualType = actual.type;
+        actual.actualType = actual.type;
         original.type = expected[i];
         actual.type = expected[i];
         return this.visit(original);
@@ -455,6 +460,37 @@ class Visitor extends ECMAScriptVisitor {
       argStr.push(result);
     }
     return argStr;
+  }
+
+  /**
+   * Need process method because we want to pass the argument type to the template
+   * so that we can determine if the generated number needs to be parsed or casted.
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @returns {String}
+   */
+  processNumber(ctx) {
+    const lhsStr = this.visit(ctx.singleExpression());
+    let lhsType = ctx.singleExpression().type;
+    if (typeof lhsType === 'string') {
+      lhsType = this.Types[lhsType];
+    }
+    ctx.type = lhsType.id === 'Number' ? this.Types._numeric : lhsType.type;
+
+    // Get the type of the argument
+    const expectedArgs = lhsType.args;
+    const args = this.checkArguments(expectedArgs, ctx.arguments().argumentList());
+    const argNode = ctx.arguments().argumentList().singleExpression()[0];
+    const argType = argNode.actualType !== undefined ? argNode.actualType : argNode.type; // TODO: use getType
+
+    if (`emit${lhsType.id}` in this) {
+      return this[`emit${lhsType.id}`](ctx, argType);
+    }
+
+    // Apply the arguments template
+    const lhs = lhsType.template ? lhsType.template() : lhsStr;
+    const rhs = lhsType.argsTemplate ? lhsType.argsTemplate(lhs, args[0], argType.id) : `(${args.join(', ')})`;
+    return `${lhs}${rhs}`;
   }
 
   /**

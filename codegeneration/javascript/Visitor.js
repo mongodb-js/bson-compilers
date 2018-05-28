@@ -700,6 +700,14 @@ class Visitor extends ECMAScriptVisitor {
     ctx.type = this.Types.Decimal128;
     const symbolType = this.Symbols.Decimal128;
     let decstr;
+    const argList = ctx.arguments().argumentList();
+
+    if (!argList || argList.singleExpression().length !== 1) {
+      throw new SemanticArgumentCountMismatchError({
+        message: 'Decimal128 requires one argument'
+      });
+    }
+
     try {
       decstr = this.executeJavascript(`new ${ctx.getText()}`).toString();
     } catch (error) {

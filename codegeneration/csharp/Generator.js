@@ -23,7 +23,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
   }
 
   /**
-   * @param {FuncCallExpressionContext} ctx
+   * @param {NewExpressionContextObject} ctx
    *
    * @returns {string} - visited expression
    */
@@ -53,12 +53,12 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    * Long should just be the number + letter 'L'
    *
    * @param {FuncCallExpressionContext} ctx
+   * @param {str} str - processed str from the visitor
    *
    * @returns {string} - valueL
    */
-  emitLong(ctx, longstr) {
-    ctx.type = this.Types.Long;
-    return `${longstr}L`;
+  emitLong(ctx, str) {
+    return `${str}L`;
   }
 
   /**
@@ -66,15 +66,23 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    * If passed in as a string, convert it instead.
    *
    * @param {FuncCallExpressionContext} ctx
+   * @param {type} type - number type object
    *
    * @returns {string} - valueL
    */
-  emitDouble(ctx) {
-    ctx.type = this.Types.Double;
+  emitDouble(ctx, type) {
     const args = ctx.arguments().argumentList().singleExpression();
     const text = args[0].getText();
-    if (text.indexOf('\'') === 0 || text.indexOf('"') === 0) {
+
+    if (type.id === '_hex') {
+      return `Convert.ToDouble(${text})`;
+    }
+    if (type.id === '_string') {
       return `Convert.ToDouble(${doubleQuoteStringify(text)})`;
+    }
+
+    if (type.id === '_decimal') {
+      return text;
     }
 
     return Math.round(text).toFixed(1);
@@ -85,14 +93,19 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    * convert
    *
    * @param {FuncCallExpressionContext} ctx
+   * @param {type} type - number type object
    *
    * @returns {string} - value
    */
-  emitInt32(ctx) {
-    ctx.type = this.Types.Int32;
+  emitInt32(ctx, type) {
     const args = ctx.arguments().argumentList().singleExpression();
     const text = args[0].getText();
-    if (text.indexOf('\'') === 0 || text.indexOf('"') === 0) {
+
+    if (type.id === '_hex' || type.id === '_decimal') {
+      return `Convert.ToInt32(${text})`;
+    }
+
+    if (type.id === '_string') {
       return `Convert.ToInt32(${doubleQuoteStringify(text)})`;
     }
 
@@ -104,14 +117,15 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    * on whether it's passed in as a string, we will need to parse
    *
    * @param {FuncCallExpressionContext} ctx
+   * @param {type} type - number type object
    *
    * @returns {string} - (int)value
    */
-  emitNumber(ctx) {
-    ctx.type = this.Types.Number;
+  emitNumber(ctx, type) {
     const args = ctx.arguments().argumentList().singleExpression();
     const text = args[0].getText();
-    if (text.indexOf('\'') === 0 || text.indexOf('"') === 0) {
+
+    if (type.id === '_string') {
       return `int.Parse(${doubleQuoteStringify(text)})`;
     }
 
@@ -127,8 +141,8 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    * @returns {string} - Decimal128.Parse(val)
    */
   emitDecimal128(ctx, decimal) {
-    ctx.type = this.Types.Decimal128;
-    // decimal is always a number here
+    // decimal is always a number here, and looks something like this:
+    // 5.3E-6175, so let's convert into into base10
     const expr = parseInt(decimal.toString(), 10);
 
     return `Decimal128.Parse(${doubleQuoteStringify(expr.toString())})`;

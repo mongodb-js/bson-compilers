@@ -192,7 +192,7 @@
         "javascript": "new Double(3.005)",
         "python": "float(3.005)",
         "java": "3.005d",
-        "csharp": "new BsonDouble(3.005)",
+        "csharp": "3.005",
         "shell": "3.005"
       },
       {
@@ -200,7 +200,7 @@
         "javascript": "new Double(0x3)",
         "python": "float(0x3)",
         "java": "new Double(0x3)",
-        "csharp": "new BsonDouble(3)",
+        "csharp": "Convert.ToDouble(0x3)",
         "shell": "0x3"
       }
     ],

@@ -70,11 +70,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
    * @returns {string} - Decimal128.Parse(val)
    */
   emitDecimal128(ctx, decimal) {
-    // decimal is always a number here, and looks something like this:
-    // 5.3E-6175, so let's convert into into base10
-    const expr = parseInt(decimal.toString(), 10);
-
-    return `Decimal128.Parse(${doubleQuoteStringify(expr.toString())})`;
+    return `Decimal128.Parse(${doubleQuoteStringify(decimal)})`;
   }
 
   /**

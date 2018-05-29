@@ -718,10 +718,6 @@ class Visitor extends ECMAScriptVisitor {
     return `${this.new}${lhs}${rhs}`;
   }
 
-  processDecimal128fromString(ctx) {
-    return this.processDecimal128(ctx);
-  }
-
   /**
    * This is a bit weird because we can just convert to string directly.
    *

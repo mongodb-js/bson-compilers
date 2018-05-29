@@ -591,7 +591,7 @@ Templates:
             arg = arg === undefined ? 0 : arg;
 
             if (type === '_hex' || type === '_decimal' || type === '_string') {
-              return `Convert.ToDouble(${arg})`;
+              return `Convert.ToInt32(${arg})`;
             }
 
             return arg;
@@ -675,12 +675,12 @@ Templates:
     Decimal128SymbolTemplate: &Decimal128SymbolTemplate null # Has emit method
     Decimal128SymbolArgsTemplate: &Decimal128SymbolArgsTemplate null # Has emit method
     Decimal128SymbolFromStringTemplate: &Decimal128SymbolFromStringTemplate !!js/function >
-        (lhs) => {
-            return lhs;
-        }
-    Decimal128SymbolFromStringArgsTemplate: &Decimal128SymbolFromStringArgsTemplate !!js/function > 
         () => {
             return '';
+        }
+    Decimal128SymbolFromStringArgsTemplate: &Decimal128SymbolFromStringArgsTemplate !!js/function > 
+        (lhs, arg) => {
+            return `${lhs}.Parse(${arg})`;
         }
     Decimal128ToStringTemplate: &Decimal128ToStringTemplate !!js/function >
         (lhs) => {

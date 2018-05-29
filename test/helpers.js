@@ -28,7 +28,7 @@ const unsupported = {
   error: {
     javascript: {
       java: {'bson-constructors': [ '*' ]},
-      python: {},
+      python: {'bson-constructors': [ '*' ]},
       shell: { 'bson-constructors': [ '*' ]},
       csharp: {'bson-constructors': [ '*' ]}
     },

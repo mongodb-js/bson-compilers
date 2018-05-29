@@ -264,7 +264,7 @@ BsonSymbols:
         type: *Decimal128Type
         attr:
             fromString:
-                id: "Decimal128fromString"
+                id: "fromString"
                 callable: *func
                 args:
                     - [ *StringType ]

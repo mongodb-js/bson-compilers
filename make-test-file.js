@@ -2,9 +2,9 @@ const fs = require('fs');
 const parse = require('fast-json-parse');
 const path = require('path');
 
-const outputLang = 'java';
-const inputLang = 'javascript';
 const pSuccess = path.join(__dirname, 'test', 'json', 'success');
+
+const { singleQuoteStringify, doubleQuoteStringify } = require('./helper/format');
 
 const javaFileTemplate = (code) => {
   return `
@@ -43,6 +43,43 @@ const javaDocTemplate = (name, code) => {
 \t\tDocument ${name} = new Document()${code};`;
 };
 
+const javaLineTemplate = (description, output) => {
+  return `\n\t\t\t.append(${doubleQuoteStringify(description)}, ${output})`;
+};
+
+const pythonFileTemplate = (code) => {
+  return `
+#!bin/python
+from bson import *
+import datetime
+x = {
+    ${code}
+}
+print(x)
+`;
+};
+
+const pythonDocTemplate = (name, code) => {
+  return `\n    ${singleQuoteStringify(name)}: {${code}\n    },\n`;
+};
+
+const pythonLineTemplate = (description, output) => {
+  return `\n        ${singleQuoteStringify(description)}: ${output},`;
+};
+
+const templates = {
+  python: {
+    file: pythonFileTemplate,
+    doc: pythonDocTemplate,
+    line: pythonLineTemplate
+  },
+  java: {
+    file: javaFileTemplate,
+    doc: javaDocTemplate,
+    line: javaLineTemplate
+  }
+};
+
 const readJSON = (filename) => {
   const parseResult = parse(fs.readFileSync(filename));
   if (parseResult.err) {
@@ -51,17 +88,22 @@ const readJSON = (filename) => {
   return parseResult.value;
 };
 
-const makeFile = () => {
-  return javaFileTemplate(fs.readdirSync(path.join(pSuccess, inputLang)).reduce(
+const makeFile = (input, output) => {
+  return templates[output].file(fs.readdirSync(path.join(pSuccess, input)).reduce(
     (str0, file) => {
-      const tests = readJSON(path.join(pSuccess, inputLang, file)).tests;
+      const tests = readJSON(path.join(pSuccess, input, file)).tests;
       return str0 + Object.keys(tests).reduce(
         (str, key) => {
-          return str + javaDocTemplate(file.replace(/-/g, '').slice(0, -5) + key, tests[key].reduce(
+          return str + templates[output].doc(file.replace(/-/g, '').slice(0, -5) + key, tests[key].reduce(
             (str2, test) => {
-              return str2 + `\n\t\t\t.append("${test.description}", ${test[outputLang]})`;
+              return str2 + templates[output].line(test.description, test[output]);
             }, ''));
         }, '');
     }, ''));
 };
-console.log(makeFile());
+console.log(process.argv);
+if (process.argv.length !== 3) {
+  console.log('Usage: <outputLanguage>');
+  process.exit();
+}
+console.log(makeFile('javascript', process.argv[2]));

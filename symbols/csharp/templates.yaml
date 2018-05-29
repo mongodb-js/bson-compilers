@@ -561,10 +561,41 @@ Templates:
             return 'MongoDBRef';
         }
     DBRefSymbolArgsTemplate: &DBRefSymbolArgsTemplate null
-    DoubleSymbolTemplate: &DoubleSymbolTemplate null # Has emit method
-    DoubleSymbolArgsTemplate: &DoubleSymbolArgsTemplate null # Has emit method 
-    Int32SymbolTemplate: &Int32SymbolTemplate null # Has emit method
-    Int32SymbolArgsTemplate: &Int32SymbolArgsTemplate null # Has emit method
+    DoubleSymbolTemplate: &DoubleSymbolTemplate !!js/function >
+        () => {
+            return '';
+        }
+    DoubleSymbolArgsTemplate: &DoubleSymbolArgsTemplate !!js/function >
+        (lhs, arg, type) => {
+            arg = arg === undefined ? 0 : arg;
+
+            if (type === '_hex') {
+              return `Convert.ToDouble(${arg})`;
+            }
+            if (type === '_string') {
+              return `Convert.ToDouble(${arg})`;
+            }
+
+            if (type === '_decimal') {
+              return arg;
+            }
+
+            return Math.round(arg).toFixed(1);
+        }
+    Int32SymbolTemplate: &Int32SymbolTemplate !!js/function >
+        () => {
+            return '';
+        }
+    Int32SymbolArgsTemplate: &Int32SymbolArgsTemplate !!js/function >
+        (lhs, arg, type) => {
+            arg = arg === undefined ? 0 : arg;
+
+            if (type === '_hex' || type === '_decimal' || type === '_string') {
+              return `Convert.ToDouble(${arg})`;
+            }
+
+            return arg;
+        }
     LongSymbolTemplate: &LongSymbolTemplate !!js/function >
         () => {
             return '';
@@ -689,8 +720,20 @@ Templates:
         (lhs, arg) => {
             return arg;
         }
-    NumberSymbolTemplate: &NumberSymbolTemplate null # Has emit method
-    NumberSymbolArgsTemplate: &NumberSymbolArgsTemplate null # Has emit method
+    NumberSymbolTemplate: &NumberSymbolTemplate !!js/function >
+        () => {
+            return '';
+        }
+    NumberSymbolArgsTemplate: &NumberSymbolArgsTemplate !!js/function >
+        (lhs, arg, type) => {
+            arg = arg === undefined ? 0 : arg;
+
+            if (type === '_string') {
+              return `int.Parse(${arg})`;
+            }
+
+            return `(int)${arg}`;
+        }
     DateSymbolTemplate: &DateSymbolTemplate null # Has emit method
     DateSymbolArgsTemplate: &DateSymbolArgsTemplate null # Has emit method
     DateSymbolNowTemplate: &DateSymbolNowTemplate null # Has emit method

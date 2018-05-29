@@ -5,7 +5,7 @@
         "description": "CodeWithScope scope",
         "javascript": "Code('test code', {x: 1}).scope",
         "python": "Code('test code', {'x': 1}).scope",
-        "java": "new CodeWithScope(\"test code\", new Document().append(\"x\", 1L)).getScope()",
+        "java": "new CodeWithScope(\"test code\", new Document(\"x\", 1L)).getScope()",
         "csharp": "new BsonJavaScriptWithScope(@\"test code\", new BsonDocument(\"x\", 1)).Scope",
         "shell": "Code('test code', {x: 1}).scope"
       },
@@ -16,14 +16,6 @@
         "java": "new Code(\"test code\").getCode()",
         "csharp": "new BsonJavaScript(@\"test code\").Code",
         "shell": "Code('test code').code"
-      },
-      {
-        "description": "Code toString",
-        "javascript": "Code('test code').toString()",
-        "python": "repr(Code('test code'))",
-        "java": "new Code(\"test code\").toString()",
-        "csharp": "new BsonJavaScript(@\"test code\").ToString()",
-        "shell": "Code('test code').toString()"
       }
     ],
     "ObjectId": [
@@ -178,7 +170,7 @@
         "description": "toNumber",
         "javascript": "Long(1, 100).toNumber()",
         "python": "float(Int64(429496729601))",
-        "java": "(float) 429496729601L",
+        "java": "(double) 429496729601L",
         "csharp": "new BsonInt64(429496729601).Value",
         "shell": "NumberLong(429496729601).floatApprox"
       },
@@ -210,7 +202,7 @@
         "description": "isNegative",
         "javascript": "Long(1, 100).isNegative()",
         "python": "Int64(429496729601) < 0",
-        "java": "429496729601L < 0",
+        "java": "429496729601L < 0L",
         "csharp": "new BsonInt64(429496729601) < 0",
         "shell": "NumberLong(429496729601) < 0"
       },
@@ -218,7 +210,7 @@
         "description": "isOdd",
         "javascript": "Long(1, 100).isOdd()",
         "python": "(Int64(429496729601) % 2) == 0",
-        "java": "(429496729601L % 2) == 0",
+        "java": "(429496729601L % 2L) == 1L",
         "csharp": "new BsonInt64(429496729601).ToInt64() % 2 == 0",
         "shell": "(NumberLong(429496729601) % 2) === 0"
       },
@@ -362,7 +354,7 @@
         "description": "shiftLeft",
         "javascript": "Long(1, 100).shiftLeft(10)",
         "python": "Int64(429496729601) << 10",
-        "java": "java.lang.Long.rotateLeft(429496729601L, 10)",
+        "java": "Long.rotateLeft(429496729601L, 10)",
         "csharp": "new BsonInt64(429496729601).ToInt32() << 10",
         "shell": "NumberLong(429496729601) << 10"
       },
@@ -370,7 +362,7 @@
         "description": "shiftRight",
         "javascript": "Long(1, 100).shiftRight(10)",
         "python": "Int64(429496729601) >> 10",
-        "java": "java.lang.Long.rotateRight(429496729601L, 10)",
+        "java": "Long.rotateRight(429496729601L, 10)",
         "csharp": "new BsonInt64(429496729601).ToInt32() >> 10",
         "shell": "NumberLong(429496729601) >> 10"
       }

@@ -38,7 +38,7 @@
     ],
     "literals": [
       {
-        "description": "Integer 2",
+        "description": "Literal 2",
         "javascript": "2",
         "python": "2",
         "java": "2L",
@@ -211,7 +211,7 @@
         "description": "Date string with UTC number",
         "javascript": "Date(819167040000)",
         "python": "datetime.datetime(1995, 12, 17, 2, 24, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
-        "java": "new SimpleDateFormat(\"EEE MMMMM dd yyyy HH:mm:ss\").format(new java.util.Date(819170640000L))",
+        "java": "new SimpleDateFormat(\"EEE MMMMM dd yyyy HH:mm:ss\").format(new java.util.Date(819167040000L))",
         "csharp": "new DateTime(1995, 12, 17, 2, 24, 0).ToString()",
         "shell": "Date(819167040000)"
       },

@@ -39,7 +39,7 @@
         "description": "subtype default",
         "javascript": "Binary.SUBTYPE_DEFAULT",
         "python": "bson.binary.BINARY_SUBTYPE",
-        "java": "org.bson.BsonBinarySubType.BINARY",
+        "java": "BsonBinarySubType.BINARY",
         "shell": "0",
         "csharp": "BsonBinarySubType.Binary"
       },
@@ -47,7 +47,7 @@
         "description": "subtype function",
         "javascript": "Binary.SUBTYPE_FUNCTION",
         "python": "bson.binary.FUNCTION_SUBTYPE",
-        "java": "org.bson.BsonBinarySubType.FUNCTION",
+        "java": "BsonBinarySubtype.FUNCTION",
         "shell": "1",
         "csharp": "BsonBinarySubType.Function"
       },
@@ -97,7 +97,7 @@
         "description": "MAX_VALUE",
         "javascript": "Long.MAX_VALUE",
         "python": "sys.maxsize",
-        "java": "java.lang.Long.MAX_VALUE",
+        "java": "Long.MAX_VALUE",
         "shell": "math.max()",
         "csharp": "Int64.MaxValue"
       },
@@ -105,7 +105,7 @@
         "description": "MIN_VALUE",
         "javascript": "Long.MIN_VALUE",
         "python": "-sys.maxsize -1",
-        "java": "java.lang.Long.MIN_VALUE",
+        "java": "Long.MIN_VALUE",
         "shell": "math.min()",
         "csharp": "Int64.MinValue"
       },
@@ -145,7 +145,7 @@
         "description": "fromString without radix",
         "javascript": "Long.fromString('5')",
         "python": "Int64(int('5'))",
-        "java": "java.lang.Long.parseLong(\"5\")",
+        "java": "Long.parseLong(\"5\")",
         "shell": "NumberLong('5')",
         "csharp": "new BsonInt64(5)"
       },
@@ -153,7 +153,7 @@
         "description": "fromString with radix",
         "javascript": "Long.fromString('5', 10)",
         "python": "Int64(int('5'))",
-        "java": "java.lang.Long.parseLong(\"5\", 10)",
+        "java": "Long.parseLong(\"5\", 10)",
         "shell": "NumberLong('5')",
         "csharp": "Convert.ToInt64(\"5\", 10)"
       },

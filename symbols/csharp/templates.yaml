@@ -580,7 +580,7 @@ Templates:
               return arg;
             }
 
-            return Math.round(arg).toFixed(1);
+            return `${Math.round(arg).toFixed(1)}`;
         }
     Int32SymbolTemplate: &Int32SymbolTemplate !!js/function >
         () => {
@@ -596,14 +596,8 @@ Templates:
 
             return arg;
         }
-    LongSymbolTemplate: &LongSymbolTemplate !!js/function >
-        () => {
-            return '';
-        }
-    LongSymbolArgsTemplate: &LongSymbolArgsTemplate !!js/function >
-        (lhs, arg) => {
-            return `${arg}L`;
-        }
+    LongSymbolTemplate: &LongSymbolTemplate null
+    LongSymbolArgsTemplate: &LongSymbolArgsTemplate null
     LongSymbolMaxTemplate: &LongSymbolMaxTemplate !!js/function >
         () => {
             return 'Int64.MaxValue';

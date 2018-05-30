@@ -38,6 +38,18 @@
         "query": "Date({})",
         "errorCode": "E_SEMANTIC_TYPE"
       }
+    ],
+    "Number": [
+      {
+        "description": "Number with extra argument",
+        "query": "new Number(2, 2)",
+        "errorCode": "E_SEMANTIC_ARGUMENTCOUNTMISMATCH"
+      },
+      {
+        "description": "Number with wrong type of argument",
+        "query": "new Number({})",
+        "errorCode": "E_SEMANTIC_TYPE"
+      }
     ]
   }
 }

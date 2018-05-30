@@ -64,7 +64,7 @@
       {
         "description": "length",
         "javascript": "Binary(Buffer.from('0404')).length()",
-        "python": "len(bytearray(Binary(b'0404')))",
+        "python": "len(Binary(b'0404'))",
         "java": "new Binary(\"0404\".getBytes(\"UTF-8\")).length()",
         "csharp": "new BsonBinaryData(System.Text.Encoding.ASCII.GetBytes(\"0404\")).Length",
         "shell": "BinData(0, '0404').length()"
@@ -200,10 +200,10 @@
       {
         "description": "isOdd",
         "javascript": "Long(1, 100).isOdd()",
-        "python": "(Int64(429496729601) % 2) == 0",
-        "java": "new java.lang.Long(\"429496729601\") % 2 == 0",
-        "csharp": "new BsonInt64(429496729601).ToInt64() % 2 == 0",
-        "shell": "(NumberLong(429496729601) % 2) === 0"
+        "python": "(Int64(429496729601) % 2) == 1",
+        "java": "new java.lang.Long(\"429496729601\") % 2 == 1",
+        "csharp": "new BsonInt64(429496729601).ToInt64() % 2 == 1",
+        "shell": "(NumberLong(429496729601) % 2) === 1"
       },
       {
         "description": "equals",
@@ -380,7 +380,7 @@
       {
         "description": "equals",
         "javascript": "Timestamp(1, 100).equals(Timestamp(2, 99))",
-        "python": "(Timestamp(1, 100).time - Timestamp(2, 99).time) == 0",
+        "python": "Timestamp(1, 100) == Timestamp(2, 99)",
         "java": "new BSONTimestamp(1, 100).equals(new BSONTimestamp(2, 99))",
         "csharp": "new BsonTimestamp(1, 100).Equals(new BsonTimestamp(2, 99))",
         "shell": "Timestamp(1, 100) === Timestamp(2, 99)"
@@ -388,7 +388,7 @@
       {
         "description": "compare",
         "javascript": "Timestamp(1, 100).compare(Timestamp(2, 99))",
-        "python": "Timestamp(1, 100).time - Timestamp(2, 99).time",
+        "python": "Timestamp(1, 100) - Timestamp(2, 99)",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99))",
         "csharp": "new BsonTimestamp(1, 100).CompareTo(new BsonTimestamp(2, 99))",
         "shell": "Timestamp(1, 100) - Timestamp(2, 99)"
@@ -396,7 +396,7 @@
       {
         "description": "notEquals",
         "javascript": "Timestamp(1, 100).notEquals(Timestamp(2, 99))",
-        "python": "(Timestamp(1, 100).time - Timestamp(2, 99).time) != 0",
+        "python": "Timestamp(1, 100) != Timestamp(2, 99)",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) != 0",
         "csharp": "new BsonTimestamp(1, 100) != new BsonTimestamp(2, 99)",
         "shell": "Timestamp(1, 100) !== Timestamp(2, 99)"
@@ -404,7 +404,7 @@
       {
         "description": "greaterThan",
         "javascript": "Timestamp(1, 100).greaterThan(Timestamp(2, 99))",
-        "python": "(Timestamp(1, 100).time - Timestamp(2, 99).time) > 0",
+        "python": "Timestamp(1, 100) > Timestamp(2, 99)",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) > 0",
         "csharp": "new BsonTimestamp(1, 100) > new BsonTimestamp(2, 99)",
         "shell": "Timestamp(1, 100) > Timestamp(2, 99)"
@@ -412,7 +412,7 @@
       {
         "description": "greaterThanOrEqual",
         "javascript": "Timestamp(1, 100).greaterThanOrEqual(Timestamp(2, 99))",
-        "python": "(Timestamp(1, 100).time - Timestamp(2, 99).time) >= 0",
+        "python": "Timestamp(1, 100) >= Timestamp(2, 99)",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) >= 0",
         "csharp": "new BsonTimestamp(1, 100) >= new BsonTimestamp(2, 99)",
         "shell": "Timestamp(1, 100) >= Timestamp(2, 99)"
@@ -420,7 +420,7 @@
       {
         "description": "lessThan",
         "javascript": "Timestamp(1, 100).lessThan(Timestamp(2, 99))",
-        "python": "(Timestamp(1, 100).time - Timestamp(2, 99).time) < 0",
+        "python": "Timestamp(1, 100) < Timestamp(2, 99)",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) < 0",
         "csharp": "new BsonTimestamp(1, 100) < new BsonTimestamp(2, 99)",
         "shell": "Timestamp(1, 100) < Timestamp(2, 99)"
@@ -428,7 +428,7 @@
       {
         "description": "lessThanOrEqual",
         "javascript": "Timestamp(1, 100).lessThanOrEqual(Timestamp(2, 99))",
-        "python": "(Timestamp(1, 100).time - Timestamp(2, 99).time) <= 0",
+        "python": "Timestamp(1, 100) <= Timestamp(2, 99)",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) <= 0",
         "csharp": "new BsonTimestamp(1, 100) <= new BsonTimestamp(2, 99)",
         "shell": "Timestamp(1, 100) <= Timestamp(2, 99)"

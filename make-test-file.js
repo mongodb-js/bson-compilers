@@ -67,6 +67,36 @@ const pythonLineTemplate = (description, output) => {
   return `\n        ${singleQuoteStringify(description)}: ${output},`;
 };
 
+const csharpFileTemplate = (code) => {
+  return `
+using MongoDB.Bson;
+using MongoDB.Driver;
+
+using System;
+using System.Text.RegularExpressions;
+
+namespace csharp_test
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ${code}
+            Console.WriteLine("executed chsarp testfile");
+        }
+    }
+}`;
+};
+
+const csharpDocTemplate = (name, code) => {
+  return `
+\t\tvar ${name} = new BsonDocument{${code}};`;
+};
+
+const csharpLineTemplate = (description, output) => {
+  return `\n\t\t\t{ ${doubleQuoteStringify(description)}, ${output} },`;
+};
+
 const templates = {
   python: {
     file: pythonFileTemplate,
@@ -77,6 +107,11 @@ const templates = {
     file: javaFileTemplate,
     doc: javaDocTemplate,
     line: javaLineTemplate
+  },
+  csharp: {
+    file: csharpFileTemplate,
+    doc: csharpDocTemplate,
+    line: csharpLineTemplate
   }
 };
 

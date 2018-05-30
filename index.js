@@ -65,6 +65,26 @@ const getCompiler = (visitor, generator, symbols) => {
   };
 };
 
+const javaImports = `
+package com.example.test;
+
+import com.mongodb.DBRef;
+import org.bson.BsonBinarySubType;
+import org.bson.BsonRegularExpression;
+import org.bson.Document;
+import org.bson.types.*;
+import org.bson.BsonUndefined;
+
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.regex.Pattern;
+`;
+
+const pythonImports = `
+from bson import *
+import datetime
+`;
+
 
 module.exports = {
   javascript: {
@@ -78,6 +98,13 @@ module.exports = {
     python: getCompiler(ShellVisitor, PythonGenerator, shellpythonsymbols),
     csharp: getCompiler(ShellVisitor, CsharpGenerator, shellcsharpsymbols),
     javascript: getCompiler(ShellVisitor, JavascriptGenerator, shelljavascriptsymbols)
+  },
+  imports: {
+    java: javaImports,
+    python: pythonImports,
+    csharp: '', // TODO
+    javascript: '',
+    shell: ''
   },
   getTree: loadTree
 };

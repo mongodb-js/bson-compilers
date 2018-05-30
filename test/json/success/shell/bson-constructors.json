@@ -120,7 +120,7 @@
         "javascript": "3",
         "python": "3",
         "java": "3L",
-        "csharp": "3.0",
+        "csharp": "3",
         "shell": "3"
       },
       {
@@ -154,7 +154,7 @@
         "javascript": "new Long.fromString('10')",
         "python": "Int64('10')",
         "java": "Long.parseLong(\"10\")",
-        "csharp": "Convert.ToInt64(\"10\"))",
+        "csharp": "Convert.ToInt64(\"10\")",
         "shell": "new NumberLong('10')"
       }
     ],

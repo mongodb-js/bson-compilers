@@ -164,10 +164,10 @@
       {
         "description": "Int32 with octal arg",
         "javascript": "Int32(0o5)",
-        "python": "int(05)",
+        "python": "int(0o5)",
         "java": "(int) 05",
-        "csharp": "Convert.ToInt32(5)",
-        "shell": "NumberInt(05)"
+        "csharp": "5",
+        "shell": "NumberInt(0o5)"
       }
     ],
     "Double": [
@@ -213,11 +213,11 @@
       },
       {
         "description": "new Double with octal arg",
-        "javascript": "new Double(0x3)",
-        "python": "float(0x3)",
-        "java": "(double) 0x3",
-        "csharp": "Convert.ToDouble(0x3)",
-        "shell": "0x3"
+        "javascript": "new Double(0o5)",
+        "python": "float(0o5)",
+        "java": "(double) 05",
+        "csharp": "5.0",
+        "shell": "0o5"
       }
     ],
     "Long": [

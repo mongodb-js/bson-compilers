@@ -216,7 +216,7 @@
       {
         "description": "equals",
         "javascript": "Long(1, 100).equals(Long(9, 1))",
-        "python": "(Int64(429496729601) - Int64(4294967305)) == 0",
+        "python": "Int64(429496729601) == Int64(4294967305)",
         "java": "429496729601L == 4294967305L",
         "csharp": "429496729601L == 4294967305L",
         "shell": "NumberLong(429496729601) === NumberLong(4294967305)"
@@ -224,7 +224,7 @@
       {
         "description": "notEquals",
         "javascript": "Long(1, 100).notEquals(Long(9, 1))",
-        "python": "(Int64(429496729601) - Int64(4294967305)) != 0",
+        "python": "Int64(429496729601) != Int64(4294967305)",
         "java": "429496729601L != 4294967305L",
         "csharp": "429496729601L != 4294967305L",
         "shell": "NumberLong(429496729601) !== NumberLong(4294967305)"
@@ -240,7 +240,7 @@
       {
         "description": "greaterThan",
         "javascript": "Long(1, 100).greaterThan(Long(9, 1))",
-        "python": "(Int64(429496729601) - Int64(4294967305)) > 0",
+        "python": "Int64(429496729601) > Int64(4294967305)",
         "java": "429496729601L > 4294967305L",
         "csharp": "429496729601L > 4294967305L",
         "shell": "NumberLong(429496729601) > NumberLong(4294967305)"
@@ -248,7 +248,7 @@
       {
         "description": "greaterThanOrEqual",
         "javascript": "Long(1, 100).greaterThanOrEqual(Long(9, 1))",
-        "python": "(Int64(429496729601) - Int64(4294967305)) >= 0",
+        "python": "Int64(429496729601) >= Int64(4294967305)",
         "java": "429496729601L >= 4294967305L",
         "csharp": "429496729601L >= 4294967305L",
         "shell": "NumberLong(429496729601) >= NumberLong(4294967305)"
@@ -256,7 +256,7 @@
       {
         "description": "lessThan",
         "javascript": "Long(1, 100).lessThan(Long(9, 1))",
-        "python": "(Int64(429496729601) - Int64(4294967305)) < 0",
+        "python": "Int64(429496729601) < Int64(4294967305)",
         "java": "429496729601L < 4294967305L",
         "csharp": "429496729601L < 4294967305L",
         "shell": "NumberLong(429496729601) < NumberLong(4294967305)"
@@ -264,7 +264,7 @@
       {
         "description": "lessThanOrEqual",
         "javascript": "Long(1, 100).lessThanOrEqual(Long(9, 1))",
-        "python": "(Int64(429496729601) - Int64(4294967305)) <= 0",
+        "python": "Int64(429496729601) <= Int64(4294967305)",
         "java": "429496729601L <= 4294967305L",
         "csharp": "429496729601L <= 4294967305L",
         "shell": "NumberLong(429496729601) <= NumberLong(4294967305)"

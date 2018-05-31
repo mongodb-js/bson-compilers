@@ -193,12 +193,12 @@ Templates:
             return `str(${lhs})`;
         }
     LongEqualsTemplate: &LongEqualsTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongEqualsArgsTemplate: &LongEqualsArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `(${lhs} - ${rhs}) == 0`;
+            return ` == ${rhs}`;
         }
     LongToIntTemplate: &LongToIntTemplate !!js/function >
         () => {
@@ -225,76 +225,76 @@ Templates:
             return `float(${lhs})`;
         }
     LongAddTemplate: &LongAddTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongAddArgsTemplate: &LongAddArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `${lhs} + ${rhs}`;
+            return ` + ${rhs}`;
         }
     LongSubtractTemplate: &LongSubtractTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongSubtractArgsTemplate: &LongSubtractArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `${lhs} - ${rhs}`;
+            return ` - ${rhs}`;
         }
     LongMultiplyTemplate: &LongMultiplyTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongMultiplyArgsTemplate: &LongMultiplyArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `${lhs} * ${rhs}`;
+            return ` * ${rhs}`;
         }
     LongDivTemplate: &LongDivTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongDivArgsTemplate: &LongDivArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `${lhs} / ${rhs}`;
+            return ` / ${rhs}`;
         }
     LongModuloTemplate: &LongModuloTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongModuloArgsTemplate: &LongModuloArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `${lhs} % ${rhs}`;
+            return ` % ${rhs}`;
         }
     LongAndTemplate: &LongAndTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongAndArgsTemplate: &LongAndArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `${lhs} & ${rhs}`;
+            return ` & ${rhs}`;
         }
     LongOrTemplate: &LongOrTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongOrArgsTemplate: &LongOrArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `${lhs} | ${rhs}`;
+            return ` | ${rhs}`;
         }
     LongXorTemplate: &LongXorTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongXorArgsTemplate: &LongXorArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `${lhs} ^ ${rhs}`;
+            return ` ^ ${rhs}`;
         }
     LongShiftLeftTemplate: &LongShiftLeftTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongShiftLeftArgsTemplate: &LongShiftLeftArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `${lhs} << ${rhs}`;
+            return ` << ${rhs}`;
         }
     LongShiftRightTemplate: &LongShiftRightTemplate !!js/function >
         () => {
@@ -305,20 +305,20 @@ Templates:
             return `${lhs} >> ${rhs}`;
         }
     LongCompareTemplate: &LongCompareTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongCompareArgsTemplate: &LongCompareArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `${lhs} - ${rhs}`;
+            return ` - ${rhs}`;
         }
     LongIsOddTemplate: &LongIsOddTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return `(${lhs} % 2)`;
         }
     LongIsOddArgsTemplate: &LongIsOddArgsTemplate !!js/function >
-        (lhs) => {
-            return `(${lhs} % 2) == 1`;
+        () => {
+            return ' == 1';
         }
     LongIsZeroTemplate: &LongIsZeroTemplate !!js/function >
         () => {
@@ -338,59 +338,59 @@ Templates:
         }
     LongNegateTemplate: &LongNegateTemplate !!js/function >
         () => {
-            return '';
+            return '-';
         }
     LongNegateArgsTemplate: &LongNegateArgsTemplate !!js/function >
         (lhs) => {
-            return `-${lhs}`;
+            return lhs;
         }
     LongNotTemplate: &LongNotTemplate !!js/function >
         () => {
-            return '';
+            return '~';
         }
     LongNotArgsTemplate: &LongNotArgsTemplate !!js/function >
         (lhs) => {
-            return `~${lhs}`;
+            return lhs;
         }
     LongNotEqualsTemplate: &LongNotEqualsTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongNotEqualsArgsTemplate: &LongNotEqualsArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `(${lhs} - ${rhs}) != 0`;
+            return ` != ${rhs}`;
         }
     LongGreaterThanTemplate: &LongGreaterThanTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongGreaterThanArgsTemplate: &LongGreaterThanArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `(${lhs} - ${rhs}) > 0`;
+            return ` > ${rhs}`;
         }
     LongGreaterThanOrEqualTemplate: &LongGreaterThanOrEqualTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongGreaterThanOrEqualArgsTemplate: &LongGreaterThanOrEqualArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `(${lhs} - ${rhs}) >= 0`;
+            return ` >= ${rhs}`;
         }
     LongLessThanTemplate: &LongLessThanTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongLessThanArgsTemplate: &LongLessThanArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `(${lhs} - ${rhs}) < 0`;
+            return ` < ${rhs}`;
         }
     LongLessThanOrEqualTemplate: &LongLessThanOrEqualTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     LongLessThanOrEqualArgsTemplate: &LongLessThanOrEqualArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return `(${lhs} - ${rhs}) <= 0`;
+            return ` <= ${rhs}`;
         }
     LongFloatApproxTemplate: &LongFloatApproxTemplate !!js/function >
         (lhs) => {

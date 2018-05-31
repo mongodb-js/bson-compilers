@@ -445,12 +445,12 @@ Templates:
             return `${lhs}.inc`;
         }
     TimestampCompareTemplate: &TimestampCompareTemplate !!js/function >
-        (lhs) => {
-            return lhs;
+        () => {
+            return '';
         }
     TimestampCompareArgsTemplate: &TimestampCompareArgsTemplate !!js/function >
         (lhs, rhs) => {
-            return ` - ${rhs}`;
+            return `(${lhs}.as_datetime() - ${rhs}.as_datetime()).total_seconds()`;
         }
     TimestampNotEqualsTemplate: &TimestampNotEqualsTemplate !!js/function >
         (lhs) => {
@@ -756,7 +756,7 @@ Templates:
         }
     NumberSymbolTemplate: &NumberSymbolTemplate !!js/function >
         () => {
-            return 'int';
+            return '';
         }
     NumberSymbolArgsTemplate: &NumberSymbolArgsTemplate !!js/function >
         (lhs, arg) => {
@@ -767,9 +767,9 @@ Templates:
                 (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
                 (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"')) {
                 newStr = str.substr(1, str.length - 2);
-                return `('${newStr}')`;
+                return `float('${newStr}')`;
             } else {
-                return `(${newStr})`;
+                return `${newStr}`;
             }
         }
     DateSymbolTemplate: &DateSymbolTemplate null

@@ -1,10 +1,20 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 const parse = require('fast-json-parse');
 const path = require('path');
-
 const pSuccess = path.join(__dirname, 'test', 'json', 'success');
-
 const { singleQuoteStringify, doubleQuoteStringify } = require('./helper/format');
+
+if (process.argv.length !== 3) {
+  console.log('Usage: <outputLanguage>');
+  process.exit();
+}
+const output = process.argv[2].toLowerCase();
+if (!['python', 'csharp', 'java'].includes(output)) {
+  console.log(`${output} not a supported language`);
+  process.exit();
+}
 
 const javaFileTemplate = (code) => {
   return `
@@ -123,7 +133,7 @@ const readJSON = (filename) => {
   return parseResult.value;
 };
 
-const makeFile = (input, output) => {
+const makeFile = (input) => {
   return templates[output].file(fs.readdirSync(path.join(pSuccess, input)).reduce(
     (str0, file) => {
       const tests = readJSON(path.join(pSuccess, input, file)).tests;
@@ -136,9 +146,4 @@ const makeFile = (input, output) => {
         }, '');
     }, ''));
 };
-console.log(process.argv);
-if (process.argv.length !== 3) {
-  console.log('Usage: <outputLanguage>');
-  process.exit();
-}
-console.log(makeFile('javascript', process.argv[2]));
+console.log(makeFile('javascript'));

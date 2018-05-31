@@ -85,6 +85,32 @@ from bson import *
 import datetime
 `;
 
+const csharpImports = `
+using MongoDB.Bson;
+using MongoDB.Driver;
+
+using System;
+using System.Text.RegularExpressions;
+`;
+
+const javascriptImports = `
+const {
+  Binary,
+  Code,
+  ObjectId,
+  DBRef,
+  Int32,
+  Double,
+  Long,
+  Decimal128,
+  MinKey,
+  MaxKey,
+  BSONRegExp,
+  Timestamp,
+  Symbol
+} = require('mongodb');
+`;
+
 
 module.exports = {
   javascript: {
@@ -102,8 +128,8 @@ module.exports = {
   imports: {
     java: javaImports,
     python: pythonImports,
-    csharp: '', // TODO
-    javascript: '',
+    csharp: csharpImports,
+    javascript: javascriptImports,
     shell: ''
   },
   getTree: loadTree

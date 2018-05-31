@@ -11,7 +11,7 @@ if (process.argv.length !== 3) {
   process.exit();
 }
 const output = process.argv[2].toLowerCase();
-if (!['python', 'csharp', 'java'].includes(output)) {
+if (!['python', 'csharp', 'java', 'javascript'].includes(output)) {
   console.log(`${output} not a supported language`);
   process.exit();
 }
@@ -50,16 +50,15 @@ public class Test {
 
 const javaDocTemplate = (name, code) => {
   return `
-\t\tDocument ${name} = new Document()${code};`;
+\t\tDocument ${doubleQuoteStringify(name)} = new Document()${code};`;
 };
 
-const javaLineTemplate = (description, output) => {
-  return `\n\t\t\t.append(${doubleQuoteStringify(description)}, ${output})`;
+const javaLineTemplate = (description, result) => {
+  return `\n\t\t\t.append(${doubleQuoteStringify(description)}, ${result})`;
 };
 
 const pythonFileTemplate = (code) => {
   return `
-#!bin/python
 from bson import *
 import datetime
 x = {
@@ -73,8 +72,8 @@ const pythonDocTemplate = (name, code) => {
   return `\n    ${singleQuoteStringify(name)}: {${code}\n    },\n`;
 };
 
-const pythonLineTemplate = (description, output) => {
-  return `\n        ${singleQuoteStringify(description)}: ${output},`;
+const pythonLineTemplate = (description, result) => {
+  return `\n        ${singleQuoteStringify(description)}: ${result},`;
 };
 
 const csharpFileTemplate = (code) => {
@@ -103,8 +102,39 @@ const csharpDocTemplate = (name, code) => {
 \t\tvar ${name} = new BsonDocument{${code}};`;
 };
 
-const csharpLineTemplate = (description, output) => {
-  return `\n\t\t\t{ ${doubleQuoteStringify(description)}, ${output} },`;
+const csharpLineTemplate = (description, result) => {
+  return `\n\t\t\t{ ${doubleQuoteStringify(description)}, ${result} },`;
+};
+
+const jsFileTemplate = (code) => {
+  return `
+const {
+  Binary,
+  Code,
+  ObjectId,
+  DBRef,
+  Int32,
+  Double,
+  Long,
+  Decimal128,
+  MinKey,
+  MaxKey,
+  BSONRegExp,
+  Timestamp,
+  Symbol
+} = require('mongodb');
+x = {
+  ${code}
+}
+console.log(x)
+`;
+};
+const jsDocTemplate = (name, code) => {
+  return `\n  ${singleQuoteStringify(name)}: {${code}\n  },\n`;
+};
+
+const jsLineTemplate = (description, result) => {
+  return `\n    ${singleQuoteStringify(description)}: ${result},`;
 };
 
 const templates = {
@@ -122,6 +152,11 @@ const templates = {
     file: csharpFileTemplate,
     doc: csharpDocTemplate,
     line: csharpLineTemplate
+  },
+  javascript: {
+    file: jsFileTemplate,
+    doc: jsDocTemplate,
+    line: jsLineTemplate
   }
 };
 

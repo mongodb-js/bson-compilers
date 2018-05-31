@@ -5,6 +5,7 @@ const parse = require('fast-json-parse');
 const path = require('path');
 const pSuccess = path.join(__dirname, 'test', 'json', 'success');
 const { singleQuoteStringify, doubleQuoteStringify } = require('./helper/format');
+const { imports } = require('.');
 
 if (process.argv.length !== 3) {
   console.log('Usage: <outputLanguage>');
@@ -17,19 +18,7 @@ if (!['python', 'csharp', 'java', 'javascript'].includes(output)) {
 }
 
 const javaFileTemplate = (code) => {
-  return `
-package com.example.test;
-
-import com.mongodb.DBRef;
-import org.bson.BsonBinarySubType;
-import org.bson.BsonRegularExpression;
-import org.bson.Document;
-import org.bson.types.*;
-import org.bson.BsonUndefined;
-
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.regex.Pattern;
+  return `${imports.java}
 
 public class Test {
     public void all() throws Exception {
@@ -50,7 +39,7 @@ public class Test {
 
 const javaDocTemplate = (name, code) => {
   return `
-\t\tDocument ${doubleQuoteStringify(name)} = new Document()${code};`;
+\t\tDocument ${name} = new Document()${code};`;
 };
 
 const javaLineTemplate = (description, result) => {
@@ -58,9 +47,7 @@ const javaLineTemplate = (description, result) => {
 };
 
 const pythonFileTemplate = (code) => {
-  return `
-from bson import *
-import datetime
+  return `${imports.python}
 x = {
     ${code}
 }
@@ -77,13 +64,7 @@ const pythonLineTemplate = (description, result) => {
 };
 
 const csharpFileTemplate = (code) => {
-  return `
-using MongoDB.Bson;
-using MongoDB.Driver;
-
-using System;
-using System.Text.RegularExpressions;
-
+  return `${imports.csharp}
 namespace csharp_test
 {
     class Program
@@ -107,22 +88,7 @@ const csharpLineTemplate = (description, result) => {
 };
 
 const jsFileTemplate = (code) => {
-  return `
-const {
-  Binary,
-  Code,
-  ObjectId,
-  DBRef,
-  Int32,
-  Double,
-  Long,
-  Decimal128,
-  MinKey,
-  MaxKey,
-  BSONRegExp,
-  Timestamp,
-  Symbol
-} = require('mongodb');
+  return `${imports.javascript}
 x = {
   ${code}
 }

@@ -208,7 +208,7 @@
       {
         "description": "equals",
         "javascript": "Long(1, 100).equals(Long(9, 1))",
-        "python": "(Int64(429496729601) - Int64(4294967305)) == 0",
+        "python": "Int64(429496729601) == Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\").equals(new java.lang.Long(\"4294967305\"))",
         "csharp": "new BsonInt64(429496729601).ToInt64() == new BsonInt64(4294967305).ToInt64()",
         "shell": "NumberLong(429496729601) === NumberLong(4294967305)"
@@ -216,7 +216,7 @@
       {
         "description": "notEquals",
         "javascript": "Long(1, 100).notEquals(Long(9, 1))",
-        "python": "(Int64(429496729601) - Int64(4294967305)) != 0",
+        "python": "Int64(429496729601) != Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\").compareTo(new java.lang.Long(\"4294967305\")) != 0",
         "csharp": "new BsonInt64(429496729601).ToInt64() != new BsonInt64(4294967305).ToInt64()",
         "shell": "NumberLong(429496729601) !== NumberLong(4294967305)"
@@ -232,7 +232,7 @@
       {
         "description": "greaterThan",
         "javascript": "Long(1, 100).greaterThan(Long(9, 1))",
-        "python": "(Int64(429496729601) - Int64(4294967305)) > 0",
+        "python": "Int64(429496729601) > Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\").compareTo(new java.lang.Long(\"4294967305\")) > 0",
         "csharp": "new BsonInt64(429496729601) > new BsonInt64(4294967305)",
         "shell": "NumberLong(429496729601) > NumberLong(4294967305)"
@@ -240,7 +240,7 @@
       {
         "description": "greaterThanOrEqual",
         "javascript": "Long(1, 100).greaterThanOrEqual(Long(9, 1))",
-        "python": "(Int64(429496729601) - Int64(4294967305)) >= 0",
+        "python": "Int64(429496729601) >= Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\").compareTo(new java.lang.Long(\"4294967305\")) >= 0",
         "csharp": "new BsonInt64(429496729601) >= new BsonInt64(4294967305)",
         "shell": "NumberLong(429496729601) >= NumberLong(4294967305)"
@@ -248,7 +248,7 @@
       {
         "description": "lessThan",
         "javascript": "Long(1, 100).lessThan(Long(9, 1))",
-        "python": "(Int64(429496729601) - Int64(4294967305)) < 0",
+        "python": "Int64(429496729601) < Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\").compareTo(new java.lang.Long(\"4294967305\")) < 0",
         "csharp": "new BsonInt64(429496729601) < new BsonInt64(4294967305)",
         "shell": "NumberLong(429496729601) < NumberLong(4294967305)"
@@ -256,7 +256,7 @@
       {
         "description": "lessThanOrEqual",
         "javascript": "Long(1, 100).lessThanOrEqual(Long(9, 1))",
-        "python": "(Int64(429496729601) - Int64(4294967305)) <= 0",
+        "python": "Int64(429496729601) <= Int64(4294967305)",
         "java": "new java.lang.Long(\"429496729601\").compareTo(new java.lang.Long(\"4294967305\")) <= 0",
         "csharp": "new BsonInt64(429496729601) <= new BsonInt64(4294967305)",
         "shell": "NumberLong(429496729601) <= NumberLong(4294967305)"

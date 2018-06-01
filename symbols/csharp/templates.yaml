@@ -733,7 +733,7 @@ Templates:
 
             if (type === '_string') {
               if (arg.indexOf('.') === 0) {
-                return `float.Patse(${arg})`
+                return `float.Parse(${arg})`
               }
               return `int.Parse(${arg})`;
             }

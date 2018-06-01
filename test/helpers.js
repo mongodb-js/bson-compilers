@@ -18,8 +18,7 @@ const unsupported = {
       javascript: {},
       python: {},
       csharp: {
-        'language-types': [ '*' ],
-        'bson-utils': [ '*' ]
+        'language-types': [ '*' ]
       }
     }
   },

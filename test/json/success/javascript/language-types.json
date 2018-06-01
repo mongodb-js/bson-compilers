@@ -24,7 +24,7 @@
         "javascript": "new Number(2)",
         "python": "2",
         "java": "2d",
-        "csharp": "(int)2",
+        "csharp": "(int) 2",
         "shell": "new Number(2)"
       },
       {

@@ -17,14 +17,7 @@ const unsupported = {
       java: {},
       javascript: {},
       python: {},
-      csharp: {
-<<<<<<< HEAD
-        'language-types': [ '*' ]
-=======
-        'bson-methods': [ '*' ],
-        'bson-utils': [ '*' ]
->>>>>>> shell-c# language tests
-      }
+      csharp: {}
     }
   },
   error: {

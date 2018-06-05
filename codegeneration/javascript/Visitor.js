@@ -862,8 +862,12 @@ class Visitor extends ECMAScriptVisitor {
 
       throw new SemanticGenericError({message: error.message});
     }
-    const bytes = binobj.toString();
     const args = argList.singleExpression();
+    const buffer = binobj.value(true);
+    console.log(buffer.readUInt8(0));
+    const bufferarray = [...buffer];
+    const bytes = bufferarray.join(', ');
+
     const templatedType = binaryTypes[type] !== null ? binaryTypes[type]() : type;
     const typeStr = args.length === 1 ? null : templatedType;
 

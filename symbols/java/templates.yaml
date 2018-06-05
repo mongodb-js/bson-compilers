@@ -517,19 +517,11 @@ Templates:
     BinarySymbolTemplate: &BinarySymbolTemplate null
     BinarySymbolArgsTemplate: &BinarySymbolArgsTemplate !!js/function >
         (lhs, bytes, type) => {
-            const str = bytes;
-            let newStr = str;
-            if (
-              (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
-              (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"')) {
-                newStr = str.substr(1, str.length - 2);
-            }
-            bytes = `"${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}"`;
-
+            const bytearray = `new byte[] {${bytes}}`;
             if (type === null) {
-                return `(${bytes}.getBytes("UTF-8"))`;
+                return `(${bytearray})`;
             }
-            return `(${type}, ${bytes}.getBytes("UTF-8"))`;
+            return `(${type}, ${bytearray})`;
         }
     BinarySymbolSubtypeDefaultTemplate: &BinarySymbolSubtypeDefaultTemplate !!js/function >
         () => {

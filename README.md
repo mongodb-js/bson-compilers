@@ -49,57 +49,58 @@ Any compiler errors that occur will be thrown. To catch them, wrap the
 `compiler` in a `try/catch` block.
 - __error.message:__ Message `bson-compilers` will send back letting you know
   the compiler error.
-- __error.payload:__ The usual payload that comes from the error message.
 - __error.stack:__ The usual error stacktrace.
 - __error.code:__ Error code that `bson-compilers` adds to the error object to
   help you distinguish error types.
+- __error.line:__ If it is a syntax error, will have the line.
+- __error.column:__ If it is a syntax error, will have the column.
+- __error.symbol:__ If it is a syntax error, will have the symbol associated with the error.
 
-### error.code
-There are a few errorCodes `bson-compilers` sends back to help you figure out
-what went wrong during compilation:
+### Errors
+There are a few different error classes thrown by `bson-compilers`, each with 
+their own error code:
 
-##### E_SEMANTIC_ARGUMENTCOUNTMISMATCH
-This will occur when you're using a method with a wrong number of arguments.
+#### BsonCompilersArgumentError
+###### Code: E_BSONCOMPILERS_ARGUMENT
+This will occur when you're using a method with a wrong number of arguments, or
+the arguments are of the wrong type.
 For example, `ObjectId().equals()` requires one argument and it will throw if
 anything other than one argument is provided:
 
 ```javascript
-// ✘: this will throw a E_SEMANTIC_ARUGMENTCOUNTMISMATCH
+// ✘: this will throw a BsonCompilersArgumentError.
 ObjectId().equals(ObjectId(), ObjectId());
 
 // ✔: this won't throw
 ObjectId().equals(ObjectId());
 ```
 
-##### E_SEMANTIC_ATTRIBUTE
+```javascript
+// ✘: this will throw a BsonCompilersArgumentError.
+ObjectId({});
+
+// ✔: this won't throw
+ObjectId();
+```
+
+#### BsonCompilersAttributeError
+###### Code: E_BSONCOMPILERS_ATTRIBUTE
 Will be thrown if an invalid method or property is used on a BSON object. For
 example, since `new DBRef()` doesn't have a method `.foo()`, compiler will
 throw:
 
 ```javascript
-// ✘: method foo doesn't exist, so this will throw a E_SEMANTIC_ATTRIBUTE error 
+// ✘: method foo doesn't exist, so this will throw a BsonCompilersAttributeError .
 new DBRef('newCollection', new ObjectId()).foo()
 
 // ✔: this won't throw, since .toString() method exists
 new DBRef('newCollection', new ObjectId()).toString(10)
 ```
 
-##### E_SEMANTIC_GENERIC
-
-Semantic Generic error will be thrown if an unsupported argument is provided.
-For example when using a `RegExp()` an unsupported flag is given:
-
-```javascript
-// ✘: these are not proper 'RegExp()' flags, a E_SEMANTIC_GENERIC will throw
-new RegExp('ab+c', 'beep')
-
-// ✔: 'im' are proper 'RegExp()' flags
-new RegExp('ab+c', 'im')
-```
-
-##### E_SYNTAX_GENERIC
+#### BsonCompilersSyntaxError
+###### Code: E_BSONCOMPILERS_SYNTAX 
 This will throw if you have a syntax error. For example missing a colon in
-Object assignment, or forggeting a comma in array definition:
+Object assignment, or forgetting a comma in array definition:
 
 ```javascript
 // ✘: this is not a proper object definition; will throw E_SYNTAX_GENERIC
@@ -113,19 +114,51 @@ Object assignment, or forggeting a comma in array definition:
 [ 'beep', 'boop', 'beepBoop' ]
 ```
 
-##### E_SEMANTIC_TYPE
+#### BsonCompilersTypeError
+###### Code: E_BSONCOMPILERS_TYPE
 
-This error will occur if a wrong type of argument is provided. For example
-`Timestamp()` expects two numbers, 'low' and 'high', anything other than a
-number will throw an error:
+This error will occur if a symbol is treated as the wrong type. For example, if
+a non-function is called:
 
 ```javascript
-// ✘: the 'high' bit is not a number, so will throw E_SEMANTIC_TYPE
-Timestamp(10, {})
+// ✘: MAX_VALUE is a constant, not a function
+Long.MAX_VALUE()
 
-// ✔: both params provided are numbers, will not throw
-Timestamp(10, 100)
+// ✔: MAX_VALUE without a call will not throw
+Long.MAX_VALUE
 ```
+#### BsonCompilersRangeError
+###### Code: E_BSONCOMPILERS_RANGE
+
+If an argument has been passed that is not in the range of expected values.
+
+#### BsonCompilersUnimplementedError
+###### Code: E_BSONCOMPILERS_UNIMPLEMENTED
+
+If there is a feature in the input code that is not currently supported by the 
+compiler.
+
+
+#### BsonCompilersRuntimeError
+###### Code: E_BSONCOMPILERS_RUNTIME
+
+A generic runtime error will be thrown for all errors that are not covered by the
+above list of errors. These are usually constructor requirements, for example 
+when using a `RegExp()` an unsupported flag is given:
+
+```javascript
+// ✘: these are not proper 'RegExp()' flags, a BsonCompilersRuntimeError will be thrown.
+new RegExp('ab+c', 'beep')
+
+// ✔: 'im' are proper 'RegExp()' flags
+new RegExp('ab+c', 'im')
+```
+
+#### BsonCompilersInternalError
+###### Code: E_BSONCOMPILERS_INTERNAL
+
+In the case where something has gone wrong within compilation, and an error has 
+occured. If you see this error, please create an issue on Github!
 
 # Install
 ```shell

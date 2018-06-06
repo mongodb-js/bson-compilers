@@ -34,7 +34,7 @@ Output a compiled string given input and output languages.
 - __inputLang:__ Input language of the code string. `shell` and `javascript`
   are currently supported.
 - __outputLang:__ The language you would like the output to be. `java`,
-  `python` and `csharp` are currently supported.
+  `python`, `shell` and `csharp` are currently supported.
 - __codeString:__ The code string you would like to be compiled to your
   selected output language.
 
@@ -99,6 +99,7 @@ new DBRef('newCollection', new ObjectId()).toString(10)
 
 #### BsonCompilersSyntaxError
 ###### Code: E_BSONCOMPILERS_SYNTAX 
+
 This will throw if you have a syntax error. For example missing a colon in
 Object assignment, or forgetting a comma in array definition:
 
@@ -159,6 +160,19 @@ new RegExp('ab+c', 'im')
 
 In the case where something has gone wrong within compilation, and an error has 
 occured. If you see this error, please create an issue on Github!
+
+##### E_SEMANTIC_GENERIC
+
+All other errors will throw a generic error. Something like using a `RegExp()`
+with an unsupported flag:
+
+```javascript
+// ✘: these are not proper 'RegExp()' flags, a E_SEMANTIC_GENERIC will throw
+new RegExp('ab+c', 'beep')
+
+// ✔: 'im' are proper 'RegExp()' flags
+new RegExp('ab+c', 'im')
+```
 
 # Install
 ```shell

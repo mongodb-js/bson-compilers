@@ -34,7 +34,7 @@ Output a compiled string given input and output languages.
 - __inputLang:__ Input language of the code string. `shell` and `javascript`
   are currently supported.
 - __outputLang:__ The language you would like the output to be. `java`,
-  `python`, `shell` and `csharp` are currently supported.
+  `python`, `shell`, `javascript`, and `csharp` are currently supported.
 - __codeString:__ The code string you would like to be compiled to your
   selected output language.
 
@@ -50,7 +50,7 @@ Any compiler errors that occur will be thrown. To catch them, wrap the
 - __error.message:__ Message `bson-compilers` will send back letting you know
   the compiler error.
 - __error.stack:__ The usual error stacktrace.
-- __error.code:__ Error code that `bson-compilers` adds to the error object to
+- __error.code:__ [Error code]() that `bson-compilers` adds to the error object to
   help you distinguish error types.
 - __error.line:__ If it is a syntax error, will have the line.
 - __error.column:__ If it is a syntax error, will have the column.
@@ -61,7 +61,7 @@ There are a few different error classes thrown by `bson-compilers`, each with
 their own error code:
 
 #### BsonCompilersArgumentError
-###### Code: E_BSONCOMPILERS_ARGUMENT
+###### code: E_BSONCOMPILERS_ARGUMENT
 This will occur when you're using a method with a wrong number of arguments, or
 the arguments are of the wrong type.
 For example, `ObjectId().equals()` requires one argument and it will throw if
@@ -84,7 +84,7 @@ ObjectId();
 ```
 
 #### BsonCompilersAttributeError
-###### Code: E_BSONCOMPILERS_ATTRIBUTE
+###### code: E_BSONCOMPILERS_ATTRIBUTE
 Will be thrown if an invalid method or property is used on a BSON object. For
 example, since `new DBRef()` doesn't have a method `.foo()`, compiler will
 throw:
@@ -98,8 +98,7 @@ new DBRef('newCollection', new ObjectId()).toString(10)
 ```
 
 #### BsonCompilersSyntaxError
-###### Code: E_BSONCOMPILERS_SYNTAX 
-
+###### code: E_BSONCOMPILERS_SYNTAX 
 This will throw if you have a syntax error. For example missing a colon in
 Object assignment, or forgetting a comma in array definition:
 
@@ -116,8 +115,7 @@ Object assignment, or forgetting a comma in array definition:
 ```
 
 #### BsonCompilersTypeError
-###### Code: E_BSONCOMPILERS_TYPE
-
+###### code: E_BSONCOMPILERS_TYPE
 This error will occur if a symbol is treated as the wrong type. For example, if
 a non-function is called:
 
@@ -129,20 +127,16 @@ Long.MAX_VALUE()
 Long.MAX_VALUE
 ```
 #### BsonCompilersRangeError
-###### Code: E_BSONCOMPILERS_RANGE
-
+###### code: E_BSONCOMPILERS_RANGE
 If an argument has been passed that is not in the range of expected values.
 
 #### BsonCompilersUnimplementedError
-###### Code: E_BSONCOMPILERS_UNIMPLEMENTED
-
+###### code: E_BSONCOMPILERS_UNIMPLEMENTED
 If there is a feature in the input code that is not currently supported by the 
-compiler.
-
+compiler. 
 
 #### BsonCompilersRuntimeError
-###### Code: E_BSONCOMPILERS_RUNTIME
-
+###### code: E_BSONCOMPILERS_RUNTIME
 A generic runtime error will be thrown for all errors that are not covered by the
 above list of errors. These are usually constructor requirements, for example 
 when using a `RegExp()` an unsupported flag is given:
@@ -156,23 +150,9 @@ new RegExp('ab+c', 'im')
 ```
 
 #### BsonCompilersInternalError
-###### Code: E_BSONCOMPILERS_INTERNAL
-
+###### code: E_BSONCOMPILERS_INTERNAL
 In the case where something has gone wrong within compilation, and an error has 
-occured. If you see this error, please create an issue on Github!
-
-##### E_SEMANTIC_GENERIC
-
-All other errors will throw a generic error. Something like using a `RegExp()`
-with an unsupported flag:
-
-```javascript
-// ✘: these are not proper 'RegExp()' flags, a E_SEMANTIC_GENERIC will throw
-new RegExp('ab+c', 'beep')
-
-// ✔: 'im' are proper 'RegExp()' flags
-new RegExp('ab+c', 'im')
-```
+occured. If you see this error, please create [an issue](https://github.com/mongodb-js/bson-compilers/issues) on Github!
 
 # Install
 ```shell

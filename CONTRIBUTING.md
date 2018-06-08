@@ -52,17 +52,15 @@ To get all the moving components ready, `index.js` needs a few things:
 - `Visitor.js` files for input languages
 - `Symbol Tables` for each permutation of `input` to `output` file
 
-<div style="display:flex;">
-  <img alt="indexjs" src="/img-docs/indexjs.jpg"/>
-  <div>
-    <code>getCompiler()</code> function takes in three arguments: <code>visitor</code>, <code>generator</code>
-and <code>symbols</code> to create a compiler and a <code>parse tree</code> that can be walked.
-<br><br>
-Output returned gets processed in either input language's </code>Visitor.js</code> or
-output language's <code>Generator.js</code>. The result is then returned from the <code>Symbol
-Table</code>'s template file.
-  </div>
-</div>
+A more visual representation:
+
+<img alt="indexjs" width="700" align="left " src="/img-docs/indexjs.jpg"/>
+
+`getCompiler()` function takes in three arguments: `visitor`, `generator` and `symbols` to create a compiler and a `parse tree` that can be walked.
+
+Output returned gets processed in either input language's `Visitor.js` or
+output language's `Generator.js`. The result is then returned from the `Symbol
+Table`'s template file.
 
 ## Adding an Output Language
 

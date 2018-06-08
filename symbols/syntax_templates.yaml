@@ -1,0 +1,3 @@
+Syntax:
+    equality: &EqualitySyntax
+        template: *EqualitySyntaxTemplate

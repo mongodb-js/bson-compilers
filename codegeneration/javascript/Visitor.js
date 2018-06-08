@@ -108,6 +108,17 @@ class Visitor extends ECMAScriptVisitor {
     return code.trim();
   }
 
+  visitEqualityExpression(ctx) {
+    ctx.type = this.Types._boolean;
+    const lhs = this.visit(ctx.singleExpression()[0]);
+    const rhs = this.visit(ctx.singleExpression()[1]);
+    const op = this.visit(ctx.children[1]);
+    if (this.Syntax.equality) {
+      return this.Syntax.equality.template(lhs, op, rhs);
+    }
+    return this.visitChildren(ctx);
+  }
+
   /**
    * Child nodes: literal
    * @param {LiteralExpressionContext} ctx

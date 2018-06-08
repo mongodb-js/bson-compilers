@@ -1,0 +1,136 @@
+{
+  "tests": {
+    "Empty statement": [
+      {
+        "description": "empty",
+        "javascript": "",
+        "python": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "whitespace",
+        "javascript": "  ",
+        "python": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "semicolon",
+        "javascript": ";",
+        "python": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      }
+    ],
+    "Whitespace": [
+      {
+        "description": "newline between statements",
+        "javascript": "1 \n +2",
+        "python": "1+2",
+        "java": "1+2",
+        "csharp": "1+2",
+        "shell": "1+2"
+      },
+      {
+        "description": "tabs between statements",
+        "javascript": "1 \t\t +2",
+        "python": "1+2",
+        "java": "1+2",
+        "csharp": "1+2",
+        "shell": "1+2"
+      },
+      {
+        "description": "escaped chars",
+        "javascript": "\r\t\n",
+        "python": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      }
+    ],
+    "Comments": [
+      {
+        "description": "single line comment",
+        "javascript": "1 \\ a comment",
+        "python": "1",
+        "java": "1",
+        "csharp": "1",
+        "shell": "1"
+      },
+      {
+        "description": "multi line comment one line",
+        "javascript": "1 /* a comment*/",
+        "python": "1",
+        "java": "1",
+        "csharp": "1",
+        "shell": "1"
+      },
+      {
+        "description": "multi line comment many lines",
+        "javascript": "1 /* a \ncomn\nmen\nt*/",
+        "python": "1",
+        "java": "1",
+        "csharp": "1",
+        "shell": "1"
+      },
+      {
+        "description": "multi line comment many lines with code following",
+        "javascript": "1 /* a \ncomn\nmen\nt*/\n+2",
+        "python": "1",
+        "java": "1",
+        "csharp": "1",
+        "shell": "1"
+      }
+    ],
+    "Partial statements": [
+      {
+        "description": "new Long",
+        "javascript": "new Long",
+        "python": "Int64",
+        "java": "new ",
+        "csharp": "new ",
+        "shell": ""
+      },
+      {
+        "description": "new Decimal128",
+        "javascript": "new Decimal128",
+        "python": "Decimal128",
+        "java": "new Decimal128",
+        "csharp": "new Decimal128",
+        "shell": "new NumberDecimal"
+      }
+    ],
+    "Parens": [
+      {
+        "description": "one set",
+        "javascript": "(x === 1)",
+        "python": "(x == 1)",
+        "java": "(x == 1)",
+        "csharp": "(x == 1)",
+        "shell": "(x === 1)"
+      },
+      {
+        "description": "nested parens",
+        "javascript": "((x === (1)))",
+        "python": "((x == (1)))",
+        "java": "((x == (1)))",
+        "csharp": "((x == (1)))",
+        "shell": "((x === (1)))"
+      }
+    ],
+    "Constructors without args": [
+      {
+        "description": "Double without args",
+        "javascript": "Double",
+        "python": "float",
+        "java": "",
+        "csharp": "",
+        "shell": "Number"
+      }
+    ]
+  }
+}

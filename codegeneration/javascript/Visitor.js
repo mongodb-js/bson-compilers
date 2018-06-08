@@ -34,6 +34,9 @@ class Visitor extends ECMAScriptVisitor {
     this.visitInstanceofExpression =
     this.visitFuncDefExpression =
     this.visitAssignmentExpression =
+    this.visitAssignmentOperatorExpression =
+    this.visitMemberIndexExpression =
+    this.visitTernaryExpression =
     this.visitFunctionDeclaration =
     this.visitVariableStatement =
     this.visitIfStatement =
@@ -260,6 +263,10 @@ class Visitor extends ECMAScriptVisitor {
   visitGetAttributeExpression(ctx) {
     const lhs = this.visit(ctx.singleExpression());
     const rhs = this.visit(ctx.identifierName());
+
+    if (!ctx.singleExpression().constructor.name.includes('Identifier') && !ctx.singleExpression().constructor.name.includes('FuncCall')) {
+      throw new BsonCompilersUnimplementedError('Attribute access for non-symbols not currently supported');
+    }
 
     let type = ctx.singleExpression().type;
     if (typeof type === 'string') {

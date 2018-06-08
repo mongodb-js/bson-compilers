@@ -52,16 +52,121 @@ To get all the moving components ready, `index.js` needs a few things:
 - `Visitor.js` files for input languages
 - `Symbol Tables` for each permutation of `input` to `output` file
 
-A more visual representation:
+---
+<span width="100%">
+  <img alt="indexjs" width="500" align="left " src="/img-docs/indexjs.jpg"/>
 
-<img alt="indexjs" width="700" align="left " src="/img-docs/indexjs.jpg"/>
+  <p align="right">
+    <code>getCompiler()</code> function takes in three arguments:
+<code>visitor</code>, <code>generator</code> and <code>symbols</code> to create
+a compiler and a <code>parse tree</code> that can be walked.  Output returned
+gets processed in either input language's </code>Visitor.js</code> or output
+language's <code>Generator.js</code>. The result is then returned from the
+<code>Symbol Table</code>'s template file.
+  </p>
+</span>
 
-`getCompiler()` function takes in three arguments: `visitor`, `generator` and `symbols` to create a compiler and a `parse tree` that can be walked.
+### Visitor.js
+`Visitor` class in each `visitor.js` file inherits from `ECMAScriptVisitor`
+provided by antlr4. `ECMAScriptVisitor` is generated during the compile process
+(`npm run compile`) and is part of the final package. Visitor's job is to
+selectively visit children of a node and provide the next functions with
+context to be able to process the nodes properly.
 
-Output returned gets processed in either input language's `Visitor.js` or
-output language's `Generator.js`. The result is then returned from the `Symbol
-Table`'s template file.
+It will also assign the type of a node it's processing based on the information
+from the input language symbol table. The types are important to the output
+language, as they can be then looked up in the output language's template
+symbol table or `Generator.js` fileand adjusted accordingly.
+
+
+
+### Generator.js
+
+### Symbol Tables
+
+### Tests
 
 ## Adding an Output Language
+
+1. Create a directory in `symbols` directory for your output language:
+```shell
+mkdir symbols/{OUTPUT_LANG}
+```
+2. Create a `templates.yaml` file to store your language's templates. Inside you'll probably want to copy the contents from an existing `templates` file, clear all `!!js/function >` and replace them with `null`
+```shell
+touch symbols/{OUTPUT_LANG}/templates.yaml
+```
+3. You should now run `npm run compile` to generate a complete symbol table. This will be generated in `lib/symbol-table/javascriptto{OUTPUT_LANG}` and `lib/symbol-table/shellto{OUTPUT_LANG}`.
+4. You will have to require the generated symbol tables in `index.js`:
+```js
+const javascript{OUTPUT_LANG}symbols = require('lib/symbol-table/javascriptto{OUTPUT_LANG}')
+const shell{OUTPUT_LANG}symbols = require('lib/symbol-table/shellto{OUTPUT_LANG}')
+// and then add another export to module.exports at the bottom of the file:
+
+module.exports = {
+  javascript: {
+    // all those js exports,
+    {OUTPUT_LANG}: getCompiler(JavascriptVisitor, {OUTPUT_LANG}Generator, javascrip{OUTPUT_LANG}symbols)
+  }
+  shell: {
+    // all those js exports,
+    {OUTPUT_LANG}: getCompiler(ShellVisitor, {OUTPUT_LANG}Generator, shell{OUTPUT_LANG}symbols)
+  }
+}
+```
+5. We still don't have a `Generator.js` file required above, so that won't quite work yet. So next, create a new directory in `codegeneration` for your output language:
+```shell
+mkidr codegenration/{OUTPUT_LANG}
+```
+6. And create a generator file:
+```shell
+touch codegeneration/{OUTPUT_LANG}/Generator.js
+```
+7. You will need some boiler plate to get you going as the input language's Visitor file will be looking for a few things. We'd recommend you start with something like this:
+```js
+// a lot of languages prefer double quote strings, so there is a helper method
+// for that. All other formatters can be found or adjusted in the same file.
+
+const { doubleQuoteStringify } = require('../../helper/format');
+
+// superclass is the input language's visitor file
+module.exports = (superclass) => class ExtendedVisitor extends superclass {
+  constructor() {
+    super();
+    // whether or not your output language needs the word new. If that's not
+    // the case, remove this line
+    this.new = 'new ';
+    // regex flags might vary, so we create this object in the Generator file
+    this.regexFlags = {
+      i: 'i',  // ignore case
+      m: 'm',  // multiline
+      u: '', // unicode
+      y: '',   // sticky search
+      g: ''    // global
+    };
+    // same goes for bsonRegexFlags
+    this.bsonRegexFlags = {
+      'i': 'i', // Case insensitivity to match
+      'm': 'm', // Multiline match
+      'x': 'x', // Ignore all white space characters
+      's': 's', // Matches all
+      'l': '', // Case-insensitive matching dependent on the current locale?
+      'u': '' // Unicode?
+    };
+  }
+  // if any emit methods are necessary, they will go here, for example:
+  emitDate(ctx, date) {
+    // handle date conversion to output lang
+  }
+  // certain types need to be processed in the visitor file first. To check if
+  // your emit function should take parameters, check the input language's
+  // Visitor file.
+};
+```
+8. You can now require the generator file in `index.js`:
+```
+const {OUTPUT_LANG}Generator = require('./codegeneration/{OUTPUT_LANG}/Generator')
+```
+9. Next thing is tests! 
 
 ## Adding an Input Language

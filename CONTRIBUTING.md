@@ -84,11 +84,19 @@ symbol table or `Generator.js` file and adjusted accordingly.
 ### Generator.js
 
 ### Symbol Tables
+<img alt="symboltablescope" width="50%" align="right" src="/img-docs/symbolscope.jpg"/>
+
+As the Visitor visits each expression in a code block, it pushes the current
+scope onto the Symbol Table. As we leave the code block, that scope is popped
+off the Symbol Table. See illustration on the right.
+
 There are three types of symbol tables in this project: `Symbols`, `Types` and
 `Templates`. Input languages are responsible for the first two. `Templates` are
 used for generating output based on `Symbols` and `Types`. For example, if an
 input in Javacript consists of `ObjectId().toString`, we are looking at the
 following table in `Types` in `javascript` directory:
+
+<br><br>
 
 ```yml
 # in output language 'Templates', we can find this piece of code under

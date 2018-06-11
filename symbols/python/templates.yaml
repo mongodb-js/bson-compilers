@@ -10,6 +10,8 @@ Templates:
                 return `${lhs} == ${rhs}`;
             }
         }
+    EosTemplate: &EosSyntaxTemplate null
+    EofTemplate: &EofSyntaxTemplate null
     # BSON Object Type templates
     CodeTypeTemplate: &CodeTypeTemplate null
     StringTypeTemplate: &StringTypeTemplate !!js/function >

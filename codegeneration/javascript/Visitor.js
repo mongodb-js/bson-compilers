@@ -71,11 +71,19 @@ class Visitor extends ECMAScriptVisitor {
   }
 
   visitEof() {
+    if (this.Syntax.eof.template) {
+      return this.Syntax.eof.template();
+    }
     return '\n';
   }
+
   visitEos() {
+    if (this.Syntax.eos.template) {
+      return this.Syntax.eos.template();
+    }
     return '\n';
   }
+
   visitEmptyStatement() {
     return '\n';
   }

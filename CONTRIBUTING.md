@@ -70,18 +70,42 @@ To get all the moving components ready, `index.js` needs a few things:
 
 
 ### Visitor.js
-`Visitor` class in each `visitor.js` file inherits from `ECMAScriptVisitor`
+`Visitor` class in each `Visitor.js` file inherits from `ECMAScriptVisitor`
 provided by antlr4. `ECMAScriptVisitor` is generated during the compile process
 (`npm run compile`) and is part of the final package. Visitor's job is to
 selectively visit children of a node and provide the next functions with
 context to be able to process the nodes properly.
 
 It will also assign the type of a node it's processing based on the information
-from the input language symbol table. The types are important to the output
+from the input language Symbol Table. The types are important to the output
 language, as they can be then looked up in the output language's template
-symbol table or `Generator.js` file and adjusted accordingly.
+Symbol Table or `Generator.js` file and adjusted accordingly.
 
 ### Generator.js
+`Generator` class inherits from `Visitor` class of the input language, and is
+therefore dependant on the input language. Generators, however, only take care
+of generating output. To generate output in the Generator, we use `emit`
+methods to target a particular Symbol Type.
+
+To figure out the `emit` method name, you'd have to look up the symbol type's
+id in either `Symbols` or `Types` of the input's Symbol Table directory. For
+example, if you're modifying `Date` Type, you can find that this type's `id` is
+`Date` and therefore can modify it in the Generator with `emitDate` function:
+
+```yml
+Date: # Needs emit method
+    # id to modify the type with:
+    id: "Date"
+    callable: *constructor
+    args: null
+    type: *DateType
+```
+
+Modifying output in the Generator should only be done if it's not possible to
+modify it in the output language's `Symbol Template`. That is, if the output
+doesn't follow a standard pattern, or if the input has to be first processed in
+the `Visitor`, which will then pass on the processed parameter to the
+Generator.
 
 ### Symbol Tables
 <img alt="symboltablescope" width="50%" align="right" src="/img-docs/symbolscope.jpg"/>
@@ -120,7 +144,20 @@ ObjectId: &ObjectIdType
             argsTemplate: *ObjectIdToStringArgsTemplate
 ```
 
+#### TL;DR
+- __Visitor:__ selectively visits nodes; processes input language via
+  `processs` methods and sends information to either output language's `Symbol
+Template` or `Generator`.
+- __Generator:__ processes output language via `emit` methods.
+- __Symbol Template:__ does string manipulation to provide output based on
+  Symbol Type.
+- __Symbol Type / Symbols:__ provides indication on the type of input.
+
 ### Tests
+Tests for output based on input are broken into two modes: `error` and
+`success`. They are stored in `.json` files to easier test multiple outputs per
+input language. Each input language has its own directory to be able to handle
+input language's edge cases better.
 
 ## Adding an Output Language
 
@@ -216,7 +253,7 @@ const {OUTPUT_LANG}Generator = require('./codegeneration/{OUTPUT_LANG}/Generator
 cases in each file in those directories based on what the output should be. For example:
 ```json
 // this test is in /test/json/success/javascript/bson-constructors.json
-// it's testing different ouptut based on on javascript intput of {x: {y: '2'}}
+// it's testing different ouptut based on on javascript intput of "{x: {y: '2'}}"
   {
     "description": "Doc with subdoc",
     "javascript": "{x: {y: '2'}}",
@@ -229,3 +266,4 @@ cases in each file in those directories based on what the output should be. For 
 ```
 
 ## Adding an Input Language
+TODO!

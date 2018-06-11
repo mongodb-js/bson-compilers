@@ -36,6 +36,14 @@
         "shell": "1+2"
       },
       {
+        "description": "semicolon between statements",
+        "javascript": "1 ; +2",
+        "python": "1\n+2",
+        "java": "1L\n+2L",
+        "csharp": "1\n+2",
+        "shell": "1\n+2"
+      },
+      {
         "description": "tabs between statements",
         "javascript": "1 \t\t +2",
         "python": "1+2",
@@ -55,14 +63,22 @@
     "Comments": [
       {
         "description": "single line comment",
-        "javascript": "1 \\ a comment",
+        "javascript": "1 // a comment",
         "python": "1",
         "java": "1L",
         "csharp": "1",
         "shell": "1"
       },
       {
-        "description": "multi line comment one line",
+        "description": "single line comment with an expression on the next line",
+        "javascript": "1 // a comment\n2",
+        "python": "1\n2",
+        "java": "1L\n2L",
+        "csharp": "1\n2",
+        "shell": "1\n2"
+      },
+      {
+        "description": "multi line comment no newlines",
         "javascript": "1 /* a comment*/",
         "python": "1",
         "java": "1L",
@@ -70,20 +86,36 @@
         "shell": "1"
       },
       {
-        "description": "multi line comment many lines",
-        "javascript": "1 /* a \ncomn\nmen\nt*/",
+        "description": "multi line comment with newlines",
+        "javascript": "1 /* a \ncom\nmen\nt*/",
         "python": "1",
         "java": "1L",
         "csharp": "1",
         "shell": "1"
       },
       {
-        "description": "multi line comment many lines with code following",
+        "description": "multi line comment with newlines in the middle of an expression",
+        "javascript": "1 /* a \ncom\nmen\nt*/+2",
+        "python": "1+2",
+        "java": "1L+2L",
+        "csharp": "1+2",
+        "shell": "1+2"
+      },
+      {
+        "description": "multi line comment in the middle of an expression",
+        "javascript": "1 /* a comment*/+2",
+        "python": "1+2",
+        "java": "1L+2L",
+        "csharp": "1+2",
+        "shell": "1+2"
+      },
+      {
+        "description": "multi line comment with newlines with an expression on the next line",
         "javascript": "1 /* a \ncomn\nmen\nt*/\n+2",
-        "python": "1",
-        "java": "1L",
-        "csharp": "1",
-        "shell": "1"
+        "python": "1+2",
+        "java": "1L+2L",
+        "csharp": "1+2",
+        "shell": "1+2"
       }
     ],
     "Partial statements": [

@@ -160,16 +160,14 @@
         "errorCode": "E_BSONCOMPILERS_SYNTAX"
       }
     ],
-    "TODO: source elements without whitespace": [
+    "Source elements without separator": [
       {
         "description": "1str",
         "query": "1str",
         "errorCode": "E_BSONCOMPILERS_SYNTAX"
-      }
-    ],
-    "TODO: invalid decimals": [
+      },
       {
-        "description": "lhs is literal",
+        "description": "1.x",
         "query": "1.Long",
         "errorCode": "E_BSONCOMPILERS_SYNTAX"
       }

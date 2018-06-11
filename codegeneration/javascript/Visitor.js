@@ -71,7 +71,13 @@ class Visitor extends ECMAScriptVisitor {
   }
 
   visitEof() {
-    return '';
+    return '\n';
+  }
+  visitEos() {
+    return '\n';
+  }
+  visitEmptyStatement() {
+    return '\n';
   }
 
   /**
@@ -774,7 +780,7 @@ class Visitor extends ECMAScriptVisitor {
       decstr = this.executeJavascript(`new ${ctx.getText()}`).toString();
     } catch (error) {
       // TODO: this isn't quite right because it catches all type errors.
-      if (error.name === 'TypeError') {
+      if (error.name === 'TypeError' || error.code === 'ERR_INVALID_ARG_TYPE') {
         throw new BsonCompilersArgumentError(error.message);
       }
 
@@ -891,7 +897,7 @@ class Visitor extends ECMAScriptVisitor {
       type = binobj.sub_type;
     } catch (error) {
       // TODO: this isn't quite right because it catches all type errors.
-      if (error.name === 'TypeError') {
+      if (error.name === 'TypeError' || error.code === 'ERR_INVALID_ARG_TYPE') {
         throw new BsonCompilersArgumentError(error.message);
       }
 

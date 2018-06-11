@@ -62,7 +62,7 @@ To get all the moving components ready, `index.js` needs a few things:
   and a <code>parse tree</code> that can be walked.
   <br><br>
   Output returned gets processed in either input language's
-</code>Visitor.js</code> or output language's <code>Generator.js</code>.
+<code>Visitor.js</code> or output language's <code>Generator.js</code>.
   The result is then returned from the <code>Symbol Table</code>'s
   template file.
   <br><br><br>
@@ -79,13 +79,38 @@ context to be able to process the nodes properly.
 It will also assign the type of a node it's processing based on the information
 from the input language symbol table. The types are important to the output
 language, as they can be then looked up in the output language's template
-symbol table or `Generator.js` fileand adjusted accordingly.
-
-
+symbol table or `Generator.js` file and adjusted accordingly.
 
 ### Generator.js
 
 ### Symbol Tables
+There are three types of symbol tables in this project: `Symbols`, `Types` and
+`Templates`. Input languages are responsible for the first two. `Templates` are
+used for generating output based on `Symbols` and `Types`. For example, if an
+input in Javacript consists of `ObjectId().toString`, we are looking at the
+following table in `Types` in `javascript` directory:
+
+```yml
+# in output language 'Templates', we can find this piece of code under
+# 'ObjectIdSymbolTemplate' 
+ObjectId: &ObjectIdType
+    <<: *__type
+    # if we need to handle this symbol type in either Visitor or Generator, it
+    # can be accessed via 'ObjectId'
+    id: "ObjectId"
+    type: *ObjectType
+    attr:
+        toString:
+            # if toString needs to be handled differently this code block can
+            # also have an 'id' field  that can be accessed in either Visitor
+            # or Generator files
+            <<: *__func
+            type: *StringType
+            # to access 'toString' in output language 'Templates', use the two
+            # properties below
+            template: *ObjectIdToStringTemplate
+            argsTemplate: *ObjectIdToStringArgsTemplate
+```
 
 ### Tests
 

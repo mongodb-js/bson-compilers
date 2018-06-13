@@ -673,7 +673,10 @@ Templates:
             return '-1L';
         }
     LongSymbolNegOneArgsTemplate: &LongSymbolNegOneArgsTemplate null
-    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate null
+    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate !!js/function >
+        () => {
+            return '';
+        }
     LongSymbolFromBitsArgsTemplate: &LongSymbolFromBitsArgsTemplate null
     LongSymbolFromIntTemplate: &LongSymbolFromIntTemplate !!js/function >
         () => {
@@ -687,14 +690,14 @@ Templates:
     LongSymbolFromNumberArgsTemplate: &LongSymbolFromNumberArgsTemplate null
     LongSymbolFromStringTemplate: &LongSymbolFromStringTemplate !!js/function >
         () => {
-            return '';
+            return 'Convert.ToInt64';
         }
     LongSymbolFromStringArgsTemplate: &LongSymbolFromStringArgsTemplate !!js/function >
         (lhs, arg1, arg2) => {
           if (arg2) {
-            return `Convert.ToInt64(${arg1}, ${arg2})`
+            return `(${arg1}, ${arg2})`
           }
-          return `Convert.ToInt64(${arg1}, 10)`
+          return `(${arg1}, 10)`
         }
     MinKeySymbolTemplate: &MinKeySymbolTemplate !!js/function >
         () => {
@@ -736,12 +739,12 @@ Templates:
     Decimal128SymbolTemplate: &Decimal128SymbolTemplate null
     Decimal128SymbolArgsTemplate: &Decimal128SymbolArgsTemplate null
     Decimal128SymbolFromStringTemplate: &Decimal128SymbolFromStringTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return `${lhs}.Parse`;
         }
     Decimal128SymbolFromStringArgsTemplate: &Decimal128SymbolFromStringArgsTemplate !!js/function > 
         (lhs, arg) => {
-            return `${lhs}.Parse(${arg})`;
+            return `(${arg})`;
         }
     Decimal128ToStringTemplate: &Decimal128ToStringTemplate !!js/function >
         (lhs) => {
@@ -756,14 +759,14 @@ Templates:
     ObjectIdCreateFromHexStringArgsTemplate: &ObjectIdCreateFromHexStringArgsTemplate null
     ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function >
         (lhs) => {
-            return '';
+            return `new ${lhs}.GenerateNewId`;
         }
     ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate !!js/function >
         (lhs, arg) => {
             if (!Number.isNaN(parseInt(arg, 10))) {
-              return `new ${lhs}.GenerateNewId(Convert.ToInt32(${arg}))`;
+              return `(Convert.ToInt32(${arg}))`;
             }
-            return `new ${lhs}.GenerateNewId(${arg})`;
+            return `(${arg})`;
         }
     ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate !!js/function >
         (lhs) => {

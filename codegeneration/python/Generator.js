@@ -92,9 +92,11 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
       this.Symbols.ObjectId.attr.fromDate;
     const argList = ctx.arguments().argumentList();
     const args = this.checkArguments(ctx.type.args, argList);
+    const template = ctx.type.template ? ctx.type.template() : '';
     if (argList.singleExpression()[0].type.id === 'Date') {
-      return ctx.type.argsTemplate('', args[0]);
+      return `${template}${ctx.type.argsTemplate('', args[0])}`;
     }
-    return ctx.type.argsTemplate('', `datetime.datetime.fromtimestamp(${args[0]} / 1000)`);
+    return `${template}${ctx.type.argsTemplate(
+      '', `datetime.datetime.fromtimestamp(${args[0]} / 1000)`)}`;
   }
 };

@@ -658,7 +658,10 @@ Templates:
             return '-1L';
         }
     LongSymbolNegOneArgsTemplate: &LongSymbolNegOneArgsTemplate null
-    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate null
+    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate !!js/function >
+        () => {
+            return '';
+        }
     LongSymbolFromBitsArgsTemplate: &LongSymbolFromBitsArgsTemplate null
     LongSymbolFromIntTemplate: &LongSymbolFromIntTemplate !!js/function >
         () => {
@@ -715,19 +718,19 @@ Templates:
     # BSON Util Templates
     ObjectIdCreateFromHexStringTemplate: &ObjectIdCreateFromHexStringTemplate !!js/function >
         () => {
-            return '';
+            return 'new ObjectId';
         }
     ObjectIdCreateFromHexStringArgsTemplate: &ObjectIdCreateFromHexStringArgsTemplate !!js/function >
         (lhs, arg) => {
-            return `new ObjectId(${arg})`;
+            return `(${arg})`;
         }
     ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function >
         () => {
-            return '';
+            return 'new ObjectId';
         }
     ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate !!js/function >
         (lhs, arg) => {
-            return `new ObjectId(${arg})`;
+            return `(${arg})`;
         }
     ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate null
     ObjectIdIsValidArgsTemplate: &ObjectIdIsValidArgsTemplate null

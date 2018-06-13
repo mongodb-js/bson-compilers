@@ -545,7 +545,10 @@ Templates:
             return -1;
         }
     LongSymbolNegOneArgsTemplate: &LongSymbolNegOneArgsTemplate null
-    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate null
+    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate !!js/function >
+        (lhs) => {
+            return lhs;
+        }
     LongSymbolFromBitsArgsTemplate: &LongSymbolFromBitsArgsTemplate null
     LongSymbolFromIntTemplate: &LongSymbolFromIntTemplate !!js/function >
         (lhs) => {
@@ -590,25 +593,28 @@ Templates:
         }
     Decimal128SymbolArgsTemplate: &Decimal128SymbolArgsTemplate null
     Decimal128SymbolFromStringTemplate: &Decimal128SymbolFromStringTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return lhs;
         }
     Decimal128SymbolFromStringArgsTemplate: &Decimal128SymbolFromStringArgsTemplate !!js/function >
         (lhs, arg) => {
-            return `${lhs}(${arg})`;
+            return `(${arg})`;
         }
     Decimal128ToStringTemplate: &Decimal128ToStringTemplate null
     Decimal128ToStringArgsTemplate: &Decimal128ToStringArgsTemplate null
     # BSON Util Templates
     ObjectIdCreateFromHexStringTemplate: &ObjectIdCreateFromHexStringTemplate !!js/function >
-        (lhs) => {
-            return '';
+        () => {
+            return 'ObjectId';
         }
     ObjectIdCreateFromHexStringArgsTemplate: &ObjectIdCreateFromHexStringArgsTemplate !!js/function >
         (lhs, arg) => {
-            return `ObjectId(${arg})`;
+            return `(${arg})`;
         }
-    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate null
+    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function > # Also has an emit method
+        (lhs) => {
+            return `ObjectId.fromDate`;
+        }
     ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate null
     ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate !!js/function >
         (lhs) => {

@@ -629,6 +629,64 @@
         "csharp": "\"2\"",
         "shell": "'2'"
       }
+    ],
+    "Utils without args" : [
+      {
+        "description": "ObjectId.createFromHexString without args",
+        "javascript": "ObjectId.createFromHexString",
+        "python": "ObjectId",
+        "java": "new ObjectId",
+        "csharp": "new ObjectId",
+        "shell": "ObjectId"
+      },
+      {
+        "description": "ObjectId.createFromTime without args",
+        "javascript": "ObjectId.createFromTime",
+        "python": "ObjectId.from_datetime",
+        "java": "new ObjectId",
+        "csharp": "new ObjectId.GenerateNewId",
+        "shell": "ObjectId.fromDate"
+      },
+      {
+        "description": "ObjectId.isValid without args",
+        "javascript": "ObjectId.isValid",
+        "python": "ObjectId.is_valid",
+        "java": "ObjectId.isValid",
+        "csharp": "new ObjectId",
+        "shell": "ObjectId"
+      },
+      {
+        "description": "Long.fromInt without args",
+        "javascript": "Long.fromInt",
+        "python": "Int64",
+        "java": "",
+        "csharp": "",
+        "shell": "NumberLong"
+      },
+      {
+        "description": "Long.fromString without args",
+        "javascript": "Long.fromString",
+        "python": "Int64",
+        "java": "Long.parseLong",
+        "csharp": "Convert.ToInt64",
+        "shell": "NumberLong"
+      },
+      {
+        "description": "Long.fromBits without args",
+        "javascript": "Long.fromBits",
+        "python": "Int64",
+        "java": "",
+        "csharp": "",
+        "shell": "NumberLong"
+      },
+      {
+        "description": "Decimal128.fromString without args",
+        "javascript": "Decimal128.fromString",
+        "python": "Decimal128",
+        "java": "Decimal128.parse",
+        "csharp": "Decimal128.Parse",
+        "shell": "NumberDecimal"
+      }
     ]
   }
 }

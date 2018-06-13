@@ -59,7 +59,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
 
     let toStr = '';
 
-    if (!ctx.wasNew && this.visit(ctx.singleExpression()) !== 'ISODate') {
+    if (!ctx.wasNew && !ctx.getText().includes('ISODate')) {
       ctx.type = this.Types._string;
       toStr = '.strftime(\'%a %b %d %Y %H:%M:%S %Z\')';
     }

@@ -154,7 +154,7 @@
         "shell": "((1 === (1)))"
       }
     ],
-    "TODO: Constructors without args": [
+    "Constructors without args": [
       {
         "description": "Double without args",
         "javascript": "Double",
@@ -162,7 +162,121 @@
         "java": "",
         "csharp": "",
         "shell": "Number"
+      },
+      {
+        "description": "Int32 without args",
+        "javascript": "Int32",
+        "python": "int",
+        "java": "",
+        "csharp": "",
+        "shell": "NumberInt"
+      },
+      {
+        "description": "Long without args",
+        "javascript": "Long",
+        "python": "Int64",
+        "java": "",
+        "csharp": "",
+        "shell": "NumberLong"
+      },
+      {
+        "description": "Decimal128 without args",
+        "javascript": "Decimal128",
+        "python": "Decimal128",
+        "java": "Decimal128",
+        "csharp": "Decimal128",
+        "shell": "NumberDecimal"
+      },
+      {
+        "description": "ObjectId without args",
+        "javascript": "ObjectId",
+        "python": "ObjectId",
+        "java": "ObjectId",
+        "csharp": "ObjectId",
+        "shell": "ObjectId"
+      },
+      {
+        "description": "Code without args",
+        "javascript": "Code",
+        "python": "Code",
+        "java": "Code",
+        "csharp": "BsonJavaScript",
+        "shell": "Code"
+      },
+      {
+        "description": "Binary without args",
+        "javascript": "Binary",
+        "python": "Binary",
+        "java": "Binary",
+        "csharp": "BsonBinaryData",
+        "shell": "BinData"
+      },
+      {
+        "description": "DBRef without args",
+        "javascript": "DBRef",
+        "python": "DBRef",
+        "java": "DBRef",
+        "csharp": "MongoDBRef",
+        "shell": "DBRef"
+      },
+      {
+        "description": "Timestamp without args",
+        "javascript": "Timestamp",
+        "python": "Timestamp",
+        "java": "BSONTimestamp",
+        "csharp": "BsonTimestamp",
+        "shell": "Timestamp"
+      },
+      {
+        "description": "Symbol without args",
+        "javascript": "Symbol",
+        "python": "",
+        "java": "Symbol",
+        "csharp": "Symbol",
+        "shell": ""
+      },
+      {
+        "description": "MinKey without args",
+        "javascript": "MinKey",
+        "python": "MinKey",
+        "java": "MinKey",
+        "csharp": "BsonMinKey",
+        "shell": "MinKey"
+      },
+      {
+        "description": "MaxKey without args",
+        "javascript": "MaxKey",
+        "python": "MaxKey",
+        "java": "MaxKey",
+        "csharp": "BsonMaxKey",
+        "shell": "MaxKey"
+      },
+      {
+        "description": "BSONRegExp without args",
+        "javascript": "BSONRegExp",
+        "python": "Regex",
+        "java": "BsonRegularExpression",
+        "csharp": "BsonRegularExpression",
+        "shell": "RegExp"
+      },
+      {
+        "description": "RegExp without args",
+        "javascript": "RegExp",
+        "python": "re",
+        "java": "Pattern",
+        "csharp": "Regex",
+        "shell": "RegExp"
+      },
+      {
+        "description": "Date without args",
+        "javascript": "Date",
+        "python": "datetime.datetime",
+        "java": "java.util.Date",
+        "csharp": "Datetime",
+        "shell": "Date"
       }
+    ],
+    "Methods without args": [
     ]
   }
 }

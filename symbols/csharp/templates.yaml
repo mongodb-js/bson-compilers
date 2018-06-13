@@ -515,7 +515,7 @@ Templates:
     # Symbol Templates
     CodeSymbolTemplate: &CodeSymbolTemplate  !!js/function >
         () => {
-            return '';
+            return 'BsonJavaScript';
         }
     CodeSymbolArgsTemplate: &CodeSymbolArgsTemplate !!js/function >
         (lhs, code, scope) => {
@@ -528,7 +528,7 @@ Templates:
                 newStr = str.substr(1, str.length - 2);
             }
             code = `"${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}"`;
-            return (scope === undefined) ? `BsonJavaScript(${code})` : `BsonJavaScriptWithScope(${code}, ${scope})`;
+            return (scope === undefined) ? `(${code})` : `WithScope(${code}, ${scope})`;
         }
     ObjectIdSymbolTemplate: &ObjectIdSymbolTemplate !!js/function >
         () => {
@@ -691,11 +691,22 @@ Templates:
           }
           return `Convert.ToInt64(${arg1}, 10)`
         }
-
-    MinKeySymbolTemplate: &MinKeySymbolTemplate null # Has emit method
-    MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate null # Has emit method
-    MaxKeySymbolTemplate: &MaxKeySymbolTemplate null # Has emit method
-    MaxKeySymbolArgsTemplate: &MaxKeySymbolArgsTemplate null # Has emit method
+    MinKeySymbolTemplate: &MinKeySymbolTemplate !!js/function >
+        () => {
+            return 'BsonMinKey';
+        }
+    MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate !!js/function >
+        () => {
+            return '.Value';
+        }
+    MaxKeySymbolTemplate: &MaxKeySymbolTemplate !!js/function >
+        () => {
+            return 'BsonMaxKey';
+        }
+    MaxKeySymbolArgsTemplate: &MaxKeySymbolArgsTemplate !!js/function >
+        () => {
+            return '.Value';
+        }
     TimestampSymbolTemplate: &TimestampSymbolTemplate !!js/function >
         () => {
             return 'BsonTimestamp';
@@ -782,9 +793,15 @@ Templates:
 
             return `(int) ${arg}`;
         }
-    DateSymbolTemplate: &DateSymbolTemplate null # Has emit method
+    DateSymbolTemplate: &DateSymbolTemplate !!js/function > # Also has emit method
+        () => {
+            return 'Datetime';
+        }
     DateSymbolArgsTemplate: &DateSymbolArgsTemplate null # Has emit method
     DateSymbolNowTemplate: &DateSymbolNowTemplate null # Has emit method
     DateSymbolNowArgsTemplate: &DateSymbolNowArgsTemplate null # Has emit method
-    RegExpSymbolTemplate: &RegExpSymbolTemplate null
+    RegExpSymbolTemplate: &RegExpSymbolTemplate !!js/function > # Also has process method
+        () => {
+            return 'Regex';
+        }
     RegExpSymbolArgsTemplate: &RegExpSymbolArgsTemplate null

@@ -500,7 +500,7 @@ Templates:
     # Symbol Templates
     CodeSymbolTemplate: &CodeSymbolTemplate  !!js/function >
         () => {
-            return '';
+            return 'Code';
         }
     CodeSymbolArgsTemplate: &CodeSymbolArgsTemplate !!js/function >
         (lhs, code, scope) => {
@@ -513,7 +513,7 @@ Templates:
             newStr = str.substr(1, str.length - 2);
           }
           code = `"${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}"`;
-          return (scope === undefined) ? `Code(${code})` : `CodeWithScope(${code}, ${scope})`;
+          return (scope === undefined) ? `(${code})` : `WithScope(${code}, ${scope})`;
         }
     ObjectIdSymbolTemplate: &ObjectIdSymbolTemplate null
     ObjectIdSymbolArgsTemplate: &ObjectIdSymbolArgsTemplate !!js/function >
@@ -752,12 +752,18 @@ Templates:
             }
             return `(double) ${arg}`;
         }
-    DateSymbolTemplate: &DateSymbolTemplate null
+    DateSymbolTemplate: &DateSymbolTemplate !!js/function > # Also has emit method
+        () => {
+            return 'java.util.Date';
+        }
     DateSymbolArgsTemplate: &DateSymbolArgsTemplate null
     DateSymbolNowTemplate: &DateSymbolNowTemplate !!js/function >
         () => {
             return 'java.util.Date';
         }
     DateSymbolNowArgsTemplate: &DateSymbolNowArgsTemplate null
-    RegExpSymbolTemplate: &RegExpSymbolTemplate null
+    RegExpSymbolTemplate: &RegExpSymbolTemplate !!js/function > # Also has emit method
+        () => {
+            return 'Pattern';
+        }
     RegExpSymbolArgsTemplate: &RegExpSymbolArgsTemplate null

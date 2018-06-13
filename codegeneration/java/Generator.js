@@ -43,7 +43,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    */
   emitDate(ctx, date) {
     let toStr = (d) => d;
-    if (!ctx.wasNew && this.visit(ctx.singleExpression()) !== 'ISODate') {
+    if (!ctx.wasNew && !ctx.getText().includes('ISODate')) {
       ctx.type = this.Types._string;
       toStr = (d) => `new SimpleDateFormat("EEE MMMMM dd yyyy HH:mm:ss").format(${d})`;
     }

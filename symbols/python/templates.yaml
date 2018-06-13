@@ -784,12 +784,18 @@ Templates:
                 return `${newStr}`;
             }
         }
-    DateSymbolTemplate: &DateSymbolTemplate null
+    DateSymbolTemplate: &DateSymbolTemplate !!js/function > # Also has emit method
+        () => {
+            return 'datetime.datetime';
+        }
     DateSymbolArgsTemplate: &DateSymbolArgsTemplate null
     DateSymbolNowTemplate: &DateSymbolNowTemplate !!js/function >
         () => {
             return 'datetime.datetime.utcnow';
         }
     DateSymbolNowArgsTemplate: &DateSymbolNowArgsTemplate null
-    RegExpSymbolTemplate: &RegExpSymbolTemplate null
+    RegExpSymbolTemplate: &RegExpSymbolTemplate !!js/function > # Also has process method
+        () => {
+            return 're';
+        }
     RegExpSymbolArgsTemplate: &RegExpSymbolArgsTemplate null

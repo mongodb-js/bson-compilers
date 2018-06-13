@@ -228,7 +228,7 @@ Templates:
         (lhs) => {
             return lhs;
         }
-    LongToStringArgsTemplate: &LongToStringArgsTemplate null
+    LongToStringArgsTemplate: &LongToStringArgsTemplate null # Also has emit method
     LongToNumberTemplate: &LongToNumberTemplate !!js/function >
         (lhs) => {
             return `(double) ${lhs}`;
@@ -518,7 +518,7 @@ Templates:
             return '';
         }
     # Symbol Templates
-    CodeSymbolTemplate: &CodeSymbolTemplate  !!js/function >
+    CodeSymbolTemplate: &CodeSymbolTemplate  !!js/function > # Also has process method
         () => {
             return 'BsonJavaScript';
         }
@@ -673,7 +673,7 @@ Templates:
             return '-1L';
         }
     LongSymbolNegOneArgsTemplate: &LongSymbolNegOneArgsTemplate null
-    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate !!js/function >
+    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate !!js/function > # Also has process method
         () => {
             return '';
         }
@@ -699,19 +699,19 @@ Templates:
           }
           return `(${arg1}, 10)`
         }
-    MinKeySymbolTemplate: &MinKeySymbolTemplate !!js/function >
+    MinKeySymbolTemplate: &MinKeySymbolTemplate !!js/function > # Also has emit method
         () => {
             return 'BsonMinKey';
         }
-    MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate !!js/function >
+    MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate !!js/function > # Also has emit method
         () => {
             return '.Value';
         }
-    MaxKeySymbolTemplate: &MaxKeySymbolTemplate !!js/function >
+    MaxKeySymbolTemplate: &MaxKeySymbolTemplate !!js/function > # Also has emit method
         () => {
             return 'BsonMaxKey';
         }
-    MaxKeySymbolArgsTemplate: &MaxKeySymbolArgsTemplate !!js/function >
+    MaxKeySymbolArgsTemplate: &MaxKeySymbolArgsTemplate !!js/function > # Also has emit method
         () => {
             return '.Value';
         }
@@ -757,7 +757,7 @@ Templates:
             return `new ${lhs}`;
         }
     ObjectIdCreateFromHexStringArgsTemplate: &ObjectIdCreateFromHexStringArgsTemplate null
-    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function >
+    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function > # Also has emit method
         (lhs) => {
             return `new ${lhs}.GenerateNewId`;
         }

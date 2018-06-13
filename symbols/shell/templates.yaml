@@ -545,11 +545,11 @@ Templates:
             return -1;
         }
     LongSymbolNegOneArgsTemplate: &LongSymbolNegOneArgsTemplate null
-    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate !!js/function >
+    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate !!js/function > # Also has process method
         (lhs) => {
             return lhs;
         }
-    LongSymbolFromBitsArgsTemplate: &LongSymbolFromBitsArgsTemplate null
+    LongSymbolFromBitsArgsTemplate: &LongSymbolFromBitsArgsTemplate null # Also has process method
     LongSymbolFromIntTemplate: &LongSymbolFromIntTemplate !!js/function >
         (lhs) => {
             return lhs;

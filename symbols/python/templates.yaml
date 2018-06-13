@@ -537,11 +537,11 @@ Templates:
             return '';
         }
     # Symbol Templates
-    CodeSymbolTemplate: &CodeSymbolTemplate !!js/function >
+    CodeSymbolTemplate: &CodeSymbolTemplate !!js/function > # Also has process method
         () => {
             return 'Code';
         }
-    CodeSymbolArgsTemplate: &CodeSymbolArgsTemplate !!js/function >
+    CodeSymbolArgsTemplate: &CodeSymbolArgsTemplate !!js/function > # Also has process method
         (lhs, code, scope) => {
           // Single quote stringify
           const scopestr = scope === undefined ? '' : `, ${scope}`;
@@ -666,7 +666,7 @@ Templates:
             return 'Int64(-1)';
         }
     LongSymbolNegOneArgsTemplate: &LongSymbolNegOneArgsTemplate null
-    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate !!js/function >
+    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate !!js/function > # Also has process method
         () => {
             return 'Int64';
         }
@@ -756,7 +756,7 @@ Templates:
         (lhs, arg) => {
             return `(${arg})`;
         }
-    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function >
+    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function > # Also has emit method
         () => {
             return `ObjectId.from_datetime`;
         }

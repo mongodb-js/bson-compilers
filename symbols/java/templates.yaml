@@ -503,11 +503,11 @@ Templates:
         }
     SymbolToStringArgsTemplate: &SymbolToStringArgsTemplate null
     # Symbol Templates
-    CodeSymbolTemplate: &CodeSymbolTemplate  !!js/function >
+    CodeSymbolTemplate: &CodeSymbolTemplate  !!js/function > # Also has process method
         () => {
             return 'Code';
         }
-    CodeSymbolArgsTemplate: &CodeSymbolArgsTemplate !!js/function >
+    CodeSymbolArgsTemplate: &CodeSymbolArgsTemplate !!js/function > # Also has process method
         (lhs, code, scope) => {
           // Double quote stringify
           let newStr = code === undefined ? '' : code;
@@ -658,7 +658,7 @@ Templates:
             return '-1L';
         }
     LongSymbolNegOneArgsTemplate: &LongSymbolNegOneArgsTemplate null
-    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate !!js/function >
+    LongSymbolFromBitsTemplate: &LongSymbolFromBitsTemplate !!js/function > # Also has process method
         () => {
             return '';
         }
@@ -724,7 +724,7 @@ Templates:
         (lhs, arg) => {
             return `(${arg})`;
         }
-    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function >
+    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function > # Also has emit method
         () => {
             return 'new ObjectId';
         }

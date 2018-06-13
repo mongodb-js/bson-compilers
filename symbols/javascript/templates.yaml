@@ -104,10 +104,7 @@ Templates:
     Int32ToStringArgsTemplate: &Int32ToStringArgsTemplate null
     LongEqualsTemplate: &LongEqualsTemplate null
     LongEqualsArgsTemplate: &LongEqualsArgsTemplate null
-    LongToStringTemplate: &LongToStringTemplate !!js/function > # Also has emit method
-        () => {
-            return 'str';
-        }
+    LongToStringTemplate: &LongToStringTemplate null # Has emit method
     LongToStringArgsTemplate: &LongToStringArgsTemplate null
     LongToIntTemplate: &LongToIntTemplate !!js/function >
         (lhs) => {

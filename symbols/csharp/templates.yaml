@@ -106,14 +106,14 @@ Templates:
     ObjectIdToStringArgsTemplate: &ObjectIdToStringArgsTemplate null
     ObjectIdEqualsTemplate: &ObjectIdEqualsTemplate !!js/function >
         (lhs) => {
-            return '';
+            return `${lhs}.Equals`;
         }
     ObjectIdEqualsArgsTemplate: &ObjectIdEqualsArgsTemplate !!js/function >
         (lhs, arg) => {
             if (arg.indexOf('new') === 0) {
               arg = arg.replace(/new /g, '')
             }
-            return `new ObjectId().Equals(new ${arg})`;
+            return `(new ${arg})`;
         }
 
     ObjectIdGetTimestampTemplate: &ObjectIdGetTimestampTemplate !!js/function >
@@ -224,6 +224,11 @@ Templates:
         () => {
             return '';
         }
+    LongToStringTemplate: &LongToStringTemplate !!js/function > # Also has emit method
+        (lhs) => {
+            return lhs;
+        }
+    LongToStringArgsTemplate: &LongToStringArgsTemplate null
     LongToNumberTemplate: &LongToNumberTemplate !!js/function >
         (lhs) => {
             return `(double) ${lhs}`;
@@ -234,83 +239,83 @@ Templates:
         }
     LongAddTemplate: &LongAddTemplate !!js/function >
         (lhs) => {
-            return `${lhs}`;
+            return `${lhs} +`;
         }
     LongAddArgsTemplate: &LongAddArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` + ${arg}`;
+            return ` ${arg}`;
         }
     LongSubtractTemplate: &LongSubtractTemplate !!js/function >
         (lhs) => {
-            return `${lhs}`;
+            return `${lhs} -`;
         }
     LongSubtractArgsTemplate: &LongSubtractArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` - ${arg}`;
+            return ` ${arg}`;
         }
     LongMultiplyTemplate: &LongMultiplyTemplate !!js/function >
         (lhs) => {
-            return `${lhs}`;
+            return `${lhs} *`;
         }
     LongMultiplyArgsTemplate: &LongMultiplyArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` * ${arg}`;
+            return ` ${arg}`;
         }
     LongDivTemplate: &LongDivTemplate !!js/function >
         (lhs) => {
-            return `${lhs}`;
+            return `${lhs} /`;
         }
     LongDivArgsTemplate: &LongDivArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` / ${arg}`;
+            return ` ${arg}`;
         }
     LongModuloTemplate: &LongModuloTemplate !!js/function >
         (lhs) => {
-            return `${lhs}`;
+            return `${lhs} %`;
         }
     LongModuloArgsTemplate: &LongModuloArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` % ${arg}`;
+            return ` ${arg}`;
         }
     LongAndTemplate: &LongAndTemplate !!js/function >
         (lhs) => {
-            return `${lhs}`;
+            return `${lhs} &`;
         }
     LongAndArgsTemplate: &LongAndArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` & ${arg}`;
+            return ` ${arg}`;
         }
     LongOrTemplate: &LongOrTemplate !!js/function >
         (lhs) => {
-            return `${lhs}`;
+            return `${lhs} |`;
         }
     LongOrArgsTemplate: &LongOrArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` | ${arg}`;
+            return ` ${arg}`;
         }
     LongXorTemplate: &LongXorTemplate !!js/function >
         (lhs) => {
-            return `${lhs}`;
+            return `${lhs} ^`;
         }
     LongXorArgsTemplate: &LongXorArgsTemplate !!js/function >
         (lhs, arg) => {
-            return ` ^ ${arg}`;
+            return ` ${arg}`;
         }
     LongShiftLeftTemplate: &LongShiftLeftTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return `${lhs} <<`;
         }
     LongShiftLeftArgsTemplate: &LongShiftLeftArgsTemplate !!js/function >
         (lhs, arg) => {
-            return `${lhs} << ${arg}`;
+            return ` ${arg}`;
         }
     LongShiftRightTemplate: &LongShiftRightTemplate !!js/function >
-        () => {
-            return '';
+        (lhs) => {
+            return `${lhs} >>`;
         }
     LongShiftRightArgsTemplate: &LongShiftRightArgsTemplate !!js/function >
         (lhs, arg) => {
-            return `${lhs} >> ${arg}`;
+            return ` ${arg}`;
         }
     LongCompareTemplate: &LongCompareTemplate !!js/function >
         (lhs) => {
@@ -346,19 +351,19 @@ Templates:
         }
     LongNegateTemplate: &LongNegateTemplate !!js/function >
         () => {
-            return '';
+            return '-';
         }
     LongNegateArgsTemplate: &LongNegateArgsTemplate !!js/function >
         (lhs) => {
-            return `-${lhs}`;
+            return `${lhs}`;
         }
     LongNotTemplate: &LongNotTemplate !!js/function >
         () => {
-            return '';
+            return '~';
         }
     LongNotArgsTemplate: &LongNotArgsTemplate !!js/function >
         (lhs) => {
-            return `~${lhs}`;
+            return `${lhs}`;
         }
     LongNotEqualsTemplate: &LongNotEqualsTemplate !!js/function >
         (lhs) => {
@@ -429,11 +434,11 @@ Templates:
     TimestampGetLowBitsArgsTemplate: &TimestampGetLowBitsArgsTemplate null
     TimestampGetHighBitsTemplate: &TimestampGetHighBitsTemplate !!js/function >
         (lhs) => {
-            return '';
+            return `${lhs}.Increment`;
         }
     TimestampGetHighBitsArgsTemplate: &TimestampGetHighBitsArgsTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.Increment`;
+            return '';
         }
     TimestampTTemplate: &TimestampTTemplate !!js/function >
         (lhs) => {

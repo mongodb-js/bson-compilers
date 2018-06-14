@@ -366,6 +366,14 @@
         "java": "new Document(\"x\", \"1\").append(\"n\", \"4\")",
         "csharp": "new BsonDocument { { \"x\", \"1\" }, { \"n\", \"4\" } }",
         "shell": "{x: '1', n: '4'}"
+      },
+      {
+        "description": "nested document",
+        "javascript": "{ $graphLookup : { \"from\" : \"raw_data\", \"startWith\" : \"$_id\", \"connectFromField\" : \"_id\", \"connectToField\" : \"manager\", \"as\" : \"reports\" } }",
+        "python": "{'$graphLookup': {'from': 'raw_data', 'startWith': '$_id', 'connectFromField': '_id', 'connectToField': 'manager', 'as': 'reports'}}",
+        "java": "new Document(\"$graphLookup\", new Document(\"from\", \"raw_data\").append(\"startWith\", \"$_id\").append(\"connectFromField\", \"_id\").append(\"connectToField\", \"manager\").append(\"as\", \"reports\"))",
+        "csharp": "new BsonDocument(\"$graphLookup\", new BsonDocument { { \"from\", \"raw_data\" }, { \"startWith\", \"$_id\" }, { \"connectFromField\", \"_id\" }, { \"connectToField\", \"manager\" }, { \"as\", \"reports\" } })",
+        "shell": "{$graphLookup: {\"from\": \"raw_data\", \"startWith\": \"$_id\", \"connectFromField\": \"_id\", \"connectToField\": \"manager\", \"as\": \"reports\"}}"
       }
     ],
     "Array": [

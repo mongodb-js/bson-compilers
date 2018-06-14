@@ -158,6 +158,16 @@ class Visitor extends ECMAScriptVisitor {
     return this.visitChildren(ctx);
   }
 
+  getIndentDepth(ctx) {
+    while (ctx.indentDepth === undefined) {
+      ctx = ctx.parentCtx;
+      if (ctx === undefined || ctx === null) {
+        return -1;
+      }
+    }
+    return ctx.indentDepth;
+  }
+
   /**
    * Child nodes: propertyNameAndValueList?
    * @param {ObjectLiteralContext} ctx
@@ -165,17 +175,18 @@ class Visitor extends ECMAScriptVisitor {
    */
   visitObjectLiteral(ctx) {
     ctx.type = this.Types._object;
+    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
     let args = '';
     if (ctx.propertyNameAndValueList()) {
       const properties = ctx.propertyNameAndValueList().propertyAssignment();
       if (ctx.type.argsTemplate) {
         args = ctx.type.argsTemplate(properties.map((pair) => {
           return [this.visit(pair.propertyName()), this.visit(pair.singleExpression())];
-        }));
+        }), ctx.indentDepth);
       }
     }
     if (ctx.type.template) {
-      return ctx.type.template(args);
+      return ctx.type.template(args, ctx.indentDepth);
     }
     return this.visitChildren(ctx);
   }
@@ -187,19 +198,20 @@ class Visitor extends ECMAScriptVisitor {
    */
   visitArrayLiteral(ctx) {
     ctx.type = this.Types._array;
+    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
     let args = '';
     if (ctx.elementList()) {
       const children = ctx.elementList().children.filter((child) => {
         return child.constructor.name !== 'TerminalNodeImpl';
       });
       if (ctx.type.argsTemplate) {
-        args = ctx.type.argsTemplate(children.map((c) => { return this.visit(c); }));
+        args = ctx.type.argsTemplate(children.map((c) => { return this.visit(c); }), ctx.indentDepth);
       } else {
         args = children.map((c) => { return this.visit(c); }).join(', ');
       }
     }
     if (ctx.type.template) {
-      return ctx.type.template(args);
+      return ctx.type.template(args, ctx.indentDepth);
     }
     return this.visitChildren(ctx);
   }

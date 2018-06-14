@@ -71,7 +71,8 @@ Templates:
             return literal;
         }
     ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate !!js/function >
-        (arg) => {
+        (arg, depth) => {
+            const indent = '\n\t\t';
             const doubleStringify = (str) => {
                 let newStr = str;
                 if (
@@ -87,10 +88,11 @@ Templates:
             }
 
             const pairs = arg.map((pair) => {
+                console.log(pair[2])
                 return `{ ${doubleStringify(pair[0])}, ${pair[1]} }`;
             }).join(', ');
 
-            return `new BsonDocument { ${pairs} }`
+            return `new BsonDocument${indent}{${indent}${pairs}${indent}}`
         }
     # BSON Object Method templates
     CodeCodeTemplate: &CodeCodeTemplate !!js/function >

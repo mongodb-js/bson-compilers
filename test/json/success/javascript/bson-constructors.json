@@ -7,7 +7,8 @@
         "python": "Code('some code')",
         "java": "new Code(\"some code\")",
         "csharp": "new BsonJavaScript(\"some code\")",
-        "shell": "new Code('some code')"
+        "shell": "new Code('some code')",
+        "ruby": "BSON::Code.new('some code')"
       },
       {
         "description": "Code with string code",
@@ -15,7 +16,8 @@
         "python": "Code('some code')",
         "java": "new Code(\"some code\")",
         "csharp": "new BsonJavaScript(\"some code\")",
-        "shell": "Code('some code')"
+        "shell": "Code('some code')",
+        "ruby": "BSON::Code.new('some code')"
       },
       {
         "description": "Code with string code and object scope",
@@ -23,7 +25,8 @@
         "python": "Code('string', {\n    'x': '1'\n})",
         "java": "new CodeWithScope(\"string\", new Document(\"x\", \"1\"))",
         "csharp": "new BsonJavaScriptWithScope(\"string\", new BsonDocument(\"x\", \"1\"))",
-        "shell": "Code('string', {\n  x: '1'\n})"
+        "shell": "Code('string', {\n  x: '1'\n})",
+        "ruby": "BSON::Code.new('string', {x: '1'})"
       },
       {
         "description": "Code with function code",
@@ -31,7 +34,8 @@
         "python": "Code('function(test){console.log(test);}')",
         "java": "new Code(\"function(test){console.log(test);}\")",
         "csharp": "new BsonJavaScript(\"function(test){console.log(test);}\")",
-        "shell": "Code('function(test){console.log(test);}')"
+        "shell": "Code('function(test){console.log(test);}')",
+        "ruby": "BSON::Code.new('function(test){console.log(test);}')"
       },
       {
         "description": "new Code with where code",
@@ -39,7 +43,8 @@
         "python": "Code('this.a > i', {\n    'i': '1'\n})",
         "java": "new CodeWithScope(\"this.a > i\", new Document(\"i\", \"1\"))",
         "csharp": "new BsonJavaScriptWithScope(\"this.a > i\", new BsonDocument(\"i\", \"1\"))",
-        "shell": "new Code('this.a > i', {\n    i: '1'\n  })"
+        "shell": "new Code('this.a > i', {\n    i: '1'\n  })",
+        "ruby": "BSON::Code.new('this.a > i', {i: '1'})"
       }
     ],
     "ObjectId": [
@@ -49,7 +54,8 @@
         "python": "ObjectId()",
         "java": "new ObjectId()",
         "csharp": "new ObjectId()",
-        "shell": "ObjectId()"
+        "shell": "ObjectId()",
+        "ruby": "BSON::ObjectId.new()"
       },
       {
         "description": "new ObjectId with no arg",
@@ -57,7 +63,8 @@
         "python": "ObjectId()",
         "java": "new ObjectId()",
         "csharp": "new ObjectId()",
-        "shell": "new ObjectId()"
+        "shell": "new ObjectId()",
+        "ruby": "BSON::ObjectId.new()"
       },
       {
         "description": "ObjectId with hex string arg",
@@ -65,7 +72,8 @@
         "python": "ObjectId('5a7382114ec1f67ae445f778')",
         "java": "new ObjectId(\"5a7382114ec1f67ae445f778\")",
         "csharp": "new ObjectId(\"5a7382114ec1f67ae445f778\")",
-        "shell": "ObjectId('5a7382114ec1f67ae445f778')"
+        "shell": "ObjectId('5a7382114ec1f67ae445f778')",
+        "ruby": "BSON::ObjectId.new('5a7382114ec1f67ae445f778')"
       }
     ],
     "DBRef": [

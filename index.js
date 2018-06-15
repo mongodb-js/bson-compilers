@@ -15,6 +15,7 @@ const PythonGenerator = require('./codegeneration/python/Generator');
 const CsharpGenerator = require('./codegeneration/csharp/Generator');
 const ShellGenerator = require('./codegeneration/shell/Generator');
 const JavascriptGenerator = require('./codegeneration/javascript/Generator');
+const RubyGenerator = require('./codegeneration/ruby/Generator');
 
 const javascriptjavasymbols = require('./lib/symbol-table/javascripttojava');
 const javascriptpythonsymbols = require('./lib/symbol-table/javascripttopython');
@@ -25,6 +26,9 @@ const shelljavasymbols = require('./lib/symbol-table/shelltojava');
 const shellpythonsymbols = require('./lib/symbol-table/shelltopython');
 const shellcsharpsymbols = require('./lib/symbol-table/shelltocsharp');
 const shelljavascriptsymbols = require('./lib/symbol-table/shelltojavascript');
+
+const javascriptrubysymbols = require('lib/symbol-table/javascripttoruby');
+const shellrubysymbols = require('lib/symbol-table/shelltoruby');
 
 /**
  * Constructs the parse tree from the code given by the user.
@@ -115,26 +119,32 @@ const javascriptImports = `const {
 } = require('mongodb');
 `;
 
+const rubyImports = `
+require 'bson'
+`;
 
 module.exports = {
   javascript: {
     java: getCompiler(JavascriptVisitor, JavaGenerator, javascriptjavasymbols),
     python: getCompiler(JavascriptVisitor, PythonGenerator, javascriptpythonsymbols),
     csharp: getCompiler(JavascriptVisitor, CsharpGenerator, javascriptcsharpsymbols),
-    shell: getCompiler(JavascriptVisitor, ShellGenerator, javascriptshellsymbols)
+    shell: getCompiler(JavascriptVisitor, ShellGenerator, javascriptshellsymbols),
+    ruby: getCompiler(JavascriptVisitor, RubyGenerator, javascriptrubysymbols)
   },
   shell: {
     java: getCompiler(ShellVisitor, JavaGenerator, shelljavasymbols),
     python: getCompiler(ShellVisitor, PythonGenerator, shellpythonsymbols),
     csharp: getCompiler(ShellVisitor, CsharpGenerator, shellcsharpsymbols),
-    javascript: getCompiler(ShellVisitor, JavascriptGenerator, shelljavascriptsymbols)
+    javascript: getCompiler(ShellVisitor, JavascriptGenerator, shelljavascriptsymbols),
+    ruby: getCompiler(ShellVisitor, RubyGenerator, shellrubysymbols)
   },
   imports: {
     java: javaImports,
     python: pythonImports,
     csharp: csharpImports,
     javascript: javascriptImports,
-    shell: ''
+    shell: '',
+    ruby: rubyImports
   },
   getTree: loadTree
 };

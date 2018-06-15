@@ -183,6 +183,8 @@ calls, the `argsTemplate` is a function that gets applied to the arguments in ca
 need rearranging between languages.
 
 ## Project Structure
+<img alt="indexjs" width="60%" align="right" src="/img-docs/indexjs.jpg"/>
+
 Entry point to the project is `index.js`. It currently exports [two
 APIs](https://github.com/mongodb-js/bson-compilers#api), compiling a string
 given `inputLang` and `outputLang`, and accessing language's import statements
@@ -194,16 +196,8 @@ To construct a compiler, `index.js` needs 3 components:
 - `lib/symbol-table/<input language>to<ouput language>.js` - The symbol table for 
 the input+output combination.
 
-<img alt="indexjs" width="60%" align="right" src="/img-docs/indexjs.jpg"/>
-
-<p align="left">
-  <br><br>
-  The <code>getCompiler()</code> function takes in three arguments:
-  <code>visitor</code>, <code>generator</code> and <code>symbols</code> to create
-  a compiler
-  and a <code>parse tree</code> that can be walked.
-  <br><br><br>
-</div>
+The `getCompiler()` function takes in three arguments: `visitor`, `generator`
+and `symbols` to create a compiler and a `parse tree` that can be walked.
 
 #### TL;DR
 - __Visitor:__ visits nodes; processes input language via
@@ -225,31 +219,31 @@ input language's edge cases better.
 
 1. Create a directory in `symbols` directory for your output language:
 ```shell
-mkdir symbols/{OUTPUT_LANG}
+mkdir symbols/<output lang>
 ```
 2. Create a `templates.yaml` file to store your language's templates. Inside
    you'll probably want to copy the contents from an existing `templates` file,
 clear all `!!js/function >` and replace them with `null`
 ```shell
-touch symbols/{OUTPUT_LANG}/templates.yaml
+touch symbols/<output lang>/templates.yaml
 ```
 3. You should now run `npm run compile` to generate a complete symbol table.
-   This will be generated in `lib/symbol-table/javascriptto{OUTPUT_LANG}` and
-`lib/symbol-table/shellto{OUTPUT_LANG}`.
+   This will be generated in `lib/symbol-table/javascriptto<output lang>` and
+`lib/symbol-table/shellto<output lang>`.
 4. You will have to require the generated symbol tables in `index.js`:
 ```js
-const javascript{OUTPUT_LANG}symbols = require('lib/symbol-table/javascriptto{OUTPUT_LANG}')
-const shell{OUTPUT_LANG}symbols = require('lib/symbol-table/shellto{OUTPUT_LANG}')
+const javascript<output lang>symbols = require('lib/symbol-table/javascriptto<output lang>')
+const shell<output lang>symbols = require('lib/symbol-table/shellto<output lang>')
 // and then add another export to module.exports at the bottom of the file:
 
 module.exports = {
   javascript: {
     // all those js exports,
-    {OUTPUT_LANG}: getCompiler(JavascriptVisitor, {OUTPUT_LANG}Generator, javascrip{OUTPUT_LANG}symbols)
+    <output lang>: getCompiler(JavascriptVisitor, <output lang>Generator, javascrip<output lang>symbols)
   }
   shell: {
     // all those js exports,
-    {OUTPUT_LANG}: getCompiler(ShellVisitor, {OUTPUT_LANG}Generator, shell{OUTPUT_LANG}symbols)
+    <output lang>: getCompiler(ShellVisitor, <output lang>Generator, shell<output lang>symbols)
   }
 }
 ```
@@ -257,11 +251,11 @@ module.exports = {
    quite work yet. So next, create a new directory in `codegeneration` for your
 output language:
 ```shell
-mkidr codegenration/{OUTPUT_LANG}
+mkidr codegenration/<output lang>
 ```
 6. And create a generator file:
 ```shell
-touch codegeneration/{OUTPUT_LANG}/Generator.js
+touch codegeneration/<output lang>/Generator.js
 ```
 7. You will need some boiler plate to get you going as the input language's
    visitor file will be looking for a few things. We'd recommend you start with
@@ -308,7 +302,7 @@ module.exports = (superclass) => class ExtendedVisitor extends superclass {
 ```
 8. You can now require the generator file in `index.js`:
 ```
-const {OUTPUT_LANG}Generator = require('./codegeneration/{OUTPUT_LANG}/Generator')
+const <output lang>Generator = require('./codegeneration/<output lang>/Generator')
 ```
 9. Next thing is tests! Tests are organized under two modes: `error` and
    `success`. Each input language has it's own directory. You can edit output test

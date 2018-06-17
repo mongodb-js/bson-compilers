@@ -7,7 +7,8 @@
         "python": "Code('test code', {\n    'x': 1\n}).scope",
         "java": "new CodeWithScope(\"test code\", new Document(\"x\", 1L)).getScope()",
         "csharp": "new BsonJavaScriptWithScope(\"test code\", new BsonDocument(\"x\", 1)).Scope",
-        "shell": "Code('test code', {\n  x: 1\n}).scope"
+        "shell": "Code('test code', {\n  x: 1\n}).scope",
+        "ruby": "BSON::CodeWithScope.new('test code', {x: 1}).scope"
       },
       {
         "description": "Code code",
@@ -15,7 +16,8 @@
         "python": "str(Code('test code'))",
         "java": "new Code(\"test code\").getCode()",
         "csharp": "new BsonJavaScript(\"test code\").Code",
-        "shell": "Code('test code').code"
+        "shell": "Code('test code').code",
+        "ruby": "BSON::Code.new('test code').javascript"
       }
     ],
     "ObjectId": [
@@ -25,7 +27,8 @@
         "python": "str(ObjectId())",
         "java": "new ObjectId().toHexString()",
         "csharp": "new ObjectId().ToString()",
-        "shell": "ObjectId().toString()"
+        "shell": "ObjectId().toString()",
+        "ruby": "BSON::ObjectId.new.to_s"
       },
       {
         "description": "hex arg toString",
@@ -33,7 +36,8 @@
         "python": "str(ObjectId('5ab901c29ee65f5c8550c5b9'))",
         "java": "new ObjectId(\"5ab901c29ee65f5c8550c5b9\").toHexString()",
         "csharp": "new ObjectId(\"5ab901c29ee65f5c8550c5b9\").ToString()",
-        "shell": "ObjectId('5ab901c29ee65f5c8550c5b9').toString()"
+        "shell": "ObjectId('5ab901c29ee65f5c8550c5b9').toString()",
+        "ruby": "BSON::ObjectId.new('5ab901c29ee65f5c8550c5b9').to_s"
       },
       {
         "description": "getTimestamp",
@@ -41,7 +45,8 @@
         "python": "ObjectId('5ab901c29ee65f5c8550c5b9').generation_time",
         "java": "new ObjectId(\"5ab901c29ee65f5c8550c5b9\").getTimestamp()",
         "csharp": "new ObjectId(\"5ab901c29ee65f5c8550c5b9\").Timestamp",
-        "shell": "ObjectId('5ab901c29ee65f5c8550c5b9').getTimestamp()"
+        "shell": "ObjectId('5ab901c29ee65f5c8550c5b9').getTimestamp()",
+        "ruby": "BSON::ObjectId.new('5ab901c29ee65f5c8550c5b9').generation_time"
       },
       {
         "description": "equals",
@@ -49,7 +54,8 @@
         "python": "ObjectId() == ObjectId()",
         "java": "new ObjectId().equals(new ObjectId())",
         "csharp": "new ObjectId().Equals(new ObjectId())",
-        "shell": "ObjectId().equals(ObjectId())"
+        "shell": "ObjectId().equals(ObjectId())",
+        "ruby": "BSON::ObjectId.new == new BSON::ObjectId.new"
       }
     ],
     "DBRef": [
@@ -59,7 +65,8 @@
         "python": "str(DBRef('coll', ObjectId()))",
         "java": "new DBRef(\"coll\", new ObjectId()).toString()",
         "csharp": "new MongoDBRef(\"coll\", new ObjectId()).ToString()",
-        "shell": "new DBRef('coll', new ObjectId()).toString()"
+        "shell": "new DBRef('coll', new ObjectId()).toString()",
+        "ruby": "Mongo::DBRef.new('coll', new ObjectId()).to_s"
       },
       {
         "description": "getDb",
@@ -67,7 +74,8 @@
         "python": "DBRef('coll', ObjectId()).database",
         "java": "new DBRef(\"coll\", new ObjectId()).getDatabaseName()",
         "csharp": "new MongoDBRef(\"coll\", new ObjectId()).DatabaseName",
-        "shell": "new DBRef('coll', new ObjectId()).getDb()"
+        "shell": "new DBRef('coll', new ObjectId()).getDb()",
+        "ruby": "Mongo::DBRef.new('coll', new ObjectId()).database"
       },
       {
         "description": "getCollection",
@@ -75,7 +83,8 @@
         "python": "DBRef('coll', ObjectId()).collection",
         "java": "new DBRef(\"coll\", new ObjectId()).getCollectionName()",
         "csharp": "new MongoDBRef(\"coll\", new ObjectId()).CollectionName",
-        "shell": "new DBRef('coll', new ObjectId()).getCollection()"
+        "shell": "new DBRef('coll', new ObjectId()).getCollection()",
+        "ruby": "Mongo::DBRef.new('coll', new ObjectId()).collection"
       },
       {
         "description": "getId",
@@ -83,7 +92,8 @@
         "python": "DBRef('coll', ObjectId()).id",
         "java": "new DBRef(\"coll\", new ObjectId()).getId()",
         "csharp": "new MongoDBRef(\"coll\", new ObjectId()).Id",
-        "shell": "new DBRef('coll', new ObjectId()).getId()"
+        "shell": "new DBRef('coll', new ObjectId()).getId()",
+        "ruby": "Mongo::DBRef.new('coll', new ObjectId()).id"
       }
     ],
     "Int32": [
@@ -93,7 +103,8 @@
         "python": "int(3)",
         "java": "3",
         "csharp": "3",
-        "shell": "NumberInt(3).valueOf()"
+        "shell": "NumberInt(3).valueOf()",
+        "ruby": "3"
       },
       {
         "description": "valueOf string arg",
@@ -101,7 +112,8 @@
         "python": "int('3')",
         "java": "Integer.parseInt(\"3\")",
         "csharp": "Convert.ToInt32(\"3\")",
-        "shell": "NumberInt('3').valueOf()"
+        "shell": "NumberInt('3').valueOf()",
+        "ruby": "'3'.to_i"
       }
     ],
     "Double": [
@@ -111,7 +123,8 @@
         "python": "float(3)",
         "java": "3d",
         "csharp": "3.0",
-        "shell": "3"
+        "shell": "3",
+        "ruby": "3.0"
       },
       {
         "description": "valueOf string arg",
@@ -119,7 +132,8 @@
         "python": "float('3')",
         "java": "Double.parseDouble(\"3\")",
         "csharp": "Convert.ToDouble(\"3\")",
-        "shell": "3"
+        "shell": "3",
+        "ruby": "'3'.to_f"
       }
     ],
     "Long": [
@@ -129,7 +143,8 @@
         "python": "int(Int64(429496729601))",
         "java": "(int) 429496729601L",
         "csharp": "(int) 429496729601L",
-        "shell": "NumberLong(429496729601).valueOf()"
+        "shell": "NumberLong(429496729601).valueOf()",
+        "ruby": "429496729601";
       },
       {
         "description": "toNumber",
@@ -137,7 +152,8 @@
         "python": "float(Int64(429496729601))",
         "java": "(double) 429496729601L",
         "csharp": "(double) 429496729601L",
-        "shell": "NumberLong(429496729601).floatApprox"
+        "shell": "NumberLong(429496729601).floatApprox",
+        "ruby": "429496729601"
       },
       {
         "description": "toString without radix",
@@ -145,7 +161,8 @@
         "python": "'429496729601'",
         "java": "\"429496729601\"",
         "csharp": "\"429496729601\"",
-        "shell": "'429496729601'"
+        "shell": "'429496729601'",
+        "ruby": "'429496729601'"
       },
       {
         "description": "toString with radix",
@@ -153,7 +170,8 @@
         "python": "'429496729601'",
         "java": "\"429496729601\"",
         "csharp": "\"429496729601\"",
-        "shell": "'429496729601'"
+        "shell": "'429496729601'",
+        "ruby": "'429496729601'"
       },
       {
         "description": "isZero",
@@ -161,7 +179,8 @@
         "python": "Int64(429496729601) == 0",
         "java": "429496729601L == 0",
         "csharp": "429496729601L == 0",
-        "shell": "NumberLong(429496729601) === 0"
+        "shell": "NumberLong(429496729601) === 0",
+        "ruby": "429496729601 == 0"
       },
       {
         "description": "isNegative",
@@ -169,7 +188,8 @@
         "python": "Int64(429496729601) < 0",
         "java": "429496729601L < 0",
         "csharp": "429496729601L < 0",
-        "shell": "NumberLong(429496729601) < 0"
+        "shell": "NumberLong(429496729601) < 0",
+        "ruby": "429496729601 < 0"
       },
       {
         "description": "isOdd",
@@ -177,7 +197,8 @@
         "python": "(Int64(429496729601) % 2) == 1",
         "java": "(429496729601L % 2) == 1",
         "csharp": "429496729601L % 2 == 1",
-        "shell": "(NumberLong(429496729601) % 2) === 1"
+        "shell": "(NumberLong(429496729601) % 2) === 1",
+        "ruby": "429496729601.odd?"
       },
       {
         "description": "equals",
@@ -185,7 +206,8 @@
         "python": "Int64(429496729601) == Int64(4294967305)",
         "java": "429496729601L == 4294967305L",
         "csharp": "429496729601L == 4294967305L",
-        "shell": "NumberLong(429496729601) === NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) === NumberLong(4294967305)",
+        "ruby": "429496729601 == 4294967305"
       },
       {
         "description": "notEquals",
@@ -193,7 +215,8 @@
         "python": "Int64(429496729601) != Int64(4294967305)",
         "java": "429496729601L != 4294967305L",
         "csharp": "429496729601L != 4294967305L",
-        "shell": "NumberLong(429496729601) !== NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) !== NumberLong(4294967305)",
+        "ruby": "429496729601 != 4294967305"
       },
       {
         "description": "compare",
@@ -201,7 +224,8 @@
         "python": "Int64(429496729601) - Int64(4294967305)",
         "java": "429496729601L - 4294967305L",
         "csharp": "429496729601L - 4294967305L",
-        "shell": "NumberLong(429496729601) - NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) - NumberLong(4294967305)",
+        "ruby": "429496729601 - 4294967305"
       },
       {
         "description": "greaterThan",
@@ -209,7 +233,8 @@
         "python": "Int64(429496729601) > Int64(4294967305)",
         "java": "429496729601L > 4294967305L",
         "csharp": "429496729601L > 4294967305L",
-        "shell": "NumberLong(429496729601) > NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) > NumberLong(4294967305)",
+        "ruby": "429496729601 > 4294967305"
       },
       {
         "description": "greaterThanOrEqual",
@@ -217,7 +242,8 @@
         "python": "Int64(429496729601) >= Int64(4294967305)",
         "java": "429496729601L >= 4294967305L",
         "csharp": "429496729601L >= 4294967305L",
-        "shell": "NumberLong(429496729601) >= NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) >= NumberLong(4294967305)",
+        "ruby": "429496729601 >= 4294967305"
       },
       {
         "description": "lessThan",
@@ -225,7 +251,8 @@
         "python": "Int64(429496729601) < Int64(4294967305)",
         "java": "429496729601L < 4294967305L",
         "csharp": "429496729601L < 4294967305L",
-        "shell": "NumberLong(429496729601) < NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) < NumberLong(4294967305)",
+        "ruby": "429496729601 < 4294967305"
       },
       {
         "description": "lessThanOrEqual",
@@ -233,7 +260,8 @@
         "python": "Int64(429496729601) <= Int64(4294967305)",
         "java": "429496729601L <= 4294967305L",
         "csharp": "429496729601L <= 4294967305L",
-        "shell": "NumberLong(429496729601) <= NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) <= NumberLong(4294967305)",
+        "ruby": "429496729601 <= 4294967305"
       },
       {
         "description": "negate",
@@ -241,7 +269,8 @@
         "python": "-Int64(429496729601)",
         "java": "-429496729601L",
         "csharp": "-429496729601L",
-        "shell": "-NumberLong(429496729601)"
+        "shell": "-NumberLong(429496729601)",
+        "ruby": "-429496729601L"
       },
       {
         "description": "add",
@@ -249,7 +278,8 @@
         "python": "Int64(429496729601) + Int64(4294967305)",
         "java": "429496729601L + 4294967305L",
         "csharp": "429496729601L + 4294967305L",
-        "shell": "NumberLong(429496729601) + NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) + NumberLong(4294967305)",
+        "ruby": "429496729601 + 4294967305"
       },
       {
         "description": "subtract",
@@ -257,7 +287,8 @@
         "python": "Int64(429496729601) - Int64(4294967305)",
         "java": "429496729601L - 4294967305L",
         "csharp": "429496729601L - 4294967305L",
-        "shell": "NumberLong(429496729601) - NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) - NumberLong(4294967305)",
+        "ruby": "429496729601 - 4294967305"
       },
       {
         "description": "multiply",
@@ -265,7 +296,8 @@
         "python": "Int64(429496729601) * Int64(4294967305)",
         "java": "429496729601L * 4294967305L",
         "csharp": "429496729601L * 4294967305L",
-        "shell": "NumberLong(429496729601) * NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) * NumberLong(4294967305)",
+        "ruby": "429496729601 * 4294967305"
       },
       {
         "description": "div",
@@ -273,7 +305,8 @@
         "python": "Int64(429496729601) / Int64(4294967305)",
         "java": "429496729601L / 4294967305L",
         "csharp": "429496729601L / 4294967305L",
-        "shell": "NumberLong(429496729601) / NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) / NumberLong(4294967305)",
+        "ruby": "429496729601 / 4294967305"
       },
       {
         "description": "modulo",
@@ -281,7 +314,8 @@
         "python": "Int64(429496729601) % Int64(4294967305)",
         "java": "429496729601L % 4294967305L",
         "csharp": "429496729601L % 4294967305L",
-        "shell": "NumberLong(429496729601) % NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) % NumberLong(4294967305)",
+        "ruby": "429496729601 % 4294967305"
       },
       {
         "description": "not",
@@ -289,7 +323,8 @@
         "python": "~Int64(429496729601)",
         "java": "~429496729601L",
         "csharp": "~429496729601L",
-        "shell": "~NumberLong(429496729601)"
+        "shell": "~NumberLong(429496729601)",
+        "ruby": "~429496729601"
       },
       {
         "description": "and",
@@ -297,7 +332,8 @@
         "python": "Int64(429496729601) & Int64(4294967305)",
         "java": "429496729601L & 4294967305L",
         "csharp": "429496729601L & 4294967305L",
-        "shell": "NumberLong(429496729601) & NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) & NumberLong(4294967305)",
+        "ruby": "429496729601 & 4294967305"
       },
       {
         "description": "or",
@@ -305,7 +341,8 @@
         "python": "Int64(429496729601) | Int64(4294967305)",
         "java": "429496729601L | 4294967305L",
         "csharp": "429496729601L | 4294967305L",
-        "shell": "NumberLong(429496729601) | NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) | NumberLong(4294967305)",
+        "ruby": "429496729601 | 4294967305"
       },
       {
         "description": "xor",
@@ -313,7 +350,8 @@
         "python": "Int64(429496729601) ^ Int64(4294967305)",
         "java": "429496729601L ^ 4294967305L",
         "csharp": "429496729601L ^ 4294967305L",
-        "shell": "NumberLong(429496729601) ^ NumberLong(4294967305)"
+        "shell": "NumberLong(429496729601) ^ NumberLong(4294967305)",
+        "ruby": "429496729601 ^ 4294967305"
       },
       {
         "description": "shiftLeft",
@@ -321,7 +359,8 @@
         "python": "Int64(429496729601) << 10",
         "java": "Long.rotateLeft(429496729601L, 10)",
         "csharp": "429496729601L << 10",
-        "shell": "NumberLong(429496729601) << 10"
+        "shell": "NumberLong(429496729601) << 10",
+        "ruby": "429496729601 << 10"
       },
       {
         "description": "shiftRight",
@@ -329,7 +368,8 @@
         "python": "Int64(429496729601) >> 10",
         "java": "Long.rotateRight(429496729601L, 10)",
         "csharp": "429496729601L >> 10",
-        "shell": "NumberLong(429496729601) >> 10"
+        "shell": "NumberLong(429496729601) >> 10",
+        "ruby": "429496729601 >> 10"
       }
     ],
     "Decimal128": [
@@ -339,7 +379,8 @@
         "python": "str(Decimal128('5.3E-6175'))",
         "java": "Decimal128.parse(\"5.3E-6175\").toString()",
         "csharp": "Decimal128.Parse(\"5.3E-6175\").ToString()",
-        "shell": "new NumberDecimal(5.3E-6175).toString()"
+        "shell": "new NumberDecimal(5.3E-6175).toString()",
+        "ruby": "BSON::Decimal128.new('5.3E-6175').to_s"
       }
     ],
     "Timestamp": [
@@ -349,7 +390,8 @@
         "python": "str(Timestamp(1, 100))",
         "java": "new BSONTimestamp(1, 100).toString()",
         "csharp": "new BsonTimestamp(1, 100).ToString()",
-        "shell": "Timestamp(1, 100).toString()"
+        "shell": "Timestamp(1, 100).toString()",
+        "ruby": "BSON::Timestamp.new(10, 100).to_s"
       },
       {
         "description": "equals",
@@ -357,7 +399,8 @@
         "python": "Timestamp(1, 100) == Timestamp(2, 99)",
         "java": "new BSONTimestamp(1, 100).equals(new BSONTimestamp(2, 99))",
         "csharp": "new BsonTimestamp(1, 100).Equals(new BsonTimestamp(2, 99))",
-        "shell": "Timestamp(1, 100) === Timestamp(2, 99)"
+        "shell": "Timestamp(1, 100) === Timestamp(2, 99)",
+        "ruby": "BSON::Timestamp.new(10, 100) == BSON::Timestamp.new(2, 99)"
       },
       {
         "description": "compare",
@@ -373,7 +416,8 @@
         "python": "Timestamp(1, 100) != Timestamp(2, 99)",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) != 0",
         "csharp": "new BsonTimestamp(1, 100) != new BsonTimestamp(2, 99)",
-        "shell": "Timestamp(1, 100) !== Timestamp(2, 99)"
+        "shell": "Timestamp(1, 100) !== Timestamp(2, 99)",
+        "ruby": "BSON::Timestamp.new(1, 100) != BSON::Timestamp.new(2, 99)"
       },
       {
         "description": "greaterThan",
@@ -381,7 +425,8 @@
         "python": "Timestamp(1, 100) > Timestamp(2, 99)",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) > 0",
         "csharp": "new BsonTimestamp(1, 100) > new BsonTimestamp(2, 99)",
-        "shell": "Timestamp(1, 100) > Timestamp(2, 99)"
+        "shell": "Timestamp(1, 100) > Timestamp(2, 99)",
+        "ruby": "BSON::Timestamp.new(1, 100) > BSON::Timestamp.new(2, 99)"
       },
       {
         "description": "greaterThanOrEqual",
@@ -389,7 +434,8 @@
         "python": "Timestamp(1, 100) >= Timestamp(2, 99)",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) >= 0",
         "csharp": "new BsonTimestamp(1, 100) >= new BsonTimestamp(2, 99)",
-        "shell": "Timestamp(1, 100) >= Timestamp(2, 99)"
+        "shell": "Timestamp(1, 100) >= Timestamp(2, 99)",
+        "ruby": "BSON::Timestamp.new(1, 100) >= BSON::Timestamp.new(2, 99)"
       },
       {
         "description": "lessThan",
@@ -397,7 +443,8 @@
         "python": "Timestamp(1, 100) < Timestamp(2, 99)",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) < 0",
         "csharp": "new BsonTimestamp(1, 100) < new BsonTimestamp(2, 99)",
-        "shell": "Timestamp(1, 100) < Timestamp(2, 99)"
+        "shell": "Timestamp(1, 100) < Timestamp(2, 99)",
+        "ruby": "BSON::Timestamp.new(1, 100) < BSON::Timestamp.new(2, 99)"
       },
       {
         "description": "lessThanOrEqual",
@@ -405,7 +452,8 @@
         "python": "Timestamp(1, 100) <= Timestamp(2, 99)",
         "java": "new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) <= 0",
         "csharp": "new BsonTimestamp(1, 100) <= new BsonTimestamp(2, 99)",
-        "shell": "Timestamp(1, 100) <= Timestamp(2, 99)"
+        "shell": "Timestamp(1, 100) <= Timestamp(2, 99)",
+        "ruby": "BSON::Timestamp.new(1, 100) <= BSON::Timestamp.new(2, 99)"
       },
       {
         "description": "getLowBits",
@@ -413,7 +461,8 @@
         "python": "Timestamp(1, 100).time",
         "java": "new BSONTimestamp(1, 100).getTime()",
         "csharp": "new BsonTimestamp(1, 100).ToUniversalTime()",
-        "shell": "Timestamp(1, 100).getTime()"
+        "shell": "Timestamp(1, 100).getTime()",
+        "ruby": "BSON::Timestamp.new(1, 100).seconds"
       },
       {
         "description": "getHighBits",
@@ -421,7 +470,8 @@
         "python": "Timestamp(1, 100).inc",
         "java": "new BSONTimestamp(1, 100).getInc()",
         "csharp": "new BsonTimestamp(1, 100).Increment",
-        "shell": "Timestamp(1, 100).getInc()"
+        "shell": "Timestamp(1, 100).getInc()",
+        "ruby": "BSON::Timestamp.new(1, 100).increment"
       }
     ],
     "Symbol": [
@@ -431,7 +481,8 @@
         "python": "'2'",
         "java": "new Symbol(\"2\").getSymbol()",
         "csharp": "\"2\"",
-        "shell": "'2'"
+        "shell": "'2'",
+        "ruby": ":'2'"
       },
       {
         "description": "toString",
@@ -439,7 +490,8 @@
         "python": "'2'",
         "java": "new Symbol(\"2\").toString()",
         "csharp": "\"2\"",
-        "shell": "'2'"
+        "shell": "'2'",
+        "shell": ":'2'"
       },
       {
         "description": "inspect",
@@ -448,6 +500,7 @@
         "java": "new Symbol(\"2\").getSymbol()",
         "csharp": "\"2\"",
         "shell": "'2'"
+        "ruby": ":'2'.inspect"
       }
     ]
   }

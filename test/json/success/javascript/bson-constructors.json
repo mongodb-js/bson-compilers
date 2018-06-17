@@ -26,7 +26,7 @@
         "java": "new CodeWithScope(\"string\", new Document(\"x\", \"1\"))",
         "csharp": "new BsonJavaScriptWithScope(\"string\", new BsonDocument(\"x\", \"1\"))",
         "shell": "Code('string', {\n  x: '1'\n})",
-        "ruby": "BSON::Code.new('string', {x: '1'})"
+        "ruby": "BSON::CodeWithScope.new('string', {x: '1'})"
       },
       {
         "description": "Code with function code",
@@ -44,7 +44,7 @@
         "java": "new CodeWithScope(\"this.a > i\", new Document(\"i\", \"1\"))",
         "csharp": "new BsonJavaScriptWithScope(\"this.a > i\", new BsonDocument(\"i\", \"1\"))",
         "shell": "new Code('this.a > i', {\n    i: '1'\n  })",
-        "ruby": "BSON::Code.new('this.a > i', {i: '1'})"
+        "ruby": "BSON::CodeWithScope.new('this.a > i', {i: '1'})"
       }
     ],
     "ObjectId": [

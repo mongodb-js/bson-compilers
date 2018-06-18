@@ -83,8 +83,8 @@ Templates:
         }
     ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate !!js/function >
         (args, depth) => {
-            const indent = '\n' + '\t\t'.repeat(depth);
-            const closingIndent = '\n' + '\t\t'.repeat(depth - 1);
+            const indent = '\n' + '    '.repeat(depth);
+            const closingIndent = '\n' + '    '.repeat(depth - 1);
             const singleStringify = (str) => {
                 let newStr = str;
                 if (

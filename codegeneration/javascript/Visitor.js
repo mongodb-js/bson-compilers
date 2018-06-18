@@ -99,6 +99,7 @@ class Visitor extends ECMAScriptVisitor {
    *    separator - a string separator to go between children.
    *    ignore - an array of child indexes to skip.
    *    children - the set of children to visit.
+   * @param {Integer} depth
    * @returns {String}
    */
   visitChildren(ctx, options, depth) {
@@ -136,6 +137,7 @@ class Visitor extends ECMAScriptVisitor {
   /**
    * Child nodes: literal
    * @param {LiteralExpressionContext} ctx
+   * @param {Integer} depth
    * @return {String}
    */
   visitLiteralExpression(ctx, depth) {
@@ -171,6 +173,7 @@ class Visitor extends ECMAScriptVisitor {
   /**
    * Child nodes: propertyNameAndValueList?
    * @param {ObjectLiteralContext} ctx
+   * @param {Integer} depth
    * @return {String}
    */
   visitObjectLiteral(ctx, depth) {
@@ -194,6 +197,7 @@ class Visitor extends ECMAScriptVisitor {
   /**
    * Child nodes: elementList*
    * @param {ArrayLiteralContext} ctx
+   * @param {Integer} depth
    * @return {String}
    */
   visitArrayLiteral(ctx, depth) {
@@ -233,6 +237,7 @@ class Visitor extends ECMAScriptVisitor {
   /**
    * Child nodes: singleExpression arguments
    * @param {FuncCallExpressionContext} ctx
+   * @param {Integer} depth
    * @return {String}
    */
   visitFuncCallExpression(ctx, depth) {
@@ -295,6 +300,7 @@ class Visitor extends ECMAScriptVisitor {
    *
    * Child nodes: singleExpression identifierName
    * @param {GetAttributeExpressionContext} ctx
+   * @param {Integer} depth
    * @return {String}
    */
   visitGetAttributeExpression(ctx, depth) {
@@ -340,6 +346,7 @@ class Visitor extends ECMAScriptVisitor {
   /**
    * New in the shell/js is the same as calling without arguments.
    * @param {NewExpressionContext} ctx
+   * @param {Integer} depth
    * @return {String}
    */
   visitNewExpression(ctx, depth) {
@@ -465,6 +472,7 @@ class Visitor extends ECMAScriptVisitor {
    *
    * @param {Array} expectedType - types to cast to.
    * @param {antlr4.ParserRuleContext} actualCtx - ctx to cast from, if valid.
+   * @param {Integer} depth
    *
    * @returns {String} - visited result, or null on error.
    */
@@ -520,6 +528,7 @@ class Visitor extends ECMAScriptVisitor {
    * possible argument types for that index.
    * @param {ArgumentListContext} argumentList - null if empty.
    * @param {String} name - The name of the function for error reporting.
+   * @param {Integer} depth
    *
    * @returns {Array} - Array containing the generated output for each argument.
    */
@@ -567,6 +576,7 @@ class Visitor extends ECMAScriptVisitor {
    * so that we can determine if the generated number needs to be parsed or casted.
    *
    * @param {FuncCallExpressionContext} ctx
+   * @param {Integer} depth
    * @returns {String}
    */
   processNumber(ctx, depth) {
@@ -605,6 +615,7 @@ class Visitor extends ECMAScriptVisitor {
    * Check arguments then execute in the same way as regex literals.
    *
    * @param {FuncCallExpressionContext} ctx
+   * @param {Integer} depth
    * @return {String}
    */
   processRegExp(ctx, depth) {
@@ -618,6 +629,7 @@ class Visitor extends ECMAScriptVisitor {
    * and the process methods are constructed with "Process" + <type name>.
    *
    * @param {FuncCallExpressionContext} ctx
+   * @param {Integer} depth
    * @return {String}
    */
   process_regex(ctx, depth) { // eslint-disable-line camelcase
@@ -650,6 +662,7 @@ class Visitor extends ECMAScriptVisitor {
    * Process BSON regexps because we need to verify the flags are valid.
    *
    * @param {FuncCallExpressionContext} ctx
+   * @param {Integer} depth
    * @return {string}
    */
   processBSONRegExp(ctx, depth) {
@@ -685,6 +698,7 @@ class Visitor extends ECMAScriptVisitor {
    * don't want to ever visit that node.
    *
    * @param {FuncCallExpressionContext} ctx
+   * @param {Integer} depth
    * @return {String}
    */
   processCodeFromJS(ctx, depth) {
@@ -724,6 +738,7 @@ class Visitor extends ECMAScriptVisitor {
    * ObjectId needs preprocessing because it needs to be executed.
    *
    * @param {FuncCallExpressionContext} ctx
+   * @param {Integer} depth
    * @return {String}
    */
   processObjectId(ctx, depth) {
@@ -752,6 +767,7 @@ class Visitor extends ECMAScriptVisitor {
    * Long needs preprocessing because it needs to be executed.
    *
    * @param {FuncCallExpressionContext} ctx
+   * @param {Integer} depth
    * @return {String}
    */
   processLong(ctx, depth) {

@@ -162,7 +162,7 @@ class Visitor extends ECMAScriptVisitor {
     while (ctx.indentDepth === undefined) {
       ctx = ctx.parentCtx;
       if (ctx === undefined || ctx === null) {
-        return -1;
+        return 0;
       }
     }
     return ctx.indentDepth;
@@ -185,7 +185,6 @@ class Visitor extends ECMAScriptVisitor {
         }), ctx.indentDepth);
       }
     }
-    console.log('args=' + args);
     if (ctx.type.template) {
       return ctx.type.template(args, ctx.indentDepth);
     }

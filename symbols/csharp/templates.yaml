@@ -72,7 +72,9 @@ Templates:
         }
     ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate !!js/function >
         (arg, depth) => {
-            const indent = '\n\t\t';
+            const indent = '\n\t\t'.repeat(depth);
+            console.log('DEPTH', depth)
+            console.log('ARG', arg)
             const doubleStringify = (str) => {
                 let newStr = str;
                 if (
@@ -88,6 +90,8 @@ Templates:
             }
 
             const pairs = arg.map((pair) => {
+                console.log('PAIR', pair)
+                console.log('DEPTH', depth)
                 return `{ ${doubleStringify(pair[0])}, ${pair[1]} }`;
             }).join(', ');
 

@@ -50,14 +50,13 @@ Templates:
     NumericTypeTemplate: &NumericTypeTemplate null
     ArrayTypeTemplate: &ArrayTypeTemplate !!js/function >
         (literal, depth) => {
-            const newline = '\n';
-            const indent = newline + '    '.repeat(depth);
-            const closingIndent = newline + '    '.repeat(depth-1);
+            const indent = '\n' + '    '.repeat(depth);
+            const initialIndent = '\n' + '    '.repeat(depth-1);
             if (literal === '') {
               return 'new BsonArray()'
             }
 
-            return `new BsonArray${newline}{${indent}${literal}${closingIndent}}`;
+            return `new BsonArray${initialIndent}{${indent}${literal}${initialIndent}}`;
         }
     NullTypeTemplate: &NullTypeTemplate !!js/function >
         () => {
@@ -76,9 +75,8 @@ Templates:
         }
     ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate !!js/function >
         (arg, depth) => {
-            const newline = '\n';
-            const indent = newline + '    '.repeat(depth);
-            const closingIndent = newline + '    '.repeat(depth-1);
+            const indent = '\n' + '    '.repeat(depth);
+            const initialIndent = '\n' + '    '.repeat(depth-1);
             const doubleStringify = (str) => {
                 let newStr = str;
                 if (
@@ -90,14 +88,14 @@ Templates:
             }
 
             if (arg.length === 1) {
-              return `new BsonDocument(${doubleStringify(arg[0][0])}, ${arg[0][1]})`
+              return `new BsonDocument(${doubleStringify(arg[0][0])}, ${arg[0][1]})`;
             }
 
             const pairs = arg.map((pair) => {
                 return `${indent}{ ${doubleStringify(pair[0])}, ${pair[1]} }`;
             }).join(', ');
 
-            return `new BsonDocument${newline}{${pairs}${closingIndent}}`
+            return `new BsonDocument${initialIndent}{${pairs}${initialIndent}}`
         }
     # BSON Object Method templates
     CodeCodeTemplate: &CodeCodeTemplate !!js/function >

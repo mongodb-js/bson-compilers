@@ -24,7 +24,10 @@ Templates:
     OctalTypeTemplate: &OctalTypeTemplate null
     NumericTypeTemplate: &NumericTypeTemplate null
     ArrayTypeTemplate: &ArrayTypeTemplate !!js/function >
-        (literal) => {
+        (literal, depth) => {
+            if (literal === '') {
+                return '[]'
+            }
             const indent = '\n' + '  '.repeat(depth);
             const closingIndent = '\n' + '  '.repeat(depth - 1);
 
@@ -40,10 +43,13 @@ Templates:
         }
     ObjectTypeTemplate: &ObjectTypeTemplate !!js/function >
         (literal) => {
+            if (literal === '') {
+                return '{}';
+            }
             return literal;
         }
     ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate !!js/function >
-        (args) => {
+        (args, depth) => {
             const indent = '\n' + '  '.repeat(depth);
             const closingIndent = '\n' + '  '.repeat(depth - 1);
             const pairs = args.map((arg) => {

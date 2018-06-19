@@ -67,6 +67,9 @@ Templates:
     NumericTypeTemplate: &NumericTypeTemplate null
     ArrayTypeTemplate: &ArrayTypeTemplate !!js/function >
         (literal, depth) => {
+            if (literal === '') {
+                return '[]'
+            }
             const indent = '\n' + '    '.repeat(depth);
             const closingIndent = '\n' + '    '.repeat(depth - 1);
 
@@ -82,6 +85,9 @@ Templates:
         }
     ObjectTypeTemplate: &ObjectTypeTemplate !!js/function >
         (literal, depth) => {
+            if (literal === '') {
+                return '{}';
+            }
             return literal;
         }
     ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate !!js/function >
@@ -97,6 +103,7 @@ Templates:
                 }
                 return `'${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}'`;
             }
+
             const pairs = args.map((arg) => {
                 return `${indent}${singleStringify(arg[0])}: ${arg[1]}`;
             }).join(', ');

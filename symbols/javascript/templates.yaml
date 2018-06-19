@@ -25,7 +25,10 @@ Templates:
     NumericTypeTemplate: &NumericTypeTemplate null
     ArrayTypeTemplate: &ArrayTypeTemplate !!js/function >
         (literal) => {
-            return `[${literal}]`;
+            const indent = '\n' + '  '.repeat(depth);
+            const closingIndent = '\n' + '  '.repeat(depth - 1);
+
+            return `[${indent}${literal}${closingIndent}]`;
         }
     NullTypeTemplate: &NullTypeTemplate !!js/function >
         () => {
@@ -41,8 +44,8 @@ Templates:
         }
     ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate !!js/function >
         (args) => {
-            const indent = '\n' + '    '.repeat(depth);
-            const closingIndent = '\n' + '    '.repeat(depth - 1);
+            const indent = '\n' + '  '.repeat(depth);
+            const closingIndent = '\n' + '  '.repeat(depth - 1);
             const pairs = args.map((arg) => {
                 return `${indent}${arg[0]}: ${arg[1]}`;
             }).join(', ');

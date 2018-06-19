@@ -67,7 +67,10 @@ Templates:
     NumericTypeTemplate: &NumericTypeTemplate null
     ArrayTypeTemplate: &ArrayTypeTemplate !!js/function >
         (literal, depth) => {
-            return `[${literal}]`;
+            const indent = '\n' + '    '.repeat(depth);
+            const closingIndent = '\n' + '    '.repeat(depth - 1);
+
+            return `[${indent}${literal}${closingIndent}]`;
         }
     NullTypeTemplate: &NullTypeTemplate !!js/function >
         () => {

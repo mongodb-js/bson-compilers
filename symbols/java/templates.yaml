@@ -67,8 +67,16 @@ Templates:
         }
     NumericTypeTemplate: &NumericTypeTemplate null
     ArrayTypeTemplate: &ArrayTypeTemplate !!js/function >
-        (literal) => {
-            return `Arrays.asList(${literal})`;
+        (literal, depth) => {
+            const indent = '\n' + '    '.repeat(depth);
+            console.log('depth outside', depth)
+            const arr = literal.split(', new')
+            const concat = arr.reduce((prev, current) => {
+              console.log('depth inside', depth)
+              return prev + `, ${indent}new` + current
+            })
+            console.log("CONCAT", concat)
+            return `Arrays.asList(${concat})`;
         }
     NullTypeTemplate: &NullTypeTemplate null
     UndefinedTypeTemplate: &UndefinedTypeTemplate !!js/function >

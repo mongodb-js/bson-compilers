@@ -100,26 +100,26 @@ class Visitor extends ECMAScriptVisitor {
    *    children - the set of children to visit.
    * @returns {String}
    */
-  // visitChildren(ctx, options) {
-  //   const opts = {
-  //     start: 0, step: 1, separator: '', ignore: [], children: ctx.children
-  //   };
-  //   Object.assign(opts, options ? options : {});
-  //   opts.end = ('end' in opts) ? opts.end : opts.children.length - 1;
-  //
-  //   let code = '';
-  //   for (let i = opts.start; i <= opts.end; i += opts.step) {
-  //     if (opts.ignore.indexOf(i) === -1) {
-  //       code += this.visit(opts.children[i]) + (i === opts.end ? '' : opts.separator);
-  //     }
-  //   }
-  //   /* Set the node's type to the first child, if it's not already set.
-  //     More often than not, type will be set directly by the visitNode method. */
-  //   if (ctx.type === undefined) {
-  //     ctx.type = opts.children.length ? opts.children[0].type : this.Types._undefined;
-  //   }
-  //   return code.trim();
-  // }
+  visitChildren(ctx, options) {
+    const opts = {
+      start: 0, step: 1, separator: '', ignore: [], children: ctx.children
+    };
+    Object.assign(opts, options ? options : {});
+    opts.end = ('end' in opts) ? opts.end : opts.children.length - 1;
+
+    let code = '';
+    for (let i = opts.start; i <= opts.end; i += opts.step) {
+      if (opts.ignore.indexOf(i) === -1) {
+        code += this.visit(opts.children[i]) + (i === opts.end ? '' : opts.separator);
+      }
+    }
+    /* Set the node's type to the first child, if it's not already set.
+      More often than not, type will be set directly by the visitNode method. */
+    if (ctx.type === undefined) {
+      ctx.type = opts.children.length ? opts.children[0].type : this.Types._undefined;
+    }
+    return code.trim();
+  }
 
   visitEqualityExpression(ctx) {
     ctx.type = this.Types._boolean;

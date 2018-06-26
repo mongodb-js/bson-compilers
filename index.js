@@ -67,6 +67,7 @@ const getCompiler = (visitor, generator, symbols) => {
       console.log('BSON-COMPILERS: input', input);
       const tree = loadTree(input);
       console.log('BSON-COMPILERS: tree', tree);
+      console.log('BSON-COMPILERS: output', compiler.start(tree));
       return compiler.start(tree);
     } catch (e) {
       if (e.code && e.code.includes('BSONCOMPILERS')) {

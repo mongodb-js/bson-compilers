@@ -73,14 +73,14 @@ class Visitor extends ECMAScriptVisitor {
     if (this.Syntax.eof.template) {
       return this.Syntax.eof.template();
     }
-    return 'EOF';
+    return '\n';
   }
 
   visitEos() {
     if (this.Syntax.eos.template) {
       return this.Syntax.eos.template();
     }
-    return 'EOS';
+    return '\n';
   }
 
   visitEmptyStatement() {
@@ -201,14 +201,14 @@ class Visitor extends ECMAScriptVisitor {
     let args = '';
     if (ctx.elementList()) {
       const children = ctx.elementList().children.filter((child) => {
+        console.log(`Filtering node with constructor name=${child.constructor.name}`);
         return child.constructor.name !== 'TerminalNodeImpl';
       });
-      // if (ctx.type.argsTemplate) {
-      //   args = ctx.type.argsTemplate(children.map((c) => { return this.visit(c); }), ctx.indentDepth);
-      // } else {
-      args = children.map((c) => { return this.visit(c); }).join('* ');
-      console.log(`generated args="${args}"`);
-      // }
+      if (ctx.type.argsTemplate) { // NOTE: not currently being used anywhere.
+        args = ctx.type.argsTemplate(children.map((c) => { return this.visit(c); }), ctx.indentDepth);
+      } else {
+        args = children.map((c) => { return this.visit(c); }).join('* ');
+      }
     }
     if (ctx.type.template) {
       return ctx.type.template(args, ctx.indentDepth);

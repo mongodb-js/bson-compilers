@@ -64,11 +64,12 @@ const getCompiler = (visitor, generator, symbols) => {
   });
   return (input) => {
     try {
-      console.log('BSON-COMPILERS: input', input);
+      console.log(`BSON-COMPILERS: input="${input}"`);
       const tree = loadTree(input);
-      console.log('BSON-COMPILERS: tree', tree);
-      console.log('BSON-COMPILERS: output', compiler.start(tree));
-      return compiler.start(tree);
+      console.log(`BSON-COMPILERS: tree="${tree.toStringTree()}"`);
+      const ret = compiler.start(tree);
+      console.log(`BSON-COMPILERS: output="${ret}"`);
+      return ret;
     } catch (e) {
       if (e.code && e.code.includes('BSONCOMPILERS')) {
         throw e;

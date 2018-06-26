@@ -201,8 +201,7 @@ class Visitor extends ECMAScriptVisitor {
     let args = '';
     if (ctx.elementList()) {
       const children = ctx.elementList().children.filter((child) => {
-        console.log(`Filtering node with constructor name=${child.constructor.name}`);
-        return child.constructor.name !== 'TerminalNodeImpl';
+        return !('symbol' in child);
       });
       if (ctx.type.argsTemplate) { // NOTE: not currently being used anywhere.
         args = ctx.type.argsTemplate(children.map((c) => { return this.visit(c); }), ctx.indentDepth);

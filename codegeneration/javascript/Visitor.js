@@ -73,14 +73,14 @@ class Visitor extends ECMAScriptVisitor {
     if (this.Syntax.eof.template) {
       return this.Syntax.eof.template();
     }
-    return '\n';
+    return 'EOF';
   }
 
   visitEos() {
     if (this.Syntax.eos.template) {
       return this.Syntax.eos.template();
     }
-    return '\n';
+    return 'EOS';
   }
 
   visitEmptyStatement() {
@@ -100,26 +100,26 @@ class Visitor extends ECMAScriptVisitor {
    *    children - the set of children to visit.
    * @returns {String}
    */
-  visitChildren(ctx, options) {
-    const opts = {
-      start: 0, step: 1, separator: '', ignore: [], children: ctx.children
-    };
-    Object.assign(opts, options ? options : {});
-    opts.end = ('end' in opts) ? opts.end : opts.children.length - 1;
-
-    let code = '';
-    for (let i = opts.start; i <= opts.end; i += opts.step) {
-      if (opts.ignore.indexOf(i) === -1) {
-        code += this.visit(opts.children[i]) + (i === opts.end ? '' : opts.separator);
-      }
-    }
-    /* Set the node's type to the first child, if it's not already set.
-      More often than not, type will be set directly by the visitNode method. */
-    if (ctx.type === undefined) {
-      ctx.type = opts.children.length ? opts.children[0].type : this.Types._undefined;
-    }
-    return code.trim();
-  }
+  // visitChildren(ctx, options) {
+  //   const opts = {
+  //     start: 0, step: 1, separator: '', ignore: [], children: ctx.children
+  //   };
+  //   Object.assign(opts, options ? options : {});
+  //   opts.end = ('end' in opts) ? opts.end : opts.children.length - 1;
+  //
+  //   let code = '';
+  //   for (let i = opts.start; i <= opts.end; i += opts.step) {
+  //     if (opts.ignore.indexOf(i) === -1) {
+  //       code += this.visit(opts.children[i]) + (i === opts.end ? '' : opts.separator);
+  //     }
+  //   }
+  //   /* Set the node's type to the first child, if it's not already set.
+  //     More often than not, type will be set directly by the visitNode method. */
+  //   if (ctx.type === undefined) {
+  //     ctx.type = opts.children.length ? opts.children[0].type : this.Types._undefined;
+  //   }
+  //   return code.trim();
+  // }
 
   visitEqualityExpression(ctx) {
     ctx.type = this.Types._boolean;
@@ -129,7 +129,7 @@ class Visitor extends ECMAScriptVisitor {
     if (this.Syntax.equality) {
       return this.Syntax.equality.template(lhs, op, rhs);
     }
-    return this.visitChildren(ctx, {});
+    return this.visitChildren(ctx);
   }
 
   /**
@@ -187,7 +187,7 @@ class Visitor extends ECMAScriptVisitor {
     if (ctx.type.template) {
       return ctx.type.template(args, ctx.indentDepth);
     }
-    return this.visitChildren(ctx, {});
+    return this.visitChildren(ctx);
   }
 
   /**
@@ -203,16 +203,17 @@ class Visitor extends ECMAScriptVisitor {
       const children = ctx.elementList().children.filter((child) => {
         return child.constructor.name !== 'TerminalNodeImpl';
       });
-      if (ctx.type.argsTemplate) {
-        args = ctx.type.argsTemplate(children.map((c) => { return this.visit(c); }), ctx.indentDepth);
-      } else {
-        args = children.map((c) => { return this.visit(c); }).join(', ');
-      }
+      // if (ctx.type.argsTemplate) {
+      //   args = ctx.type.argsTemplate(children.map((c) => { return this.visit(c); }), ctx.indentDepth);
+      // } else {
+      args = children.map((c) => { return this.visit(c); }).join('* ');
+      console.log(`generated args="${args}"`);
+      // }
     }
     if (ctx.type.template) {
       return ctx.type.template(args, ctx.indentDepth);
     }
-    return this.visitChildren(ctx, {});
+    return this.visitChildren(ctx);
   }
 
   /**
@@ -276,7 +277,7 @@ class Visitor extends ECMAScriptVisitor {
   }
 
   visitIdentifierExpression(ctx) {
-    const name = this.visitChildren(ctx, {});
+    const name = this.visitChildren(ctx);
     ctx.type = this.Symbols[name];
     if (ctx.type === undefined) {
       throw new BsonCompilersReferenceError(`Symbol '${name}' is undefined`);
@@ -346,7 +347,7 @@ class Visitor extends ECMAScriptVisitor {
     if ('emitNew' in this) {
       return this.emitNew(ctx);
     }
-    const res = this.visitChildren(ctx, {separator: ' '});
+    const res = this.visitChildren(ctx);
     ctx.type = ctx.singleExpression().type;
     return res;
   }
@@ -642,7 +643,7 @@ class Visitor extends ECMAScriptVisitor {
     if (ctx.type.template) {
       return ctx.type.template(pattern, targetflags);
     }
-    return this.visitChildren(ctx, {});
+    return this.visitChildren(ctx);
   }
 
   /**

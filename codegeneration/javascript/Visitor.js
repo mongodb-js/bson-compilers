@@ -207,7 +207,9 @@ class Visitor extends ECMAScriptVisitor {
         return arg !== ',';
       });
       if (ctx.type.argsTemplate) { // NOTE: not currently being used anywhere.
-        args = ctx.type.argsTemplate(visitedElements, ctx.indentDepth);
+        args = visitedElements.map((arg) => {
+          return ctx.type.argsTemplate(arg, ctx.indentDepth);
+        }).join(',');
       } else {
         args = visitedElements.join(', ');
       }

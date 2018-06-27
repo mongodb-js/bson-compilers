@@ -75,6 +75,10 @@ Templates:
 
             return `[${indent}${literal}${closingIndent}]`;
         }
+    ArrayTypeArgsTemplate: &ArrayTypeArgsTemplate !!js/function >
+        (arg) => {
+            return `*${arg}`;
+        }
     NullTypeTemplate: &NullTypeTemplate !!js/function >
         () => {
             return 'None';

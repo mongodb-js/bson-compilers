@@ -58,6 +58,7 @@ Templates:
 
             return `new BsonArray${initialIndent}{${indent}${literal}${initialIndent}}`;
         }
+    ArrayTypeArgsTemplate: &ArrayTypeArgsTemplate null
     NullTypeTemplate: &NullTypeTemplate !!js/function >
         () => {
             return 'BsonNull.Value';

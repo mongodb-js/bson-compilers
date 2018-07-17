@@ -191,24 +191,160 @@ const filterOperators = {
       output: 'eq("x", where("function(){$x===true}"))'
     }
   ],
-  // TODO: geo ops
+  geometry: [
+    {
+      input: '{$geometry: {type: "Point", coordinates: [1, 2]}}', // 1 position
+      output: 'new Point(new Position(1L, 2L))'
+    },
+    {
+      input: `{$geometry: {type: "MultiPoint", coordinates: [
+        [1, 2],
+        [3, 4],
+        [5, 6]
+      ]}}`, // Array of 1+ positions
+      output: 'new MultiPoint(Arrays.asList(new Position(1L, 2L), new Position(3L, 4L), new Position(5L, 6L)))'
+    },
+    {
+      input: `{$geometry: {type: "LineString", coordinates: [
+        [1, 2],
+        [3, 4],
+        [5, 6]
+      ]}}`, // Array of 2+ positions
+      output: 'new LineString(Arrays.asList(new Position(1L, 2L), new Position(3L, 4L), new Position(5L, 6L)))'
+    },
+    {
+      input: `{$geometry: {type: "MultiLineString", coordinates: [
+        [ [1, 2], [3, 4], [5, 6] ],
+        [ [7, 8], [9, 10 ] ],
+      ]}}`, // Array of 1+ arrays of 2+ positions
+      output: 'new MultiLineString(Arrays.asList(' +
+          'Arrays.asList(new Position(1L, 2L), new Position(3L, 4L), new Position(5L, 6L)), ' +
+          'Arrays.asList(new Position(7L, 8L), new Position(9L, 10L))' +
+        '))'
+    },
+    {
+      input: `{$geometry: {type: "Polygon", coordinates: [
+        [ [1, 2], [3, 4], [5, 6], [1, 2] ],
+        [ [7, 8], [9, 10], [9, 11], [7, 8] ],
+        [ [9, 10], [11, 12], [11, 10], [9, 10] ]
+      ]}}`, // 1 outer ring (array of 4+ positions), plus 0+ inner rings (array of 4+ positions)
+      output: 'new Polygon(new PolygonCoordinates(' +
+      'Arrays.asList(new Position(1L, 2L), new Position(3L, 4L), new Position(5L, 6L), new Position(1L, 2L)), ' +
+      'Arrays.asList(new Position(7L, 8L), new Position(9L, 10L), new Position(9L, 11L), new Position(7L, 8L)), ' +
+      'Arrays.asList(new Position(9L, 10L), new Position(11L, 12L), new Position(11L, 10L), new Position(9L, 10L))' +
+      '))'
+    },
+    {
+      input: `{$geometry: {type: "Polygon", coordinates: [
+        [ [1, 2], [3, 4], [5, 6], [1, 2] ]
+      ]}}`, // 1 outer ring (array of 3+ positions) without any inner rings
+      output: 'new Polygon(new PolygonCoordinates(' +
+        'Arrays.asList(new Position(1L, 2L), new Position(3L, 4L), new Position(5L, 6L), new Position(1L, 2L))' +
+      '))'
+    },
+    {
+      input: `{$geometry: {type: "MultiPolygon", coordinates: [
+        [
+          [ [1, 2],  [3, 4],   [5, 6],   [1, 2] ]
+        ],
+        [
+          [ [1, 2],  [3, 4],   [5, 6],   [1, 2] ],
+          [ [7, 8],  [9, 10],  [9, 11],  [7, 8] ],
+          [ [9, 10], [11, 12], [11, 10], [9, 10] ]
+        ]
+      ]}}`, // Array of Polygons
+
+      output: 'new MultiPolygon(' +
+        'Arrays.asList(' +
+          'new PolygonCoordinates(' +
+            'Arrays.asList(new Position(1L, 2L), new Position(3L, 4L), new Position(5L, 6L), new Position(1L, 2L))' +
+          '), ' +
+          'new PolygonCoordinates(' +
+            'Arrays.asList(new Position(1L, 2L), new Position(3L, 4L), new Position(5L, 6L), new Position(1L, 2L)), ' +
+            'Arrays.asList(new Position(7L, 8L), new Position(9L, 10L), new Position(9L, 11L), new Position(7L, 8L)), ' +
+            'Arrays.asList(new Position(9L, 10L), new Position(11L, 12L), new Position(11L, 10L), new Position(9L, 10L))' +
+          ')' +
+         ')' +
+      ')'
+    },
+    {
+      input: `{$geometry: {type: "GeometryCollection", coordinates: [
+        {type: "Point", coordinates: [1, 2]},
+        {type: "MultiPoint", coordinates: [[1, 2], [3, 4], [5, 6]]},
+        {type: "LineString", coordinates: [[1, 2], [3, 4], [5, 6]]},
+        {type: "MultiLineString", coordinates: [ [[1, 2], [3, 4], [5, 6]], [[7, 8], [9, 10]] ]},
+        {type: "Polygon", coordinates: [[ [1, 2], [3, 4], [5, 6], [1, 2] ]]},
+        {type: "MultiPolygon", coordinates: [
+        [[ [1, 2],  [3, 4],   [5, 6],   [1, 2] ]],
+        [
+          [ [1, 2],  [3, 4],   [5, 6],   [1, 2] ],
+          [ [7, 8],  [9, 10],  [9, 11],  [7, 8] ],
+          [ [9, 10], [11, 12], [11, 10], [9, 10] ]
+        ]]}]}}`,
+      output: 'new GeometryCollection(Arrays.asList(' +
+      'new Point(new Position(1L, 2L)), ' +
+      'new MultiPoint(Arrays.asList(new Position(1L, 2L), new Position(3L, 4L), new Position(5L, 6L))), ' +
+      'new LineString(Arrays.asList(new Position(1L, 2L), new Position(3L, 4L), new Position(5L, 6L))), ' +
+      'new MultiLineString(Arrays.asList(' +
+        'Arrays.asList(new Position(1L, 2L), new Position(3L, 4L), new Position(5L, 6L)), ' +
+        'Arrays.asList(new Position(7L, 8L), new Position(9L, 10L)))), ' +
+      'new Polygon(new PolygonCoordinates(Arrays.asList(new Position(1L, 2L), new Position(3L, 4L), new Position(5L, 6L), new Position(1L, 2L)))), ' +
+      'new MultiPolygon(Arrays.asList(' +
+        'new PolygonCoordinates(Arrays.asList(new Position(1L, 2L), new Position(3L, 4L), new Position(5L, 6L), new Position(1L, 2L))), ' +
+        'new PolygonCoordinates(' +
+          'Arrays.asList(new Position(1L, 2L), new Position(3L, 4L), new Position(5L, 6L), new Position(1L, 2L)), ' +
+          'Arrays.asList(new Position(7L, 8L), new Position(9L, 10L), new Position(9L, 11L), new Position(7L, 8L)), ' +
+          'Arrays.asList(new Position(9L, 10L), new Position(11L, 12L), new Position(11L, 10L), new Position(9L, 10L))' +
+      ')))))'
+    }
+  ],
   geoWithin: [
+    {
+      input: '{x: {$geoWithin: {$geometry: {type: "Point", coordinates: [1, 2]}}}}',
+      output: 'geoWithin("x", new Point(new Position(1L, 2L)))'
+    }
   ],
   geoWithinBox: [
+    {
+      input: '{x: {$geoWithin: {$box: [ [1, 2], [3, 4] ]}}}',
+      output: 'geoWithinBox("x", 1L, 2L, 3L, 4L)'
+    }
   ],
   geoWithinPolygon: [
+    {
+      input: '{x: {$geoWithin: {$polygon: [ [1, 2], [3, 4], [5, 6], [1, 2] ]}}}',
+      output: 'geoWithinPolygon("x", Arrays.asList(Arrays.asList(1L, 2L), Arrays.asList(3L, 4L), Arrays.asList(5L, 6L), Arrays.asList(1L, 2L)))'
+    }
   ],
   geoWithinCenter: [
+    {
+      input: '{x: {$geoWithin: {$center: [ [1, 2], 5 ]}}}',
+      output: 'geoWithinCenter("x", 1L, 2L, 5L)'
+    }
   ],
   geoWithinCenterSphere: [
+    {
+      input: '{x: {$geoWithin: {$centerSphere: [ [1, 2], 5 ]}}}',
+      output: 'geoWithinCenterSphere("x", 1L, 2L, 5L)'
+    }
   ],
-  geoWithinIntersects: [
+  geoIntersects: [
+    {
+      input: '{x: {$geoIntersects: {$geometry: {type: "Point", coordinates: [1, 2]}}}}',
+      output: 'geoIntersects("x", new Point(new Position(1L, 2L)))'
+    }
   ],
   near: [
+    {
+      input: '{x: {$near: {$geometry: {type: "Point", coordinates: [1, 2]}, $minDistance: 10, $maxDistance: 100}}}',
+      output: 'near("x", new Point(new Position(1L, 2L)), 100L, 10L)'
+    }
   ],
   nearSphere: [
-  ],
-  geoJSONclasses: [
+    {
+      input: '{x: {$nearSphere: {$geometry: {type: "Point", coordinates: [1, 2]}, $minDistance: 10, $maxDistance: 100}}}',
+      output: 'nearSphere("x", new Point(new Position(1L, 2L)), 100L, 10L)'
+    }
   ]
 };
 

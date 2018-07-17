@@ -183,6 +183,12 @@ const errors = {
       input: '{$addFields: 1}',
       error: BsonCompilersRuntimeError
     }
+  ],
+  shape_error: [
+    {
+      input: '{$sum: 1}',
+      error: BsonCompilersRuntimeError
+    }
   ]
 };
 

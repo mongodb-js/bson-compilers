@@ -1,7 +1,8 @@
 /* eslint complexity: 0 */
-const {doubleQuoteStringify} = require('../../helper/format');
+const {doubleQuoteStringify, removeQuotes} = require('../../helper/format');
 const {
-  BsonCompilersRuntimeError
+  BsonCompilersRuntimeError,
+  BsonCompilersUnimplementedError
 } = require('../../helper/error');
 
 /**
@@ -24,7 +25,8 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
       'type', 'all', 'size', 'elemMatch', 'mod', 'regex',
       'sum', 'avg', 'first', 'last', 'max', 'min', 'push', 'addToSet',
       'stdDevSamp', 'stdDevPop',
-      'bitsAllSet', 'bitsAllClear', 'bitsAnySet', 'bitsAnyClear'
+      'bitsAllSet', 'bitsAllClear', 'bitsAnySet', 'bitsAnyClear',
+      'geoWithin', 'geoIntersects', 'near', 'nearSphere'
     ];
     // Operations that convert by {$op: value} => op(value)
     this.opts = [
@@ -137,6 +139,10 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
             );
           }
           if (this.field_opts.indexOf(op) !== -1) {
+            // Assert that this isn't the top-level object
+            if (!('propertyName' in ctx.parentCtx.parentCtx)) {
+              throw new BsonCompilersRuntimeError(`$${op} cannot be top-level`);
+            }
             return this.handleFieldOp(pair.singleExpression(), op, ctx);
           }
           if (this.opts.indexOf(op) !== -1) {
@@ -204,14 +210,9 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * @return {String}
    */
   handleSingleSubfield(ctx, op, subfield, idiomatic) {
-    if (!('propertyNameAndValueList' in ctx) ||
-        !ctx.propertyNameAndValueList()) {
-      throw new BsonCompilersRuntimeError(
-        `$${op} requires a non-empty document`
-      );
-    }
+    const properties = this.assertIsNonemptyObject(ctx, op);
     let value = '';
-    const properties = ctx.propertyNameAndValueList().propertyAssignment();
+
     properties.forEach((pair) => {
       const field = this.visit(pair.propertyName());
       if (field === subfield) {
@@ -248,15 +249,9 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * @return {string}
    */
   handleOptionsObject(ctx, op, reqOpts, optionalOpts, transforms) {
-    if (!('propertyNameAndValueList' in ctx) ||
-        !ctx.propertyNameAndValueList()) {
-      throw new BsonCompilersRuntimeError(
-        `$${op} requires a non-empty document`
-      );
-    }
+    const properties = this.assertIsNonemptyObject(ctx, op);
     const fields = {};
 
-    const properties = ctx.propertyNameAndValueList().propertyAssignment();
     properties.forEach((pair) => {
       const field = this.visit(pair.propertyName());
       if (reqOpts.indexOf(field) !== -1 || optionalOpts.indexOf(field) !== -1) {
@@ -303,16 +298,11 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * @param {Boolean} idiomatic - If the value should be generated as idiomatic.
    * @return {string}
    */
-  handleMultipleArgs(ctx, op, reqOpts, transform, idiomatic) {
-    if (!('propertyNameAndValueList' in ctx) ||
-        !ctx.propertyNameAndValueList()) {
-      throw new BsonCompilersRuntimeError(
-        `$${op} requires a non-empty document`
-      );
-    }
+  handleMultipleSubfields(ctx, op, reqOpts, transform, idiomatic) {
+    const properties = this.assertIsNonemptyObject(ctx, op);
     const req = [];
     const fields = {};
-    const properties = ctx.propertyNameAndValueList().propertyAssignment();
+
     properties.forEach((pair) => {
       const field = this.visit(pair.propertyName());
       if (reqOpts.indexOf(field) !== -1) {
@@ -343,15 +333,10 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * @return {String}
    */
   handleproject(ctx) {
-    // TODO: slice and elemMatch
-    if (!('propertyNameAndValueList' in ctx) ||
-        !ctx.propertyNameAndValueList()) {
-      throw new BsonCompilersRuntimeError(
-        '$project requires a non-empty document'
-      );
-    }
-    const properties = ctx.propertyNameAndValueList().propertyAssignment();
+    // Eventual todo: slice and elemMatch
+    const properties = this.assertIsNonemptyObject(ctx, 'project');
     const fields = {};
+
     properties.forEach((pair) => {
       const field = this.visit(pair.propertyName());
       const original = pair.singleExpression().getText();
@@ -405,18 +390,9 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * @return {String}
    */
   handlenot(ctx, op, parent) {
-    if (!('propertyNameAndValueList' in ctx) ||
-      !ctx.propertyNameAndValueList()) {
-      throw new BsonCompilersRuntimeError(
-        '$not requires a non-empty document'
-      );
-    }
-    const val = ctx.propertyNameAndValueList()
-      .propertyAssignment()[0]
-      .singleExpression();
-    const innerop = this.visit(ctx.propertyNameAndValueList()
-      .propertyAssignment()[0]
-      .propertyName()).substr(1);
+    const properties = this.assertIsNonemptyObject(ctx, op);
+    const val = properties[0].singleExpression();
+    const innerop = this.visit(properties[0].propertyName()).substr(1);
     const inner = this.handleFieldOp(val, innerop, parent);
     return `${op}(${inner})`;
   }
@@ -507,14 +483,9 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * @return {string}
    */
   handlesort(ctx) {
-    if (!('propertyNameAndValueList' in ctx) ||
-      !ctx.propertyNameAndValueList()) {
-      throw new BsonCompilersRuntimeError(
-        '$sort requires a non-empty document'
-      );
-    }
-    const properties = ctx.propertyNameAndValueList().propertyAssignment();
+    const properties = this.assertIsNonemptyObject(ctx, 'sort');
     const fields = [];
+
     properties.forEach((pair) => {
       const field = this.visit(pair.propertyName());
       const original = pair.singleExpression().getText();
@@ -537,6 +508,255 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
       `orderBy(${fields.join(', ')})` :
       fields[0];
     return `sort(${res})`;
+  }
+
+  handlegeoWithin(ctx, op, parent) {
+    const properties = this.assertIsNonemptyObject(ctx, op);
+    const parentField = doubleQuoteStringify(
+      this.visit(parent.parentCtx.parentCtx.propertyName())
+    );
+    const fields = {};
+
+    properties.forEach((pair) => {
+      const field = this.visit(pair.propertyName());
+      fields[field] = pair.singleExpression();
+    });
+
+    if (Object.keys(fields).length !== 1) {
+      throw new BsonCompilersRuntimeError(
+        '$geoWithin takes an object with only 1 field'
+      );
+    }
+    const key = Object.keys(fields)[0];
+    switch (key) {
+      case ('$geometry'): {
+        return `geoWithin(${parentField}, ${this.handlegeometry(fields[key])})`;
+      }
+      case ('$box'): {
+        return `geoWithinBox(${parentField}, ${
+          this.combineCoordinates(fields[key], 2, '', true, (p) => {
+            return this.combineCoordinates(p, 2, '', true, (p2) => {
+              return this.visit(p2);
+            });
+          })})`;
+      }
+      case ('$polygon'): {
+        return `geoWithinPolygon(${parentField}, ${this.visit(fields[key])})`;
+      }
+      case ('$centerSphere'):
+      case ('$center'): {
+        const array = this.assertIsNonemptyArray(fields[key]);
+        if (array.length !== 2) {
+          throw new BsonCompilersRuntimeError(`${key} takes array of length 2`);
+        }
+        const coordinates = this.combineCoordinates(
+          array[0], 2, '', true, (p) => { return this.visit(p); }
+        );
+        return `geoWithin${key[1].toUpperCase()}${
+          key.substr(2)
+        }(${parentField}, ${coordinates}, ${this.visit(array[1])})`;
+      }
+      default: {
+        throw new BsonCompilersRuntimeError(
+          `unrecognized option ${key} to $geoWithin`
+        );
+      }
+    }
+  }
+
+  handlenear(ctx, op, parent) {
+    const properties = this.assertIsNonemptyObject(ctx, op);
+    const parentField = doubleQuoteStringify(
+      this.visit(parent.parentCtx.parentCtx.propertyName())
+    );
+    const fields = {};
+
+    properties.forEach((pair) => {
+      const field = this.visit(pair.propertyName());
+      fields[field] = pair.singleExpression();
+    });
+
+    ['$geometry', '$minDistance', '$maxDistance'].map((k) => {
+      if (!(k in fields)) {
+        throw new BsonCompilersRuntimeError(
+          `Missing required field ${k} in $${op}`
+        );
+      }
+    });
+    if (Object.keys(fields).length !== 3) {
+      throw new BsonCompilersRuntimeError(
+        `Too many fields to $${op}`
+      );
+    }
+    return `${op}(${parentField}, ${
+      this.handlegeometry(fields.$geometry)
+    }, ${this.visit(fields.$maxDistance)}, ${
+      this.visit(fields.$minDistance)
+    })`;
+  }
+
+  handlenearSphere(ctx, op, parent) {
+    return this.handlenear(ctx, op, parent);
+  }
+
+  generateposition(ctx) {
+    const coordinates = this.assertIsNonemptyArray(ctx, 'geometry');
+    if (coordinates.length !== 2) {
+      throw new BsonCompilersRuntimeError(
+        'Position must be 2 coordinates'
+      );
+    }
+    return `new Position(${
+      this.visit(coordinates[0])}, ${this.visit(coordinates[1])
+    })`;
+  }
+
+  assertIsNonemptyArray(ctx, op) {
+    if (!('arrayLiteral' in ctx) ||
+      !('elementList' in ctx.arrayLiteral())) {
+      throw new BsonCompilersRuntimeError(
+        `$${op} requires a non-empty array`
+      );
+    }
+    return ctx.arrayLiteral().elementList().singleExpression();
+  }
+  assertIsNonemptyObject(ctx, op) {
+    if ('objectLiteral' in ctx) {
+      ctx = ctx.objectLiteral();
+    }
+    if (!('propertyNameAndValueList' in ctx) ||
+      !ctx.propertyNameAndValueList()) {
+      throw new BsonCompilersRuntimeError(
+        `$${op} requires a non-empty document`
+      );
+    }
+    return ctx.propertyNameAndValueList().propertyAssignment();
+  }
+
+  combineCoordinates(ctx, length, className, noArray, innerFunc) {
+    const points = this.assertIsNonemptyArray(ctx, 'geometry');
+    if (points.length < length) {
+      throw new BsonCompilersRuntimeError(
+        `${
+          className ? className : '$geometry inner array'
+        } must have at least ${length} elements (has ${points.length})`
+      );
+    }
+    let pointstr = points.map((p) => {
+      if (!innerFunc) {
+        return this.generateposition(p);
+      }
+      return innerFunc(p);
+    }).join(', ');
+    pointstr = noArray ? pointstr : `Arrays.asList(${pointstr})`;
+    if (!className) {
+      return pointstr;
+    }
+    return `new ${className}(${pointstr})`;
+  }
+
+  generatepoint(ctx) {
+    return `new Point(${this.generateposition(ctx)})`;
+  }
+
+  generatemultipoint(ctx) {
+    return this.combineCoordinates(ctx, 1, 'MultiPoint');
+  }
+
+  generatelinestring(ctx) {
+    return this.combineCoordinates(ctx, 2, 'LineString');
+  }
+
+  generatemultilinestring(ctx) {
+    return this.combineCoordinates(
+      ctx,
+      1,
+      'MultiLineString',
+      false,
+      (p) => { return this.combineCoordinates(p, 2); }
+    );
+  }
+
+  generatepolygon(ctx) {
+    const polyCoords = this.combineCoordinates(
+      ctx,
+      1,
+      'PolygonCoordinates',
+      true,
+      (p) => { return this.combineCoordinates(p, 4); }
+    );
+    return `new Polygon(${polyCoords})`;
+  }
+
+  generatemultipolygon(ctx) {
+    return this.combineCoordinates(
+      ctx,
+      1,
+      'MultiPolygon',
+      false,
+      (p) => {
+        return this.combineCoordinates(
+          p,
+          1,
+          'PolygonCoordinates',
+          true,
+          (p2) => { return this.combineCoordinates(p2, 4); }
+        );
+      }
+    );
+  }
+
+  generategeometrycollection(ctx) {
+    const geometries = this.assertIsNonemptyArray(ctx, 'geometry');
+    return `new GeometryCollection(Arrays.asList(${
+      geometries.map((g) => {
+        if (!('objectLiteral' in g) || !g.objectLiteral()) {
+          throw new BsonCompilersRuntimeError(
+            '$GeometryCollection requires objects'
+          );
+        }
+        return this.handlegeometry(g.objectLiteral());
+      }).join(', ')
+    }))`;
+  }
+
+  handlegeometry(ctx) {
+    const properties = this.assertIsNonemptyObject(ctx, 'geometry');
+    const fields = {};
+
+    properties.forEach((pair) => {
+      const field = this.visit(pair.propertyName());
+      if (field === 'type') {
+        fields.type = removeQuotes(this.visit(pair.singleExpression()));
+      } else if (field === 'coordinates') {
+        fields.coordinates = pair.singleExpression();
+      } else if (field === 'crs') {
+        throw new BsonCompilersUnimplementedError(
+          'Coordinate reference systems not currently supported'
+        );
+      } else {
+        throw new BsonCompilersRuntimeError(
+          `Unrecognized option to $geometry: ${field}`
+        );
+      }
+    });
+    if (!fields.type || !fields.coordinates) {
+      throw new BsonCompilersRuntimeError(
+        'Missing option to $geometry'
+      );
+    }
+    if (!('arrayLiteral' in fields.coordinates) ||
+        !('elementList' in fields.coordinates.arrayLiteral())) {
+      throw new BsonCompilersRuntimeError(
+        'Invalid coordinates option for $geometry'
+      );
+    }
+    if (`generate${fields.type.toLowerCase()}` in this) {
+      return this[`generate${fields.type.toLowerCase()}`](fields.coordinates);
+    }
+    throw new BsonCompilersRuntimeError(
+      `Unrecognized GeoJSON type "${fields.type}"`
+    );
   }
 
   handlesample(ctx) {
@@ -617,17 +837,17 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     );
   }
   handlegroup(ctx) {
-    return this.handleMultipleArgs(ctx, 'group', ['_id'], (f, v) => {
+    return this.handleMultipleSubfields(ctx, 'group', ['_id'], (f, v) => {
       return v;
     }, true);
   }
   handlefacet(ctx) {
-    return this.handleMultipleArgs(ctx, 'facet', [], (f, v) => {
+    return this.handleMultipleSubfields(ctx, 'facet', [], (f, v) => {
       return `new Facet(${doubleQuoteStringify(f)}, ${v})`;
     }, true);
   }
   handleaddFields(ctx) {
-    return this.handleMultipleArgs(ctx, 'addFields', [], (f, v) => {
+    return this.handleMultipleSubfields(ctx, 'addFields', [], (f, v) => {
       return `new Field(${doubleQuoteStringify(f)}, ${v})`;
     }, false);
   }

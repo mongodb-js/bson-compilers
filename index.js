@@ -65,7 +65,9 @@ const getCompiler = (visitor, generator, symbols) => {
   return (input, idiomatic) => {
     try {
       const tree = loadTree(input);
-      compiler.idiomatic = idiomatic | compiler.idiomatic;
+      compiler.idiomatic = idiomatic === undefined ?
+        compiler.idiomatic :
+        idiomatic;
       return compiler.start(tree);
     } catch (e) {
       if (e.code && e.code.includes('BSONCOMPILERS')) {

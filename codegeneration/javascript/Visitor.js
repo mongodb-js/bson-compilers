@@ -951,6 +951,54 @@ class Visitor extends ECMAScriptVisitor {
   processBinary() {
     throw new BsonTranspilersUnimplementedError('Binary type not supported');
   }
+
+  // Getters
+  getExpression(ctx) {
+    return ctx.singleExpression();
+  }
+  getArguments(ctx) {
+    return ctx.arguments().argumentList();
+  }
+  getArgumentAt(ctx, i) {
+    return this.getArguments(ctx).singleExpression()[i];
+  }
+  getList(ctx) {
+    if (!('elementList' in ctx) || !ctx.elementList()) {
+      return [];
+    }
+    return ctx.elementList().singleExpression();
+  }
+  getArray(ctx) {
+    if (!('arrayLiteral' in ctx)) {
+      return false;
+    }
+    return ctx.arrayLiteral();
+  }
+  getObject(ctx) {
+    if (!('objectLiteral' in ctx)) {
+      return false;
+    }
+    return ctx.objectLiteral();
+  }
+  getKeyValueList(ctx) {
+    if ('propertyNameAndValueList' in ctx && ctx.propertyNameAndValueList()) {
+      return ctx.propertyNameAndValueList().propertyAssignment();
+    }
+    return [];
+  }
+  getKey(ctx) {
+    return ctx.propertyName();
+  }
+  getValue(ctx) {
+    return ctx.singleExpression();
+  }
+  isSubObject(ctx) {
+    return 'propertyName' in ctx.parentCtx.parentCtx;
+  }
+  // For a given sub document, get its key.
+  getParentKey(ctx) {
+    return ctx.parentCtx.parentCtx.propertyName();
+  }
 }
 
 module.exports = Visitor;

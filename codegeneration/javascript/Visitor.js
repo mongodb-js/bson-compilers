@@ -154,9 +154,9 @@ class Visitor extends ECMAScriptVisitor {
     let code = '';
     for (let i = opts.start; i <= opts.end; i += opts.step) {
       if (opts.ignore.indexOf(i) === -1) {
-        code += this.visit(
-          opts.children[i]) + (i === opts.end ? '' : opts.separator
-        );
+        code = `${code}${this.visit(
+          opts.children[i]
+        )}${(i === opts.end) ? '' : opts.separator}`;
       }
     }
     /* Set the node's type to the first child, if it's not already set.
@@ -624,12 +624,12 @@ class Visitor extends ECMAScriptVisitor {
       }
       const result = this.castType(expected[i], args[i]);
       if (result === null) {
+        const typeStr = expected[i].map((e) => {
+          const id = e && e.id ? e.id : e;
+          return e ? id : '[optional]';
+        });
         const message = `Argument type mismatch: '${name}' expects types ${
-          expected[i].map((e) => {
-            const id = e && e.id ? e.id : e;
-            return e ? id : '[optional]';
-          })
-        } but got type ${args[i].type.id} for argument at index ${i}`;
+          typeStr} but got type ${args[i].type.id} for argument at index ${i}`;
 
         throw new BsonTranspilersArgumentError(message);
       }

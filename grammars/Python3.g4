@@ -36,8 +36,10 @@ grammar Python3;
 tokens { INDENT, DEDENT }
 
 @lexer::members {
+
   let CommonToken = require('antlr4/Token').CommonToken;
   let Python3Parser = require('./Python3Parser').Python3Parser;
+
   let old_lexer = Python3Lexer;
   Python3Lexer = function() {
     old_lexer.apply(this, arguments);
@@ -51,10 +53,13 @@ tokens { INDENT, DEDENT }
   Python3Lexer.prototype.reset = function() {
     // A queue where extra tokens are pushed on (see the NEWLINE lexer rule).
     this.token_queue = [];
+
     // The stack that keeps track of the indentation level.
     this.indents = [];
+
     // The amount of opened braces, brackets and parenthesis.
     this.opened = 0;
+
     antlr4.Lexer.prototype.reset.call(this);
   };
 
@@ -73,6 +78,7 @@ tokens { INDENT, DEDENT }
   Python3Lexer.prototype.nextToken = function() {
     // Check if the end-of-file is ahead and there are still some DEDENTS expected.
     if (this._input.LA(1) === Python3Parser.EOF && this.indents.length) {
+
       // Remove any trailing EOF tokens from our buffer.
       this.token_queue = this.token_queue.filter(function(val) {
         return val.type !== Python3Parser.EOF;
@@ -734,14 +740,17 @@ NEWLINE
      let newLine = this.text.replace(/[^\r\n]+/g, '');
      let spaces = this.text.replace(/[\r\n]+/g, '');
      let next = this._input.LA(1);
+
      if (this.opened > 0 || next === 13 /* '\r' */ || next === 10 /* '\n' */ || next === 35 /* '#' */) {
        // If we're inside a list or on a blank line, ignore all indents,
        // dedents and line breaks.
        this.skip();
      } else {
        this.emitToken(this.commonToken(Python3Parser.NEWLINE, newLine));
+
        let indent = this.getIndentationCount(spaces);
        let previous = this.indents.length ? this.indents[this.indents.length - 1] : 0;
+
        if (indent === previous) {
          // skip indents of the same size as the present indent-size
          this.skip();
@@ -875,6 +884,7 @@ fragment SHORT_STRING
  : '\'' ( STRING_ESCAPE_SEQ | ~[\\\r\n'] )* '\''
  | '"' ( STRING_ESCAPE_SEQ | ~[\\\r\n"] )* '"'
  ;
+
 /// longstring      ::=  "'''" longstringitem* "'''" | '"""' longstringitem* '"""'
 fragment LONG_STRING
  : '\'\'\'' LONG_STRING_ITEM*? '\'\'\''

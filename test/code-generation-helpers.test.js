@@ -67,7 +67,7 @@ describe('CodeGeneration helper functions', () => {
     transpiler.Syntax = { eos: { template: null }, eof: { template: null } };
     transpiler.SYMBOL_TYPE = doc.SymbolTypes;
     it('defaults to long', () => {
-      const str = getTree('1');
+      const str = getTree.javascript('1');
       expect(transpiler.start(str)).to.equal('1L');
     });
     it('casts double to int, decimal, hex and octal', () => {
@@ -78,7 +78,7 @@ describe('CodeGeneration helper functions', () => {
         [transpiler.Types._octal],
         [transpiler.Types._integer]
       ];
-      const str = getTree('TestFunc(100, 200, 300, 400, -500)');
+      const str = getTree.javascript('TestFunc(100, 200, 300, 400, -500)');
       expect(transpiler.start(str)).to.equal('TestFunc(100, 200d, 300, 400, -500)');
     });
     it('does not cast numeric', () => {
@@ -91,7 +91,7 @@ describe('CodeGeneration helper functions', () => {
         [transpiler.Types._numeric],
         [transpiler.Types._numeric]
       ];
-      const str = getTree(
+      const str = getTree.javascript(
         'TestFunc(10, 10.01, 0x6, 0o5, Number(10), Number("10"), -10)'
       );
       expect(transpiler.start(str)).to.equal(
@@ -105,7 +105,7 @@ describe('CodeGeneration helper functions', () => {
         [transpiler.Types._decimal],
         [transpiler.Types._integer]
       ];
-      const str = getTree(
+      const str = getTree.javascript(
         'TestFunc(Number(10), Number("10"), Number(10), Number("10"))'
       );
       expect(transpiler.start(str)).to.equal(
@@ -120,7 +120,7 @@ describe('CodeGeneration helper functions', () => {
         [transpiler.Types._long],
         [transpiler.Types._long]
       ];
-      const str = getTree(
+      const str = getTree.javascript(
         'TestFunc(10, 10.01, 0x6, 0o5, -10)'
       );
       expect(transpiler.start(str)).to.equal(
@@ -135,7 +135,7 @@ describe('CodeGeneration helper functions', () => {
         [transpiler.Types._integer],
         [transpiler.Types._integer]
       ];
-      const str = getTree(
+      const str = getTree.javascript(
         'TestFunc(10, 10.01, 0x6, 0o5, -10)'
       );
       expect(transpiler.start(str)).to.equal(
@@ -150,7 +150,7 @@ describe('CodeGeneration helper functions', () => {
         [transpiler.Types._decimal],
         [transpiler.Types._decimal]
       ];
-      const str = getTree(
+      const str = getTree.javascript(
         'TestFunc(10, 10.01, 0x6, 0o5, -10)'
       );
       expect(transpiler.start(str)).to.equal(
@@ -165,7 +165,7 @@ describe('CodeGeneration helper functions', () => {
         [transpiler.Types._hex],
         [transpiler.Types._hex]
       ];
-      const str = getTree('TestFunc(10, 10.01, 0x6, 0o5, -10)');
+      const str = getTree.javascript('TestFunc(10, 10.01, 0x6, 0o5, -10)');
       expect(transpiler.start(str)).to.equal(
         'TestFunc(10, 10.01, 0x6, 05, -10)'
       );
@@ -178,18 +178,18 @@ describe('CodeGeneration helper functions', () => {
         [transpiler.Types._octal],
         [transpiler.Types._octal]
       ];
-      const str = getTree('TestFunc(10, 10.01, 0x6, 0o5, -10)');
+      const str = getTree.javascript('TestFunc(10, 10.01, 0x6, 0o5, -10)');
       expect(transpiler.start(str)).to.equal(
         'TestFunc(10, 10.01, 0x6, 05, -10)'
       );
     });
     it('casts with optional', () => {
       transpiler.Symbols.TestFunc.args = [ [transpiler.Types._decimal, null] ];
-      const str = getTree('TestFunc(100)');
+      const str = getTree.javascript('TestFunc(100)');
       expect(transpiler.start(str)).to.equal('TestFunc(100d)');
     });
     it('accepts Number', () => {
-      const str = getTree('Number(1)');
+      const str = getTree.javascript('Number(1)');
       expect(transpiler.start(str)).to.equal('1d');
     });
   });

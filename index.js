@@ -1,6 +1,8 @@
 const antlr4 = require('antlr4');
 const ECMAScriptLexer = require('./lib/antlr/ECMAScriptLexer.js');
 const ECMAScriptParser = require('./lib/antlr/ECMAScriptParser.js');
+const Python3Lexer = require('./lib/antlr/Python3Lexer.js');
+const Python3Parser = require('./lib/antlr/Python3Parser');
 
 const ErrorListener = require('./codegeneration/ErrorListener.js');
 const { BsonTranspilersInternalError } = require('./helper/error');
@@ -9,6 +11,7 @@ const yaml = require('js-yaml');
 
 const JavascriptVisitor = require('./codegeneration/javascript/Visitor');
 const ShellVisitor = require('./codegeneration/shell/Visitor');
+const PythonVisitor = require('./codegeneration/python/Visitor');
 
 const JavaGenerator = require('./codegeneration/java/Generator');
 const PythonGenerator = require('./codegeneration/python/Generator');
@@ -26,15 +29,18 @@ const shellpythonsymbols = require('./lib/symbol-table/shelltopython');
 const shellcsharpsymbols = require('./lib/symbol-table/shelltocsharp');
 const shelljavascriptsymbols = require('./lib/symbol-table/shelltojavascript');
 
+const pythonjavasymbols = require('./lib/symbol-table/pythontojava');
+const pythonshellsymbols = require('./lib/symbol-table/pythontoshell');
+const pythoncsharpsymbols = require('./lib/symbol-table/pythontocsharp');
+const pythonjavascriptsymbols = require('./lib/symbol-table/pythontojavascript');
+
 /**
- * Constructs the parse tree from the code given by the user.
+ * Constructs the parse tree from the JS or Shell code given by the user.
  *
- * TODO: hardcoded to ECMAScriptLexer/Parser
  * @param {String} input
  * @return {antlr4.ParserRuleContext} - The parse tree.
  */
-const loadTree = (input) => {
-  // TODO: swap out lexer/parser/etc depending on input lang
+const loadJSTree = (input) => {
   const chars = new antlr4.InputStream(input);
   const lexer = new ECMAScriptLexer.ECMAScriptLexer(chars);
   lexer.strictMode = false;
@@ -50,7 +56,28 @@ const loadTree = (input) => {
   return parser.program();
 };
 
-const getTranspiler = (visitor, generator, symbols) => {
+/**
+ * Constructs the parse tree from the Python code given by the user.
+ *
+ * @param {String} input
+ * @return {antlr4.ParserRuleContext} - The parse tree.
+ */
+const loadPyTree = (input) => {
+  const chars = new antlr4.InputStream(input);
+  const lexer = new Python3Lexer.Python3Lexer(chars);
+
+  const tokens = new antlr4.CommonTokenStream(lexer);
+  const parser = new Python3Parser.Python3Parser(tokens);
+  parser.buildParseTrees = true;
+
+  const listener = new ErrorListener();
+  parser.removeErrorListeners(); // Remove the default ConsoleErrorListener
+  parser.addErrorListener(listener); // Add back a custom error listener
+
+  return parser.single_input();
+};
+
+const getTranspiler = (loadTree, visitor, generator, symbols) => {
   const Transpiler = generator(visitor);
   const transpiler = new Transpiler();
 
@@ -89,16 +116,25 @@ const getTranspiler = (visitor, generator, symbols) => {
 
 module.exports = {
   javascript: {
-    java: getTranspiler(JavascriptVisitor, JavaGenerator, javascriptjavasymbols),
-    python: getTranspiler(JavascriptVisitor, PythonGenerator, javascriptpythonsymbols),
-    csharp: getTranspiler(JavascriptVisitor, CsharpGenerator, javascriptcsharpsymbols),
-    shell: getTranspiler(JavascriptVisitor, ShellGenerator, javascriptshellsymbols)
+    java: getTranspiler(loadJSTree, JavascriptVisitor, JavaGenerator, javascriptjavasymbols),
+    python: getTranspiler(loadJSTree, JavascriptVisitor, PythonGenerator, javascriptpythonsymbols),
+    csharp: getTranspiler(loadJSTree, JavascriptVisitor, CsharpGenerator, javascriptcsharpsymbols),
+    shell: getTranspiler(loadJSTree, JavascriptVisitor, ShellGenerator, javascriptshellsymbols)
   },
   shell: {
-    java: getTranspiler(ShellVisitor, JavaGenerator, shelljavasymbols),
-    python: getTranspiler(ShellVisitor, PythonGenerator, shellpythonsymbols),
-    csharp: getTranspiler(ShellVisitor, CsharpGenerator, shellcsharpsymbols),
-    javascript: getTranspiler(ShellVisitor, JavascriptGenerator, shelljavascriptsymbols)
+    java: getTranspiler(loadJSTree, ShellVisitor, JavaGenerator, shelljavasymbols),
+    python: getTranspiler(loadJSTree, ShellVisitor, PythonGenerator, shellpythonsymbols),
+    csharp: getTranspiler(loadJSTree, ShellVisitor, CsharpGenerator, shellcsharpsymbols),
+    javascript: getTranspiler(loadJSTree, ShellVisitor, JavascriptGenerator, shelljavascriptsymbols)
   },
-  getTree: loadTree
+  python: {
+    java: getTranspiler(loadJSTree, PythonVisitor, JavaGenerator, pythonjavasymbols),
+    shell: getTranspiler(loadJSTree, PythonVisitor, ShellGenerator, pythonshellsymbols),
+    csharp: getTranspiler(loadJSTree, PythonVisitor, CsharpGenerator, pythoncsharpsymbols),
+    javascript: getTranspiler(loadJSTree, PythonVisitor, JavascriptGenerator, pythonjavascriptsymbols)
+  },
+  getTree: {
+    javascript: loadJSTree,
+    python: loadPyTree
+  }
 };

@@ -235,13 +235,45 @@ arith_expr: term (('+'|'-') term)*;
 term: factor (('*'|'@'|'/'|'%'|'//') factor)*;
 factor: ('+'|'-'|'~') factor | power;
 power: atom_expr ('**' factor)?;
-atom_expr: (AWAIT)? atom trailer*;
-atom: ('(' (yield_expr|testlist_comp)? ')' |
-       '[' (testlist_comp)? ']' |
-       '{' (dictorsetmaker)? '}' |
-       NAME | NUMBER | STRING+ | '...' | 'None' | 'True' | 'False');
+atom_expr: (AWAIT)? atom ( paren_trailer | bracket_trailer | dot_trailer )*;
+atom
+ : set_literal
+ | object_literal
+ | array_literal
+ | identifier
+ | number_literal
+ | string_literal+
+ | '...'
+ | none_literal
+ | boolean_literal
+ ;
+
 testlist_comp: (test|star_expr) ( comp_for | (',' (test|star_expr))* (',')? );
-trailer: '(' (arglist)? ')' | '[' subscriptlist ']' | '.' NAME;
+
+array_literal
+ : '[' (testlist_comp)? ']'
+ ;
+
+object_literal
+ : '{' (dictorsetmaker)? '}'
+ ;
+
+set_literal
+ : '(' (yield_expr|testlist_comp)? ')'
+ ;
+
+paren_trailer
+ : '(' (arglist)? ')'
+ ;
+
+bracket_trailer
+ : '[' subscriptlist ']'
+ ;
+
+dot_trailer
+ : '.' identifier
+ ;
+
 subscriptlist: subscript (',' subscript)* (',')?;
 subscript: test | (test)? ':' (test)? (sliceop)?;
 sliceop: ':' (test)?;
@@ -284,22 +316,35 @@ yield_arg: 'from' test | testlist;
  * lexer rules
  */
 
-STRING
+string_literal
  : STRING_LITERAL
  | BYTES_LITERAL
  ;
 
-NUMBER
- : INTEGER
+number_literal
+ : integer_literal
  | FLOAT_NUMBER
  | IMAG_NUMBER
  ;
 
-INTEGER
+integer_literal
  : DECIMAL_INTEGER
  | OCT_INTEGER
  | HEX_INTEGER
  | BIN_INTEGER
+ ;
+
+boolean_literal
+ : TRUE
+ | FALSE
+ ;
+
+none_literal
+ : NONE
+ ;
+
+identifier
+ : NAME
  ;
 
 /*

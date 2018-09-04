@@ -128,10 +128,10 @@ module.exports = {
     javascript: getTranspiler(loadJSTree, ShellVisitor, JavascriptGenerator, shelljavascriptsymbols)
   },
   python: {
-    java: getTranspiler(loadJSTree, PythonVisitor, JavaGenerator, pythonjavasymbols),
-    shell: getTranspiler(loadJSTree, PythonVisitor, ShellGenerator, pythonshellsymbols),
-    csharp: getTranspiler(loadJSTree, PythonVisitor, CsharpGenerator, pythoncsharpsymbols),
-    javascript: getTranspiler(loadJSTree, PythonVisitor, JavascriptGenerator, pythonjavascriptsymbols)
+    java: getTranspiler(loadPyTree, PythonVisitor, JavaGenerator, pythonjavasymbols),
+    shell: getTranspiler(loadPyTree, PythonVisitor, ShellGenerator, pythonshellsymbols),
+    csharp: getTranspiler(loadPyTree, PythonVisitor, CsharpGenerator, pythoncsharpsymbols),
+    javascript: getTranspiler(loadPyTree, PythonVisitor, JavascriptGenerator, pythonjavascriptsymbols)
   },
   getTree: {
     javascript: loadJSTree,

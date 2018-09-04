@@ -10,8 +10,56 @@ class Visitor extends Python3Visitor {
   constructor() {
     super();
   }
+  /**
+   * Selectively visits children of a node.
+   *
+   * @param {ParserRuleContext} ctx
+   * @param {Object} options:
+   *    start - child index to start iterating at.
+   *    end - child index to end iterating after.
+   *    step - how many children to increment each step, 1 visits all children.
+   *    separator - a string separator to go between children.
+   *    ignore - an array of child indexes to skip.
+   *    children - the set of children to visit.
+   * @returns {String}
+   */
+  visitChildren(ctx, options) {
+    console.log(`visitChildren: ${ctx.constructor.name}`);
+    const opts = {
+      start: 0, step: 1, separator: '', ignore: [], children: ctx.children
+    };
+    Object.assign(opts, options ? options : {});
+    opts.end = ('end' in opts) ? opts.end : opts.children.length - 1;
+
+    let code = '';
+    for (let i = opts.start; i <= opts.end; i += opts.step) {
+      if (opts.ignore.indexOf(i) === -1) {
+        code = `${code}${this.visit(
+          opts.children[i]
+        )}${(i === opts.end) ? '' : opts.separator}`;
+      }
+    }
+    /* Set the node's type to the first child, if it's not already set.
+      More often than not, type will be set directly by the visitNode method. */
+    if (ctx.type === undefined) {
+      ctx.type = opts.children.length ?
+        opts.children[0].type :
+        this.Types._undefined;
+    }
+    return code.trim();
+  }
   start(ctx) {
     return this.visitSingle_input(ctx);
+  }
+  /**
+   * Visit a leaf node and return a string.
+   * *
+   * @param {ParserRuleContext} ctx
+   * @returns {String}
+   */
+  visitTerm(ctx) {
+    console.log('Term text=' + ctx.getText());
+    return ctx.getText();
   }
 }
 

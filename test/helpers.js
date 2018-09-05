@@ -6,8 +6,32 @@ const expect = chai.expect;
 const transpiler = require('../');
 
 const unsupported = {
-  success: {},
-  error: {}
+  success: {
+    python: {
+      java: {
+        'language-types': [
+          'math',
+          'compare',
+          'numbers',
+          'literals',
+          'Date',
+          'RegExp'
+        ]
+      },
+      javascript: {
+        'language-types': ['*']
+      },
+      shell: {
+        'language-types': ['*']
+      },
+      csharp: {
+        'language-types': ['*']
+      }
+    }
+  },
+  error: {
+    python: '*'
+  }
 };
 
 const checkResults = {

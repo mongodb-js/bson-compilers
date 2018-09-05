@@ -26,7 +26,7 @@ class Visitor extends Python3Visitor {
   visitChildren(ctx, options) {
     // console.log(`visitChildren: ${ctx.constructor.name} children.length=${ctx.children.length}`);
     const opts = {
-      start: 0, step: 1, separator: ' ', ignore: [], children: ctx.children
+      start: 0, step: 1, separator: '', ignore: [], children: ctx.children
     };
     Object.assign(opts, options ? options : {});
     opts.end = ('end' in opts) ? opts.end : opts.children.length;
@@ -51,7 +51,7 @@ class Visitor extends Python3Visitor {
     return code.trim();
   }
   start(ctx) {
-    return this.visitSingle_input(ctx);
+    return this.visitExpr_stmt(ctx);
   }
 
   /**

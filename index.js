@@ -63,7 +63,7 @@ const loadJSTree = (input) => {
  * @return {antlr4.ParserRuleContext} - The parse tree.
  */
 const loadPyTree = (input) => {
-  const chars = new antlr4.InputStream(input);
+  const chars = new antlr4.InputStream(input + '\n'); // requires newline
   const lexer = new Python3Lexer.Python3Lexer(chars);
 
   const tokens = new antlr4.CommonTokenStream(lexer);

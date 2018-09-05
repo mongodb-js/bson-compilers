@@ -36,11 +36,11 @@
         "shell": "1 !== 2"
       }
     ],
-    "Number": [
+    "numbers": [
       {
         "description": "Number with number arg",
         "javascript": "new int(2)",
-        "python": "2",
+        "python": "int(2)",
         "java": "2d",
         "csharp": "(int) 2",
         "shell": "new Number(2)"

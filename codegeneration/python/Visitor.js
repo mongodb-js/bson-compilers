@@ -24,19 +24,21 @@ class Visitor extends Python3Visitor {
    * @returns {String}
    */
   visitChildren(ctx, options) {
-    console.log(`visitChildren: ${ctx.constructor.name}`);
+    // console.log(`visitChildren: ${ctx.constructor.name} children.length=${ctx.children.length}`);
     const opts = {
-      start: 0, step: 1, separator: '', ignore: [], children: ctx.children
+      start: 0, step: 1, separator: ' ', ignore: [], children: ctx.children
     };
     Object.assign(opts, options ? options : {});
-    opts.end = ('end' in opts) ? opts.end : opts.children.length - 1;
+    opts.end = ('end' in opts) ? opts.end : opts.children.length;
 
     let code = '';
-    for (let i = opts.start; i <= opts.end; i += opts.step) {
+    for (let i = opts.start; i < opts.end; i += opts.step) {
       if (opts.ignore.indexOf(i) === -1) {
-        code = `${code}${this.visit(
-          opts.children[i]
-        )}${(i === opts.end) ? '' : opts.separator}`;
+        code = `${ code }${ this.visit(opts.children[i]) }${
+          (i === opts.end - 1) ?
+            '' :
+            opts.separator
+        }`;
       }
     }
     /* Set the node's type to the first child, if it's not already set.
@@ -51,14 +53,14 @@ class Visitor extends Python3Visitor {
   start(ctx) {
     return this.visitSingle_input(ctx);
   }
+
   /**
    * Visit a leaf node and return a string.
    * *
    * @param {ParserRuleContext} ctx
    * @returns {String}
    */
-  visitTerm(ctx) {
-    console.log('Term text=' + ctx.getText());
+  visitTerminal(ctx) {
     return ctx.getText();
   }
 }

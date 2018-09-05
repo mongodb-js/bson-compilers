@@ -323,15 +323,30 @@ string_literal
 
 number_literal
  : integer_literal
- | FLOAT_NUMBER
- | IMAG_NUMBER
+ | oct_literal
+ | hex_literal
+ | bin_literal
+ | float_literal
+ | imag_literal
  ;
 
 integer_literal
  : DECIMAL_INTEGER
- | OCT_INTEGER
- | HEX_INTEGER
- | BIN_INTEGER
+ ;
+oct_literal
+ : OCT_INTEGER
+ ;
+hex_literal
+ : HEX_INTEGER
+ ;
+bin_literal
+ : BIN_INTEGER
+ ;
+float_literal
+ : FLOAT_NUMBER
+ ;
+imag_literal
+ : IMAG_NUMBER
  ;
 
 boolean_literal

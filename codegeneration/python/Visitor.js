@@ -9,6 +9,7 @@ const Python3Visitor = require('../../lib/antlr/Python3Visitor').Python3Visitor;
 class Visitor extends Python3Visitor {
   constructor() {
     super();
+    this.requiredImports = {};
   }
   /**
    * Selectively visits children of a node.
@@ -50,9 +51,170 @@ class Visitor extends Python3Visitor {
     }
     return code.trim();
   }
+
   start(ctx) {
+    // console.log(this.Types);
     return this.visitExpr_stmt(ctx);
   }
+
+  getIndentDepth(ctx) {
+    while (ctx.indentDepth === undefined) {
+      ctx = ctx.parentCtx;
+      if (ctx === undefined || ctx === null) {
+        return 0;
+      }
+    }
+    return ctx.indentDepth;
+  }
+
+  /**
+   * Helper to check if process, emit, or template is required.
+   *
+   * @param setType {Object}
+   * @param ctx {ParserContext}
+   * @return {String}
+   */
+  leafHelper(setType, ctx) {
+    ctx.type = setType;
+    this.requiredImports[ctx.type.code] = true;
+    // Pass the original argument type to the template, not the casted type.
+    const type = ctx.originalType === undefined ? ctx.type : ctx.originalType;
+    if (`process${ctx.type.id}` in this) {
+      return this[`process${ctx.type.id}`](ctx);
+    }
+    if (`emit${ctx.type.id}` in this) {
+      return this[`emit${ctx.type.id}`](ctx);
+    }
+
+    if (ctx.type.template) {
+      return ctx.type.template(this.visitChildren(ctx), type.id);
+    }
+
+    return this.visitChildren(ctx);
+  }
+
+  visitString_literal(ctx) {
+    return this.leafHelper(this.Types._string, ctx);
+  }
+  visitInteger_literal(ctx) {
+    return this.leafHelper(this.Types._long, ctx);
+  }
+  visitOct_literal(ctx) {
+    return this.leafHelper(this.Types._octal, ctx);
+  }
+  visitOct_literal(ctx) {
+    return this.leafHelper(this.Types._octal, ctx);
+  }
+  visitHex_literal(ctx) {
+    return this.leafHelper(this.Types._hex, ctx);
+  }
+  visitBin_literal(ctx) {
+    return this.leafHelper(this.Types._bin, ctx);
+  }
+  visitFloat_literal(ctx) {
+    return this.leafHelper(this.Types._decimal, ctx);
+  }
+  visitImag_literal(ctx) {
+    return this.leafHelper(this.Types._long, ctx); // TODO: imaginary numbers?
+  }
+  visitBoolean_literal(ctx) {
+    return this.leafHelper(this.Types._bool, ctx);
+  }
+  visitNone_literal(ctx) {
+    return this.leafHelper(this.Types._null, ctx);
+  }
+  visitObject_literal(ctx) {
+    if (this.idiomatic && 'emitIdiomaticObjectLiteral' in this) {
+      return this.emitIdiomaticObjectLiteral(ctx);
+    }
+    this.requiredImports[10] = true;
+    ctx.type = this.Types._object;
+    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
+    let args = '';
+    if (ctx.dictorsetmaker()) {
+      const properties = ctx.dictorsetmaker().test();
+      if (ctx.type.argsTemplate) {
+        args = ctx.type.argsTemplate(
+          properties
+            .map((key, i) => {
+              if (i % 2 === 0) {
+                return [
+                  this.visit(key),
+                  this.visit(properties[i + 1])
+                ];
+              }
+              return null;
+            })
+            .filter((k) => (k !== null)),
+          ctx.indentDepth);
+      } else {
+        args = this.visit(properties);
+      }
+    }
+    if (ctx.type.template) {
+      return ctx.type.template(args, ctx.indentDepth);
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitSet_literal(ctx) {
+    ctx.type = this.Types._array;
+    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
+    this.requiredImports[9] = true;
+    let args = '';
+    const list = ctx.testlist_comp();
+    if (list) {
+      // Sets of 1 item is the same as the item itself
+      if (list.children.length === 1) {
+        return this.visit(list.children[0]);
+      }
+      const visitedChildren = list.children.map((child) => {
+        return this.visit(child);
+      });
+      const visitedElements = visitedChildren.filter((arg) => {
+        return arg !== ',';
+      });
+      if (ctx.type.argsTemplate) { // NOTE: not currently being used anywhere.
+        args = visitedElements.map((arg, index) => {
+          const last = !visitedElements[index + 1];
+          return ctx.type.argsTemplate(arg, ctx.indentDepth, last);
+        }).join('');
+      } else {
+        args = visitedElements.join(', ');
+      }
+    }
+    if (ctx.type.template) {
+      return ctx.type.template(args, ctx.indentDepth);
+    }
+    return this.visitChildren(ctx);
+  }
+  visitArray_literal(ctx) {
+    ctx.type = this.Types._array;
+    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
+    this.requiredImports[9] = true;
+    let args = '';
+    if (ctx.testlist_comp()) {
+      const visitedChildren = ctx.testlist_comp().children.map((child) => {
+        return this.visit(child);
+      });
+      const visitedElements = visitedChildren.filter((arg) => {
+        return arg !== ',';
+      });
+      if (ctx.type.argsTemplate) { // NOTE: not currently being used anywhere.
+        args = visitedElements.map((arg, index) => {
+          const last = !visitedElements[index + 1];
+          return ctx.type.argsTemplate(arg, ctx.indentDepth, last);
+        }).join('');
+      } else {
+        args = visitedElements.join(', ');
+      }
+    }
+    if (ctx.type.template) {
+      return ctx.type.template(args, ctx.indentDepth);
+    }
+    return this.visitChildren(ctx);
+  }
+
 
   /**
    * Visit a leaf node and return a string.

@@ -1,62 +1,184 @@
 {
   "tests": {
-    "math": [
+    "binary operations": [
       {
-        "description": "simple addition",
-        "javascript": "2+5",
-        "python": "2+5",
-        "java": "2L+5L",
-        "csharp": "2+5",
-        "shell": "2+5"
+        "description": "addition and subtraction",
+        "javascript": "2+5-6",
+        "python": "2+5-6",
+        "java": "2L+5L-6L",
+        "csharp": "2+5-6",
+        "shell": "2+5-6"
       },
       {
         "description": "multiplication and division",
-        "javascript": "2+(4*36)/3",
-        "python": "2+(4*36)/3",
-        "java": "2L+(4L*36L)/3L",
-        "csharp": "2+(4*36)/3",
-        "shell": "2+(4*36)/3"
+        "javascript": "(4*36)/3",
+        "python": "(4*36)/3",
+        "java": "(4L*36L)/3L",
+        "csharp": "(4*36)/3",
+        "shell": "(4*36)/3"
+      },
+      {
+        "description": "floor and mod",
+        "python": "10 // 2 % 3",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "power",
+        "python": "6 ** 7",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "bit opts",
+        "python": "1 | 2 ^ 3 & 4 << 6 >> 7",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      }
+    ],
+    "unary operations": [
+      {
+        "description": "unary +",
+        "python": "+1",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "unary -",
+        "python": "-1",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "unary ~",
+        "python": "~1",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
       }
     ],
     "compare": [
       {
         "description": "equals",
-        "javascript": "1 === 2",
         "python": "1 == 2",
+        "javascript": "1 === 2",
         "java": "1L == 2L",
         "csharp": "1 == 2",
         "shell": "1 === 2"
       },
       {
         "description": "not equals",
-        "javascript": "1 !== 2",
         "python": "1 != 2",
+        "javascript": "1 !== 2",
         "java": "1L != 2L",
         "csharp": "1 != 2",
         "shell": "1 !== 2"
+      },
+      {
+        "description": "greater/less than, or equal",
+        "python": "1 > 2 < 3 >= 4 <= 6",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "is",
+        "python": "4 is 5",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "is not",
+        "python": "4 is not 5",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "in",
+        "python": "4 in [1, 2]",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "not in",
+        "python": "4 not in [1, 2]",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
       }
     ],
     "numbers": [
       {
-        "description": "Number with number arg",
-        "javascript": "new int(2)",
+        "description": "int with number arg",
         "python": "int(2)",
+        "javascript": "new int(2)",
         "java": "2d",
         "csharp": "(int) 2",
         "shell": "new Number(2)"
       },
       {
-        "description": "Number with valid string arg",
+        "description": "int with string arg",
+        "python": "int('2')",
         "javascript": "int('2')",
-        "python": "float('2')",
         "java": "Double.parseDouble(\"2\")",
         "csharp": "float.Parse(\"2\")",
         "shell": "new Number('2')"
+      },
+      {
+        "description": "float with number arg",
+        "python": "float(1.001)",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "float with string arg",
+        "python": "float('1')",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "complex with number arg",
+        "python": "complex('1')",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "complex with string arg",
+        "python": "complex('1')",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
       }
     ],
-    "literals": [
+    "numeric literals": [
       {
-        "description": "Integer 2",
+        "description": "integer 2",
         "javascript": "2",
         "python": "2",
         "java": "2L",
@@ -72,12 +194,28 @@
         "shell": "429496729601"
       },
       {
-        "description": "Decimal 2.001",
+        "description": "float 2.001",
         "javascript": "2.001",
         "python": "2.001",
         "java": "2.001d",
         "csharp": "2.001",
         "shell": "2.001"
+      },
+      {
+        "description": "Complex literal with +",
+        "javascript": "",
+        "python": "2+3j",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "Complex literal without +",
+        "javascript": "",
+        "python": "3j",
+        "java": "",
+        "csharp": "",
+        "shell": ""
       },
       {
         "description": "Hex number caps",
@@ -96,22 +234,6 @@
         "shell": "0x123abc"
       },
       {
-        "description": "Octal 0-prefix number",
-        "javascript": "01234567",
-        "python": "0o1234567",
-        "java": "01234567",
-        "csharp": "342391",
-        "shell": "01234567"
-      },
-      {
-        "description": "Octal 00-prefix number",
-        "javascript": "001234567",
-        "python": "0o1234567",
-        "java": "01234567",
-        "csharp": "342391",
-        "shell": "001234567"
-      },
-      {
         "description": "Octal 0o-prefix number",
         "javascript": "0o1234567",
         "python": "0o1234567",
@@ -120,13 +242,23 @@
         "shell": "0o1234567"
       },
       {
-        "description": "Octal 0O-prefix number",
-        "javascript": "0o1234567",
-        "python": "0o1234567",
-        "java": "01234567",
-        "csharp": "342391",
-        "shell": "0o1234567"
+        "description": "true",
+        "javascript": "true",
+        "python": "True",
+        "java": "true",
+        "csharp": "true",
+        "shell": "true"
       },
+      {
+        "description": "false",
+        "javascript": "false",
+        "python": "False",
+        "java": "false",
+        "csharp": "false",
+        "shell": "false"
+      }
+    ],
+    "string literals": [
       {
         "description": "Single-quote string",
         "javascript": "'string'",
@@ -144,28 +276,277 @@
         "shell": "\"string\""
       },
       {
+        "description": "Triple single-quote string",
+        "javascript": "\"string\"",
+        "python": "'''string'''",
+        "java": "\"string\"",
+        "csharp": "\"string\"",
+        "shell": "\"string\""
+      },
+      {
+        "description": "Triple double-quote string",
+        "javascript": "\"string\"",
+        "python": "\"\"\"string\"\"\"",
+        "java": "\"string\"",
+        "csharp": "\"string\"",
+        "shell": "\"string\""
+      },
+      {
+        "description": "b prefixed single quote string",
+        "python": "b'abc'",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "B prefixed single quote string",
+        "python": "B'abc'",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "b prefixed double quote string",
+        "python": "b\"abc\"",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "B prefixed double quote string",
+        "python": "B'abc'",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "u prefixed single quote string",
+        "python": "u'abc'",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "U prefixed single quote string",
+        "python": "U'abc'",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "u prefixed double quote string",
+        "python": "u\"abc\"",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "U prefixed double quote string",
+        "python": "U'abc'",
+        "javascript": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      }
+    ],
+    "null": [
+      {
         "description": "null",
         "javascript": "null",
         "python": "None",
         "java": "new BsonNull()",
         "csharp": "BsonNull.Value",
         "shell": "null"
+      }
+    ],
+    "Dict": [
+      {
+        "description": "{x: '1'}",
+        "python": "{'x': '1'}",
+        "javascript": "{x: '1'}",
+        "java": "eq(\"x\", \"1\")",
+        "csharp": "new BsonDocument(\"x\", \"1\")",
+        "shell": "{\n  x: '1'\n}"
       },
       {
-        "description": "true",
-        "javascript": "true",
-        "python": "True",
-        "java": "true",
-        "csharp": "true",
-        "shell": "true"
+        "description": "Doc with trailing comma",
+        "python": "{'x': '1',}",
+        "javascript": "{x: '1'}",
+        "java": "eq(\"x\", \"1\")",
+        "csharp": "new BsonDocument(\"x\", \"1\")",
+        "shell": "{\n  x: '1'\n}"
       },
       {
-        "description": "false",
-        "javascript": "false",
-        "python": "False",
-        "java": "false",
-        "csharp": "false",
-        "shell": "false"
+        "description": "Doc with array",
+        "python": "{'x': ['1', '2']}",
+        "javascript": "{x: ['1', '2']}",
+        "java": "eq(\"x\", Arrays.asList(\"1\", \"2\"))",
+        "csharp": "new BsonDocument(\"x\", new BsonArray\n    {\n        \"1\",\n        \"2\"\n    })",
+        "shell": "{\n  x: [\n    '1', '2'\n  ]\n}"
+      },
+      {
+        "description": "Doc with subdoc",
+        "python": "{'x': {'y': '2'}}",
+        "javascript": "{x: {y: '2'}}",
+        "java": "eq(\"x\", eq(\"y\", \"2\"))",
+        "csharp": "new BsonDocument(\"x\", new BsonDocument(\"y\", \"2\"))",
+        "shell": "{\n  x: {\n    y: '2'\n  }\n}"
+      },
+      {
+        "description": "Empty object",
+        "python": "{}",
+        "javascript": "{}",
+        "java": "new Document()",
+        "csharp": "new BsonDocument()",
+        "shell": "{}"
+      },
+      {
+        "description": "Two items in document",
+        "python": "{'x': '1', 'n': '4'}",
+        "javascript": "{x: '1', n: '4'}",
+        "java": "and(eq(\"x\", \"1\"), eq(\"n\", \"4\"))",
+        "csharp": "new BsonDocument\n{\n    { \"x\", \"1\" }, \n    { \"n\", \"4\" }\n}",
+        "shell": "{\n  x: '1', \n  n: '4'\n}"
+      },
+      {
+        "description": "nested document",
+        "python": "{'graphLookup': {'from': 'raw_data', 'startWith': '$_id', 'connectFromField': '_id', 'connectToField': 'manager', 'as': 'reports'}}",
+        "javascript": "{ graphLookup : { \"from\" : \"raw_data\", \"startWith\" : \"$_id\", \"connectFromField\" : \"_id\", \"connectToField\" : \"manager\", \"as\" : \"reports\" } }",
+        "java": "eq(\"graphLookup\", and(eq(\"from\", \"raw_data\"), eq(\"startWith\", \"$_id\"), eq(\"connectFromField\", \"_id\"), eq(\"connectToField\", \"manager\"), eq(\"as\", \"reports\")))",
+        "csharp": "new BsonDocument(\"graphLookup\", new BsonDocument\n    {\n        { \"from\", \"raw_data\" }, \n        { \"startWith\", \"$_id\" }, \n        { \"connectFromField\", \"_id\" }, \n        { \"connectToField\", \"manager\" }, \n        { \"as\", \"reports\" }\n    })",
+        "shell": "{\n  graphLookup: {\n    \"from\": \"raw_data\", \n    \"startWith\": \"$_id\", \n    \"connectFromField\": \"_id\", \n    \"connectToField\": \"manager\", \n    \"as\": \"reports\"\n  }\n}"
+      },
+      {
+        "description": "nested document with array",
+        "javascript": "{ status: 'A', $or: [{ qty: { $lt: 30 } }, { item: { $regex: '^p' } }] }",
+        "python": "{ 'status': 'A', '$or': [{'qty': { '$lt': 30}}, {'item': { '$regex': '^p'}}]}",
+        "java": "and(eq(\"status\", \"A\"), or(Arrays.asList(lt(\"qty\", 30L), regex(\"item\", \"^p\"))))",
+        "csharp": "new BsonDocument\n{\n    { \"status\", \"A\" }, \n    { \"$or\", new BsonArray\n    {\n        new BsonDocument(\"qty\", \n        new BsonDocument(\"$lt\", 30)),\n        new BsonDocument(\"item\", \n        new BsonDocument(\"$regex\", \"^p\"))\n    } }\n}",
+        "shell": "{\n  status: 'A', \n  $or: [\n    {\n      qty: {\n        $lt: 30\n      }\n    }, {\n      item: {\n        $regex: '^p'\n      }\n    }\n  ]\n}"
+      },
+      {
+        "description": "document with tuple",
+        "javascript": "{ status: 'A', $or: ({ qty: { $lt: 30 } }, { item: { $regex: '^p' } }) }",
+        "python": "{ 'status': 'A', '$or': [{'qty': { '$lt': 30}}, {'item': { '$regex': '^p'}}]}",
+        "java": "and(eq(\"status\", \"A\"), or(Arrays.asList(lt(\"qty\", 30L), regex(\"item\", \"^p\"))))",
+        "csharp": "new BsonDocument\n{\n    { \"status\", \"A\" }, \n    { \"$or\", new BsonArray\n    {\n        new BsonDocument(\"qty\", \n        new BsonDocument(\"$lt\", 30)),\n        new BsonDocument(\"item\", \n        new BsonDocument(\"$regex\", \"^p\"))\n    } }\n}",
+        "shell": "{\n  status: 'A', \n  $or: [\n    {\n      qty: {\n        $lt: 30\n      }\n    }, {\n      item: {\n        $regex: '^p'\n      }\n    }\n  ]\n}"
+      }
+
+    ],
+    "Array": [
+      {
+        "description": "['1', '2']",
+        "python": "['1', '2']",
+        "javascript": "['1', '2']",
+        "java": "Arrays.asList(\"1\", \"2\")",
+        "csharp": "new BsonArray\n{\n    \"1\",\n    \"2\"\n}",
+        "shell": "[\n  '1', '2'\n]"
+      },
+      {
+        "description": "array with trailing comma",
+        "python": "['1', '2']",
+        "javascript": "['1', '2',]",
+        "java": "Arrays.asList(\"1\", \"2\")",
+        "csharp": "new BsonArray\n{\n    \"1\",\n    \"2\"\n}",
+        "shell": "[\n  '1', '2'\n]"
+      },
+      {
+        "description": "Array with subdoc",
+        "python": "['1', { 'settings': 'http2' }]",
+        "javascript": "['1', { settings: 'http2' }]",
+        "java": "Arrays.asList(\"1\", eq(\"settings\", \"http2\"))",
+        "csharp": "new BsonArray\n{\n    \"1\",\n    new BsonDocument(\"settings\", \"http2\")\n}",
+        "shell": "[\n  '1', {\n    settings: 'http2'\n  }\n]"
+      },
+      {
+        "description": "nested array with nested subdoc",
+        "python": "{ 'pipeline': [{'$match': {'$expr': { '$eq': [ '$manager', '$$me' ] } } }, { '$project': { 'managers': 0}}, {'$sort': { 'startQuarter': 1, 'notes': 1, 'job_code': 1}}]}",
+        "javascript": "{\"pipeline\": [ { $match: { $expr: { \"$eq\": [ \"$manager\", \"$$me\" ] } } }, { $project: { managers : 0 } }, { $sort: { startQuarter: 1, notes:1, job_code: 1 } } ]}" ,
+        "java": "eq(\"pipeline\", Arrays.asList(match(eq(\"$expr\", eq(\"$eq\", Arrays.asList(\"$manager\", \"$$me\")))), project(exclude(\"managers\")), sort(orderBy(ascending(\"startQuarter\"), ascending(\"notes\"), ascending(\"job_code\")))))",
+        "csharp": "new BsonDocument(\"pipeline\", new BsonArray\n    {\n        new BsonDocument(\"$match\", \n        new BsonDocument(\"$expr\", \n        new BsonDocument(\"$eq\", \n        new BsonArray\n                    {\n                        \"$manager\",\n                        \"$$me\"\n                    }))),\n        new BsonDocument(\"$project\", \n        new BsonDocument(\"managers\", 0)),\n        new BsonDocument(\"$sort\", \n        new BsonDocument\n            {\n                { \"startQuarter\", 1 }, \n                { \"notes\", 1 }, \n                { \"job_code\", 1 }\n            })\n    })",
+        "shell": "{\n  \"pipeline\": [\n    {\n      $match: {\n        $expr: {\n          \"$eq\": [\n            \"$manager\", \"$$me\"\n          ]\n        }\n      }\n    }, {\n      $project: {\n        managers: 0\n      }\n    }, {\n      $sort: {\n        startQuarter: 1, \n        notes: 1, \n        job_code: 1\n      }\n    }\n  ]\n}"
+      },
+      {
+        "description": "Array with subarray",
+        "python": "['1', ['2', '3']]",
+        "javascript": "['1', ['2', '3']]",
+        "java": "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))",
+        "csharp": "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}",
+        "shell": "[\n  '1', [\n    '2', '3'\n  ]\n]"
+      },
+      {
+        "description": "Array with tuple",
+        "python": "['1', ('2', '3')]",
+        "javascript": "['1', ['2', '3']]",
+        "java": "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))",
+        "csharp": "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}",
+        "shell": "[\n  '1', [\n    '2', '3'\n  ]\n]"
+      },
+      {
+        "description": "Empty array",
+        "python": "[]",
+        "javascript": "[]",
+        "java": "Arrays.asList()",
+        "csharp": "new BsonArray()",
+        "shell": "[]"
+      }
+    ],
+    "Tuple": [
+      {
+        "description": "Empty tuple",
+        "python": "()",
+        "javascript": "[]",
+        "java": "Arrays.asList()",
+        "csharp": "new BsonArray()",
+        "shell": "[]"
+      },
+      {
+        "description": "Tuple with 1 item",
+        "python": "(1)",
+        "javascript": "1",
+        "java": "1L",
+        "csharp": "1",
+        "shell": "1"
+      },
+      {
+        "description": "Tuple with 1 item and comma",
+        "python": "(1,)",
+        "javascript": "[1]",
+        "java": "Arrays.asList(1)",
+        "csharp": "new BsonArray(1)",
+        "shell": "[1]"
+      },
+      {
+        "description": "Tuple with subdoc",
+        "python": "('1', { 'settings': 'http2' })",
+        "javascript": "['1', { settings: 'http2' }]",
+        "java": "Arrays.asList(\"1\", eq(\"settings\", \"http2\"))",
+        "csharp": "new BsonArray\n{\n    \"1\",\n    new BsonDocument(\"settings\", \"http2\")\n}",
+        "shell": "[\n  '1', {\n    settings: 'http2'\n  }\n]"
+      },
+      {
+        "description": "Tuple with subarray",
+        "python": "('1', ['2', '3'])",
+        "javascript": "['1', ['2', '3']]",
+        "java": "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))",
+        "csharp": "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}",
+        "shell": "[\n  '1', [\n    '2', '3'\n  ]\n]"
+      },
+      {
+        "description": "Tuple with subtuple",
+        "python": "['1', ('2', '3')]",
+        "javascript": "['1', ['2', '3']]",
+        "java": "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))",
+        "csharp": "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}",
+        "shell": "[\n  '1', [\n    '2', '3'\n  ]\n]"
       }
     ],
     "Date": [
@@ -338,22 +719,6 @@
         "java": "Pattern.compile(\"\\\\n\")",
         "csharp": "new Regex(\"\\n\")",
         "shell": "new RegExp('\\n')"
-      },
-      {
-        "description": "regex literal with ig flags",
-        "javascript": "/ab+c/ig",
-        "python": "re.compile(r\"ab+c(?is)\")",
-        "java": "Pattern.compile(\"ab+c(?i)\")",
-        "csharp": "new Regex(\"(?i)ab+c\")",
-        "shell": "RegExp('ab+c', 'gi')"
-      },
-      {
-        "description": "regex object with regex literal arg",
-        "javascript": "new RegExp(/ab+c/, 'i')",
-        "python": "re.compile(r\"ab+c(?i)\")",
-        "java": "Pattern.compile(\"ab+c(?i)\")",
-        "csharp": "new Regex(\"(?i)ab+c\")",
-        "shell": "new RegExp('ab+c', 'i')"
       }
     ]
   }

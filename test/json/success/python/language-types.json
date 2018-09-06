@@ -429,7 +429,7 @@
       {
         "description": "['1', '2']",
         "python": "['1', '2']",
-        "javascript": "['1', '2']",
+        "javascript": "[\n  '1', '2'\n]",
         "java": "Arrays.asList(\"1\", \"2\")",
         "csharp": "new BsonArray\n{\n    \"1\",\n    \"2\"\n}",
         "shell": "[\n  '1', '2'\n]"
@@ -437,7 +437,7 @@
       {
         "description": "array with trailing comma",
         "python": "['1', '2']",
-        "javascript": "['1', '2',]",
+        "javascript": "[\n  '1', '2'\n]",
         "java": "Arrays.asList(\"1\", \"2\")",
         "csharp": "new BsonArray\n{\n    \"1\",\n    \"2\"\n}",
         "shell": "[\n  '1', '2'\n]"
@@ -445,23 +445,23 @@
       {
         "description": "Array with subdoc",
         "python": "['1', { 'settings': 'http2' }]",
-        "javascript": "['1', { settings: 'http2' }]",
+        "javascript": "[\n  '1', {\n    'settings': 'http2'\n  }\n]",
         "java": "Arrays.asList(\"1\", eq(\"settings\", \"http2\"))",
         "csharp": "new BsonArray\n{\n    \"1\",\n    new BsonDocument(\"settings\", \"http2\")\n}",
-        "shell": "[\n  '1', {\n    settings: 'http2'\n  }\n]"
+        "shell": "[\n  '1', {\n    'settings': 'http2'\n  }\n]"
       },
       {
         "description": "nested array with nested subdoc",
         "python": "{ 'pipeline': [{'$match': {'$expr': { '$eq': [ '$manager', '$$me' ] } } }, { '$project': { 'managers': 0}}, {'$sort': { 'startQuarter': 1, 'notes': 1, 'job_code': 1}}]}",
-        "javascript": "{\"pipeline\": [ { $match: { $expr: { \"$eq\": [ \"$manager\", \"$$me\" ] } } }, { $project: { managers : 0 } }, { $sort: { startQuarter: 1, notes:1, job_code: 1 } } ]}" ,
+        "javascript": "{\n  'pipeline': [\n    {\n      '$match': {\n        '$expr': {\n          '$eq': [\n            '$manager', '$$me'\n          ]\n        }\n      }\n    }, {\n      '$project': {\n        'managers': 0\n      }\n    }, {\n      '$sort': {\n        'startQuarter': 1, \n        'notes': 1, \n        'job_code': 1\n      }\n    }\n  ]\n}",
         "java": "eq(\"pipeline\", Arrays.asList(match(eq(\"$expr\", eq(\"$eq\", Arrays.asList(\"$manager\", \"$$me\")))), project(exclude(\"managers\")), sort(orderBy(ascending(\"startQuarter\"), ascending(\"notes\"), ascending(\"job_code\")))))",
         "csharp": "new BsonDocument(\"pipeline\", new BsonArray\n    {\n        new BsonDocument(\"$match\", \n        new BsonDocument(\"$expr\", \n        new BsonDocument(\"$eq\", \n        new BsonArray\n                    {\n                        \"$manager\",\n                        \"$$me\"\n                    }))),\n        new BsonDocument(\"$project\", \n        new BsonDocument(\"managers\", 0)),\n        new BsonDocument(\"$sort\", \n        new BsonDocument\n            {\n                { \"startQuarter\", 1 }, \n                { \"notes\", 1 }, \n                { \"job_code\", 1 }\n            })\n    })",
-        "shell": "{\n  \"pipeline\": [\n    {\n      $match: {\n        $expr: {\n          \"$eq\": [\n            \"$manager\", \"$$me\"\n          ]\n        }\n      }\n    }, {\n      $project: {\n        managers: 0\n      }\n    }, {\n      $sort: {\n        startQuarter: 1, \n        notes: 1, \n        job_code: 1\n      }\n    }\n  ]\n}"
+        "shell": "{\n  'pipeline': [\n    {\n      '$match': {\n        '$expr': {\n          '$eq': [\n            '$manager', '$$me'\n          ]\n        }\n      }\n    }, {\n      '$project': {\n        'managers': 0\n      }\n    }, {\n      '$sort': {\n        'startQuarter': 1, \n        'notes': 1, \n        'job_code': 1\n      }\n    }\n  ]\n}"
       },
       {
         "description": "Array with subarray",
         "python": "['1', ['2', '3']]",
-        "javascript": "['1', ['2', '3']]",
+        "javascript": "[\n  '1', [\n    '2', '3'\n  ]\n]",
         "java": "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))",
         "csharp": "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}",
         "shell": "[\n  '1', [\n    '2', '3'\n  ]\n]"
@@ -469,7 +469,7 @@
       {
         "description": "Array with tuple",
         "python": "['1', ('2', '3')]",
-        "javascript": "['1', ['2', '3']]",
+        "javascript": "[\n  '1', [\n    '2', '3'\n  ]\n]",
         "java": "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))",
         "csharp": "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}",
         "shell": "[\n  '1', [\n    '2', '3'\n  ]\n]"
@@ -495,31 +495,31 @@
       {
         "description": "Tuple with 1 item",
         "python": "(1)",
-        "javascript": "1",
-        "java": "1L",
-        "csharp": "1",
-        "shell": "1"
+        "javascript": "(1)",
+        "java": "(1L)",
+        "csharp": "(1)",
+        "shell": "(1)"
       },
       {
         "description": "Tuple with 1 item and comma",
         "python": "(1,)",
-        "javascript": "[1]",
+        "javascript": "[\n  1\n]",
         "java": "Arrays.asList(1)",
-        "csharp": "new BsonArray(1)",
-        "shell": "[1]"
+        "csharp": "new BsonArray\n{\n    1\n}",
+        "shell": "[\n  1\n]"
       },
       {
         "description": "Tuple with subdoc",
         "python": "('1', { 'settings': 'http2' })",
-        "javascript": "['1', { settings: 'http2' }]",
+        "javascript": "[\n  '1', {\n    'settings': 'http2'\n  }\n]",
         "java": "Arrays.asList(\"1\", eq(\"settings\", \"http2\"))",
         "csharp": "new BsonArray\n{\n    \"1\",\n    new BsonDocument(\"settings\", \"http2\")\n}",
-        "shell": "[\n  '1', {\n    settings: 'http2'\n  }\n]"
+        "shell": "[\n  '1', {\n    'settings': 'http2'\n  }\n]"
       },
       {
         "description": "Tuple with subarray",
         "python": "('1', ['2', '3'])",
-        "javascript": "['1', ['2', '3']]",
+        "javascript": "[\n  '1', [\n    '2', '3'\n  ]\n]",
         "java": "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))",
         "csharp": "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}",
         "shell": "[\n  '1', [\n    '2', '3'\n  ]\n]"
@@ -527,7 +527,7 @@
       {
         "description": "Tuple with subtuple",
         "python": "['1', ('2', '3')]",
-        "javascript": "['1', ['2', '3']]",
+        "javascript": "[\n  '1', [\n    '2', '3'\n  ]\n]",
         "java": "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))",
         "csharp": "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}",
         "shell": "[\n  '1', [\n    '2', '3'\n  ]\n]"

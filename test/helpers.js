@@ -11,12 +11,8 @@ const unsupported = {
       java: {
         'language-types': [
           'binary operations',
-          // 'unary operations',
           'compare',
           'numbers',
-          // 'numeric literals',
-          // 'string literals',
-          // 'null',
           'Dict',
           'Array',
           'Tuple',
@@ -27,15 +23,8 @@ const unsupported = {
       javascript: {
         'language-types': [
           'binary operations',
-          // 'unary operations',
           'compare',
           'numbers',
-          // 'numeric literals',
-          // 'string literals',
-          // 'null',
-          // 'Dict',
-          'Array',
-          'Tuple',
           'Date',
           'RegExp'
         ]
@@ -43,15 +32,8 @@ const unsupported = {
       shell: {
         'language-types': [
           'binary operations',
-          // 'unary operations',
           'compare',
           'numbers',
-          // 'numeric literals',
-          // 'string literals',
-          // 'null',
-          // 'Dict',
-          'Array',
-          'Tuple',
           'Date',
           'RegExp'
         ]
@@ -59,15 +41,8 @@ const unsupported = {
       csharp: {
         'language-types': [
           'binary operations',
-          // 'unary operations',
           'compare',
           'numbers',
-          // 'numeric literals',
-          // 'string literals',
-          // 'null',
-          // 'Dict',
-          'Array',
-          'Tuple',
           'Date',
           'RegExp'
         ]

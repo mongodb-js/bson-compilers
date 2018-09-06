@@ -454,7 +454,7 @@
         "description": "nested array with nested subdoc",
         "python": "{ 'pipeline': [{'$match': {'$expr': { '$eq': [ '$manager', '$$me' ] } } }, { '$project': { 'managers': 0}}, {'$sort': { 'startQuarter': 1, 'notes': 1, 'job_code': 1}}]}",
         "javascript": "{\n  'pipeline': [\n    {\n      '$match': {\n        '$expr': {\n          '$eq': [\n            '$manager', '$$me'\n          ]\n        }\n      }\n    }, {\n      '$project': {\n        'managers': 0\n      }\n    }, {\n      '$sort': {\n        'startQuarter': 1, \n        'notes': 1, \n        'job_code': 1\n      }\n    }\n  ]\n}",
-        "java": "eq(\"pipeline\", Arrays.asList(match(eq(\"$expr\", eq(\"$eq\", Arrays.asList(\"$manager\", \"$$me\")))), project(exclude(\"managers\")), sort(orderBy(ascending(\"startQuarter\"), ascending(\"notes\"), ascending(\"job_code\")))))",
+        "java": "eq(\"pipeline\", Arrays.asList(match(eq(\"$expr\", Arrays.asList(\"$manager\", \"$$me\"))), project(exclude(\"managers\")), sort(orderBy(ascending(\"startQuarter\"), ascending(\"notes\"), ascending(\"job_code\")))))",
         "csharp": "new BsonDocument(\"pipeline\", new BsonArray\n    {\n        new BsonDocument(\"$match\", \n        new BsonDocument(\"$expr\", \n        new BsonDocument(\"$eq\", \n        new BsonArray\n                    {\n                        \"$manager\",\n                        \"$$me\"\n                    }))),\n        new BsonDocument(\"$project\", \n        new BsonDocument(\"managers\", 0)),\n        new BsonDocument(\"$sort\", \n        new BsonDocument\n            {\n                { \"startQuarter\", 1 }, \n                { \"notes\", 1 }, \n                { \"job_code\", 1 }\n            })\n    })",
         "shell": "{\n  'pipeline': [\n    {\n      '$match': {\n        '$expr': {\n          '$eq': [\n            '$manager', '$$me'\n          ]\n        }\n      }\n    }, {\n      '$project': {\n        'managers': 0\n      }\n    }, {\n      '$sort': {\n        'startQuarter': 1, \n        'notes': 1, \n        'job_code': 1\n      }\n    }\n  ]\n}"
       },
@@ -504,7 +504,7 @@
         "description": "Tuple with 1 item and comma",
         "python": "(1,)",
         "javascript": "[\n  1\n]",
-        "java": "Arrays.asList(1)",
+        "java": "Arrays.asList(1L)",
         "csharp": "new BsonArray\n{\n    1\n}",
         "shell": "[\n  1\n]"
       },

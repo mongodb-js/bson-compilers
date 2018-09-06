@@ -13,9 +13,6 @@ const unsupported = {
           'binary operations',
           'compare',
           'numbers',
-          'Dict',
-          'Array',
-          'Tuple',
           'Date',
           'RegExp'
         ]

@@ -156,7 +156,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     const properties = this.getKeyValueList(ctx);
     if (properties.length) {
       args = properties.map((pair) => {
-        const field = this.visit(this.getKey(pair));
+        const field = this.getKeyStr(pair);
         const value = this.getValue(pair);
         if (field.startsWith('$')) {
           const op = field.substr(1);
@@ -167,7 +167,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
             multiOps = true;
           }
           if (`handle${op}` in this) {
-            return this[`handle${op}`](value.getChild(0), op, ctx);
+            return this[`handle${op}`](this.getObjectChild(value), op, ctx);
           }
           if (this.field_opts.indexOf(op) !== -1) {
             // Assert that this isn't the top-level object
@@ -182,7 +182,8 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
         }
         const valueStr = this.visit(value);
         // $-op filters need to rewind a level
-        if (this.isFilter(value.getChild(0))) {
+        const child = this.getObjectChild(value);
+        if (this.isFilter(child)) {
           return valueStr;
         }
         this.requiredImports[300].push('eq');
@@ -208,7 +209,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * @returns {String}
    */
   handleFieldOp(ctx, op, parent) {
-    const parentField = this.visit(this.getParentKey(parent));
+    const parentField = this.getParentKeyStr(parent);
     return `${op}(${doubleQuoteStringify(parentField)}, ${this.visit(ctx)})`;
   }
 
@@ -222,7 +223,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     const properties = this.getKeyValueList(ctx);
     for (let i = 0; i < properties.length; i++) {
       const pair = properties[i];
-      const field = this.visit(pair.propertyName());
+      const field = this.getKeyStr(pair);
       if (this.field_opts.indexOf(field.substr(1)) !== -1) {
         return true;
       }
@@ -246,7 +247,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     let value = '';
 
     properties.forEach((pair) => {
-      const field = this.visit(this.getKey(pair));
+      const field = this.getKeyStr(pair);
       if (field === subfield) {
         this.idiomatic = idiomatic;
         value = this.visit(this.getValue(pair));
@@ -285,7 +286,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     const fields = {};
 
     properties.forEach((pair) => {
-      const field = this.visit(this.getKey(pair));
+      const field = this.getKeyStr(pair);
       if (reqOpts.indexOf(field) !== -1 || optionalOpts.indexOf(field) !== -1) {
         fields[field] = this.visit(this.getValue(pair));
       } else {
@@ -338,7 +339,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     const fields = {};
 
     properties.forEach((pair) => {
-      const field = this.visit(this.getKey(pair));
+      const field = this.getKeyStr(pair);
       if (reqOpts.indexOf(field) !== -1) {
         req.push(this.visit(this.getValue(pair)));
       } else {
@@ -372,7 +373,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     const fields = {};
 
     properties.forEach((pair) => {
-      const field = this.visit(this.getKey(pair));
+      const field = this.getKeyStr(pair);
       const original = this.getValue(pair).getText();
       if (original === 'true' || original === '1') {
         if (field !== '_id') {
@@ -434,7 +435,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   handlenot(ctx, op, parent) {
     const properties = this.assertIsNonemptyObject(ctx, op);
     const val = this.getValue(properties[0]);
-    const innerop = this.visit(this.getKey(properties[0])).substr(1);
+    const innerop = this.getKeyStr(properties[0]).substr(1);
     this.requiredImports[300].push(innerop);
     const inner = this.handleFieldOp(val, innerop, parent);
     return `${op}(${inner})`;
@@ -460,7 +461,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
         '$mod requires an array of 2-elements'
       );
     }
-    const parentField = this.visit(this.getParentKey(parent));
+    const parentField = this.getParentKeyStr(parent);
     const inner = list.map((f) => {
       return this.visit(f);
     });
@@ -482,12 +483,12 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
    * @return {String}
    */
   handleregex(ctx, op, parent) {
-    const parentField = this.visit(this.getParentKey(parent));
+    const parentField = this.getParentKeyStr(parent);
     const regex = {r: '', o: ''};
 
     const properties = this.getKeyValueList(parent);
     properties.forEach((pair) => {
-      const field = this.visit(this.getKey(pair));
+      const field = this.getKeyStr(pair);
       if (field === '$regex') {
         regex.r = this.visit(this.getValue(pair));
       }
@@ -534,7 +535,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     const fields = [];
 
     properties.forEach((pair) => {
-      const field = this.visit(this.getKey(pair));
+      const field = this.getKeyStr(pair);
       const original = this.getValue(pair).getText();
       if (original === '1') {
         fields.push(`ascending(${doubleQuoteStringify(field)})`);
@@ -570,12 +571,12 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     );
     const properties = this.assertIsNonemptyObject(ctx, op);
     const parentField = doubleQuoteStringify(
-      this.visit(this.getParentKey(parent))
+      this.getParentKeyStr(parent)
     );
     const fields = {};
 
     properties.forEach((pair) => {
-      const field = this.visit(this.getKey(pair));
+      const field = this.getKeyStr(pair);
       fields[field] = this.getValue(pair);
     });
 
@@ -629,12 +630,12 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   handlenear(ctx, op, parent) {
     const properties = this.assertIsNonemptyObject(ctx, op);
     const parentField = doubleQuoteStringify(
-      this.visit(this.getParentKey(parent))
+      this.getParentKeyStr(parent)
     );
     const fields = {};
 
     properties.forEach((pair) => {
-      const field = this.visit(this.getKey(pair));
+      const field = this.getKeyStr(pair);
       fields[field] = this.getValue(pair);
     });
 
@@ -793,7 +794,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     const fields = {};
 
     properties.forEach((pair) => {
-      const field = this.visit(this.getKey(pair));
+      const field = this.getKeyStr(pair);
       if (field === 'type') {
         fields.type = removeQuotes(this.visit(this.getValue(pair)));
       } else if (field === 'coordinates') {

@@ -53,7 +53,10 @@ class Visitor extends Python3Visitor {
   }
 
   start(ctx) {
-    // console.log(this.Types);
+    this.requiredImports = {};
+    [300, 301, 302, 303, 304, 305, 306].forEach(
+      (i) => (this.requiredImports[i] = [])
+    );
     return this.visitExpr_stmt(ctx);
   }
 
@@ -94,7 +97,22 @@ class Visitor extends Python3Visitor {
   }
 
   visitString_literal(ctx) {
-    return this.leafHelper(this.Types._string, ctx);
+    ctx.type = this.Types._string;
+    this.requiredImports[ctx.type.code] = true;
+    // Pass the original argument type to the template, not the casted type.
+    const type = ctx.originalType === undefined ? ctx.type : ctx.originalType;
+
+    let result = this.visitChildren(ctx);
+    result = result.replace(/^([rubf]?[rubf]["']|'''|"""|'|")/gi, '');
+    result = result.replace(/(["]{3}|["]|[']{3}|['])$/, '');
+    if (`emit${ctx.type.id}` in this) {
+      return this[`emit${ctx.type.id}`](ctx, result);
+    }
+
+    if (ctx.type.template) {
+      return ctx.type.template(result, type.id);
+    }
+    return `'${result}'`;
   }
   visitInteger_literal(ctx) {
     return this.leafHelper(this.Types._long, ctx);
@@ -164,9 +182,9 @@ class Visitor extends Python3Visitor {
     let args = '';
     const list = ctx.testlist_comp();
     if (list) {
-      // Sets of 1 item is the same as the item itself
+      // Sets of 1 item is the same as the item itself, but keep parens for math
       if (list.children.length === 1) {
-        return this.visit(list.children[0]);
+        return `(${this.visit(list.children[0])})`;
       }
       const visitedChildren = list.children.map((child) => {
         return this.visit(child);
@@ -224,6 +242,49 @@ class Visitor extends Python3Visitor {
    */
   visitTerminal(ctx) {
     return ctx.getText();
+  }
+
+  // accessors
+  getList(ctx) {
+    if (!('testlist_comp' in ctx) || !ctx.testlist_comp()) {
+      return [];
+    }
+    return ctx.testlist_comp().test();
+  }
+  getArray(ctx) {
+    if (!('array_literal' in ctx)) {
+      return false;
+    }
+    return ctx.array_literal();
+  }
+  getObject(ctx) {
+    if (!('object_literal' in ctx)) {
+      return false;
+    }
+    return ctx.object_literal();
+  }
+  getKeyValueList(ctx) {
+    if ('dictorsetmaker' in ctx && ctx.dictorsetmaker()) {
+      const properties = ctx.dictorsetmaker().test();
+      return properties
+        .map((key, i) => {
+          if (i % 2 === 0) {
+            return [
+              key,
+              properties[i + 1]
+            ];
+          }
+          return null;
+        })
+        .filter((k) => (k !== null));
+    }
+    return [];
+  }
+  getKey(k) {
+    return k[0];
+  }
+  getValue(k) {
+    return k[1];
   }
 }
 

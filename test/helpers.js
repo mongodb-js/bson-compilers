@@ -10,22 +10,67 @@ const unsupported = {
     python: {
       java: {
         'language-types': [
-          'math',
+          'binary operations',
+          // 'unary operations',
           'compare',
           'numbers',
-          'literals',
+          // 'numeric literals',
+          // 'string literals',
+          // 'null',
+          'Dict',
+          'Array',
+          'Tuple',
           'Date',
           'RegExp'
         ]
       },
       javascript: {
-        'language-types': ['*']
+        'language-types': [
+          'binary operations',
+          // 'unary operations',
+          'compare',
+          'numbers',
+          // 'numeric literals',
+          // 'string literals',
+          // 'null',
+          'Dict',
+          'Array',
+          'Tuple',
+          'Date',
+          'RegExp'
+        ]
       },
       shell: {
-        'language-types': ['*']
+        'language-types': [
+          'binary operations',
+          // 'unary operations',
+          'compare',
+          'numbers',
+          // 'numeric literals',
+          // 'string literals',
+          // 'null',
+          'Dict',
+          'Array',
+          'Tuple',
+          'Date',
+          'RegExp'
+        ]
       },
       csharp: {
-        'language-types': ['*']
+        'language-types': [
+          'binary operations',
+          // 'unary operations',
+          'compare',
+          'numbers',
+          // 'numeric literals',
+          // 'string literals',
+          // 'null',
+          'Dict',
+          'Array',
+          'Tuple',
+          'Date',
+          'RegExp'
+        ]
       }
     }
   },

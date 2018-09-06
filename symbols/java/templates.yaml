@@ -40,7 +40,10 @@ Templates:
             }
             return `Pattern.compile("${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}")`;
         }
-    BoolTypeTemplate: &BoolTypeTemplate null
+    BoolTypeTemplate: &BoolTypeTemplate !!js/function >
+        (literal) => {
+            return literal.toLowerCase();
+        }
     IntegerTypeTemplate: &IntegerTypeTemplate null
     DecimalTypeTemplate: &DecimalTypeTemplate !!js/function >
         (literal, type) => {

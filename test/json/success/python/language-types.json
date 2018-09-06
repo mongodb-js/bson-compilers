@@ -20,52 +20,52 @@
       {
         "description": "floor and mod",
         "python": "10 // 2 % 3",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "Math.floor(10, 2)%3",
+        "java": "floor(10, 2) % 3",
+        "csharp": "Math.floor(10, 2)%3",
+        "shell": "Math.floor(10, 2)%3"
       },
       {
         "description": "power",
         "python": "6 ** 7",
         "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "java": "pow(6, 7)",
+        "csharp": "Math.pow(6, 7)",
+        "shell": "pow(6, 7)"
       },
       {
         "description": "bit opts",
         "python": "1 | 2 ^ 3 & 4 << 6 >> 7",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "1 | 2 ^ 3 & 4 << 6 >> 7",
+        "java": "1L | 2L ^ 3L & 4L << 6L >> 7L",
+        "csharp": "1 | 2 ^ 3 & 4 << 6 >> 7",
+        "shell": "1 | 2 ^ 3 & 4 << 6 >> 7"
       }
     ],
     "unary operations": [
       {
         "description": "unary +",
         "python": "+1",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "+1",
+        "java": "+1L",
+        "csharp": "+1",
+        "shell": "+1"
       },
       {
         "description": "unary -",
         "python": "-1",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "-1",
+        "java": "-1L",
+        "csharp": "-1",
+        "shell": "-1"
       },
       {
         "description": "unary ~",
         "python": "~1",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "~1",
+        "java": "~1L",
+        "csharp": "~1",
+        "shell": "~1"
       }
     ],
     "compare": [
@@ -88,49 +88,49 @@
       {
         "description": "greater/less than, or equal",
         "python": "1 > 2 < 3 >= 4 <= 6",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "1 > 2 < 3 >= 4 <= 6",
+        "java": "1 > 2 < 3 >= 4 <= 6",
+        "csharp": "1 > 2 < 3 >= 4 <= 6",
+        "shell": "1 > 2 < 3 >= 4 <= 6"
       },
       {
         "description": "is",
         "python": "4 is 5",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "4 == 5",
+        "java": "4 == 5",
+        "csharp": "4 == 5",
+        "shell": "4 == 5"
       },
       {
         "description": "is not",
         "python": "4 is not 5",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "4 != 5",
+        "java": "4 != 5",
+        "csharp": "4 != 5",
+        "shell": "4 != 5"
       },
       {
         "description": "in",
         "python": "4 in [1, 2]",
-        "javascript": "",
+        "javascript": "4 in [1, 2]",
         "java": "",
         "csharp": "",
-        "shell": ""
+        "shell": "4 in [1, 2]"
       },
       {
         "description": "not in",
         "python": "4 not in [1, 2]",
-        "javascript": "",
+        "javascript": "!(4 in [1, 2])",
         "java": "",
         "csharp": "",
-        "shell": ""
+        "shell": "!(4 in [1, 2])"
       }
     ],
     "numbers": [
       {
         "description": "int with number arg",
         "python": "int(2)",
-        "javascript": "new int(2)",
+        "javascript": "Number(2)",
         "java": "2d",
         "csharp": "(int) 2",
         "shell": "new Number(2)"
@@ -138,7 +138,7 @@
       {
         "description": "int with string arg",
         "python": "int('2')",
-        "javascript": "int('2')",
+        "javascript": "Number('2')",
         "java": "Double.parseDouble(\"2\")",
         "csharp": "float.Parse(\"2\")",
         "shell": "new Number('2')"
@@ -146,34 +146,18 @@
       {
         "description": "float with number arg",
         "python": "float(1.001)",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "1.001",
+        "java": "1.001",
+        "csharp": "1.001",
+        "shell": "1.001"
       },
       {
         "description": "float with string arg",
-        "python": "float('1')",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
-      },
-      {
-        "description": "complex with number arg",
-        "python": "complex('1')",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
-      },
-      {
-        "description": "complex with string arg",
-        "python": "complex('1')",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "python": "float('1.0001')",
+        "javascript": "Number('1.0001')",
+        "java": "Double.parseDouble(\"1.0001\")",
+        "csharp": "float.Parse(\"1.0001\")",
+        "shell": "Number('1.0001')"
       }
     ],
     "numeric literals": [
@@ -200,22 +184,6 @@
         "java": "2.001d",
         "csharp": "2.001",
         "shell": "2.001"
-      },
-      {
-        "description": "Complex literal with +",
-        "javascript": "",
-        "python": "2+3j",
-        "java": "",
-        "csharp": "",
-        "shell": ""
-      },
-      {
-        "description": "Complex literal without +",
-        "javascript": "",
-        "python": "3j",
-        "java": "",
-        "csharp": "",
-        "shell": ""
       },
       {
         "description": "Hex number caps",
@@ -269,91 +237,107 @@
       },
       {
         "description": "Double-quote string",
-        "javascript": "\"string\"",
-        "python": "'string'",
+        "python": "\"string\"",
+        "javascript": "'string'",
         "java": "\"string\"",
         "csharp": "\"string\"",
-        "shell": "\"string\""
+        "shell": "'string'"
       },
       {
         "description": "Triple single-quote string",
-        "javascript": "\"string\"",
+        "javascript": "'string'",
         "python": "'''string'''",
         "java": "\"string\"",
         "csharp": "\"string\"",
-        "shell": "\"string\""
+        "shell": "'string'"
       },
       {
         "description": "Triple double-quote string",
-        "javascript": "\"string\"",
+        "javascript": "'string'",
         "python": "\"\"\"string\"\"\"",
         "java": "\"string\"",
         "csharp": "\"string\"",
-        "shell": "\"string\""
+        "shell": "'string'"
       },
       {
         "description": "b prefixed single quote string",
         "python": "b'abc'",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "'abc'",
+        "java": "\"abc\"",
+        "csharp": "\"abc\"",
+        "shell": "'abc'"
       },
       {
         "description": "B prefixed single quote string",
         "python": "B'abc'",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "'abc'",
+        "java": "\"abc\"",
+        "csharp": "\"abc\"",
+        "shell": "'abc'"
       },
       {
         "description": "b prefixed double quote string",
         "python": "b\"abc\"",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "'abc'",
+        "java": "\"abc\"",
+        "csharp": "\"abc\"",
+        "shell": "'abc'"
       },
       {
         "description": "B prefixed double quote string",
         "python": "B'abc'",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "'abc'",
+        "java": "\"abc\"",
+        "csharp": "\"abc\"",
+        "shell": "'abc'"
       },
       {
         "description": "u prefixed single quote string",
         "python": "u'abc'",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "'abc'",
+        "java": "\"abc\"",
+        "csharp": "\"abc\"",
+        "shell": "'abc'"
       },
       {
         "description": "U prefixed single quote string",
         "python": "U'abc'",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "'abc'",
+        "java": "\"abc\"",
+        "csharp": "\"abc\"",
+        "shell": "'abc'"
       },
       {
         "description": "u prefixed double quote string",
         "python": "u\"abc\"",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "'abc'",
+        "java": "\"abc\"",
+        "csharp": "\"abc\"",
+        "shell": "'abc'"
       },
       {
         "description": "U prefixed double quote string",
         "python": "U'abc'",
-        "javascript": "",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "javascript": "'abc'",
+        "java": "\"abc\"",
+        "csharp": "\"abc\"",
+        "shell": "'abc'"
+      },
+      {
+        "description": "fR prefixed double quote string",
+        "python": "fR'abc'",
+        "javascript": "'abc'",
+        "java": "\"abc\"",
+        "csharp": "\"abc\"",
+        "shell": "'abc'"
+      },
+      {
+        "description": "rB prefixed double quote string",
+        "python": "rB'abc'",
+        "javascript": "'abc'",
+        "java": "\"abc\"",
+        "csharp": "\"abc\"",
+        "shell": "'abc'"
       }
     ],
     "null": [

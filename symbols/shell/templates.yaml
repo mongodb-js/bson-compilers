@@ -14,7 +14,16 @@ Templates:
     EofTemplate: &EofSyntaxTemplate null
     # BSON Object Type templates
     CodeTypeTemplate: &CodeTypeTemplate null
-    StringTypeTemplate: &StringTypeTemplate null
+    StringTypeTemplate: &StringTypeTemplate !!js/function >
+        (str) => {
+          let newStr = str;
+          if (
+            (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
+            (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"')) {
+            newStr = str.substr(1, str.length - 2);
+          }
+          return `'${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}'`;
+        }
     RegexTypeTemplate: &RegexTypeTemplate !!js/function >
         (pattern, flags) => {
             const str = pattern;
@@ -27,7 +36,10 @@ Templates:
             pattern = `'${newStr.replace(/\\([\s\S])|(')/g, '\\$1$2')}'`;
             return `RegExp(${pattern}${flags ? ', ' + '\'' + flags + '\'': ''})`;
         }
-    BoolTypeTemplate: &BoolTypeTemplate null
+    BoolTypeTemplate: &BoolTypeTemplate !!js/function >
+        (literal) => {
+            return literal.toLowerCase();
+        }
     IntegerTypeTemplate: &IntegerTypeTemplate null
     DecimalTypeTemplate: &DecimalTypeTemplate null
     LongBasicTypeTemplate: &LongBasicTypeTemplate null

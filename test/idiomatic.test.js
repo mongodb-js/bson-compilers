@@ -978,58 +978,119 @@ describe('Java Builders', () => {
       );
     });
   });
-  describe('agg operators', () => {
-    for (const key of Object.keys(aggOperators)) {
-      describe(`${key}`, () => {
-        for (const test of aggOperators[key]) {
-          it(`${test.input} equals expected`, () => {
-            expect(
-              transpiler.javascript.java.compile(test.input, true)
-            ).to.equal(test.output);
-          });
-          it(`${test.input} imports correctly`, () => {
-            expect(
-              transpiler.javascript.java.getImports()
-            ).to.equal(test.imports);
-          });
-        }
-      });
-    }
+  describe('javascript input', () => {
+    describe('agg operators', () => {
+      for (const key of Object.keys(aggOperators)) {
+        describe(`${key}`, () => {
+          for (const test of aggOperators[key]) {
+            it(`${test.input} equals expected`, () => {
+              expect(
+                transpiler.javascript.java.compile(test.input, true)
+              ).to.equal(test.output);
+            });
+            it(`${test.input} imports correctly`, () => {
+              expect(
+                transpiler.javascript.java.getImports()
+              ).to.equal(test.imports);
+            });
+          }
+        });
+      }
+    });
+    describe('filter operators', () => {
+      for (const key of Object.keys(filterOperators)) {
+        describe(`${key}`, () => {
+          for (const test of filterOperators[key]) {
+            it(`${test.input} equals expected`, () => {
+              expect(
+                transpiler.javascript.java.compile(test.input, true)
+              ).to.equal(test.output);
+            });
+            it(`${test.input} imports correctly`, () => {
+              expect(
+                transpiler.javascript.java.getImports()
+              ).to.equal(test.imports);
+            });
+          }
+        });
+      }
+    });
+    describe('accumulator operators', () => {
+      for (const key of Object.keys(accumulatorOperators)) {
+        describe(`${key}`, () => {
+          for (const test of accumulatorOperators[key]) {
+            it(`${test.input} equals expected`, () => {
+              expect(
+                transpiler.javascript.java.compile(test.input, true)
+              ).to.equal(test.output);
+            });
+            it(`${test.input} imports correctly`, () => {
+              expect(
+                transpiler.javascript.java.getImports()
+              ).to.equal(test.imports);
+            });
+          }
+        });
+      }
+    });
   });
-  describe('filter operators', () => {
-    for (const key of Object.keys(filterOperators)) {
-      describe(`${key}`, () => {
-        for (const test of filterOperators[key]) {
-          it(`${test.input} equals expected`, () => {
-            expect(
-              transpiler.javascript.java.compile(test.input, true)
-            ).to.equal(test.output);
-          });
-          it(`${test.input} imports correctly`, () => {
-            expect(
-              transpiler.javascript.java.getImports()
-            ).to.equal(test.imports);
-          });
-        }
-      });
-    }
-  });
-  describe('accumulator operators', () => {
-    for (const key of Object.keys(accumulatorOperators)) {
-      describe(`${key}`, () => {
-        for (const test of accumulatorOperators[key]) {
-          it(`${test.input} equals expected`, () => {
-            expect(
-              transpiler.javascript.java.compile(test.input, true)
-            ).to.equal(test.output);
-          });
-          it(`${test.input} imports correctly`, () => {
-            expect(
-              transpiler.javascript.java.getImports()
-            ).to.equal(test.imports);
-          });
-        }
-      });
-    }
+  describe('python input', () => {
+    describe('agg operators', () => {
+      for (const key of Object.keys(aggOperators)) {
+        describe(`${key}`, () => {
+          for (const test of aggOperators[key]) {
+            it(`${test.input} equals expected`, () => {
+              const inPy = transpiler.javascript.python.compile(test.input);
+              expect(
+                transpiler.python.java.compile(inPy, true)
+              ).to.equal(test.output);
+            });
+            // it(`${test.input} imports correctly`, () => {
+            //   expect(
+            //     transpiler.python.java.getImports()
+            //   ).to.equal(test.imports);
+            // });
+          }
+        });
+      }
+    });
+    describe('filter operators', () => {
+      for (const key of Object.keys(filterOperators)) {
+        describe(`${key}`, () => {
+          for (const test of filterOperators[key]) {
+            it(`${test.input} equals expected`, () => {
+              const inPy = transpiler.javascript.python.compile(test.input);
+              expect(
+                transpiler.python.java.compile(inPy, true)
+              ).to.equal(test.output);
+            });
+            // it(`${test.input} imports correctly`, () => {
+            //   expect(
+            //     transpiler.python.java.getImports()
+            //   ).to.equal(test.imports);
+            // });
+          }
+        });
+      }
+    });
+    describe('accumulator operators', () => {
+      for (const key of Object.keys(accumulatorOperators)) {
+        describe(`${key}`, () => {
+          for (const test of accumulatorOperators[key]) {
+            it(`${test.input} equals expected`, () => {
+              const inPy = transpiler.javascript.python.compile(test.input);
+              expect(
+                transpiler.python.java.compile(inPy, true)
+              ).to.equal(test.output);
+            });
+            // it(`${test.input} imports correctly`, () => {
+            //   expect(
+            //     transpiler.python.java.getImports()
+            //   ).to.equal(test.imports);
+            // });
+          }
+        });
+      }
+    });
   });
 });

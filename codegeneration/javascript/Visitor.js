@@ -234,10 +234,14 @@ class Visitor extends ECMAScriptVisitor {
       const properties = ctx.propertyNameAndValueList().propertyAssignment();
       if (ctx.type.argsTemplate) {
         args = ctx.type.argsTemplate(properties.map((pair) => {
-          return [
-            this.visit(pair.propertyName()),
-            this.visit(pair.singleExpression())
-          ];
+          const key = this.visit(pair.propertyName());
+          let value = pair.singleExpression();
+          if (removeQuotes(key) === '$where') {
+            value = this.Types._string.template(value.getText());
+          } else {
+            value = this.visit(value);
+          }
+          return [key, value];
         }), ctx.indentDepth);
       } else {
         args = this.visit(properties);

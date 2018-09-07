@@ -13,6 +13,13 @@ class Visitor extends Python3Visitor {
     this.requiredImports = {};
     this.idiomatic = true;
   }
+  deepCopyRequiredImports() {
+    const copy = Object.assign({}, this.requiredImports);
+    [300, 301, 302, 303, 304, 305, 306].forEach((i) => {
+      copy[i] = Array.from(this.requiredImports[i]);
+    });
+    return copy;
+  }
   /**
    * Selectively visits children of a node.
    *
@@ -254,16 +261,10 @@ class Visitor extends Python3Visitor {
     return ctx.testlist_comp().test();
   }
   getArray(ctx) {
-    if (!('array_literal' in ctx)) {
-      return false;
-    }
-    return ctx.array_literal();
+    return this.skipFakeNodesDown(ctx, 'array_literal');
   }
   getObject(ctx) {
-    if (!('object_literal' in ctx)) {
-      return false;
-    }
-    return ctx.object_literal();
+    return this.skipFakeNodesDown(ctx, 'object_literal');
   }
   getKeyValueList(ctx) {
     if ('dictorsetmaker' in ctx && ctx.dictorsetmaker()) {

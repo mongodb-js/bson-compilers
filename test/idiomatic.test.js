@@ -1039,8 +1039,8 @@ describe('Java Builders', () => {
       for (const key of Object.keys(aggOperators)) {
         describe(`${key}`, () => {
           for (const test of aggOperators[key]) {
-            it(`${test.input} equals expected`, () => {
-              const inPy = transpiler.javascript.python.compile(test.input);
+            const inPy = transpiler.javascript.python.compile(test.input);
+            it(`${inPy} equals expected`, () => {
               expect(
                 transpiler.python.java.compile(inPy, true)
               ).to.equal(test.output);
@@ -1058,8 +1058,8 @@ describe('Java Builders', () => {
       for (const key of Object.keys(filterOperators)) {
         describe(`${key}`, () => {
           for (const test of filterOperators[key]) {
-            it(`${test.input} equals expected`, () => {
-              const inPy = transpiler.javascript.python.compile(test.input);
+            const inPy = transpiler.javascript.python.compile(test.input);
+            it(`${inPy} equals expected`, () => {
               expect(
                 transpiler.python.java.compile(inPy, true)
               ).to.equal(test.output);
@@ -1077,8 +1077,8 @@ describe('Java Builders', () => {
       for (const key of Object.keys(accumulatorOperators)) {
         describe(`${key}`, () => {
           for (const test of accumulatorOperators[key]) {
-            it(`${test.input} equals expected`, () => {
-              const inPy = transpiler.javascript.python.compile(test.input);
+            const inPy = transpiler.javascript.python.compile(test.input);
+            it(`${inPy} equals expected`, () => {
               expect(
                 transpiler.python.java.compile(inPy, true)
               ).to.equal(test.output);

@@ -375,7 +375,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     properties.forEach((pair) => {
       const field = this.getKeyStr(pair);
       const original = this.getValue(pair).getText();
-      if (original === 'true' || original === '1') {
+      if (original.toLowerCase() === 'true' || original === '1') {
         if (field !== '_id') {
           // Skip because ID is included by default
           fields.includes = !fields.includes ?
@@ -383,7 +383,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
             `${fields.includes}, ${doubleQuoteStringify(field)}`;
           this.requiredImports[303].push('include');
         }
-      } else if (original === 'false' || original === '0') {
+      } else if (original.toLowerCase() === 'false' || original === '0') {
         if (field !== '_id') {
           fields.excludes = !fields.excludes ?
             `exclude(${doubleQuoteStringify(field)}` :

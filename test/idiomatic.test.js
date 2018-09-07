@@ -938,6 +938,33 @@ import static com.mongodb.client.model.Filters.eq;`
   ]
 };
 
+const basicTest = {
+  default: [
+    {
+      input: '{x: 1}',
+      output: 'eq("x", 1L)'
+    },
+    {
+      input: '{x: 1, y: 2}',
+      output: 'and(eq("x", 1L), eq("y", 2L))'
+    },
+    {
+      input: '{x: 1, y: 2, z: 3, q: 4, r: 5}',
+      output: 'and(eq("x", 1L), eq("y", 2L), eq("z", 3L), eq("q", 4L), eq("r", 5L))'
+    }
+  ],
+  nested: [
+    {
+      input: '{x: {y: 2}}',
+      output: 'eq("x", eq("y", 2L))'
+    },
+    {
+      input: '{x: {y: 2}, z: {q: {r: 5}}}',
+      output: 'and(eq("x", eq("y", 2L)), eq("z", eq("q", eq("r", 5L))))'
+    }
+  ]
+};
+
 describe('Java Builders', () => {
   describe('The default', () => {
     it('is idiomatic', () => {
@@ -979,6 +1006,19 @@ describe('Java Builders', () => {
     });
   });
   describe('javascript input', () => {
+    describe('basic docs', () => {
+      for (const key of Object.keys(basicTest)) {
+        describe(`${key}`, () => {
+          for (const test of basicTest[key]) {
+            it(`${test.input} equals expected`, () => {
+              expect(
+                transpiler.javascript.java.compile(test.input)
+              ).to.equal(test.output);
+            });
+          }
+        });
+      }
+    });
     describe('agg operators', () => {
       for (const key of Object.keys(aggOperators)) {
         describe(`${key}`, () => {
@@ -1035,6 +1075,20 @@ describe('Java Builders', () => {
     });
   });
   describe('python input', () => {
+    describe('basic docs', () => {
+      for (const key of Object.keys(basicTest)) {
+        describe(`${key}`, () => {
+          for (const test of basicTest[key]) {
+            const inPy = transpiler.javascript.python.compile(test.input);
+            it(`${inPy} equals expected`, () => {
+              expect(
+                transpiler.javascript.java.compile(inPy)
+              ).to.equal(test.output);
+            });
+          }
+        });
+      }
+    });
     describe('agg operators', () => {
       for (const key of Object.keys(aggOperators)) {
         describe(`${key}`, () => {

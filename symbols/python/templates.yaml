@@ -10,8 +10,24 @@ Templates:
                 return `${lhs} == ${rhs}`;
             }
         }
+    InSyntaxTemplate: &InSyntaxTemplate !!js/function >
+        (lhs, op, rhs) => {
+            let str = 'in';
+            if (op.includes('!') || op.includes('not')) {
+                str = 'not in';
+            }
+            return `${lhs} ${str} ${rhs}`
+        }
     EosTemplate: &EosSyntaxTemplate null
     EofTemplate: &EofSyntaxTemplate null
+    FloorDivTemplate: &FloorDivSyntaxTemplate !!js/function >
+        (lhs, rhs) => {
+            return `${lhs}//${rhs}`;
+        }
+    PowerTemplate: &PowerSyntaxTemplate !!js/function >
+        (lhs, rhs) => {
+            return `${lhs}**${rhs}`;
+        }
     # BSON Object Type templates
     CodeTypeTemplate: &CodeTypeTemplate null
     StringTypeTemplate: &StringTypeTemplate !!js/function >

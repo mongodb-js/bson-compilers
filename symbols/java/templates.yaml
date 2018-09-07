@@ -3,15 +3,31 @@ Templates:
     # Syntax
     EqualitySyntaxTemplate: &EqualitySyntaxTemplate !!js/function >
         (lhs, op, rhs) => {
-            if (op.includes('!')) {
+            if (op.includes('!') || op.includes('not')) {
                 return `${lhs} != ${rhs}`;
             }
             else {
                 return `${lhs} == ${rhs}`;
             }
         }
+    InSyntaxTemplate: &InSyntaxTemplate !!js/function >
+        (lhs, op, rhs) => {
+            let str = '';
+            if (op.includes('!') || op.includes('not')) {
+                str = '!';
+            }
+            return `${str}${rhs}.contains(${lhs})`
+        }
     EosSyntaxTemplate: &EosSyntaxTemplate null
     EofSyntaxTemplate: &EofSyntaxTemplate null
+    FloorDivTemplate: &FloorDivSyntaxTemplate !!js/function >
+        (lhs, rhs) => {
+            return `floor(${lhs}, ${rhs})`;
+        }
+    PowerTemplate: &PowerSyntaxTemplate !!js/function >
+        (lhs, rhs) => {
+            return `pow(${lhs}, ${rhs})`;
+        }
     # BSON Object Type templates
     CodeTypeTemplate: &CodeTypeTemplate null
     StringTypeTemplate: &StringTypeTemplate !!js/function >

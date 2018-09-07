@@ -21,25 +21,33 @@
         "description": "floor and mod",
         "python": "10 // 2 % 3",
         "javascript": "Math.floor(10, 2)%3",
-        "java": "floor(10, 2) % 3",
+        "java": "floor(10L, 2L)%3L",
         "csharp": "Math.floor(10, 2)%3",
         "shell": "Math.floor(10, 2)%3"
       },
       {
         "description": "power",
         "python": "6 ** 7",
-        "javascript": "",
-        "java": "pow(6, 7)",
+        "javascript": "Math.pow(6, 7)",
+        "java": "pow(6L, 7L)",
         "csharp": "Math.pow(6, 7)",
-        "shell": "pow(6, 7)"
+        "shell": "Math.pow(6, 7)"
       },
       {
         "description": "bit opts",
         "python": "1 | 2 ^ 3 & 4 << 6 >> 7",
-        "javascript": "1 | 2 ^ 3 & 4 << 6 >> 7",
-        "java": "1L | 2L ^ 3L & 4L << 6L >> 7L",
-        "csharp": "1 | 2 ^ 3 & 4 << 6 >> 7",
-        "shell": "1 | 2 ^ 3 & 4 << 6 >> 7"
+        "javascript": "1|2^3&4<<6>>7",
+        "java": "1L|2L^3L&4L<<6L>>7L",
+        "csharp": "1|2^3&4<<6>>7",
+        "shell":"1|2^3&4<<6>>7"
+      },
+      {
+        "description": "addition and subtraction with unary",
+        "javascript": "2++5--6",
+        "python": "2++5--6",
+        "java": "2L++5L--6L",
+        "csharp": "2++5--6",
+        "shell": "2++5--6"
       }
     ],
     "unary operations": [
@@ -89,41 +97,41 @@
         "description": "greater/less than, or equal",
         "python": "1 > 2 < 3 >= 4 <= 6",
         "javascript": "1 > 2 < 3 >= 4 <= 6",
-        "java": "1 > 2 < 3 >= 4 <= 6",
+        "java": "1L > 2L < 3L >= 4L <= 6L",
         "csharp": "1 > 2 < 3 >= 4 <= 6",
         "shell": "1 > 2 < 3 >= 4 <= 6"
       },
       {
         "description": "is",
         "python": "4 is 5",
-        "javascript": "4 == 5",
-        "java": "4 == 5",
+        "javascript": "4 === 5",
+        "java": "4L == 5L",
         "csharp": "4 == 5",
-        "shell": "4 == 5"
+        "shell": "4 === 5"
       },
       {
         "description": "is not",
         "python": "4 is not 5",
-        "javascript": "4 != 5",
-        "java": "4 != 5",
+        "javascript": "4 !== 5",
+        "java": "4L != 5L",
         "csharp": "4 != 5",
-        "shell": "4 != 5"
+        "shell": "4 !== 5"
       },
       {
         "description": "in",
         "python": "4 in [1, 2]",
-        "javascript": "4 in [1, 2]",
-        "java": "",
-        "csharp": "",
-        "shell": "4 in [1, 2]"
+        "javascript": "[\n  1, 2\n].indexOf(4) !== -1",
+        "java": "Arrays.asList(1L, 2L).contains(4L)",
+        "csharp": "new BsonArray\n{\n    1,\n    2\n}.indexOf(4) != -1",
+        "shell": "[\n  1, 2\n].indexOf(4) !== -1"
       },
       {
         "description": "not in",
         "python": "4 not in [1, 2]",
-        "javascript": "!(4 in [1, 2])",
-        "java": "",
-        "csharp": "",
-        "shell": "!(4 in [1, 2])"
+        "javascript": "[\n  1, 2\n].indexOf(4) === -1",
+        "java": "!Arrays.asList(1L, 2L).contains(4L)",
+        "csharp": "new BsonArray\n{\n    1,\n    2\n}.indexOf(4) == -1",
+        "shell": "[\n  1, 2\n].indexOf(4) === -1"
       }
     ],
     "numbers": [

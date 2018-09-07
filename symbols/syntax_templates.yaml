@@ -1,7 +1,13 @@
 Syntax:
     equality: &EqualitySyntax
         template: *EqualitySyntaxTemplate
+    in: &InSyntax
+        template: *InSyntaxTemplate
     eos: &EosSyntax
         template: *EosSyntaxTemplate
     eof: &EosSyntax
         template: *EofSyntaxTemplate
+    floorDiv: &FloorDivSyntax
+        template: *FloorDivSyntaxTemplate
+    power: &PowerSyntax
+        template: *PowerSyntaxTemplate

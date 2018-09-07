@@ -242,7 +242,6 @@ class Visitor extends Python3Visitor {
     return this.visitChildren(ctx);
   }
 
-
   /**
    * Visit a leaf node and return a string.
    * *
@@ -251,6 +250,66 @@ class Visitor extends Python3Visitor {
    */
   visitTerminal(ctx) {
     return ctx.getText();
+  }
+
+  visitTerm(ctx) {
+    // Skip if fake node
+    if (ctx.getChildCount() === 1) {
+      return this.visitChildren(ctx);
+    }
+    if (ctx.getChildCount() > 2) {
+      const res = [this.visit(ctx.children[0])];
+      for (let i = 1; i < ctx.getChildCount(); i++) {
+        const op = this.visit(ctx.children[i]);
+        if (op === '//') {
+          const rhs = this.visit(ctx.children[i + 1]);
+          const lhs = res.pop();
+          res.push(this.Syntax.floorDiv.template(lhs, rhs));
+          i++;
+        } else {
+          res.push(op);
+        }
+      }
+      return res.join('');
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitPower(ctx) {
+    // Skip if fake node
+    if (ctx.getChildCount() === 1) {
+      return this.visitChildren(ctx);
+    }
+    return this.Syntax.power.template(this.visit(ctx.atom_expr()), this.visit(ctx.factor()));
+  }
+
+  visitComparison(ctx) {
+    // Skip if fake node
+    if (ctx.getChildCount() === 1) {
+      return this.visitChildren(ctx);
+    }
+    let skip = false;
+    return ctx.children.reduce((str, e, i, arr) => {
+      if (skip) { // Skip for 'in' statements because swallows rhs
+        skip = false;
+        return str;
+      }
+      if (i === arr.length - 1) { // Always visit the last element
+        return ` ${str}${this.visit(e)}`;
+      }
+      if (i % 2 === 0) { // Only ops
+        return str;
+      }
+      const op = this.visit(e);
+      if (op === '==' || op === '!=' || op === 'is' || op === 'isnot') {
+        return `${str}${this.Syntax.equality.template(this.visit(arr[i - 1]), op, '')}`;
+      }
+      if (op === 'in' || op === 'notin') {
+        skip = true;
+        return `${str}${this.Syntax.in.template(this.visit(arr[i - 1]), op, this.visit(arr[i + 1]))}`;
+      }
+      return `${str}${this.visit(arr[i - 1])} ${op} `;
+    }, '');
   }
 
   // accessors

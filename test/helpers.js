@@ -10,8 +10,6 @@ const unsupported = {
     python: {
       java: {
         'language-types': [
-          'binary operations',
-          'compare',
           'numbers',
           'Date',
           'RegExp'
@@ -19,8 +17,6 @@ const unsupported = {
       },
       javascript: {
         'language-types': [
-          'binary operations',
-          'compare',
           'numbers',
           'Date',
           'RegExp'
@@ -28,8 +24,6 @@ const unsupported = {
       },
       shell: {
         'language-types': [
-          'binary operations',
-          'compare',
           'numbers',
           'Date',
           'RegExp'
@@ -37,8 +31,6 @@ const unsupported = {
       },
       csharp: {
         'language-types': [
-          'binary operations',
-          'compare',
           'numbers',
           'Date',
           'RegExp'

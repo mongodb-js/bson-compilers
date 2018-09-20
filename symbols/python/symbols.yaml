@@ -5,7 +5,8 @@ BsonSymbols:
         callable: *constructor
         args:
             - [ *StringType ]
-            - [ *ObjectType, null ]
+            - [ *ObjectType, null, 'scope']
+            - [ null, '**kwargs' ]
         type: *CodeType
         attr: {}
         template: *CodeSymbolTemplate
@@ -15,86 +16,34 @@ BsonSymbols:
         code: 101
         callable: *constructor
         args:
-            - [ *StringType, *NumericType, null ]
+            - [ *StringType, *NumericType, null, 'oid' ]
         type: *ObjectIdType
         attr:
-            createFromHexString:
+            from_datetime:
                 <<: *__func
-                id: "createFromHexString"
-                args:
-                    - [ *StringType ]
-                type: *ObjectIdType
-                template: *ObjectIdCreateFromHexStringTemplate
-                argsTemplate: *ObjectIdCreateFromHexStringArgsTemplate
-            createFromTime:
-                <<: *__func
-                id: "ObjectIdCreateFromTime"
+                id: "from_datetime"
                 args:
                     - [ *NumericType, "Date" ]
                 type: *ObjectIdType
                 template: *ObjectIdCreateFromTimeTemplate
                 argsTemplate: *ObjectIdCreateFromTimeArgsTemplate
-            isValid:
+            is_valid:
                 <<: *__func
-                id: "isValid"
+                id: "is_valid"
                 args:
-                    - [ *StringType ]
+                    - [ *StringType,  ]
                 type: *BoolType
                 template: *ObjectIdIsValidTemplate
                 argsTemplate: *ObjectIdIsValidArgsTemplate
         template: *ObjectIdSymbolTemplate
         argsTemplate: *ObjectIdSymbolArgsTemplate
-    Binary: &BinarySymbol
+    Binary: &BinarySymbol # Not currently supported
         id: "Binary"
         code: 102
         callable: *constructor
-        args:
-            - [ *StringType, *NumericType, *ObjectType ]
-            - [ *NumericType, null ]
+        args: null
         type: *BinaryType
-        attr:
-            SUBTYPE_DEFAULT:
-                id: "SUBTYPE_DEFAULT"
-                callable: *var
-                args: null
-                type: *IntegerType
-                template: *BinarySymbolSubtypeDefaultTemplate
-            SUBTYPE_FUNCTION:
-                id: "SUBTYPE_FUNCTION"
-                callable: *var
-                args: null
-                type: *IntegerType
-                template: *BinarySymbolSubtypeFunctionTemplate
-            SUBTYPE_BYTE_ARRAY:
-                id: "SUBTYPE_BYTE_ARRAY"
-                callable: *var
-                args: null
-                type: *IntegerType
-                template: *BinarySymbolSubtypeByteArrayTemplate
-            SUBTYPE_UUID_OLD:
-                id: "SUBTYPE_UUID_OLD"
-                callable: *var
-                args: null
-                type: *IntegerType
-                template: *BinarySymbolSubtypeUuidOldTemplate
-            SUBTYPE_UUID:
-                id: "SUBTYPE_UUID"
-                callable: *var
-                args: null
-                type: *IntegerType
-                template: *BinarySymbolSubtypeUuidTemplate
-            SUBTYPE_MD5:
-                id: "SUBTYPE_MD5"
-                callable: *var
-                args: null
-                type: *IntegerType
-                template: *BinarySymbolSubtypeMd5Template
-            SUBTYPE_USER_DEFINED:
-                id: "SUBTYPE_USER_DEFINED"
-                callable: *var
-                args: null
-                type: *IntegerType
-                template: *BinarySymbolSubtypeUserDefinedTemplate
+        attr: {}
         template: *BinarySymbolTemplate
         argsTemplate: *BinarySymbolArgsTemplate
     DBRef:
@@ -104,120 +53,19 @@ BsonSymbols:
         args:
             - [ *StringType ]
             - [ *ObjectIdType ]
-            - [ *StringType, null ]
+            - [ *StringType, null, 'database' ]
         type: *DBRefType
         attr: {}
         template: *DBRefSymbolTemplate
         argsTemplate: *DBRefSymbolArgsTemplate
-    Double:
-        id: "Double"
-        code: 104
-        callable: *constructor
-        args:
-            - [ *IntegerType, *StringType ]
-        type: *DoubleType
-        attr: {}
-        template: *DoubleSymbolTemplate
-        argsTemplate: *DoubleSymbolArgsTemplate
-    Int32:
-        id: "Int32"
-        code: 105
-        callable: *constructor
-        args:
-            - [ *NumericType, *StringType ]
-        type: *Int32Type
-        attr: {}
-        template: *Int32SymbolTemplate
-        argsTemplate: *Int32SymbolArgsTemplate
-    Long:
-        id: "Long"
+    Int64:
+        id: "Int64"
         code: 106
         callable: *constructor
         args:
-            - [ *IntegerType ]
-            - [ *IntegerType ]
+            - [ *IntegerType, *StringType, null ]
         type: *LongType
-        attr:
-            MAX_VALUE:
-                id: "MAX_VALUE"
-                callable: *var
-                args: null
-                type: *LongType
-                attr: {}
-                template: *LongSymbolMaxTemplate
-                argsTemplate: *LongSymbolMaxArgsTemplate
-            MIN_VALUE:
-                id: "MIN_VALUE"
-                callable: *var
-                args: null
-                type: *LongType
-                attr: {}
-                template: *LongSymbolMinTemplate
-                argsTemplate: *LongSymbolMinArgsTemplate
-            ZERO:
-                id: "ZERO"
-                callable: *var
-                args: null
-                type: *LongType
-                attr: {}
-                template: *LongSymbolZeroTemplate
-                argsTemplate: *LongSymbolZeroArgsTemplate
-            ONE:
-                id: "ONE"
-                callable: *var
-                args: null
-                type: *LongType
-                attr: {}
-                template: *LongSymbolOneTemplate
-                argsTemplate: *LongSymbolOneArgsTemplate
-            NEG_ONE:
-                id: "NEG_ONE"
-                callable: *var
-                args: null
-                type: *LongType
-                attr: {}
-                template: *LongSymbolNegOneTemplate
-                argsTemplate: *LongSymbolNegOneArgsTemplate
-            fromBits:
-                id: "LongfromBits" # Needs process method
-                callable: *func
-                args:
-                    - [ *IntegerType ]
-                    - [ *IntegerType ]
-                type: *LongType
-                attr: {}
-                template: *LongSymbolFromBitsTemplate
-                argsTemplate: *LongSymbolFromBitsArgsTemplate
-            fromInt:
-                id: "fromInt"
-                callable: *func
-                args:
-                    - [ *IntegerType ]
-                type: *LongType
-                attr: {}
-                template: *LongSymbolFromIntTemplate
-                argsTemplate: *LongSymbolFromIntArgsTemplate
-            fromNumber:
-                id: "fromNumber"
-                callable: *func
-                args:
-                    - [ *NumericType ]
-                type: *LongType
-                attr: {}
-                template: *LongSymbolFromNumberTemplate
-                argsTemplate: *LongSymbolFromNumberArgsTemplate
-            fromString:
-                id: "fromString"
-                callable: *func
-                args:
-                    - [ *StringType ]
-                    - [ *IntegerType, null ]
-                type: *LongType
-                attr: {}
-                template: *LongSymbolFromStringTemplate
-                argsTemplate: *LongSymbolFromStringArgsTemplate
-        template: *LongSymbolTemplate
-        argsTemplate: *LongSymbolArgsTemplate
+        attr: {}
     MinKey:
         id: "MinKey"
         code: 107
@@ -236,6 +84,25 @@ BsonSymbols:
         attr: {}
         template: *MaxKeySymbolTemplate
         argsTemplate: *MaxKeySymbolArgsTemplate
+    BSONRegExp:
+        id: "BSONRegExp"
+        code: 109
+        callable: *constructor
+        args:
+        - [ *StringType ]
+        - [ *StringType, null, 'flags' ]
+        type: *BSONRegExpType
+        attr:
+            from_native:
+                <<: *__func
+                id: "from_native"
+                args:
+                - [ *RegexType ]
+                type: *ObjectIdType
+                template: null
+                argsTemplate: null
+        template: *BSONRegExpSymbolTemplate
+        argsTemplate: *BSONRegExpSymbolArgsTemplate
     Timestamp:
         id: "Timestamp"
         code: 110
@@ -247,27 +114,6 @@ BsonSymbols:
         attr: {}
         template: *TimestampSymbolTemplate
         argsTemplate: *TimestampSymbolArgsTemplate
-    Symbol:
-        id: "Symbol"
-        code: 111
-        callable: *constructor
-        args:
-            - [ *StringType ]
-        type: *SymbolType
-        attr: {}
-        template: *SymbolSymbolTemplate
-        argsTemplate: *SymbolSymbolArgsTemplate
-    BSONRegExp:
-        id: "BSONRegExp"
-        code: 109
-        callable: *constructor
-        args:
-            - [ *StringType ]
-            - [ *StringType, null ]
-        type: *BSONRegExpType
-        attr: {}
-        template: *BSONRegExpSymbolTemplate
-        argsTemplate: *BSONRegExpSymbolArgsTemplate
     Decimal128:
         id: "Decimal128"
         code: 112
@@ -275,50 +121,13 @@ BsonSymbols:
         args:
             - [ *ObjectType ]
         type: *Decimal128Type
-        attr:
-            fromString:
-                id: "fromString"
-                callable: *func
-                args:
-                    - [ *StringType ]
-                type: *Decimal128Type
-                attr: {}
-                template: *Decimal128SymbolFromStringTemplate
-                argsTemplate: *Decimal128SymbolFromStringArgsTemplate
+        attr: {}
         template: *Decimal128SymbolTemplate
         argsTemplate: *Decimal128SymbolArgsTemplate
 
 JSSymbols:
-    Object:
-        id: "Object"
-        code: 10
-        callable: *var
-        args: null
-        type: *ObjectType
-        attr:
-            create:
-                id: "create"
-                callable: *func
-                args:
-                    - [ *ObjectType ]
-                type: *ObjectType
-                attr: {}
-                template: *ObjectSymbolCreateTemplate
-                argsTemplate: *ObjectSymbolCreateArgsTemplate
-        template: *ObjectSymbolTemplate
-        argsTemplate: *ObjectSymbolArgsTemplate
-    Number:
-        id: "Number"
-        code: 2
-        callable: *constructor
-        args:
-            - [ *IntegerType, *StringType ]
-        type: *NumericType
-        attr: {} # TODO: no built-in number funcs added yet
-        template: *NumberSymbolTemplate
-        argsTemplate: *NumberSymbolArgsTemplate
-    Date: # Needs process method
-        id: "Date"
+    datetime: # Needs process method
+        id: "datetime"
         code: 200
         callable: *constructor
         args:
@@ -352,3 +161,33 @@ JSSymbols:
         attr: {}
         template: *RegExpSymbolTemplate
         argsTemplate: *RegExpSymbolArgsTemplate
+    float:
+        id: "float"
+        code: 104
+        callable: *constructor
+        args:
+        - [ *IntegerType, *StringType, null ]
+        type: *DecimalType
+        attr: {}
+        template: *DecimalTypeTemplate
+        argsTemplate: null
+    int:
+        id: "int"
+        code: 105
+        callable: *constructor
+        args:
+        - [ *NumericType, *StringType, null ]
+        type: *IntegerType
+        attr: {}
+        template: *Int32SymbolTemplate
+        argsTemplate: *Int32SymbolArgsTemplate
+    long:
+        id: "long"
+        code: 105
+        callable: *constructor
+        args:
+        - [ *NumericType, *StringType, null ]
+        type: *LongBasicType
+        attr: {}
+        template: *LongBasicTypeTemplate
+        argsTemplate: null

@@ -368,7 +368,7 @@ class Visitor extends Python3Visitor {
 
   handleAttrAccess(ctx) {
     const lhs = this.visit(ctx.atom());
-    const rhs = this.visit(ctx.dot_trailer().identifier());
+    const rhs = ctx.dot_trailer()[0].identifier().getText(); // TODO: nested
 
     if (! ('identifier' in ctx.atom())) {
       throw new BsonTranspilersUnimplementedError(
@@ -413,13 +413,13 @@ class Visitor extends Python3Visitor {
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
-    if (ctx.paren_trailer() !== null) {
+    if (ctx.paren_trailer() !== null && ctx.paren_trailer().length !== 0) {
       // function call
       return this.handleFuncCall(ctx);
-    } else if (ctx.bracket_trailer() !== null) {
+    } else if (ctx.bracket_trailer() !== null && ctx.bracket_trailer().length !== 0) {
       // indexing
       throw new BsonTranspilersUnimplementedError('Indexing not currently supported');
-    } else if (ctx.dot_trailer() !== null) {
+    } else if (ctx.dot_trailer() !== null && ctx.dot_trailer().length !== 0) {
       // attribute access
       return this.handleAttrAccess(ctx);
     } else {

@@ -12,6 +12,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
       y: '',   // sticky search
       g: ''    // global
     };
+    this.new = 'new ';
   }
   emitISODate(ctx) {
     let newstr = '';

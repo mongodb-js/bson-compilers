@@ -1,5 +1,14 @@
 /* eslint complexity: 0 */
 const Python3Visitor = require('../../lib/antlr/Python3Visitor').Python3Visitor;
+const {
+  BsonTranspilersArgumentError,
+  BsonTranspilersAttributeError,
+  BsonTranspilersRuntimeError,
+  BsonTranspilersTypeError,
+  BsonTranspilersReferenceError,
+  BsonTranspilersInternalError,
+  BsonTranspilersUnimplementedError
+} = require('../../helper/error');
 const { removeQuotes } = require('../../helper/format');
 
 /**
@@ -310,6 +319,247 @@ class Visitor extends Python3Visitor {
       }
       return `${str}${this.visit(arr[i - 1])} ${op} `;
     }, '');
+  }
+
+  handleFuncCall(ctx) {
+    const lhs = this.visit(ctx.atom());
+    let lhsType = ctx.atom().type;
+    if (typeof lhsType === 'string') {
+      lhsType = this.Types[lhsType];
+    }
+
+    // Special case
+    if (`process${lhsType.id}` in this) {
+      return this[`process${lhsType.id}`](ctx);
+    }
+    if (`emit${lhsType.id}` in this) {
+      return this[`emit${lhsType.id}`](ctx);
+    }
+
+    // Check if callable
+    ctx.type = lhsType.type;
+    if (!lhsType.callable) {
+      throw new BsonTranspilersTypeError(`${lhsType.id} is not callable`);
+    }
+
+    // Check arguments
+    const expectedArgs = lhsType.args;
+    let rhs = this.checkArguments(// TODO: chained calls
+      expectedArgs, ctx.paren_trailer()[0], lhsType.id
+    );
+
+    // Add new if needed
+    const newStr = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR ?
+      this.new :
+      '';
+
+    // Apply the arguments template
+    if (lhsType.argsTemplate) {
+      let l = lhs;
+      if ('identifier' in ctx.atom()) {
+        l = this.visit(ctx.atom().identifier());
+      }
+      rhs = lhsType.argsTemplate(l, ...rhs);
+    } else {
+      rhs = `(${rhs.join(', ')})`;
+    }
+    return `${newStr}${lhs}${rhs}`;
+  }
+
+  handleAttrAccess(ctx) {
+    const lhs = this.visit(ctx.atom());
+    const rhs = this.visit(ctx.dot_trailer().identifier());
+
+    if (! ('identifier' in ctx.atom())) {
+      throw new BsonTranspilersUnimplementedError(
+        'Attribute access for non-symbols not currently supported'
+      );
+    }
+
+    let type = ctx.atom().type;
+    if (typeof type === 'string') {
+      type = this.Types[type];
+    }
+    while (type !== null) {
+      if (!(type.attr.hasOwnProperty(rhs))) {
+        if (type.id in this.BsonTypes && this.BsonTypes[type.id].id !== null) {
+          throw new BsonTranspilersAttributeError(
+            `'${rhs}' not an attribute of ${type.id}`
+          );
+        }
+        type = type.type;
+        if (typeof type === 'string') {
+          type = this.Types[type];
+        }
+      } else {
+        break;
+      }
+    }
+    if (type === null) {
+      ctx.type = this.Types._undefined;
+      // TODO: how strict do we want to be?
+      return `${lhs}.${rhs}`;
+    }
+    ctx.type = type.attr[rhs];
+    if (type.attr[rhs].template) {
+      return type.attr[rhs].template(lhs, rhs);
+    }
+
+    return `${lhs}.${rhs}`;
+  }
+
+  visitAtom_expr(ctx) {
+    // Skip if fake node
+    if (ctx.getChildCount() === 1) {
+      return this.visitChildren(ctx);
+    }
+    if (ctx.paren_trailer() !== null) {
+      // function call
+      return this.handleFuncCall(ctx);
+    } else if (ctx.bracket_trailer() !== null) {
+      // indexing
+      throw new BsonTranspilersUnimplementedError('Indexing not currently supported');
+    } else if (ctx.dot_trailer() !== null) {
+      // attribute access
+      return this.handleAttrAccess(ctx);
+    } else {
+      throw new BsonTranspilersInternalError('Unknown second argument to atom expr');
+    }
+  }
+
+  visitIdentifier(ctx) {
+    const name = this.visitChildren(ctx);
+    ctx.type = this.Symbols[name];
+    if (ctx.type === undefined) {
+      throw new BsonTranspilersReferenceError(`Symbol '${name}' is undefined`);
+    }
+    this.requiredImports[ctx.type.code] = true;
+
+    if (ctx.type.template) {
+      return ctx.type.template();
+    }
+    return name;
+  }
+
+  /**
+   * Validate each argument against the expected argument types defined in the
+   * Symbol table.
+   *
+   * @param {Array} expected - An array of arrays where each subarray represents
+   * possible argument types for that index.
+   * @param {ArgumentListContext} argumentList - null if empty.
+   * @param {String} name - The name of the function for error reporting.
+   *
+   * @returns {Array} - Array containing the generated output for each argument.
+   */
+  checkArguments(expected, argumentList, name) {
+    const argStr = [];
+    if (!('arglist' in argumentList) || argumentList.arglist() === null) {
+      if (expected.length === 0 || expected[0].indexOf(null) !== -1) {
+        return argStr;
+      }
+      throw new BsonTranspilersArgumentError(
+        `Argument count mismatch: '${name}' requires least one argument`
+      );
+    }
+    const args = argumentList.arglist().argument();
+    if (args.length > expected.length) {
+      throw new BsonTranspilersArgumentError(
+        `Argument count mismatch: '${name}' expects ${expected.length} args and got ${args.length}`
+      );
+    }
+    for (let i = 0; i < expected.length; i++) {
+      if (args[i] === undefined) {
+        if (expected[i].indexOf(null) !== -1) {
+          return argStr;
+        }
+        throw new BsonTranspilersArgumentError(
+          `Argument count mismatch: too few arguments passed to '${name}'`
+        );
+      }
+      const result = this.castType(expected[i], args[i]);
+      if (result === null) {
+        const typeStr = expected[i].map((e) => {
+          const id = e && e.id ? e.id : e;
+          return e ? id : '[optional]';
+        });
+        const message = `Argument type mismatch: '${name}' expects types ${
+          typeStr} but got type ${args[i].type.id} for argument at index ${i}`;
+
+        throw new BsonTranspilersArgumentError(message);
+      }
+      argStr.push(result);
+    }
+    return argStr;
+  }
+
+  /**
+   * Convert between numeric types. Required so that we don't end up with
+   * strange conversions like 'Int32(Double(2))', and can just generate '2'.
+   *
+   * @param {Array} expectedType - types to cast to.
+   * @param {antlr4.ParserRuleContext} actualCtx - ctx to cast from, if valid.
+   *
+   * @returns {String} - visited result, or null on error.
+   */
+  castType(expectedType, actualCtx) {
+    const result = this.visit(actualCtx);
+    const originalCtx = actualCtx;
+    actualCtx = this.getTyped(actualCtx); // TODO, needed??
+
+    // If the types are exactly the same, just return.
+    if (expectedType.indexOf(actualCtx.type) !== -1 ||
+      expectedType.indexOf(actualCtx.type.id) !== -1) {
+      return result;
+    }
+
+    const numericTypes = [
+      this.Types._integer, this.Types._decimal, this.Types._hex,
+      this.Types._octal, this.Types._long, this.Types._numeric
+    ];
+    // If the expected type is "numeric", accept the numeric basic types + numeric bson types
+    if (expectedType.indexOf(this.Types._numeric) !== -1 &&
+      (numericTypes.indexOf(actualCtx.type) !== -1 ||
+        (actualCtx.type.id === 'Long' ||
+          actualCtx.type.id === 'Int32' ||
+          actualCtx.type.id === 'Double'))) {
+      return result;
+    }
+
+    // Check if the arguments are both numbers. If so then cast to expected type.
+    for (let i = 0; i < expectedType.length; i++) {
+      if (numericTypes.indexOf(actualCtx.type) !== -1 &&
+        numericTypes.indexOf(expectedType[i]) !== -1) {
+        // Need to interpret octal always
+        if (actualCtx.type.id === '_octal') {
+          const node = {
+            type: expectedType[i],
+            originalType: actualCtx.type.id,
+            children: [ actualCtx ]
+          };
+          return this.leafHelper(node);
+        }
+        actualCtx.originalType = actualCtx.type;
+        actualCtx.type = expectedType[i];
+        return this.visit(originalCtx);
+      }
+    }
+    return null;
+  }
+
+  getTyped(actual) {
+    if (actual.type === undefined) {
+      while (actual.getChild(0)) {
+        actual = actual.getChild(0);
+        if (actual.type !== undefined) {
+          break;
+        }
+      }
+    }
+    if (actual.type === undefined) {
+      throw new BsonTranspilersInternalError();
+    }
+    return actual;
   }
 
   // accessors

@@ -483,6 +483,9 @@ Templates:
     ObjectIdSymbolTemplate: &ObjectIdSymbolTemplate null
     ObjectIdSymbolArgsTemplate: &ObjectIdSymbolArgsTemplate !!js/function >
         (lhs, str) => {
+          if (!str || str.length === 0) {
+            return '()';
+          }
           let newStr = str;
           if (
             (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
@@ -557,7 +560,7 @@ Templates:
         }
     LongSymbolTemplate: &LongSymbolTemplate !!js/function >
         () => {
-            return 'NumberLong';
+            return 'new NumberLong';
         }
     LongSymbolArgsTemplate: &LongSymbolArgsTemplate null # Has process method
     LongSymbolMaxTemplate: &LongSymbolMaxTemplate !!js/function >
@@ -668,7 +671,10 @@ Templates:
     ObjectSymbolCreateArgsTemplate: &ObjectSymbolCreateArgsTemplate null
     NumberSymbolTemplate: &NumberSymbolTemplate null
     NumberSymbolArgsTemplate: &NumberSymbolArgsTemplate null
-    DateSymbolTemplate: &DateSymbolTemplate null
+    DateSymbolTemplate: &DateSymbolTemplate !!js/function >
+        () => {
+            return 'Date';
+        }
     DateSymbolArgsTemplate: &DateSymbolArgsTemplate null
     DateSymbolNowTemplate: &DateSymbolNowTemplate null
     DateSymbolNowArgsTemplate: &DateSymbolNowArgsTemplate null

@@ -576,6 +576,9 @@ Templates:
         }
     ObjectIdSymbolArgsTemplate: &ObjectIdSymbolArgsTemplate !!js/function >
         (lhs, str) => {
+            if (!str || str.length === 0) {
+                return '()';
+            }
             let newStr = str;
             if (
                 (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
@@ -678,6 +681,9 @@ Templates:
         }
     LongSymbolArgsTemplate: &LongSymbolArgsTemplate !!js/function > 
         (lhs, arg) => {
+            if (!arg || arg.length === 0) {
+                arg = '0';
+            }
             if (arg.indexOf('\'') === 0 || arg.indexOf('"') === 0) {
               return `Convert.ToInt64(${arg})`;
             }

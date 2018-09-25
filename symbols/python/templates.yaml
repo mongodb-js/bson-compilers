@@ -598,6 +598,9 @@ Templates:
     ObjectIdSymbolTemplate: &ObjectIdSymbolTemplate null
     ObjectIdSymbolArgsTemplate: &ObjectIdSymbolArgsTemplate !!js/function >
         (lhs, str) => {
+          if (!str || str.length === 0) {
+            return '()';
+          }
           let newStr = str;
           if (
             (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||

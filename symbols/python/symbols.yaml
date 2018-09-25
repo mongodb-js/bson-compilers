@@ -16,7 +16,7 @@ BsonSymbols:
         code: 101
         callable: *constructor
         args:
-            - [ *StringType, *NumericType, null, 'oid' ]
+            - [ *StringType, null, 'oid' ]
         type: *ObjectIdType
         attr:
             from_datetime:
@@ -52,7 +52,7 @@ BsonSymbols:
         callable: *constructor
         args:
             - [ *StringType ]
-            - [ *ObjectIdType ]
+            - [ *ObjectIdType, *StringType ]
             - [ *StringType, null, 'database' ]
         type: *DBRefType
         attr: {}
@@ -66,6 +66,8 @@ BsonSymbols:
             - [ *IntegerType, *StringType, null ]
         type: *LongType
         attr: {}
+        template: *LongSymbolTemplate
+        argsTemplate: *LongSymbolArgsTemplate
     MinKey:
         id: "MinKey"
         code: 107
@@ -84,13 +86,13 @@ BsonSymbols:
         attr: {}
         template: *MaxKeySymbolTemplate
         argsTemplate: *MaxKeySymbolArgsTemplate
-    BSONRegExp:
-        id: "BSONRegExp"
+    Regex:
+        id: "regex.Regex"
         code: 109
         callable: *constructor
         args:
         - [ *StringType ]
-        - [ *StringType, null, 'flags' ]
+        - [ *StringType, *IntegerType, null, 'flags' ]
         type: *BSONRegExpType
         attr:
             from_native:
@@ -131,7 +133,7 @@ JSSymbols:
         code: 200
         callable: *constructor
         args:
-            - [ *StringType, *NumericType, null ]
+            - [ *NumericType, null ]
             - [ *NumericType, null ]
             - [ *NumericType, null ]
             - [ *NumericType, null ]
@@ -150,13 +152,13 @@ JSSymbols:
                 argsTemplate: *DateSymbolNowArgsTemplate
         template: *DateSymbolTemplate
         argsTemplate: *DateSymbolArgsTemplate
-    RegExp: # Needs process method
+    compile: # Needs process method
         id: "RegExp"
         code: 8
         callable: *constructor
         args:
-            - [ *StringType, *RegexType ]
-            - [ *StringType, null ]
+            - [ *StringType ]
+            - [ *IntegerType, null ]
         type: *RegexType
         attr: {}
         template: *RegExpSymbolTemplate

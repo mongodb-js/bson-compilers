@@ -320,6 +320,17 @@ class Visitor extends Python3Visitor {
       return `${str}${this.visit(arr[i - 1])} ${op} `;
     }, '');
   }
+  // TODO: translate flags
+  // process_regex(ctx) { // eslint-disable-line camelcase
+  //   ctx.type = this.Types._regex;
+  //   let pattern;
+  //   let flags;
+  // }
+  // processcompile(ctx) {
+  //   return this.process_regex(ctx);
+  // }
+  // processdatetime(ctx) {
+  // }
 
   handleFuncCall(ctx) {
     const lhs = this.visit(ctx.atom());
@@ -605,6 +616,12 @@ class Visitor extends Python3Visitor {
   }
   getValue(k) {
     return k[1];
+  }
+  getArguments(ctx) {
+    if (!('arglist' in ctx) || ctx.arglist() === null) {
+      return [];
+    }
+    return ctx.arglist().argument();
   }
   getParentUntil(ctx, name, steps) {
     steps = steps === undefined ? 0 : steps;

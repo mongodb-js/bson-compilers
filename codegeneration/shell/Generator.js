@@ -12,6 +12,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     this.bsonRegexFlags = {
       i: 'i', m: 'm', x: 'x', s: 's', l: 'l', u: 'u'
     };
+    this.new = 'new ';
   }
 
   emitNew(ctx) {

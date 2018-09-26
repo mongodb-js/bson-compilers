@@ -21,6 +21,9 @@ class Visitor extends Python3Visitor {
     super();
     this.requiredImports = {};
     this.idiomatic = true;
+    this.processfloat = this.processint;
+    this.processlong = this.processint;
+    this.processint64 = this.processint;
   }
   deepCopyRequiredImports() {
     const copy = Object.assign({}, this.requiredImports);
@@ -332,6 +335,95 @@ class Visitor extends Python3Visitor {
   // processdatetime(ctx) {
   // }
 
+  /**
+   * Int64 needs processing because sometimes it's generated as a class, and
+   * needs "new", but other times it's generated as a literal and can't have "new".
+   * So adding "new" is left up to the templates.
+   * @param ctx
+   */
+  processInt64(ctx) {
+    return this.handleFuncCallWithoutNew(ctx);
+  }
+  /**
+   * Need process method because we want to pass the argument type to the template
+   * so that we can determine if the generated number needs to be parsed or casted.
+   *
+   * @param {} ctx
+   * @returns {String}
+   */
+
+  processint(ctx) {
+    const lhsStr = this.visit(ctx.atom());
+    let lhsType = ctx.atom().type;
+    if (typeof lhsType === 'string') {
+      lhsType = this.Types[lhsType];
+    }
+    ctx.type = lhsType.id === 'float' ? this.Types._decimal : lhsType.type;
+
+    // Get the original type of the argument
+    const expectedArgs = lhsType.args;
+    const trailer = ctx.paren_trailer()[0];
+    let args = this.checkArguments(
+      expectedArgs, trailer, lhsType.id
+    );
+    let argType;
+
+    if (!('arglist' in trailer) || trailer.arglist() === null) {
+      args = ['0'];
+      argType = this.Types._integer;
+    } else {
+      const argNode = trailer.arglist().argument()[0];
+      const typed = this.getTyped(argNode);
+      argType = typed.originalType !== undefined ?
+        typed.originalType :
+        typed.type;
+    }
+
+    if (`emit${lhsType.id}` in this) {
+      return this[`emit${lhsType.id}`](ctx, argType);
+    }
+
+    // Apply the arguments template
+    const lhs = lhsType.template ? lhsType.template() : lhsStr;
+    const rhs = lhsType.argsTemplate ?
+      lhsType.argsTemplate(lhs, args[0], argType.id) :
+      `(${args.join(', ')})`;
+    return `${lhs}${rhs}`;
+  }
+
+  handleFuncCallWithoutNew(ctx) {
+    const lhs = this.visit(ctx.atom());
+    let lhsType = ctx.atom().type;
+    if (typeof lhsType === 'string') {
+      lhsType = this.Types[lhsType];
+    }
+    if (`emit${lhsType.id}` in this) {
+      return this[`emit${lhsType.id}`](ctx);
+    }
+    // Check arguments
+    const expectedArgs = lhsType.args;
+    let rhs = this.checkArguments(// TODO: chained calls
+      expectedArgs, ctx.paren_trailer()[0], lhsType.id
+    );
+
+    let argType;
+    if (rhs.length > 0) {
+      argType = ctx.paren_trailer()[0].arglist().argument()[0].type.id;
+    }
+
+    // Apply the arguments template
+    if (lhsType.argsTemplate) {
+      let l = lhs;
+      if ('identifier' in ctx.atom()) {
+        l = this.visit(ctx.atom().identifier());
+      }
+      rhs = lhsType.argsTemplate(l, ...rhs, argType);
+    } else {
+      rhs = `(${rhs.join(', ')})`;
+    }
+    return `${lhs}${rhs}`;
+  }
+
   handleFuncCall(ctx) {
     const lhs = this.visit(ctx.atom());
     let lhsType = ctx.atom().type;
@@ -548,11 +640,11 @@ class Visitor extends Python3Visitor {
             originalType: actualCtx.type.id,
             children: [ actualCtx ]
           };
-          return this.leafHelper(node);
+          return this.leafHelper(expectedType[i], node);
         }
         actualCtx.originalType = actualCtx.type;
         actualCtx.type = expectedType[i];
-        return this.visit(originalCtx);
+        return this.leafHelper(expectedType[i], this.skipFakeNodesDown(originalCtx));
       }
     }
     return null;
@@ -649,6 +741,9 @@ class Visitor extends Python3Visitor {
         res = res[goal]();
         break;
       }
+    }
+    if (res.children === undefined) {
+      return res.parentCtx;
     }
     return res;
   }

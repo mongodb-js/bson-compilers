@@ -169,10 +169,10 @@ JSSymbols:
         callable: *constructor
         args:
         - [ *IntegerType, *StringType, null ]
-        type: *DecimalType
+        type: *NumericType
         attr: {}
-        template: *DecimalTypeTemplate
-        argsTemplate: null
+        template: *NumberSymbolTemplate
+        argsTemplate: *NumberSymbolArgsTemplate
     int:
         id: "int"
         code: 105
@@ -183,13 +183,3 @@ JSSymbols:
         attr: {}
         template: *Int32SymbolTemplate
         argsTemplate: *Int32SymbolArgsTemplate
-    long:
-        id: "long"
-        code: 105
-        callable: *constructor
-        args:
-        - [ *NumericType, *StringType, null ]
-        type: *LongBasicType
-        attr: {}
-        template: *LongBasicTypeTemplate
-        argsTemplate: null

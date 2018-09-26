@@ -385,7 +385,10 @@ Templates:
     ObjectSymbolArgsTemplate: &ObjectSymbolArgsTemplate null
     ObjectSymbolCreateTemplate: &ObjectSymbolCreateTemplate null
     ObjectSymbolCreateArgsTemplate: &ObjectSymbolCreateArgsTemplate null
-    NumberSymbolTemplate: &NumberSymbolTemplate null
+    NumberSymbolTemplate: &NumberSymbolTemplate !!js/function >
+        () => {
+            return 'Number';
+        }
     NumberSymbolArgsTemplate: &NumberSymbolArgsTemplate !!js/function >
         (lhs, arg) => {
             arg = arg === undefined ? '0' : arg;

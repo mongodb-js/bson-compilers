@@ -669,7 +669,10 @@ Templates:
     ObjectSymbolArgsTemplate: &ObjectSymbolArgsTemplate null
     ObjectSymbolCreateTemplate: &ObjectSymbolCreateTemplate null
     ObjectSymbolCreateArgsTemplate: &ObjectSymbolCreateArgsTemplate null
-    NumberSymbolTemplate: &NumberSymbolTemplate null
+    NumberSymbolTemplate: &NumberSymbolTemplate !!js/function >
+        () => {
+            return 'Number';
+        }
     NumberSymbolArgsTemplate: &NumberSymbolArgsTemplate null
     DateSymbolTemplate: &DateSymbolTemplate !!js/function >
         () => {

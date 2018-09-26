@@ -834,12 +834,15 @@ Templates:
             arg = arg === undefined ? 0 : arg;
 
             if (type === '_string') {
-              if (arg.indexOf('.') >= 0) {
+              if (arg.indexOf('.') !== -1) {
                 return `float.Parse(${arg})`
               }
               return `int.Parse(${arg})`;
             }
 
+            if (arg.indexOf('.') !== -1) {
+              return `(float) ${arg}`
+            }
             return `(int) ${arg}`;
         }
     DateSymbolTemplate: &DateSymbolTemplate !!js/function > # Also has emit method

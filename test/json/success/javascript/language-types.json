@@ -273,7 +273,7 @@
         "python": "re.compile(r\"(?:)\")",
         "java": "Pattern.compile(\"(?:)\")",
         "csharp": "new Regex(\"(?:)\")",
-        "shell": "RegExp('(?:)')"
+        "shell": "new RegExp('(?:)')"
       },
       {
         "description": "RegExp without options",
@@ -281,7 +281,7 @@
         "python": "re.compile(r\"abc\")",
         "java": "Pattern.compile(\"abc\")",
         "csharp": "new Regex(\"abc\")",
-        "shell": "RegExp('abc')"
+        "shell": "new RegExp('abc')"
       },
       {
         "description": "regex object with im flags as args",
@@ -353,7 +353,7 @@
         "python": "re.compile(r\"ab+c(?is)\")",
         "java": "Pattern.compile(\"ab+c(?i)\")",
         "csharp": "new Regex(\"(?i)ab+c\")",
-        "shell": "RegExp('ab+c', 'gi')"
+        "shell": "new RegExp('ab+c', 'gi')"
       },
       {
         "description": "regex object with regex literal arg",

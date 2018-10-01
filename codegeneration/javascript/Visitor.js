@@ -22,7 +22,6 @@ class Visitor extends ECMAScriptVisitor {
   constructor() {
     super();
     this.idiomatic = true;
-    this.new = '';
     this.processInt32 = this.processNumber;
     this.processDouble = this.processNumber;
     this.requiredImports = {};
@@ -331,11 +330,6 @@ class Visitor extends ECMAScriptVisitor {
       expectedArgs, ctx.arguments().argumentList(), lhsType.id
     );
 
-    // Add new if needed
-    const newStr = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR ?
-      this.new :
-      '';
-
     // Apply the arguments template
     if (lhsType.argsTemplate) {
       let l = lhs;
@@ -346,7 +340,12 @@ class Visitor extends ECMAScriptVisitor {
     } else {
       rhs = `(${rhs.join(', ')})`;
     }
-    return `${newStr}${lhs}${rhs}`;
+    const expr = `${lhs}${rhs}`;
+    const constructor = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR;
+
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(expr, !constructor, lhsType.code)
+      : expr;
   }
 
   visitIdentifierExpression(ctx) {
@@ -416,16 +415,14 @@ class Visitor extends ECMAScriptVisitor {
   }
 
   /**
-   * New in the shell/js is the same as calling without arguments.
+   * Skip new because already included in function calls for constructors
+   *
    * @param {NewExpressionContext} ctx
    * @return {String}
    */
   visitNewExpression(ctx) {
-    ctx.singleExpression().wasNew = true;
-    if ('emitNew' in this) {
-      return this.emitNew(ctx);
-    }
-    const res = this.visitChildren(ctx, {separator: ' '});
+    ctx.singleExpression().wasNew = true; // for dates only
+    const res = this.visit(ctx.singleExpression());
     ctx.type = ctx.singleExpression().type;
     return res;
   }
@@ -680,12 +677,14 @@ class Visitor extends ECMAScriptVisitor {
       return this[`emit${lhsType.id}`](ctx, argType);
     }
 
-    // Apply the arguments template
+    // Apply the templates
     const lhs = lhsType.template ? lhsType.template() : lhsStr;
     const rhs = lhsType.argsTemplate ?
       lhsType.argsTemplate(lhs, args[0], argType.id) :
       `(${args.join(', ')})`;
-    return `${lhs}${rhs}`;
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(`${lhs}${rhs}`, false, lhsType.code)
+      : `${lhs}${rhs}`;
   }
 
   /**
@@ -730,7 +729,10 @@ class Visitor extends ECMAScriptVisitor {
     }
 
     if (ctx.type.template) {
-      return ctx.type.template(pattern, targetflags);
+      const reg = ctx.type.template(pattern, targetflags);
+      return this.Syntax.new.template
+        ? this.Syntax.new.template(reg, false, ctx.type.code)
+        : reg;
     }
     return this.visitChildren(ctx);
   }
@@ -771,7 +773,10 @@ class Visitor extends ECMAScriptVisitor {
     const rhs = symbolType.argsTemplate ?
       symbolType.argsTemplate(lhs, pattern, flags) :
       `(${pattern}${flags ? ', ' + flags : ''})`;
-    return `${this.new}${lhs}${rhs}`;
+
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
+      : `${lhs}${rhs}`;
   }
 
   /**
@@ -819,7 +824,9 @@ class Visitor extends ECMAScriptVisitor {
     const rhs = symbolType.argsTemplate ?
       symbolType.argsTemplate(lhs, code, scope) :
       `(${code}${scopestr})`;
-    return `${this.new}${lhs}${rhs}`;
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
+      : `${lhs}${rhs}`;
   }
 
   /**
@@ -834,7 +841,9 @@ class Visitor extends ECMAScriptVisitor {
     const argList = ctx.arguments().argumentList();
     const lhs = symbolType.template ? symbolType.template() : 'ObjectId';
     if (!argList) {
-      return `${this.new}${lhs}()`;
+      return this.Syntax.new.template
+        ? this.Syntax.new.template(`${lhs}()`, false, ctx.type.code)
+        : `${lhs}()`;
     }
     this.checkArguments(symbolType.args, argList, 'ObjectId');
     let hexstr;
@@ -849,7 +858,9 @@ class Visitor extends ECMAScriptVisitor {
     const rhs = symbolType.argsTemplate ?
       symbolType.argsTemplate(lhs, hexstr) :
       `(${hexstr})`;
-    return `${this.new}${lhs}${rhs}`;
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
+      : `${lhs}${rhs}`;
   }
 
   /**
@@ -874,9 +885,11 @@ class Visitor extends ECMAScriptVisitor {
     }
     const lhs = symbolType.template ? symbolType.template() : 'Long';
     const rhs = symbolType.argsTemplate ?
-      symbolType.argsTemplate(lhs, longstr) :
+      symbolType.argsTemplate(lhs, longstr, '_long') :
       `(${longstr})`;
-    return `${this.new}${lhs}${rhs}`;
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
+      : `${lhs}${rhs}`;
   }
 
   processLongfromBits(ctx) {
@@ -920,7 +933,9 @@ class Visitor extends ECMAScriptVisitor {
     const rhs = symbolType.argsTemplate ?
       symbolType.argsTemplate(lhs, decstr) :
       `(${decstr})`;
-    return `${this.new}${lhs}${rhs}`;
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
+      : `${lhs}${rhs}`;
   }
 
   /**

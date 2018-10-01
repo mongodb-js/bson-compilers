@@ -11,3 +11,9 @@ Syntax:
         template: *FloorDivSyntaxTemplate
     power: &PowerSyntax
         template: *PowerSyntaxTemplate
+    # The new template takes in expr, and an optional skip argument and optional
+    # id argument. The skip argument is a boolean that if true then doesn't add
+    # new. The code argument is the symbol code being called. The template will check
+    # if it is an exception, i.e. a type that is a constructor but may not use new.
+    new: &NewSyntax
+        template: *NewSyntaxTemplate

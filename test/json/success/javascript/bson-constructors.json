@@ -15,7 +15,7 @@
         "python": "Code('some code')",
         "java": "new Code(\"some code\")",
         "csharp": "new BsonJavaScript(\"some code\")",
-        "shell": "Code('some code')"
+        "shell": "new Code('some code')"
       },
       {
         "description": "Code with string code and object scope",
@@ -23,7 +23,7 @@
         "python": "Code('string', {\n    'x': '1'\n})",
         "java": "new CodeWithScope(\"string\", new Document(\"x\", \"1\"))",
         "csharp": "new BsonJavaScriptWithScope(\"string\", new BsonDocument(\"x\", \"1\"))",
-        "shell": "Code('string', {\n  x: '1'\n})"
+        "shell": "new Code('string', {\n  x: '1'\n})"
       },
       {
         "description": "Code with function code",
@@ -31,7 +31,7 @@
         "python": "Code('function(test){console.log(test);}')",
         "java": "new Code(\"function(test){console.log(test);}\")",
         "csharp": "new BsonJavaScript(\"function(test){console.log(test);}\")",
-        "shell": "Code('function(test){console.log(test);}')"
+        "shell": "new Code('function(test){console.log(test);}')"
       },
       {
         "description": "new Code with where code",
@@ -49,7 +49,7 @@
         "python": "ObjectId()",
         "java": "new ObjectId()",
         "csharp": "new ObjectId()",
-        "shell": "ObjectId()"
+        "shell": "new ObjectId()"
       },
       {
         "description": "new ObjectId with no arg",
@@ -65,7 +65,7 @@
         "python": "ObjectId('5a7382114ec1f67ae445f778')",
         "java": "new ObjectId(\"5a7382114ec1f67ae445f778\")",
         "csharp": "new ObjectId(\"5a7382114ec1f67ae445f778\")",
-        "shell": "ObjectId('5a7382114ec1f67ae445f778')"
+        "shell": "new ObjectId('5a7382114ec1f67ae445f778')"
       }
     ],
     "DBRef": [
@@ -83,7 +83,7 @@
         "python": "DBRef('coll', ObjectId(), 'db')",
         "java": "new DBRef(\"db\", \"coll\", new ObjectId())",
         "csharp": "new MongoDBRef(\"coll\", new ObjectId(), \"db\")",
-        "shell": "new DBRef('coll', ObjectId(), 'db')"
+        "shell": "new DBRef('coll', new ObjectId(), 'db')"
       }
     ],
     "Int32": [
@@ -93,7 +93,7 @@
         "python": "int(3)",
         "java": "3",
         "csharp": "3",
-        "shell": "NumberInt(3)"
+        "shell": "new NumberInt(3)"
       },
       {
         "description": "Int32 with valid string arg",
@@ -101,7 +101,7 @@
         "python": "int('3')",
         "java": "Integer.parseInt(\"3\")",
         "csharp": "Convert.ToInt32(\"3\")",
-        "shell": "NumberInt('3')"
+        "shell": "new NumberInt('3')"
       },
       {
         "description": "Int32 with decimal arg",
@@ -109,7 +109,7 @@
         "python": "int(3.0001)",
         "java": "(int) 3.0001d",
         "csharp": "Convert.ToInt32(3.0001)",
-        "shell": "NumberInt(3.0001)"
+        "shell": "new NumberInt(3.0001)"
       },
       {
         "description": "Int32 with hex arg",
@@ -117,7 +117,7 @@
         "python": "int(0x3)",
         "java": "(int) 0x3",
         "csharp": "Convert.ToInt32(0x3)",
-        "shell": "NumberInt(0x3)"
+        "shell": "new NumberInt(0x3)"
       },
       {
         "description": "Int32 with octal arg",
@@ -125,7 +125,7 @@
         "python": "int(0o5)",
         "java": "(int) 05",
         "csharp": "5",
-        "shell": "NumberInt(0o5)"
+        "shell": "new NumberInt(0o5)"
       }
     ],
     "Double": [
@@ -205,7 +205,7 @@
         "python": "MinKey()",
         "java": "new MinKey()",
         "csharp": "BsonMinKey.Value",
-        "shell": "MinKey()"
+        "shell": "new MinKey()"
       },
       {
         "description": "maxKey",
@@ -213,7 +213,7 @@
         "python": "MaxKey()",
         "java": "new MaxKey()",
         "csharp": "BsonMaxKey.Value",
-        "shell": "MaxKey()"
+        "shell": "new MaxKey()"
       },
       {
         "description": "new MaxKey()",
@@ -257,7 +257,7 @@
         "python": "Timestamp(10, 100)",
         "java": "new BSONTimestamp(10, 100)",
         "csharp": "new BsonTimestamp(10, 100)",
-        "shell": "Timestamp(10, 100)"
+        "shell": "new Timestamp(10, 100)"
       },
       {
         "description": "new Timestamp with two number args",
@@ -372,7 +372,7 @@
         "description": "nested array with nested subdoc",
         "javascript": "{\"pipeline\": [ { $match: { $expr: { \"$eq\": [ \"$manager\", \"$$me\" ] } } }, { $project: { managers : 0 } }, { $sort: { startQuarter: 1, notes:1, job_code: 1 } } ]}" ,
         "python": "{\n    'pipeline': [\n        {\n            '$match': {\n                '$expr': {\n                    '$eq': [\n                        '$manager', '$$me'\n                    ]\n                }\n            }\n        }, {\n            '$project': {\n                'managers': 0\n            }\n        }, {\n            '$sort': {\n                'startQuarter': 1, \n                'notes': 1, \n                'job_code': 1\n            }\n        }\n    ]\n}",
-        "java": "eq(\"pipeline\", Arrays.asList(match(eq(\"$expr\", eq(\"$eq\", Arrays.asList(\"$manager\", \"$$me\")))), project(exclude(\"managers\")), sort(orderBy(ascending(\"startQuarter\"), ascending(\"notes\"), ascending(\"job_code\")))))",
+        "java": "eq(\"pipeline\", Arrays.asList(match(eq(\"$expr\", Arrays.asList(\"$manager\", \"$$me\"))), project(exclude(\"managers\")), sort(orderBy(ascending(\"startQuarter\"), ascending(\"notes\"), ascending(\"job_code\")))))",
         "csharp": "new BsonDocument(\"pipeline\", new BsonArray\n    {\n        new BsonDocument(\"$match\", \n        new BsonDocument(\"$expr\", \n        new BsonDocument(\"$eq\", \n        new BsonArray\n                    {\n                        \"$manager\",\n                        \"$$me\"\n                    }))),\n        new BsonDocument(\"$project\", \n        new BsonDocument(\"managers\", 0)),\n        new BsonDocument(\"$sort\", \n        new BsonDocument\n            {\n                { \"startQuarter\", 1 }, \n                { \"notes\", 1 }, \n                { \"job_code\", 1 }\n            })\n    })",
         "shell": "{\n  \"pipeline\": [\n    {\n      $match: {\n        $expr: {\n          \"$eq\": [\n            \"$manager\", \"$$me\"\n          ]\n        }\n      }\n    }, {\n      $project: {\n        managers: 0\n      }\n    }, {\n      $sort: {\n        startQuarter: 1, \n        notes: 1, \n        job_code: 1\n      }\n    }\n  ]\n}"
       },

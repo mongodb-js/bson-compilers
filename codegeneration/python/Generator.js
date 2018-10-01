@@ -29,19 +29,6 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   }
 
   /**
-   * Because Python doesn't need `New`, we can skip the first child.
-   *
-   * @param {NewExpressionContext} ctx
-   * @return {String}
-   */
-  emitNew(ctx) {
-    const expr = this.getExpression(ctx);
-    const str = this.visit(expr);
-    ctx.type = expr.type;
-    return str;
-  }
-
-  /**
    * Special cased because different target languages need different info out
    * of the constructed date.
    *

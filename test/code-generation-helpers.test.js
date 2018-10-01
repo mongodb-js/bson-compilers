@@ -13,7 +13,7 @@ const JavascriptVisitor = require('../codegeneration/javascript/Visitor');
 const javaGenerator = require('../codegeneration/java/Generator');
 const javascriptjavasymbols = require('../lib/symbol-table/javascripttojava');
 
-xdescribe('CodeGeneration helper functions', () => {
+describe('CodeGeneration helper functions', () => {
   describe('doubleQuoteStringify', () => {
     it('accepts double quotes', () => {
       expect(doubleQuoteStringify('"quote"')).to.equal('"quote"');
@@ -64,7 +64,7 @@ xdescribe('CodeGeneration helper functions', () => {
     transpiler.Symbols = Object.assign(
       { TestFunc: { callable: 2, args: [], template: null, argsTemplate: null, id: 'TestFunc', type: null }},
       doc.BsonSymbols, doc.JSSymbols);
-    transpiler.Syntax = { eos: { template: null }, eof: { template: null } };
+    transpiler.Syntax = doc.Syntax;
     transpiler.SYMBOL_TYPE = doc.SymbolTypes;
     it('defaults to long', () => {
       const str = getTree.javascript('1');

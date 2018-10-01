@@ -7,7 +7,7 @@
         "python": "ObjectId('5ab901c29ee65f5c8550c5b9')",
         "java": "new ObjectId(\"5ab901c29ee65f5c8550c5b9\")",
         "csharp": "new ObjectId(\"5ab901c29ee65f5c8550c5b9\")",
-        "shell": "ObjectId('5ab901c29ee65f5c8550c5b9')"
+        "shell": "new ObjectId('5ab901c29ee65f5c8550c5b9')"
       },
       {
         "description": "createFromTime",
@@ -15,7 +15,7 @@
         "python": "ObjectId.from_datetime(datetime.datetime.fromtimestamp(1522075031642 / 1000))",
         "java": "new ObjectId(new java.util.Date(1522075031642L))",
         "csharp": "new ObjectId.GenerateNewId(Convert.ToInt32(1522075031642))",
-        "shell": "ObjectId.fromDate(new Date(1522075031642))"
+        "shell": "new ObjectId.fromDate(new Date(1522075031642))"
       },
       {
         "description": "createFromTime with date",
@@ -23,7 +23,7 @@
          "python": "ObjectId.from_datetime(datetime.datetime.utcnow())",
         "java": "new ObjectId(new java.util.Date())",
         "csharp": "new ObjectId.GenerateNewId(DateTime.Now)",
-        "shell": "ObjectId.fromDate(new Date())"
+        "shell": "new ObjectId.fromDate(new Date())"
       },
       {
         "description": "isValid",
@@ -31,7 +31,7 @@
         "python": "ObjectId.is_valid('5ab901c29ee65f5c8550c5b9')",
         "java": "ObjectId.isValid(\"5ab901c29ee65f5c8550c5b9\")",
         "csharp": "new ObjectId(\"5ab901c29ee65f5c8550c5b9\")",
-        "shell": "ObjectId('5ab901c29ee65f5c8550c5b9')"
+        "shell": "new ObjectId('5ab901c29ee65f5c8550c5b9')"
       }
     ],
     "Binary": [
@@ -138,7 +138,7 @@
         "javascript": "Long.fromInt(5)",
         "python": "Int64(5)",
         "java": "5L",
-        "shell": "NumberLong(5)",
+        "shell": "new NumberLong(5)",
         "csharp": "5L"
       },
       {
@@ -146,7 +146,7 @@
         "javascript": "Long.fromString('5')",
         "python": "Int64(int('5'))",
         "java": "Long.parseLong(\"5\")",
-        "shell": "NumberLong('5')",
+        "shell": "new NumberLong('5')",
         "csharp": "Convert.ToInt64(\"5\", 10)"
       },
       {
@@ -154,7 +154,7 @@
         "javascript": "Long.fromString('5', 10)",
         "python": "Int64(int('5'))",
         "java": "Long.parseLong(\"5\", 10)",
-        "shell": "NumberLong('5')",
+        "shell": "new NumberLong('5')",
         "csharp": "Convert.ToInt64(\"5\", 10)"
       },
       {
@@ -163,7 +163,7 @@
         "python": "Int64(9223372036854775807)",
         "java": "9223372036854775807L",
         "csharp": "9223372036854775807L",
-        "shell": "NumberLong(9223372036854775807)"
+        "shell": "new NumberLong(9223372036854775807)"
       }
     ],
     "Decimal128": [
@@ -173,7 +173,7 @@
         "python": "Decimal128('5')",
         "java": "Decimal128.parse(\"5\")",
         "csharp": "Decimal128.Parse(\"5\")",
-        "shell": "NumberDecimal(\"5\")"
+        "shell": "new NumberDecimal(\"5\")"
       }
     ]
   }

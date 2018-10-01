@@ -138,7 +138,7 @@ BsonTypes:
             valueOf:
                 <<: *__func
                 id: "valueOf"
-                type: *Int32Type
+                type: *IntegerType
                 template: *Int32ValueOfTemplate
                 argsTemplate: *Int32ValueOfArgsTemplate
     Long: &LongType

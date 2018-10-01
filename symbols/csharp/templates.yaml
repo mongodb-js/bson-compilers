@@ -28,6 +28,16 @@ Templates:
         (lhs, rhs) => {
             return `Math.pow(${lhs}, ${rhs})`;
         }
+    NewTemplate: &NewSyntaxTemplate !!js/function >
+        (expr, skip, id) => {
+            // Add classes that don't use "new" to array
+            // So far: [Symbol, Decimal128/NumberDecimal, Long, MinKey, MaxKey, Date.now, Double, Int32, Number]
+            noNew = [111, 112, 106, 107, 108, 200.1, 104, 105, 2];
+            if (skip || (id && noNew.indexOf(id) !== -1)) {
+                return expr;
+            }
+            return `new ${expr}`;
+        }
     # BSON Object Type templates
     CodeTypeTemplate: &CodeTypeTemplate null
     StringTypeTemplate: &StringTypeTemplate !!js/function >
@@ -51,7 +61,7 @@ Templates:
                 (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"')) {
                     newStr = str.substr(1, str.length - 2);
             }
-            return `new Regex("${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}")`;
+            return `Regex("${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}")`;
         }
     BoolTypeTemplate: &BoolTypeTemplate !!js/function >
         (literal) => {
@@ -767,8 +777,14 @@ Templates:
             }
             return `(${arg1}, ${arg2})`;
         }
-    SymbolSymbolTemplate: &SymbolSymbolTemplate null # Has emit method 
-    SymbolSymbolArgsTemplate: &SymbolSymbolArgsTemplate null # Has emit method
+    SymbolSymbolTemplate: &SymbolSymbolTemplate !!js/function >
+        () => {
+            return '';
+        }
+    SymbolSymbolArgsTemplate: &SymbolSymbolArgsTemplate !!js/function >
+        (_, arg) => {
+            return arg; // no parens because generates as a string
+        }
     BSONRegExpSymbolTemplate: &BSONRegExpSymbolTemplate !!js/function >
         () => {
             return 'BsonRegularExpression';
@@ -777,8 +793,20 @@ Templates:
         (lhs, pattern, flags) => {
             return `(${pattern}${flags ? ', ' + flags : ''})`;
         }
-    Decimal128SymbolTemplate: &Decimal128SymbolTemplate null
-    Decimal128SymbolArgsTemplate: &Decimal128SymbolArgsTemplate null
+    Decimal128SymbolTemplate: &Decimal128SymbolTemplate !!js/function >
+        () => {
+            return 'Decimal128';
+        }
+    Decimal128SymbolArgsTemplate: &Decimal128SymbolArgsTemplate !!js/function >
+        (_, str) => { // just stringify
+            let newStr = str;
+            if (
+              (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
+              (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"')) {
+                newStr = str.substr(1, str.length - 2);
+            }
+            return `.Parse("${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}")`;
+        }
     Decimal128SymbolFromStringTemplate: &Decimal128SymbolFromStringTemplate !!js/function >
         (lhs) => {
             return `${lhs}.Parse`;
@@ -850,8 +878,14 @@ Templates:
             return 'Datetime';
         }
     DateSymbolArgsTemplate: &DateSymbolArgsTemplate null # Has emit method
-    DateSymbolNowTemplate: &DateSymbolNowTemplate null # Has emit method
-    DateSymbolNowArgsTemplate: &DateSymbolNowArgsTemplate null # Has emit method
+    DateSymbolNowTemplate: &DateSymbolNowTemplate !!js/function >
+        () => {
+            return 'DateTime.Now';
+        }
+    DateSymbolNowArgsTemplate: &DateSymbolNowArgsTemplate !!js/function >
+        () => {
+            return '';
+        }
     RegExpSymbolTemplate: &RegExpSymbolTemplate !!js/function > # Also has process method
         () => {
             return 'Regex';

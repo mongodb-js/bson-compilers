@@ -12,29 +12,6 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     this.bsonRegexFlags = {
       i: 'i', m: 'm', x: 'x', s: 's', l: 'l', u: 'u'
     };
-    this.new = 'new ';
-  }
-
-  emitNew(ctx) {
-    const expr = this.getExpression(ctx);
-    const str = this.visit(expr);
-    ctx.type = expr.type;
-    if (ctx.type.id === 'Double' || ctx.type.id === 'Symbol') {
-      return str;
-    }
-    return this.visitChildren(ctx, {separator: ' '});
-  }
-
-  /**
-   * Special case because Doubles are just number literals.
-   * @param {FuncCallExpressionContext} ctx
-   * @return {String}
-   */
-  emitDouble(ctx) {
-    ctx.type = this.Types.Double;
-    const argList = this.getArguments(ctx);
-    const arg = this.checkArguments(this.Symbols.Double.args, argList, 'Double');
-    return removeQuotes(arg[0]);
   }
 
   emitDate(ctx, date) {

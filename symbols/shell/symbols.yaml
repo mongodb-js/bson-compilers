@@ -166,6 +166,7 @@ JSSymbols:
         attr: # TODO: add more date funcs?
             now:
                 id: "now"
+                code: 200.1
                 callable: *constructor
                 args: []
                 type: *DateType

@@ -332,8 +332,54 @@ class Visitor extends Python3Visitor {
   // processcompile(ctx) {
   //   return this.process_regex(ctx);
   // }
-  // processdatetime(ctx) {
-  // }
+  processdatetime(ctx) {
+    ctx.type = this.Types.Date;
+    ctx.wasNew = true; // Always true for non-js
+
+    const args = this.getArguments(ctx);
+    if (args.length === 0) {
+      if ('emitDate' in this) {
+        return this.emitDate(ctx);
+      }
+    } else if (args.length < 3) {
+      throw new BsonTranspilersArgumentError(
+        `Wrong number of arguments to datetime: needs at at least 3, got ${jsargs.length}`
+      );
+    }
+
+    const argList = this.getArguments(ctx);
+    try {
+      this.checkArguments(this.Symbols.datetime.args, argList, 'datetime');
+    } catch (e) {
+      throw new BsonTranspilersArgumentError(
+        'Invalid argument to datetime: requires either no args or up to 7 numbers'
+      );
+    }
+
+    const argvals = args.map((k) => {
+      let v;
+      try {
+        v = parseInt(k.getText(), 10);
+      } catch (e) {
+        throw new BsonTranspilersInternalError(
+          `Unable to convert datetime argument to integer: ${k.getText()}`
+        );
+      }
+      return v;
+    });
+    let date;
+    try {
+      date = new Date(...argvals);
+    } catch (e) {
+      throw new BsonTranspilersInternalError(
+        `Unable to construct date from arguments: ${e.message}`
+      );
+    }
+    if ('emitDate' in this) {
+      return this.emitDate(ctx, date);
+    }
+    return ctx.getText();
+  }
 
   /**
    * Int64 needs processing because sometimes it's generated as a class, and
@@ -362,7 +408,7 @@ class Visitor extends Python3Visitor {
 
     // Get the original type of the argument
     const expectedArgs = lhsType.args;
-    const trailer = ctx.paren_trailer()[0];
+    const trailer = this.getArguments(ctx);
     let args = this.checkArguments(
       expectedArgs, trailer, lhsType.id
     );
@@ -403,12 +449,12 @@ class Visitor extends Python3Visitor {
     // Check arguments
     const expectedArgs = lhsType.args;
     let rhs = this.checkArguments(// TODO: chained calls
-      expectedArgs, ctx.paren_trailer()[0], lhsType.id
+      expectedArgs, this.getArguments(ctx), lhsType.id
     );
 
     let argType;
     if (rhs.length > 0) {
-      argType = ctx.paren_trailer()[0].arglist().argument()[0].type.id;
+      argType = this.getArgumentAt(0).type.id;
     }
 
     // Apply the arguments template
@@ -448,13 +494,8 @@ class Visitor extends Python3Visitor {
     // Check arguments
     const expectedArgs = lhsType.args;
     let rhs = this.checkArguments(// TODO: chained calls
-      expectedArgs, ctx.paren_trailer()[0], lhsType.id
+      expectedArgs, this.getArguments(ctx), lhsType.id
     );
-
-    // Add new if needed
-    const newStr = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR ?
-      this.new :
-      '';
 
     // Apply the arguments template
     if (lhsType.argsTemplate) {
@@ -466,7 +507,13 @@ class Visitor extends Python3Visitor {
     } else {
       rhs = `(${rhs.join(', ')})`;
     }
-    return `${newStr}${lhs}${rhs}`;
+
+    const expr = `${lhs}${rhs}`;
+    const constructor = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR;
+
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(expr, !constructor, lhsType.id)
+      : expr;
   }
 
   handleAttrAccess(ctx) {
@@ -555,9 +602,9 @@ class Visitor extends Python3Visitor {
    *
    * @returns {Array} - Array containing the generated output for each argument.
    */
-  checkArguments(expected, argumentList, name) {
+  checkArguments(expected, args, name) {
     const argStr = [];
-    if (!('arglist' in argumentList) || argumentList.arglist() === null) {
+    if (!args) {
       if (expected.length === 0 || expected[0].indexOf(null) !== -1) {
         return argStr;
       }
@@ -565,7 +612,6 @@ class Visitor extends Python3Visitor {
         `Argument count mismatch: '${name}' requires least one argument`
       );
     }
-    const args = argumentList.arglist().argument();
     if (args.length > expected.length) {
       throw new BsonTranspilersArgumentError(
         `Argument count mismatch: '${name}' expects ${expected.length} args and got ${args.length}`
@@ -710,10 +756,14 @@ class Visitor extends Python3Visitor {
     return k[1];
   }
   getArguments(ctx) {
-    if (!('arglist' in ctx) || ctx.arglist() === null) {
-      return [];
+    const trailer = ctx.paren_trailer()[0];
+    if (!('arglist' in trailer) || trailer.arglist() === null) {
+      return null;
     }
-    return ctx.arglist().argument();
+    return trailer.arglist().argument();
+  }
+  getArgumentAt(ctx, i) {
+    return this.getArguments(ctx)[i];
   }
   getParentUntil(ctx, name, steps) {
     steps = steps === undefined ? 0 : steps;

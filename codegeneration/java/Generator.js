@@ -12,7 +12,6 @@ const {
 module.exports = (superClass) => class ExtendedVisitor extends superClass {
   constructor() {
     super();
-    this.new = 'new ';
     this.regexFlags = {
       i: 'i', m: 'm', u: 'u', y: '', g: ''
     };
@@ -63,23 +62,6 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   }
 
   /**
-   * Ignore the new keyword because JS could either have it or not, but we always
-   * need it in Java so we'll add it when we call constructors.
-   * TODO: do we ever need the second arguments expr?
-   *
-   * Child nodes: singleExpression arguments?
-   *
-   * @param {NewExpressionContext} ctx
-   * @return {String}
-   */
-  emitNew(ctx) {
-    const expr = this.getExpression(ctx);
-    const str = this.visit(expr);
-    ctx.type = expr.type;
-    return str;
-  }
-
-  /**
    * Special cased because different target languages need different info out
    * of the constructed date.
    *
@@ -104,23 +86,6 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   }
 
   /**
-   * Special cased because don't want 'new' here.
-   *
-   * @param {FuncCallExpressionContext} ctx
-   * @param {String} str - the number as a string.
-   * @return {String}
-   */
-  emitDecimal128(ctx, str) {
-    return `Decimal128.parse(${doubleQuoteStringify(str)})`;
-  }
-  emitNumberDecimal(ctx, str) {
-    return `Decimal128.parse(${doubleQuoteStringify(str)})`;
-  }
-  emitLong(ctx, str) {
-    return `${str}L`;
-  }
-
-  /**
    * Accepts date or number, if date then don't convert to date.
    *
    * @param {FuncCallExpressionContext} ctx
@@ -140,6 +105,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
       '', `new java.util.Date(${args[0]})`)}`;
   }
 
+  /** The rest of the functions in this file are for generating builders **/
 
   /**
    * Emit an "idiomatic" filter or aggregation, meaning use the builders

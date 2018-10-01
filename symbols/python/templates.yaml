@@ -28,6 +28,7 @@ Templates:
         (lhs, rhs) => {
             return `${lhs}**${rhs}`;
         }
+    NewTemplate: &NewSyntaxTemplate null
     # BSON Object Type templates
     CodeTypeTemplate: &CodeTypeTemplate null
     StringTypeTemplate: &StringTypeTemplate !!js/function >

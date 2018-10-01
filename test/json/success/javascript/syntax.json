@@ -125,7 +125,7 @@
         "python": "Int64",
         "java": "",
         "csharp": "",
-        "shell": "new NumberLong"
+        "shell": "NumberLong"
       },
       {
         "description": "new Decimal128",
@@ -133,7 +133,7 @@
         "python": "Decimal128",
         "java": "Decimal128",
         "csharp": "Decimal128",
-        "shell": "new NumberDecimal"
+        "shell": "NumberDecimal"
       }
     ],
     "Parens": [
@@ -161,7 +161,7 @@
         "python": "float",
         "java": "",
         "csharp": "",
-        "shell": "Number"
+        "shell": ""
       },
       {
         "description": "Int32 without args",
@@ -224,7 +224,7 @@
         "javascript": "Symbol",
         "python": "",
         "java": "Symbol",
-        "csharp": "Symbol",
+        "csharp": "",
         "shell": ""
       },
       {
@@ -275,7 +275,7 @@
         "python": "str",
         "java": "new ObjectId().toHexString",
         "csharp": "new ObjectId().ToString",
-        "shell": "ObjectId().toString"
+        "shell": "new ObjectId().toString"
       },
       {
         "description": "ObjectId().getTimestamp without args",
@@ -283,7 +283,7 @@
         "python": "ObjectId().generation_time",
         "java": "new ObjectId().getTimestamp",
         "csharp": "new ObjectId().Timestamp",
-        "shell": "ObjectId().getTimestamp"
+        "shell": "new ObjectId().getTimestamp"
       },
       {
         "description": "ObjectId().equals without args",
@@ -291,7 +291,7 @@
         "python": "ObjectId() ==",
         "java": "new ObjectId().equals",
         "csharp": "new ObjectId().Equals",
-        "shell": "ObjectId().equals"
+        "shell": "new ObjectId().equals"
       },
       {
         "description": "Int32(1).valueOf without args",
@@ -299,7 +299,7 @@
         "python": "int(1)",
         "java": "1",
         "csharp": "1",
-        "shell": "NumberInt(1).valueOf"
+        "shell": "new NumberInt(1).valueOf"
       },
       {
         "description": "Double(1).valueOf without args",
@@ -315,7 +315,7 @@
         "python": "int(Int64(429496729601))",
         "java": "(int) 429496729601L",
         "csharp": "(int) 429496729601L",
-        "shell": "NumberLong(429496729601).valueOf"
+        "shell": "new NumberLong(429496729601).valueOf"
       },
       {
         "description": "Long(1, 100).toNumber without args",
@@ -323,7 +323,7 @@
         "python": "float(Int64(429496729601))",
         "java": "(double) 429496729601L",
         "csharp": "(double) 429496729601L",
-        "shell": "NumberLong(429496729601).floatApprox"
+        "shell": "new NumberLong(429496729601).floatApprox"
       },
       {
         "description": "Long(1, 100).toString without args",
@@ -331,7 +331,7 @@
         "python": "str",
         "java": "429496729601L",
         "csharp": "429496729601L",
-        "shell": "NumberLong(429496729601).toString"
+        "shell": "new NumberLong(429496729601).toString"
       },
       {
         "description": "Long isZero without args",
@@ -339,7 +339,7 @@
         "python": "Int64(429496729601) == 0",
         "java": "429496729601L == 0",
         "csharp": "429496729601L == 0",
-        "shell": "NumberLong(429496729601) === 0"
+        "shell": "new NumberLong(429496729601) === 0"
       },
       {
         "description": "Long isNegative without args",
@@ -347,7 +347,7 @@
         "python": "Int64(429496729601) < 0",
         "java": "429496729601L < 0",
         "csharp": "429496729601L < 0",
-        "shell": "NumberLong(429496729601) < 0"
+        "shell": "new NumberLong(429496729601) < 0"
       },
       {
         "description": "Long isOdd without args",
@@ -355,7 +355,7 @@
         "python": "(Int64(429496729601) % 2) == 1",
         "java": "(429496729601L % 2) == 1",
         "csharp": "429496729601L % 2 == 1",
-        "shell": "(NumberLong(429496729601) % 2) === 1"
+        "shell": "(new NumberLong(429496729601) % 2) === 1"
       },
       {
         "description": "Long equals without args",
@@ -363,7 +363,7 @@
         "python": "Int64(429496729601) ==",
         "java": "429496729601L ==",
         "csharp": "429496729601L ==",
-        "shell": "NumberLong(429496729601) ==="
+        "shell": "new NumberLong(429496729601) ==="
       },
       {
         "description": "Long notEquals without args",
@@ -371,7 +371,7 @@
         "python": "Int64(429496729601) !=",
         "java": "429496729601L !=",
         "csharp": "429496729601L !=",
-        "shell": "NumberLong(429496729601) !=="
+        "shell": "new NumberLong(429496729601) !=="
       },
       {
         "description": "Long compare without args",
@@ -379,7 +379,7 @@
         "python": "Int64(429496729601) -",
         "java": "429496729601L -",
         "csharp": "429496729601L -",
-        "shell": "NumberLong(429496729601) -"
+        "shell": "new NumberLong(429496729601) -"
       },
       {
         "description": "Long greaterThan without args",
@@ -387,7 +387,7 @@
         "python": "Int64(429496729601) >",
         "java": "429496729601L >",
         "csharp": "429496729601L >",
-        "shell": "NumberLong(429496729601) >"
+        "shell": "new NumberLong(429496729601) >"
       },
       {
         "description": "Long greaterThanOrEqual without args",
@@ -395,7 +395,7 @@
         "python": "Int64(429496729601) >=",
         "java": "429496729601L >=",
         "csharp": "429496729601L >=",
-        "shell": "NumberLong(429496729601) >="
+        "shell": "new NumberLong(429496729601) >="
       },
       {
         "description": "Long lessThan without args",
@@ -403,7 +403,7 @@
         "python": "Int64(429496729601) <",
         "java": "429496729601L <",
         "csharp": "429496729601L <",
-        "shell": "NumberLong(429496729601) <"
+        "shell": "new NumberLong(429496729601) <"
       },
       {
         "description": "Long lessThanOrEqual without args",
@@ -411,7 +411,7 @@
         "python": "Int64(429496729601) <=",
         "java": "429496729601L <=",
         "csharp": "429496729601L <=",
-        "shell": "NumberLong(429496729601) <="
+        "shell": "new NumberLong(429496729601) <="
       },
       {
         "description": "Long negate without args",
@@ -427,7 +427,7 @@
         "python": "Int64(429496729601) +",
         "java": "429496729601L +",
         "csharp": "429496729601L +",
-        "shell": "NumberLong(429496729601) +"
+        "shell": "new NumberLong(429496729601) +"
       },
       {
         "description": "Long subtract without args",
@@ -435,7 +435,7 @@
         "python": "Int64(429496729601) -",
         "java": "429496729601L -",
         "csharp": "429496729601L -",
-        "shell": "NumberLong(429496729601) -"
+        "shell": "new NumberLong(429496729601) -"
       },
       {
         "description": "Long multiply without args",
@@ -443,7 +443,7 @@
         "python": "Int64(429496729601) *",
         "java": "429496729601L *",
         "csharp": "429496729601L *",
-        "shell": "NumberLong(429496729601) *"
+        "shell": "new NumberLong(429496729601) *"
       },
       {
         "description": "Long div without args",
@@ -451,7 +451,7 @@
         "python": "Int64(429496729601) /",
         "java": "429496729601L /",
         "csharp": "429496729601L /",
-        "shell": "NumberLong(429496729601) /"
+        "shell": "new NumberLong(429496729601) /"
       },
       {
         "description": "Long modulo without args",
@@ -459,7 +459,7 @@
         "python": "Int64(429496729601) %",
         "java": "429496729601L %",
         "csharp": "429496729601L %",
-        "shell": "NumberLong(429496729601) %"
+        "shell": "new NumberLong(429496729601) %"
       },
       {
         "description": "Long not without args",
@@ -475,7 +475,7 @@
         "python": "Int64(429496729601) &",
         "java": "429496729601L &",
         "csharp": "429496729601L &",
-        "shell": "NumberLong(429496729601) &"
+        "shell": "new NumberLong(429496729601) &"
       },
       {
         "description": "Long or without args",
@@ -483,7 +483,7 @@
         "python": "Int64(429496729601) |",
         "java": "429496729601L |",
         "csharp": "429496729601L |",
-        "shell": "NumberLong(429496729601) |"
+        "shell": "new NumberLong(429496729601) |"
       },
       {
         "description": "Long xor without args",
@@ -491,7 +491,7 @@
         "python": "Int64(429496729601) ^",
         "java": "429496729601L ^",
         "csharp": "429496729601L ^",
-        "shell": "NumberLong(429496729601) ^"
+        "shell": "new NumberLong(429496729601) ^"
       },
       {
         "description": "Long shiftLeft without args",
@@ -499,7 +499,7 @@
         "python": "Int64(429496729601) <<",
         "java": "Long.rotateLeft",
         "csharp": "429496729601L <<",
-        "shell": "NumberLong(429496729601) <<"
+        "shell": "new NumberLong(429496729601) <<"
       },
       {
         "description": "Long shiftRight without args",
@@ -507,7 +507,7 @@
         "python": "Int64(429496729601) >>",
         "java": "Long.rotateRight",
         "csharp": "429496729601L >>",
-        "shell": "NumberLong(429496729601) >>"
+        "shell": "new NumberLong(429496729601) >>"
       },
       {
         "description": "Decimal128 toString without args",
@@ -523,7 +523,7 @@
         "python": "str",
         "java": "new BSONTimestamp(1, 100).toString",
         "csharp": "new BsonTimestamp(1, 100).ToString",
-        "shell": "Timestamp(1, 100).toString"
+        "shell": "new Timestamp(1, 100).toString"
       },
       {
         "description": "Timestamp equals without args",
@@ -531,7 +531,7 @@
         "python": "Timestamp(1, 100) ==",
         "java": "new BSONTimestamp(1, 100).equals",
         "csharp": "new BsonTimestamp(1, 100).Equals",
-        "shell": "Timestamp(1, 100) ==="
+        "shell": "new Timestamp(1, 100) ==="
       },
       {
         "description": "Timestamp compare without args",
@@ -539,7 +539,7 @@
         "python": "(Timestamp(1, 100).as_datetime() -",
         "java": "new BSONTimestamp(1, 100).compareTo",
         "csharp": "new BsonTimestamp(1, 100).CompareTo",
-        "shell": "Timestamp(1, 100) -"
+        "shell": "new Timestamp(1, 100) -"
       },
       {
         "description": "Timestamp notEquals without args",
@@ -547,7 +547,7 @@
         "python": "Timestamp(1, 100) !=",
         "java": "new BSONTimestamp(1, 100).compareTo",
         "csharp": "new BsonTimestamp(1, 100) !=",
-        "shell": "Timestamp(1, 100) !=="
+        "shell": "new Timestamp(1, 100) !=="
       },
       {
         "description": "Timestamp greaterThan without args",
@@ -555,7 +555,7 @@
         "python": "Timestamp(1, 100) >",
         "java": "new BSONTimestamp(1, 100).compareTo",
         "csharp": "new BsonTimestamp(1, 100) >",
-        "shell": "Timestamp(1, 100) >"
+        "shell": "new Timestamp(1, 100) >"
       },
       {
         "description": "Timestamp greaterThanOrEqual without args",
@@ -563,7 +563,7 @@
         "python": "Timestamp(1, 100) >=",
         "java": "new BSONTimestamp(1, 100).compareTo",
         "csharp": "new BsonTimestamp(1, 100) >=",
-        "shell": "Timestamp(1, 100) >="
+        "shell": "new Timestamp(1, 100) >="
       },
       {
         "description": "Timestamp lessThan without args",
@@ -571,7 +571,7 @@
         "python": "Timestamp(1, 100) <",
         "java": "new BSONTimestamp(1, 100).compareTo",
         "csharp": "new BsonTimestamp(1, 100) <",
-        "shell": "Timestamp(1, 100) <"
+        "shell": "new Timestamp(1, 100) <"
       },
       {
         "description": "Timestamp lessThanOrEqual without args",
@@ -579,7 +579,7 @@
         "python": "Timestamp(1, 100) <=",
         "java": "new BSONTimestamp(1, 100).compareTo",
         "csharp": "new BsonTimestamp(1, 100) <=",
-        "shell": "Timestamp(1, 100) <="
+        "shell": "new Timestamp(1, 100) <="
       },
       {
         "description": "Timestamp getLowBits without args",
@@ -587,7 +587,7 @@
         "python": "Timestamp(1, 100).time",
         "java": "new BSONTimestamp(1, 100).getTime",
         "csharp": "new BsonTimestamp(1, 100).ToUniversalTime",
-        "shell": "Timestamp(1, 100).getTime"
+        "shell": "new Timestamp(1, 100).getTime"
       },
       {
         "description": "Timestamp getHighBits without args",
@@ -595,7 +595,7 @@
         "python": "Timestamp(1, 100).inc",
         "java": "new BSONTimestamp(1, 100).getInc",
         "csharp": "new BsonTimestamp(1, 100).Increment",
-        "shell": "Timestamp(1, 100).getInc"
+        "shell": "new Timestamp(1, 100).getInc"
       },
       {
         "description": "Symbol valueOf without args",

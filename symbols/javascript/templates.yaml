@@ -26,6 +26,14 @@ Templates:
         (lhs, rhs) => {
             return `Math.pow(${lhs}, ${rhs})`;
         }
+    NewTemplate: &NewSyntaxTemplate !!js/function >
+        (expr, skip, id) => {
+            noNew = []; // Add classes that don't use "new" to array
+            if (skip || (id && noNew.indexOf(id) !== -1)) {
+                return expr;
+            }
+            return `new ${expr}`;
+        }
     # BSON Object Type templates
     CodeTypeTemplate: &CodeTypeTemplate null
     StringTypeTemplate: &StringTypeTemplate !!js/function >

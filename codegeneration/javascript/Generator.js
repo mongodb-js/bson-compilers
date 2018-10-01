@@ -12,7 +12,6 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
       y: '',   // sticky search
       g: ''    // global
     };
-    this.new = 'new ';
   }
   emitISODate(ctx) {
     let newstr = '';
@@ -37,9 +36,6 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
       return `${newstr}Date()`;
     }
     const args = this.getArguments(ctx);
-    if (args.length === 0) {
-      return ctx.getText();
-    }
     const argstr = this.checkArguments(this.Symbols.Date.args, args, 'Date');
     return `${newstr}Date(${argstr.join(', ')})`;
   }

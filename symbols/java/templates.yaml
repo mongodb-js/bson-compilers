@@ -31,7 +31,7 @@ Templates:
     NewTemplate: &NewSyntaxTemplate !!js/function >
         (expr, skip, id) => {
             // Add ids of classes that don't need new.
-            // Currently: Decimal128/NumberDecimal, Long, Double, Int32, Number, regex literal
+            // Currently: Decimal128/NumberDecimal, Long/NumberLong, Double, Int32, Number, regex
             noNew = [112, 106, 104, 105, 2, 8];
             if (skip || (id && noNew.indexOf(id) !== -1)) {
                 return expr;

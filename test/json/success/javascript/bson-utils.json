@@ -15,7 +15,7 @@
         "python": "ObjectId.from_datetime(datetime.datetime.fromtimestamp(1522075031642 / 1000))",
         "java": "new ObjectId(new java.util.Date(1522075031642L))",
         "csharp": "new ObjectId.GenerateNewId(Convert.ToInt32(1522075031642))",
-        "shell": "new ObjectId.fromDate(new Date(1522075031642))"
+        "shell": "ObjectId.fromDate(new Date(1522075031642))"
       },
       {
         "description": "createFromTime with date",
@@ -23,7 +23,7 @@
          "python": "ObjectId.from_datetime(datetime.datetime.utcnow())",
         "java": "new ObjectId(new java.util.Date())",
         "csharp": "new ObjectId.GenerateNewId(DateTime.Now)",
-        "shell": "new ObjectId.fromDate(new Date())"
+        "shell": "ObjectId.fromDate(new Date())"
       },
       {
         "description": "isValid",
@@ -173,7 +173,7 @@
         "python": "Decimal128('5')",
         "java": "Decimal128.parse(\"5\")",
         "csharp": "Decimal128.Parse(\"5\")",
-        "shell": "new NumberDecimal(\"5\")"
+        "shell": "new NumberDecimal('5')"
       }
     ]
   }

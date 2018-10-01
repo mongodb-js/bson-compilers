@@ -3,7 +3,6 @@ const JavascriptVisitor = require('../javascript/Visitor');
 const bson = require('bson');
 const Context = require('context-eval');
 const {
-  BsonTranspilersReferenceError,
   BsonTranspilersRuntimeError,
   BsonTranspilersUnimplementedError,
   BsonTranspilersArgumentError
@@ -18,34 +17,7 @@ const {
 class Visitor extends JavascriptVisitor {
   constructor() {
     super();
-    this.new = '';
     this.processNumberLong = this.processNumber;
-  }
-
-  visitIdentifierExpression(ctx) {
-    const name = this.visitChildren(ctx);
-    ctx.type = this.Symbols[name];
-    if (ctx.type === undefined) {
-      throw new BsonTranspilersReferenceError(
-        `Symbol '${name}' is undefined`
-      );
-    }
-    this.requiredImports[ctx.type.code] = true;
-    // Special case MinKey/MaxKey because they don't have to be called in shell
-    if (!ctx.visited && (ctx.type.id === 'MinKey' || ctx.type.id === 'MaxKey') &&
-        ctx.parentCtx.constructor.name !== 'FuncCallExpressionContext' &&
-        ctx.parentCtx.constructor.name !== 'NewExpressionContext') {
-      const node = {
-        arguments: () => { return { argumentList: () => { return false; }}; },
-        singleExpression: () => { return ctx; }
-      };
-      ctx.visited = true;
-      return this.visitFuncCallExpression(node);
-    }
-    if (ctx.type.template) {
-      return ctx.type.template();
-    }
-    return name;
   }
 
   executeJavascript(input) {
@@ -128,22 +100,27 @@ class Visitor extends JavascriptVisitor {
     }
     const lhs = symbolType.template ? symbolType.template() : 'NumberDecimal';
     const rhs = symbolType.argsTemplate ? symbolType.argsTemplate(lhs, decstr) : `(${decstr})`;
-    return `${this.new}${lhs}${rhs}`;
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
+      : `${lhs}${rhs}`;
   }
 
   /**
-   * Needs preprocessing because ISODate is treated exactly like Date.
+   * Needs preprocessing because ISODate is treated exactly like Date, but always
+   * is invoked as an object.
    *
    * @param {FuncCallExpressionContext} ctx
    * @return {String}
    */
   processISODate(ctx) {
+    ctx.wasNew = true;
     return this.processDate(ctx);
   }
 
   /**
    * We want to ensure that the scope argument is not generated as a builder if
    * idiomatic is turned on
+   *
    * @param {FuncCallExpressionContext} ctx
    * @return {String}
    */
@@ -155,7 +132,10 @@ class Visitor extends JavascriptVisitor {
     if (!argList ||
       !(argList.singleExpression().length === 1 ||
         argList.singleExpression().length === 2)) {
-      return `${this.new}${lhs}${symbolType.argsTemplate ? symbolType.argsTemplate(lhs) : '()'}`;
+      const code = `${lhs}${symbolType.argsTemplate ? symbolType.argsTemplate(lhs) : '()'}`;
+      return this.Syntax.new.template
+        ? this.Syntax.new.template(code, false, ctx.type.code)
+        : code;
     }
     const args = argList.singleExpression();
     const code = this.visit(args[0]);
@@ -180,7 +160,9 @@ class Visitor extends JavascriptVisitor {
       return this.emitCode(ctx, code, scope);
     }
     const rhs = symbolType.argsTemplate ? symbolType.argsTemplate(lhs, code, scope) : `(${code}${scopestr})`;
-    return `${this.new}${lhs}${rhs}`;
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
+      : `${lhs}${rhs}`;
   }
 
 }

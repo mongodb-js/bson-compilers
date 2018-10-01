@@ -28,7 +28,9 @@ Templates:
         }
     NewTemplate: &NewSyntaxTemplate !!js/function >
         (expr, skip, id) => {
-            noNew = []; // Add classes that don't use "new" to array
+            // Add classes that don't use "new" to array.
+            // So far: [Date.now, Decimal128/NumberDecimal, Long/NumberLong]
+            noNew = [200.1, 112, 106];
             if (skip || (id && noNew.indexOf(id) !== -1)) {
                 return expr;
             }
@@ -46,7 +48,18 @@ Templates:
           }
           return `'${newStr.replace(/\\([\s\S])|(')/g, '\\$1$2')}'`;
         }
-    RegexTypeTemplate: &RegexTypeTemplate null
+    RegexTypeTemplate: &RegexTypeTemplate !!js/function >
+        (pattern, flags) => {
+            const str = pattern;
+            let newStr = str;
+            if (
+              (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
+              (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"')) {
+                newStr = str.substr(1, str.length - 2);
+            }
+            pattern = `'${newStr.replace(/\\([\s\S])|(')/g, '\\$1$2')}'`;
+            return `RegExp(${pattern}${flags ? ', ' + '\'' + flags + '\'': ''})`;
+        }
     BoolTypeTemplate: &BoolTypeTemplate !!js/function >
         (literal) => {
             return literal.toLowerCase();

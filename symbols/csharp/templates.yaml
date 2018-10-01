@@ -31,7 +31,7 @@ Templates:
     NewTemplate: &NewSyntaxTemplate !!js/function >
         (expr, skip, id) => {
             // Add classes that don't use "new" to array
-            // So far: [Symbol, Decimal128/NumberDecimal, Long, MinKey, MaxKey, Date.now, Double, Int32, Number]
+            // So far: [Symbol, Decimal128/NumberDecimal, Long/NumberLong, MinKey, MaxKey, Date.now, Double, Int32, Number]
             noNew = [111, 112, 106, 107, 108, 200.1, 104, 105, 2];
             if (skip || (id && noNew.indexOf(id) !== -1)) {
                 return expr;

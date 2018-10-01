@@ -7,7 +7,7 @@
         "python": "Code('test code', {\n    'x': 1\n}).scope",
         "java": "new CodeWithScope(\"test code\", new Document(\"x\", 1L)).getScope()",
         "csharp": "new BsonJavaScriptWithScope(\"test code\", new BsonDocument(\"x\", 1)).Scope",
-        "shell": "new Code('test code', {\n  x: 1\n}).scope"
+        "shell": "new Code('test code', {\n  'x': 1\n}).scope"
       },
       {
         "description": "Code code",

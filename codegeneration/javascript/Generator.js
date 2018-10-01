@@ -8,28 +8,15 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     this.regexFlags = {
       i: 'i',  // ignore case
       m: 'm',  // multiline
-      u: '', // unicode
-      y: '',   // sticky search
-      g: ''    // global
+      u: 'u', // unicode
+      y: 'y',   // sticky search
+      g: 'g'    // global
     };
-  }
-  emitISODate(ctx) {
-    let newstr = '';
-    ctx.type = this.Types.Date;
-    if (!ctx.wasNew) {
-      newstr = 'new ';
-    }
-    const args = this.getArguments(ctx);
-    if (args.length === 0) {
-      return `${newstr}Date()`;
-    }
-    const argstr = this.checkArguments([[this.Types._string]], args, 'ISODate');
-    return `${newstr}Date(${argstr[0]})`;
   }
 
   emitDate(ctx, date) {
     let newstr = '';
-    if (!ctx.wasNew && ctx.getText().includes('ISODate')) {
+    if (ctx.wasNew) {
       newstr = 'new ';
     }
     if (date === undefined) {

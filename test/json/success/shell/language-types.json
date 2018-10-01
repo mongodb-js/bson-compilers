@@ -29,7 +29,7 @@
       },
       {
         "description": "Number with valid string arg",
-        "javascript": "Number('2')",
+        "javascript": "new Number('2')",
         "python": "float('2')",
         "java": "Double.parseDouble(\"2\")",
         "csharp": "int.Parse(\"2\")",
@@ -37,7 +37,7 @@
       },
       {
         "description": "Number with no arg",
-        "javascript": "Number(0)",
+        "javascript": "new Number(0)",
         "python": "0",
         "java": "0d",
         "csharp": "(int) 0",
@@ -127,7 +127,7 @@
       },
       {
         "description": "Double-quote string",
-        "javascript": "\"string\"",
+        "javascript": "'string'",
         "python": "'string'",
         "java": "\"string\"",
         "csharp": "\"string\"",
@@ -293,7 +293,7 @@
     "RegExp": [
       {
         "description": "empty RegExp",
-        "javascript": "RegExp('')",
+        "javascript": "new RegExp('(?:)')",
         "python": "re.compile(r\"(?:)\")",
         "java": "Pattern.compile(\"(?:)\")",
         "csharp": "new Regex(\"(?:)\")",
@@ -301,7 +301,7 @@
       },
       {
         "description": "RegExp without options",
-        "javascript": "RegExp('abc')",
+        "javascript": "new RegExp('abc')",
         "python": "re.compile(r\"abc\")",
         "java": "Pattern.compile(\"abc\")",
         "csharp": "new Regex(\"abc\")",
@@ -309,7 +309,7 @@
       },
       {
         "description": "regex object with im flags as args",
-        "javascript": "new RegExp('ab+c','im')",
+        "javascript": "new RegExp('ab+c', 'im')",
         "python": "re.compile(r\"ab+c(?im)\")",
         "java": "Pattern.compile(\"ab+c(?im)\")",
         "csharp": "new Regex(\"(?im)ab+c\")",
@@ -317,7 +317,7 @@
       },
       {
         "description": "regex object with ig flags as args",
-        "javascript": "new RegExp('ab+c','ig')",
+        "javascript": "new RegExp('ab+c', 'gi')",
         "python": "re.compile(r\"ab+c(?is)\")",
         "java": "Pattern.compile(\"ab+c(?i)\")",
         "csharp": "new Regex(\"(?i)ab+c\")",
@@ -325,7 +325,7 @@
       },
       {
         "description": "regex object with forward slash",
-        "javascript": "new RegExp('ab/cd')",
+        "javascript": "new RegExp('ab\\/cd')",
         "python": "re.compile(r\"ab\\/cd\")",
         "java": "Pattern.compile(\"ab\\\\/cd\")",
         "csharp": "new Regex(\"ab\\/cd\")",
@@ -333,7 +333,7 @@
       },
       {
         "description": "regex object with escaped double quote",
-        "javascript": "new RegExp('ab\\\"ab')",
+        "javascript": "new RegExp('ab\"ab')",
         "python": "re.compile(r\"ab\\\"ab\")",
         "java": "Pattern.compile(\"ab\\\"ab\")",
         "csharp": "new Regex(\"ab\\\"ab\")",
@@ -357,15 +357,15 @@
       },
       {
         "description": "regex object with nonescaped single quote",
-        "javascript": "new RegExp(\"ab'ab\")",
+        "javascript": "new RegExp('ab\\'ab')",
         "python": "re.compile(r\"ab'ab\")",
         "java": "Pattern.compile(\"ab'ab\")",
         "csharp": "new Regex(\"ab'ab\")",
-        "shell": "new RegExp(\"ab'ab\")"
+        "shell": "new RegExp(\"ab\\'ab\")"
       },
       {
         "description": "regex object with newline",
-        "javascript": "new RegExp(\"\\\\n\")",
+        "javascript": "new RegExp('\\n')",
         "python": "re.compile(r\"\\\\n\")",
         "java": "Pattern.compile(\"\\\\n\")",
         "csharp": "new Regex(\"\\n\")",
@@ -373,7 +373,7 @@
       },
       {
         "description": "regex literal with ig flags",
-        "javascript": "/ab+c/ig",
+        "javascript": "new RegExp('ab+c', 'gi')",
         "python": "re.compile(r\"ab+c(?is)\")",
         "java": "Pattern.compile(\"ab+c(?i)\")",
         "csharp": "new Regex(\"(?i)ab+c\")",
@@ -381,7 +381,7 @@
       },
       {
         "description": "regex object with regex literal arg",
-        "javascript": "new RegExp(/ab+c/,'i')",
+        "javascript": "new RegExp('ab+c', 'i')",
         "python": "re.compile(r\"ab+c(?i)\")",
         "java": "Pattern.compile(\"ab+c(?i)\")",
         "csharp": "new Regex(\"(?i)ab+c\")",

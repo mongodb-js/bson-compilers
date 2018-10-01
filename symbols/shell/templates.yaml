@@ -29,8 +29,8 @@ Templates:
     NewTemplate: &NewSyntaxTemplate !!js/function >
         (expr, skip, id) => {
             // Add classes that don't use "new" to array.
-            // So far: [Symbol, Double, Int32]
-            noNew = [111, 104];
+            // So far: [Symbol, Double, Date.now]
+            noNew = [111, 104, 200.1];
             if (skip || (id && noNew.indexOf(id) !== -1)) {
                 return expr;
             }
@@ -98,10 +98,19 @@ Templates:
         }
     ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate !!js/function >
         (args, depth) => {
+            const stringify = (str) => {
+                let newStr = str;
+                if (
+                  (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
+                  (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"')) {
+                    newStr = str.substr(1, str.length - 2);
+                }
+                return `'${newStr.replace(/\\([\s\S])|(')/g, '\\$1$2')}'`;
+            }
             const indent = '\n' + '  '.repeat(depth);
             const closingIndent = '\n' + '  '.repeat(depth - 1);
             const pairs = args.map((arg) => {
-                return `${indent}${arg[0]}: ${arg[1]}`;
+                return `${indent}${stringify(arg[0])}: ${arg[1]}`;
             }).join(', ');
 
             return `{${pairs}${closingIndent}}`
@@ -479,7 +488,7 @@ Templates:
     CodeSymbolArgsTemplate: &CodeSymbolArgsTemplate !!js/function >
         (lhs, code, scope) => {
             scope = scope === undefined ? '' : `, ${scope}`;
-            // Double quote stringify
+            // Single quote stringify
             let newStr = code === undefined ? '' : code;
             const str = newStr;
             if (
@@ -615,17 +624,17 @@ Templates:
     LongSymbolFromBitsArgsTemplate: &LongSymbolFromBitsArgsTemplate null # Also has process method
     LongSymbolFromIntTemplate: &LongSymbolFromIntTemplate !!js/function >
         (lhs) => {
-            return lhs;
+            return `new ${lhs}`;
         }
     LongSymbolFromIntArgsTemplate: &LongSymbolFromIntArgsTemplate null
     LongSymbolFromNumberTemplate: &LongSymbolFromNumberTemplate !!js/function >
         (lhs) => {
-            return lhs;
+            return `new ${lhs}`;
         }
     LongSymbolFromNumberArgsTemplate: &LongSymbolFromNumberArgsTemplate null
     LongSymbolFromStringTemplate: &LongSymbolFromStringTemplate !!js/function >
         (lhs) => {
-            return lhs;
+            return `new ${lhs}`;
         }
     LongSymbolFromStringArgsTemplate: &LongSymbolFromStringArgsTemplate !!js/function >
         (lhs, arg) => {
@@ -657,7 +666,7 @@ Templates:
     Decimal128SymbolArgsTemplate: &Decimal128SymbolArgsTemplate null
     Decimal128SymbolFromStringTemplate: &Decimal128SymbolFromStringTemplate !!js/function >
         (lhs) => {
-            return lhs;
+            return `new ${lhs}`;
         }
     Decimal128SymbolFromStringArgsTemplate: &Decimal128SymbolFromStringArgsTemplate !!js/function >
         (lhs, arg) => {
@@ -668,7 +677,7 @@ Templates:
     # BSON Util Templates
     ObjectIdCreateFromHexStringTemplate: &ObjectIdCreateFromHexStringTemplate !!js/function >
         () => {
-            return 'ObjectId';
+            return 'new ObjectId';
         }
     ObjectIdCreateFromHexStringArgsTemplate: &ObjectIdCreateFromHexStringArgsTemplate !!js/function >
         (lhs, arg) => {
@@ -676,12 +685,12 @@ Templates:
         }
     ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function > # Also has an emit method
         (lhs) => {
-            return `ObjectId.fromDate`;
+            return 'ObjectId.fromDate';
         }
     ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate null
     ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate !!js/function >
         (lhs) => {
-            return `ObjectId`;
+            return 'new ObjectId';
         }
     ObjectIdIsValidArgsTemplate: &ObjectIdIsValidArgsTemplate null
     # JS Symbol Templates

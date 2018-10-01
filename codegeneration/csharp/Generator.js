@@ -1,6 +1,4 @@
 /* eslint complexity: 0 */
-const { doubleQuoteStringify } = require('../../helper/format');
-
 module.exports = (superclass) => class ExtendedVisitor extends superclass {
   constructor() {
     super();

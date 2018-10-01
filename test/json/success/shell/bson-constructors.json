@@ -11,7 +11,7 @@
       },
       {
         "description": "Code with string code",
-        "javascript": "Code('some code')",
+        "javascript": "new Code('some code')",
         "python": "Code('some code')",
         "java": "new Code(\"some code\")",
         "csharp": "new BsonJavaScript(\"some code\")",
@@ -19,7 +19,7 @@
       },
       {
         "description": "Code with string code and object scope",
-        "javascript": "Code('string', {\n  x: '1'\n})",
+        "javascript": "new Code('string', {\n  'x': '1'\n})",
         "python": "Code('string', {\n    'x': '1'\n})",
         "java": "new CodeWithScope(\"string\", new Document(\"x\", \"1\"))",
         "csharp": "new BsonJavaScriptWithScope(\"string\", new BsonDocument(\"x\", \"1\"))",
@@ -27,7 +27,7 @@
       },
       {
         "description": "Code with no args",
-        "javascript": "Code('')",
+        "javascript": "new Code('')",
         "python": "Code('')",
         "java": "new Code(\"\")",
         "csharp": "new BsonJavaScript(\"\")",
@@ -37,7 +37,7 @@
     "ObjectId": [
       {
         "description": "ObjectId with no arg",
-        "javascript": "ObjectId()",
+        "javascript": "new ObjectId()",
         "python": "ObjectId()",
         "java": "new ObjectId()",
         "csharp": "new ObjectId()",
@@ -53,7 +53,7 @@
       },
       {
         "description": "ObjectId with hex string arg",
-        "javascript": "ObjectId('5a7382114ec1f67ae445f778')",
+        "javascript": "new ObjectId('5a7382114ec1f67ae445f778')",
         "python": "ObjectId('5a7382114ec1f67ae445f778')",
         "java": "new ObjectId(\"5a7382114ec1f67ae445f778\")",
         "csharp": "new ObjectId(\"5a7382114ec1f67ae445f778\")",
@@ -63,7 +63,7 @@
     "DBRef": [
       {
         "description": "new DBRef with (string, ObjectID) args",
-        "javascript": "new DBRef('coll', ObjectId())",
+        "javascript": "new DBRef('coll', new ObjectId())",
         "python": "DBRef('coll', ObjectId())",
         "java": "new DBRef(\"coll\", new ObjectId())",
         "csharp": "new MongoDBRef(\"coll\", new ObjectId())",
@@ -71,7 +71,7 @@
       },
       {
         "description": "new DBRef with (string, ObjectId, string) args",
-        "javascript": "new DBRef('coll', ObjectId(), 'db')",
+        "javascript": "new DBRef('coll', new ObjectId(), 'db')",
         "python": "DBRef('coll', ObjectId(), 'db')",
         "java": "new DBRef(\"db\", \"coll\", new ObjectId())",
         "csharp": "new MongoDBRef(\"coll\", new ObjectId(), \"db\")",
@@ -81,7 +81,7 @@
     "NumberInt": [
       {
         "description": "NumberInt with number arg",
-        "javascript": "Int32(3)",
+        "javascript": "new Int32(3)",
         "python": "int(3)",
         "java": "3",
         "csharp": "3",
@@ -89,7 +89,7 @@
       },
       {
         "description": "NumberInt with valid string arg",
-        "javascript": "Int32('3')",
+        "javascript": "new Int32('3')",
         "python": "int('3')",
         "java": "Integer.parseInt(\"3\")",
         "csharp": "Convert.ToInt32(\"3\")",
@@ -97,7 +97,7 @@
       },
       {
         "description": "NumberInt with no arg",
-        "javascript": "Int32(0)",
+        "javascript": "new Int32(0)",
         "python": "int(0)",
         "java": "0",
         "csharp": "0",
@@ -125,7 +125,7 @@
     "NumberLong": [
       {
         "description": "NumberLong with no args",
-        "javascript": "new Long.fromNumber(0)",
+        "javascript": "Long.fromNumber(0)",
         "python": "Int64(0)",
         "java": "0L",
         "csharp": "0L",
@@ -133,7 +133,7 @@
       },
       {
         "description": "Long with one number arg",
-        "javascript": "new Long.fromNumber(10)",
+        "javascript": "Long.fromNumber(10)",
         "python": "Int64(10)",
         "java": "10L",
         "csharp": "10L",
@@ -141,7 +141,7 @@
       },
       {
         "description": "Long with one string arg",
-        "javascript": "new Long.fromString('10')",
+        "javascript": "Long.fromString('10')",
         "python": "Int64('10')",
         "java": "Long.parseLong(\"10\")",
         "csharp": "Convert.ToInt64(\"10\")",
@@ -177,7 +177,7 @@
     "MinKeyMaxKey": [
       {
         "description": "MinKey",
-        "javascript": "MinKey()",
+        "javascript": "new MinKey()",
         "python": "MinKey()",
         "java": "new MinKey()",
         "csharp": "BsonMinKey.Value",
@@ -193,7 +193,7 @@
       },
       {
         "description": "maxKey",
-        "javascript": "MaxKey()",
+        "javascript": "new MaxKey()",
         "python": "MaxKey()",
         "java": "new MaxKey()",
         "csharp": "BsonMaxKey.Value",
@@ -211,7 +211,7 @@
     "Timestamp": [
       {
         "description": "Timestamp with two number args",
-        "javascript": "Timestamp(10, 100)",
+        "javascript": "new Timestamp(10, 100)",
         "python": "Timestamp(10, 100)",
         "java": "new BSONTimestamp(10, 100)",
         "csharp": "new BsonTimestamp(10, 100)",
@@ -237,7 +237,7 @@
     "Document": [
       {
         "description": "{x: 1}",
-        "javascript": "{\n  x: 1\n}",
+        "javascript": "{\n  'x': 1\n}",
         "python": "{\n    'x': 1\n}",
         "java": "eq(\"x\", 1L)",
         "csharp": "new BsonDocument(\"x\", 1)",
@@ -245,7 +245,7 @@
       },
       {
         "description": "Doc with trailing comma",
-        "javascript": "{\n  x: 1\n}",
+        "javascript": "{\n  'x': 1\n}",
         "python": "{\n    'x': 1\n}",
         "java": "eq(\"x\", 1L)",
         "csharp": "new BsonDocument(\"x\", 1)",
@@ -253,7 +253,7 @@
       },
       {
         "description": "Doc with array",
-        "javascript": "{\n  x: [\n    1, 2\n  ]\n}",
+        "javascript": "{\n  'x': [\n    1, 2\n  ]\n}",
         "python": "{\n    'x': [\n        1, 2\n    ]\n}",
         "java": "eq(\"x\", Arrays.asList(1L, 2L))",
         "csharp": "new BsonDocument(\"x\", new BsonArray\n    {\n        1,\n        2\n    })",
@@ -261,7 +261,7 @@
       },
       {
         "description": "Doc with subdoc",
-        "javascript": "{\n  x: {\n    y: 2\n  }\n}",
+        "javascript": "{\n  'x': {\n    'y': 2\n  }\n}",
         "python": "{\n    'x': {\n        'y': 2\n    }\n}",
         "java": "eq(\"x\", eq(\"y\", 2L))",
         "csharp": "new BsonDocument(\"x\", new BsonDocument(\"y\", 2))",
@@ -269,7 +269,7 @@
       },
       {
         "description": "Object.create()",
-        "javascript": "Object.create({\n  x: 1\n})",
+        "javascript": "Object.create({\n  'x': 1\n})",
         "python": "{\n    'x': 1\n}",
         "java": "eq(\"x\", 1L)",
         "csharp": "new BsonDocument(\"x\", 1)",
@@ -285,7 +285,7 @@
       },
       {
         "description": "Two items in document",
-        "javascript": "{\n  x: 1, \n  n: 4\n}",
+        "javascript": "{\n  'x': 1, \n  'n': 4\n}",
         "python": "{\n    'x': 1, \n    'n': 4\n}",
         "java": "and(eq(\"x\", 1L), eq(\"n\", 4L))",
         "csharp": "new BsonDocument\n{\n    { \"x\", 1 }, \n    { \"n\", 4 }\n}",
@@ -311,7 +311,7 @@
       },
       {
         "description": "Array with subdoc",
-        "javascript": "[\n  1, {\n    settings: 'http2'\n  }\n]",
+        "javascript": "[\n  1, {\n    'settings': 'http2'\n  }\n]",
         "python": "[\n    1, {\n        'settings': 'http2'\n    }\n]",
         "java": "Arrays.asList(1L, eq(\"settings\", \"http2\"))",
         "csharp": "new BsonArray\n{\n    1,\n    new BsonDocument(\"settings\", \"http2\")\n}",

@@ -3,7 +3,7 @@ const Python3Visitor = require('../../lib/antlr/Python3Visitor').Python3Visitor;
 const {
   BsonTranspilersArgumentError,
   BsonTranspilersAttributeError,
-  BsonTranspilersRuntimeError,
+  // BsonTranspilersRuntimeError,
   BsonTranspilersTypeError,
   BsonTranspilersReferenceError,
   BsonTranspilersInternalError,
@@ -343,7 +343,7 @@ class Visitor extends Python3Visitor {
       }
     } else if (args.length < 3) {
       throw new BsonTranspilersArgumentError(
-        `Wrong number of arguments to datetime: needs at at least 3, got ${jsargs.length}`
+        `Wrong number of arguments to datetime: needs at at least 3, got ${args.length}`
       );
     }
 

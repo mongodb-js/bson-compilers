@@ -141,7 +141,7 @@
         "python": "'string'",
         "java": "\"string\"",
         "csharp": "\"string\"",
-        "shell": "\"string\""
+        "shell": "'string'"
       },
       {
         "description": "null",

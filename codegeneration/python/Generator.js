@@ -29,44 +29,6 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   }
 
   /**
-   * Special cased because different target languages need different info out
-   * of the constructed date.
-   *
-   * child nodes: arguments
-   * grandchild nodes: argumentList?
-   * great-grandchild nodes: singleExpression+
-   *
-   * @param {FuncCallExpressionContext} ctx
-   * @param {Date} date
-   * @return {String}
-   */
-  emitDate(ctx, date) {
-    ctx.type = this.Types.Date;
-
-    let toStr = '';
-
-    if (!ctx.wasNew && !ctx.getText().includes('ISODate')) {
-      ctx.type = this.Types._string;
-      toStr = '.strftime(\'%a %b %d %Y %H:%M:%S %Z\')';
-    }
-
-    if (date === undefined) {
-      return `datetime.datetime.utcnow()${toStr}`;
-    }
-
-    const dateStr = [
-      date.getUTCFullYear(),
-      date.getUTCMonth() + 1,
-      date.getUTCDate(),
-      date.getUTCHours(),
-      date.getUTCMinutes(),
-      date.getUTCSeconds()
-    ].join(', ');
-
-    return `datetime.datetime(${dateStr}, tzinfo=datetime.timezone.utc)${toStr}`;
-  }
-
-  /**
    * Accepts date or number, if date then don't convert to date.
    *
    * @param {FuncCallExpressionContext} ctx
@@ -76,9 +38,9 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     ctx.type = 'createFromTime' in this.Symbols.ObjectId.attr ?
       this.Symbols.ObjectId.attr.createFromTime :
       this.Symbols.ObjectId.attr.fromDate;
-    const argList = this.getArguments(ctx);
+
     const args = this.checkArguments(
-      ctx.type.args, argList, 'ObjectId.createFromTime'
+      ctx.type.args, this.getArguments(ctx), 'ObjectId.createFromTime'
     );
     const template = ctx.type.template ? ctx.type.template() : '';
     if (this.getArgumentAt(ctx, 0).type.id === 'Date') {

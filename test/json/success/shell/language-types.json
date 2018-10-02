@@ -169,7 +169,7 @@
     "Date": [
       {
         "description": "new Date with ISO String",
-        "javascript": "new Date('December 17, 1995 03:24:00Z')",
+        "javascript": "new Date('Sun, 17 Dec 1995 03:24:00 GMT')",
         "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc)",
         "java": "new java.util.Date(819170640000L)",
         "csharp": "new DateTime(1995, 12, 17, 3, 24, 0)",
@@ -177,7 +177,7 @@
       },
       {
         "description": "new Date with UTC number",
-        "javascript": "new Date(819167040000)",
+        "javascript": "new Date('Sun, 17 Dec 1995 02:24:00 GMT')",
         "python": "datetime.datetime(1995, 12, 17, 2, 24, 0, tzinfo=datetime.timezone.utc)",
         "java": "new java.util.Date(819167040000L)",
         "csharp": "new DateTime(1995, 12, 17, 2, 24, 0)",
@@ -193,7 +193,7 @@
       },
       {
         "description": "new Date from year, month and day",
-        "javascript": "new Date(1995, 11, 17)",
+        "javascript": "new Date('Sun, 17 Dec 1995 00:00:00 GMT')",
         "python": "datetime.datetime(1995, 12, 17, 0, 0, 0, tzinfo=datetime.timezone.utc)",
         "java": "new java.util.Date(819158400000L)",
         "csharp": "new DateTime(1995, 12, 17, 0, 0, 0)",
@@ -201,7 +201,7 @@
       },
       {
         "description": "new Date from year, month, day, hour, min and sec",
-        "javascript": "new Date(1995, 11, 17, 3, 24, 0)",
+        "javascript": "new Date('Sun, 17 Dec 1995 03:24:00 GMT')",
         "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc)",
         "java": "new java.util.Date(819170640000L)",
         "csharp": "new DateTime(1995, 12, 17, 3, 24, 0)",
@@ -209,7 +209,7 @@
       },
       {
         "description": "Date string with ISO String",
-        "javascript": "Date('December 17, 1995 03:24:00Z')",
+        "javascript": "Date('Sun, 17 Dec 1995 03:24:00 GMT')",
         "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
         "java": "new SimpleDateFormat(\"EEE MMMMM dd yyyy HH:mm:ss\").format(new java.util.Date(819170640000L))",
         "csharp": "new DateTime(1995, 12, 17, 3, 24, 0).ToString(\"ddd MMM dd yyyy HH':'mm':'ss UTC\")",
@@ -217,7 +217,7 @@
       },
       {
         "description": "Date string with UTC number",
-        "javascript": "Date(819167040000)",
+        "javascript": "Date('Sun, 17 Dec 1995 02:24:00 GMT')",
         "python": "datetime.datetime(1995, 12, 17, 2, 24, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
         "java": "new SimpleDateFormat(\"EEE MMMMM dd yyyy HH:mm:ss\").format(new java.util.Date(819167040000L))",
         "csharp": "new DateTime(1995, 12, 17, 2, 24, 0).ToString(\"ddd MMM dd yyyy HH':'mm':'ss UTC\")",
@@ -233,7 +233,7 @@
       },
       {
         "description": "Date string from year, month and day",
-        "javascript": "Date(1995, 11, 17)",
+        "javascript": "Date('Sun, 17 Dec 1995 00:00:00 GMT')",
         "python": "datetime.datetime(1995, 12, 17, 0, 0, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
         "java": "new SimpleDateFormat(\"EEE MMMMM dd yyyy HH:mm:ss\").format(new java.util.Date(819158400000L))",
         "csharp": "new DateTime(1995, 12, 17, 0, 0, 0).ToString(\"ddd MMM dd yyyy HH':'mm':'ss UTC\")",
@@ -241,7 +241,7 @@
       },
       {
         "description": "Date string from year, month, day, hour, min and sec",
-        "javascript": "Date(1995, 11, 17, 3, 24, 0)",
+        "javascript": "Date('Sun, 17 Dec 1995 03:24:00 GMT')",
         "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
         "java": "new SimpleDateFormat(\"EEE MMMMM dd yyyy HH:mm:ss\").format(new java.util.Date(819170640000L))",
         "csharp": "new DateTime(1995, 12, 17, 3, 24, 0).ToString(\"ddd MMM dd yyyy HH':'mm':'ss UTC\")",
@@ -259,7 +259,7 @@
     "ISODate": [
       {
         "description": "new ISODate with ISO String",
-        "javascript": "new Date('1995-12-17T03:24:00.000Z')",
+        "javascript": "new Date('Sun, 17 Dec 1995 03:24:00 GMT')",
         "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc)",
         "java": "new java.util.Date(819170640000L)",
         "csharp": "new DateTime(1995, 12, 17, 3, 24, 0)",
@@ -267,7 +267,7 @@
       },
       {
         "description": "ISODate with ISO String",
-        "javascript": "new Date('1995-12-17T03:24:00.000Z')",
+        "javascript": "new Date('Sun, 17 Dec 1995 03:24:00 GMT')",
         "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc)",
         "java": "new java.util.Date(819170640000L)",
         "csharp": "new DateTime(1995, 12, 17, 3, 24, 0)",

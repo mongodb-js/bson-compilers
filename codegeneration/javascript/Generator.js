@@ -13,17 +13,4 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
       g: 'g'    // global
     };
   }
-
-  emitDate(ctx, date) {
-    let newstr = '';
-    if (ctx.wasNew) {
-      newstr = 'new ';
-    }
-    if (date === undefined) {
-      return `${newstr}Date()`;
-    }
-    const args = this.getArguments(ctx);
-    const argstr = this.checkArguments(this.Symbols.Date.args, args, 'Date');
-    return `${newstr}Date(${argstr.join(', ')})`;
-  }
 };

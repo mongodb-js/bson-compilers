@@ -10,29 +10,21 @@ const unsupported = {
     python: {
       java: {
         'language-types': [
-          'numbers',
-          'Date',
           'RegExp'
         ]
       },
       javascript: {
         'language-types': [
-          'numbers',
-          'Date',
           'RegExp'
         ]
       },
       shell: {
         'language-types': [
-          'numbers',
-          'Date',
           'RegExp'
         ]
       },
       csharp: {
         'language-types': [
-          'numbers',
-          'Date',
           'RegExp'
         ]
       }

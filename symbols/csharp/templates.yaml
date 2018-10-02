@@ -29,11 +29,11 @@ Templates:
             return `Math.pow(${lhs}, ${rhs})`;
         }
     NewTemplate: &NewSyntaxTemplate !!js/function >
-        (expr, skip, id) => {
+        (expr, skip, code) => {
             // Add classes that don't use "new" to array
-            // So far: [Symbol, Decimal128/NumberDecimal, Long/NumberLong, MinKey, MaxKey, Date.now, Double, Int32, Number]
-            noNew = [111, 112, 106, 107, 108, 200.1, 104, 105, 2];
-            if (skip || (id && noNew.indexOf(id) !== -1)) {
+            // So far: [Symbol, Decimal128/NumberDecimal, Long/NumberLong, MinKey, MaxKey, Date.now, Double, Int32, Number, Date]
+            noNew = [111, 112, 106, 107, 108, 200.1, 104, 105, 2, 200];
+            if (skip || (code && noNew.indexOf(code) !== -1)) {
                 return expr;
             }
             return `new ${expr}`;
@@ -873,11 +873,29 @@ Templates:
             }
             return `(int) ${arg}`;
         }
-    DateSymbolTemplate: &DateSymbolTemplate !!js/function > # Also has emit method
+    DateSymbolTemplate: &DateSymbolTemplate !!js/function >
         () => {
-            return 'Datetime';
+            return 'DateTime';
         }
-    DateSymbolArgsTemplate: &DateSymbolArgsTemplate null # Has emit method
+    DateSymbolArgsTemplate: &DateSymbolArgsTemplate !!js/function >
+        (lhs, date, isString) => {
+            let toStr = isString? '.ToString("ddd MMM dd yyyy HH\':\'mm\':\'ss UTC")' : '';
+
+            if (date === null) {
+                return `${lhs}.Now${toStr}`;
+            }
+
+            const dateStr = [
+                date.getUTCFullYear(),
+                date.getUTCMonth() + 1,
+                date.getUTCDate(),
+                date.getUTCHours(),
+                date.getUTCMinutes(),
+                date.getUTCSeconds()
+            ].join(', ');
+
+            return `new ${lhs}(${dateStr})${toStr}`;
+        }
     DateSymbolNowTemplate: &DateSymbolNowTemplate !!js/function >
         () => {
             return 'DateTime.Now';

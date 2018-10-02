@@ -142,7 +142,7 @@ JSSymbols:
             - [ *NumericType, null ]
         type: *DateType
         attr: # TODO: add more date funcs?
-            now:
+            utcnow:
                 id: "now"
                 code: 200.1
                 callable: *constructor

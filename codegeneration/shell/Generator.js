@@ -13,14 +13,6 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     };
   }
 
-  emitDate(ctx, date) {
-    const newStr = ctx.wasNew ? 'new ' : '';
-    if (date === undefined) {
-      return `${newStr}Date()`;
-    }
-    return `${newStr}Date('${date.toUTCString()}')`;
-  }
-
   /**
    * Accepts date or number, if date then don't convert to date.
    * @param {FuncCallExpressionContext} ctx
@@ -30,9 +22,9 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     ctx.type = 'createFromTime' in this.Symbols.ObjectId.attr ?
       this.Symbols.ObjectId.attr.createFromTime :
       this.Symbols.ObjectId.attr.fromDate;
-    const argList = this.getArguments(ctx);
+
     const args = this.checkArguments(
-      ctx.type.args, argList, 'ObjectId.createFromTime'
+      ctx.type.args, this.getArguments(ctx), 'ObjectId.createFromTime'
     );
     if (this.getArgumentAt(ctx, 0).type.id === 'Date') {
       return `ObjectId.fromDate(${args[0]})`;

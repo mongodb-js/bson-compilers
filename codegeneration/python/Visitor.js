@@ -335,50 +335,55 @@ class Visitor extends Python3Visitor {
   processdatetime(ctx) {
     ctx.type = this.Types.Date;
     ctx.wasNew = true; // Always true for non-js
+    const symbolType = this.Symbols.datetime;
+    let date = null;
 
-    const args = this.getArguments(ctx);
-    if (args.length === 0) {
-      if ('emitDate' in this) {
-        return this.emitDate(ctx);
-      }
-    } else if (args.length < 3) {
-      throw new BsonTranspilersArgumentError(
-        `Wrong number of arguments to datetime: needs at at least 3, got ${args.length}`
-      );
-    }
-
-    const argList = this.getArguments(ctx);
-    try {
-      this.checkArguments(this.Symbols.datetime.args, argList, 'datetime');
-    } catch (e) {
-      throw new BsonTranspilersArgumentError(
-        'Invalid argument to datetime: requires either no args or up to 7 numbers'
-      );
-    }
-
-    const argvals = args.map((k) => {
-      let v;
-      try {
-        v = parseInt(k.getText(), 10);
-      } catch (e) {
-        throw new BsonTranspilersInternalError(
-          `Unable to convert datetime argument to integer: ${k.getText()}`
+    const argsList = this.getArguments(ctx);
+    if (argsList.length !== 0) {
+      if (argsList.length < 3) {
+        throw new BsonTranspilersArgumentError(
+          `Wrong number of arguments to datetime: needs at at least 3, got ${argsList.length}`
         );
       }
-      return v;
-    });
-    let date;
-    try {
-      date = new Date(...argvals);
-    } catch (e) {
-      throw new BsonTranspilersInternalError(
-        `Unable to construct date from arguments: ${e.message}`
-      );
+
+      try {
+        this.checkArguments(symbolType.args, argsList, 'datetime');
+      } catch (e) {
+        throw new BsonTranspilersArgumentError(
+          'Invalid argument to datetime: requires either no args or up to 7 numbers'
+        );
+      }
+
+      const argvals = argsList.map((k) => {
+        let v;
+        try {
+          v = parseInt(k.getText(), 10);
+        } catch (e) {
+          throw new BsonTranspilersInternalError(
+            `Unable to convert datetime argument to integer: ${k.getText()}`
+          );
+        }
+        return v;
+      });
+      argvals[1]--; // month is 0-based in node, 1-based in everything else (afaict)
+      try {
+        date = new Date(Date.UTC(...argvals));
+      } catch (e) {
+        throw new BsonTranspilersInternalError(
+          `Unable to construct date from arguments: ${e.message}`
+        );
+      }
     }
     if ('emitDate' in this) {
       return this.emitDate(ctx, date);
     }
-    return ctx.getText();
+    const lhs = symbolType.template ? symbolType.template() : 'Date';
+    const rhs = symbolType.argsTemplate ?
+      symbolType.argsTemplate(lhs, date, false) :
+      `${lhs}(${date ? this.Types._string.template(date.toUTCString()) : ''})`;
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(`${rhs}`, false, this.Types.Date.code)
+      : `${rhs}`;
   }
 
   /**
@@ -388,13 +393,13 @@ class Visitor extends Python3Visitor {
    * @param ctx
    */
   processInt64(ctx) {
-    return this.handleFuncCallWithoutNew(ctx);
+    return this.handleFuncCallWithoutNew(ctx); // TODO: can remove
   }
   /**
    * Need process method because we want to pass the argument type to the template
    * so that we can determine if the generated number needs to be parsed or casted.
    *
-   * @param {} ctx
+   * @param {Object} ctx
    * @returns {String}
    */
 
@@ -408,17 +413,16 @@ class Visitor extends Python3Visitor {
 
     // Get the original type of the argument
     const expectedArgs = lhsType.args;
-    const trailer = this.getArguments(ctx);
     let args = this.checkArguments(
-      expectedArgs, trailer, lhsType.id
+      expectedArgs, this.getArguments(ctx), lhsType.id
     );
     let argType;
 
-    if (!('arglist' in trailer) || trailer.arglist() === null) {
+    if (args.length === 0) {
       args = ['0'];
       argType = this.Types._integer;
     } else {
-      const argNode = trailer.arglist().argument()[0];
+      const argNode = this.getArgumentAt(ctx, 0);
       const typed = this.getTyped(argNode);
       argType = typed.originalType !== undefined ?
         typed.originalType :
@@ -454,7 +458,7 @@ class Visitor extends Python3Visitor {
 
     let argType;
     if (rhs.length > 0) {
-      argType = this.getArgumentAt(0).type.id;
+      argType = this.getArgumentAt(ctx, 0).type.id;
     }
 
     // Apply the arguments template
@@ -597,14 +601,14 @@ class Visitor extends Python3Visitor {
    *
    * @param {Array} expected - An array of arrays where each subarray represents
    * possible argument types for that index.
-   * @param {ArgumentListContext} argumentList - null if empty.
+   * @param {Array} args - array of arguments.
    * @param {String} name - The name of the function for error reporting.
    *
    * @returns {Array} - Array containing the generated output for each argument.
    */
   checkArguments(expected, args, name) {
     const argStr = [];
-    if (!args) {
+    if (args.length === 0) { // TODO: can maybe skip
       if (expected.length === 0 || expected[0].indexOf(null) !== -1) {
         return argStr;
       }
@@ -758,7 +762,7 @@ class Visitor extends Python3Visitor {
   getArguments(ctx) {
     const trailer = ctx.paren_trailer()[0];
     if (!('arglist' in trailer) || trailer.arglist() === null) {
-      return null;
+      return [];
     }
     return trailer.arglist().argument();
   }

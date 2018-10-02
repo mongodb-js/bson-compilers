@@ -29,11 +29,11 @@ Templates:
             return `pow(${lhs}, ${rhs})`;
         }
     NewTemplate: &NewSyntaxTemplate !!js/function >
-        (expr, skip, id) => {
-            // Add ids of classes that don't need new.
-            // Currently: Decimal128/NumberDecimal, Long/NumberLong, Double, Int32, Number, regex
-            noNew = [112, 106, 104, 105, 2, 8];
-            if (skip || (id && noNew.indexOf(id) !== -1)) {
+        (expr, skip, code) => {
+            // Add codes of classes that don't need new.
+            // Currently: Decimal128/NumberDecimal, Long/NumberLong, Double, Int32, Number, regex, Date
+            noNew = [112, 106, 104, 105, 2, 8, 200];
+            if (skip || (code && noNew.indexOf(code) !== -1)) {
                 return expr;
             }
             return `new ${expr}`;
@@ -820,11 +820,21 @@ Templates:
             }
             return `(double) ${arg}`;
         }
-    DateSymbolTemplate: &DateSymbolTemplate !!js/function > # Also has emit method
+    DateSymbolTemplate: &DateSymbolTemplate !!js/function >
         () => {
             return 'java.util.Date';
         }
-    DateSymbolArgsTemplate: &DateSymbolArgsTemplate null
+    DateSymbolArgsTemplate: &DateSymbolArgsTemplate !!js/function >
+        (lhs, date, isString) => {
+            let toStr = (d) => d;
+            if (isString) {
+                toStr = (d) => `new SimpleDateFormat("EEE MMMMM dd yyyy HH:mm:ss").format(${d})`;
+            }
+            if (date === null) {
+                return toStr(`new ${lhs}()`);
+            }
+            return toStr(`new ${lhs}(${date.getTime()}L)`);
+        }
     DateSymbolNowTemplate: &DateSymbolNowTemplate !!js/function >
         () => {
             return 'java.util.Date';

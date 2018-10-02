@@ -138,26 +138,26 @@
       {
         "description": "int with number arg",
         "python": "int(2)",
-        "javascript": "Number(2)",
-        "java": "2d",
-        "csharp": "(int) 2",
-        "shell": "new Number(2)"
+        "javascript": "Int32(2)",
+        "java": "2",
+        "csharp": "2",
+        "shell": "NumberInt(2)"
       },
       {
         "description": "int with string arg",
         "python": "int('2')",
-        "javascript": "Number('2')",
-        "java": "Double.parseDouble(\"2\")",
-        "csharp": "float.Parse(\"2\")",
-        "shell": "new Number('2')"
+        "javascript": "Int32('2')",
+        "java": "Integer.parseInt(\"2\")",
+        "csharp": "Convert.ToInt32(\"2\")",
+        "shell": "NumberInt('2')"
       },
       {
         "description": "float with number arg",
         "python": "float(1.001)",
-        "javascript": "1.001",
-        "java": "1.001",
-        "csharp": "1.001",
-        "shell": "1.001"
+        "javascript": "Number(1.001)",
+        "java": "1.001d",
+        "csharp": "(float) 1.001",
+        "shell": "Number(1.001)"
       },
       {
         "description": "float with string arg",
@@ -543,92 +543,44 @@
     ],
     "Date": [
       {
-        "description": "new Date with ISO String",
-        "javascript": "new Date('December 17, 1995 03:24:00Z')",
-        "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc)",
-        "java": "new java.util.Date(819170640000L)",
-        "csharp": "new DateTime(1995, 12, 17, 3, 24, 0)",
-        "shell": "new Date('Sun, 17 Dec 1995 03:24:00 GMT')"
-      },
-      {
-        "description": "new Date with UTC number",
-        "javascript": "new Date(819167040000)",
-        "python": "datetime.datetime(1995, 12, 17, 2, 24, 0, tzinfo=datetime.timezone.utc)",
-        "java": "new java.util.Date(819167040000L)",
-        "csharp": "new DateTime(1995, 12, 17, 2, 24, 0)",
-        "shell": "new Date('Sun, 17 Dec 1995 02:24:00 GMT')"
-      },
-      {
         "description": "Current date",
         "javascript": "new Date()",
-        "python": "datetime.datetime.utcnow()",
+        "python": "datetime()",
         "java": "new java.util.Date()",
         "csharp": "DateTime.Now",
         "shell": "new Date()"
       },
       {
+        "description": "Date now",
+        "javascript": "Date.now()",
+        "python": "datetime.utcnow()",
+        "java": "new java.util.Date()",
+        "csharp": "DateTime.Now",
+        "shell": "Date.now()"
+      },
+      {
         "description": "new Date from year, month and day",
-        "javascript": "new Date(1995, 11, 17)",
-        "python": "datetime.datetime(1995, 12, 17, 0, 0, 0, tzinfo=datetime.timezone.utc)",
+        "javascript": "new Date('Sun, 17 Dec 1995 00:00:00 GMT')",
+        "python": "datetime(1995, 12, 17)",
         "java": "new java.util.Date(819158400000L)",
         "csharp": "new DateTime(1995, 12, 17, 0, 0, 0)",
         "shell": "new Date('Sun, 17 Dec 1995 00:00:00 GMT')"
       },
       {
-        "description": "new Date from year, month, day, hour, min and sec",
-        "javascript": "new Date(1995, 11, 17, 3, 24, 0)",
-        "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc)",
+        "description": "new Date from year, month, day, hour and min",
+        "javascript": "new Date('Sun, 17 Dec 1995 03:24:00 GMT')",
+        "python": "datetime(1995, 12, 17, 3, 24)",
         "java": "new java.util.Date(819170640000L)",
         "csharp": "new DateTime(1995, 12, 17, 3, 24, 0)",
         "shell": "new Date('Sun, 17 Dec 1995 03:24:00 GMT')"
       },
       {
-        "description": "Date string with ISO String",
-        "javascript": "Date('December 17, 1995 03:24:00Z')",
-        "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
-        "java": "new SimpleDateFormat(\"EEE MMMMM dd yyyy HH:mm:ss\").format(new java.util.Date(819170640000L))",
-        "csharp": "new DateTime(1995, 12, 17, 3, 24, 0).ToString(\"ddd MMM dd yyyy HH':'mm':'ss UTC\")",
-        "shell": "Date('Sun, 17 Dec 1995 03:24:00 GMT')"
-      },
-      {
-        "description": "Date string with UTC number",
-        "javascript": "Date(819167040000)",
-        "python": "datetime.datetime(1995, 12, 17, 2, 24, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
-        "java": "new SimpleDateFormat(\"EEE MMMMM dd yyyy HH:mm:ss\").format(new java.util.Date(819167040000L))",
-        "csharp": "new DateTime(1995, 12, 17, 2, 24, 0).ToString(\"ddd MMM dd yyyy HH':'mm':'ss UTC\")",
-        "shell": "Date('Sun, 17 Dec 1995 02:24:00 GMT')"
-      },
-      {
-        "description": "Current date string",
-        "javascript": "Date()",
-        "python": "datetime.datetime.utcnow().strftime('%a %b %d %Y %H:%M:%S %Z')",
-        "java": "new SimpleDateFormat(\"EEE MMMMM dd yyyy HH:mm:ss\").format(new java.util.Date())",
-        "csharp": "DateTime.Now.ToString(\"ddd MMM dd yyyy HH':'mm':'ss UTC\")",
-        "shell": "Date()"
-      },
-      {
-        "description": "Date string from year, month and day",
-        "javascript": "Date(1995, 11, 17)",
-        "python": "datetime.datetime(1995, 12, 17, 0, 0, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
-        "java": "new SimpleDateFormat(\"EEE MMMMM dd yyyy HH:mm:ss\").format(new java.util.Date(819158400000L))",
-        "csharp": "new DateTime(1995, 12, 17, 0, 0, 0).ToString(\"ddd MMM dd yyyy HH':'mm':'ss UTC\")",
-        "shell": "Date('Sun, 17 Dec 1995 00:00:00 GMT')"
-      },
-      {
-        "description": "Date string from year, month, day, hour, min and sec",
-        "javascript": "Date(1995, 11, 17, 3, 24, 0)",
-        "python": "datetime.datetime(1995, 12, 17, 3, 24, 0, tzinfo=datetime.timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')",
-        "java": "new SimpleDateFormat(\"EEE MMMMM dd yyyy HH:mm:ss\").format(new java.util.Date(819170640000L))",
-        "csharp": "new DateTime(1995, 12, 17, 3, 24, 0).ToString(\"ddd MMM dd yyyy HH':'mm':'ss UTC\")",
-        "shell": "Date('Sun, 17 Dec 1995 03:24:00 GMT')"
-      },
-      {
-        "description": "Current time",
-        "javascript": "Date.now()",
-        "python": "datetime.datetime.utcnow()",
-        "java": "new java.util.Date()",
-        "csharp": "DateTime.Now",
-        "shell": "Date.now()"
+        "description": "new Date from year, month, day, hour, min and sec",
+        "javascript": "new Date('Sun, 17 Dec 1995 03:24:55 GMT')",
+        "python": "datetime(1995, 12, 17, 3, 24, 55)",
+        "java": "new java.util.Date(819170695000L)",
+        "csharp": "new DateTime(1995, 12, 17, 3, 24, 55)",
+        "shell": "new Date('Sun, 17 Dec 1995 03:24:55 GMT')"
       }
     ],
     "RegExp": [

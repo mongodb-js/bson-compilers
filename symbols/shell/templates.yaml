@@ -27,11 +27,11 @@ Templates:
             return `Math.pow(${lhs}, ${rhs})`;
         }
     NewTemplate: &NewSyntaxTemplate !!js/function >
-        (expr, skip, id) => {
+        (expr, skip, code) => {
             // Add classes that don't use "new" to array.
             // So far: [Symbol, Double, Date.now]
             noNew = [111, 104, 200.1];
-            if (skip || (id && noNew.indexOf(id) !== -1)) {
+            if (skip || (code && noNew.indexOf(code) !== -1)) {
                 return expr;
             }
             return `new ${expr}`;
@@ -708,7 +708,10 @@ Templates:
             return 'Date';
         }
     DateSymbolArgsTemplate: &DateSymbolArgsTemplate null
-    DateSymbolNowTemplate: &DateSymbolNowTemplate null
+    DateSymbolNowTemplate: &DateSymbolNowTemplate !!js/function >
+        () => {
+            return 'Date.now';
+        }
     DateSymbolNowArgsTemplate: &DateSymbolNowArgsTemplate null
     RegExpSymbolTemplate: &RegExpSymbolTemplate null
     RegExpSymbolArgsTemplate: &RegExpSymbolArgsTemplate null

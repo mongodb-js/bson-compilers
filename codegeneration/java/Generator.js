@@ -62,30 +62,6 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
   }
 
   /**
-   * Special cased because different target languages need different info out
-   * of the constructed date.
-   *
-   * @param {FuncCallExpressionContext} ctx
-   * @param {Date} date
-   * @return {String}
-   */
-  emitDate(ctx, date) {
-    let toStr = (d) => d;
-    if (!ctx.wasNew && !ctx.getText().includes('ISODate')) {
-      ctx.type = this.Types._string;
-      toStr = (d) => `new SimpleDateFormat("EEE MMMMM dd yyyy HH:mm:ss").format(${d})`;
-      this.requiredImports[201] = true;
-    }
-    if (date === undefined) {
-      return toStr('new java.util.Date()');
-    }
-    return toStr(`new java.util.Date(${date.getTime()}L)`);
-  }
-  emitISODate(ctx) {
-    return this.emitDate(ctx);
-  }
-
-  /**
    * Accepts date or number, if date then don't convert to date.
    *
    * @param {FuncCallExpressionContext} ctx
@@ -95,8 +71,8 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     ctx.type = 'createFromTime' in this.Symbols.ObjectId.attr ?
       this.Symbols.ObjectId.attr.createFromTime :
       this.Symbols.ObjectId.attr.fromDate;
-    const argList = this.getArguments(ctx);
-    const args = this.checkArguments(ctx.type.args, argList);
+
+    const args = this.checkArguments(ctx.type.args, this.getArguments(ctx), 'ObjectId.createFromTime');
     const template = ctx.type.template ? ctx.type.template() : '';
     if (this.getArgumentAt(ctx, 0).type.id === 'Date') {
       return `${template}${ctx.type.argsTemplate('', args[0])}`;

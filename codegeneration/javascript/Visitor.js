@@ -327,7 +327,7 @@ class Visitor extends ECMAScriptVisitor {
     // Check arguments
     const expectedArgs = lhsType.args;
     let rhs = this.checkArguments(
-      expectedArgs, ctx.arguments().argumentList(), lhsType.id
+      expectedArgs, this.getArguments(ctx), lhsType.id
     );
 
     // Apply the arguments template
@@ -594,14 +594,14 @@ class Visitor extends ECMAScriptVisitor {
    *
    * @param {Array} expected - An array of arrays where each subarray represents
    * possible argument types for that index.
-   * @param {ArgumentListContext} argumentList - null if empty.
+   * @param {Array} args - empty if no args.
    * @param {String} name - The name of the function for error reporting.
    *
    * @returns {Array} - Array containing the generated output for each argument.
    */
-  checkArguments(expected, argumentList, name) {
+  checkArguments(expected, args, name) {
     const argStr = [];
-    if (!argumentList) {
+    if (args.length === 0) { // TODO: if pass array, can skip this?
       if (expected.length === 0 || expected[0].indexOf(null) !== -1) {
         return argStr;
       }
@@ -609,7 +609,6 @@ class Visitor extends ECMAScriptVisitor {
         `Argument count mismatch: '${name}' requires least one argument`
       );
     }
-    const args = argumentList.singleExpression();
     if (args.length > expected.length) {
       throw new BsonTranspilersArgumentError(
         `Argument count mismatch: '${name}' expects ${expected.length} args and got ${args.length}`
@@ -658,15 +657,15 @@ class Visitor extends ECMAScriptVisitor {
     // Get the original type of the argument
     const expectedArgs = lhsType.args;
     let args = this.checkArguments(
-      expectedArgs, ctx.arguments().argumentList(), lhsType.id
+      expectedArgs, this.getArguments(ctx), lhsType.id
     );
     let argType;
 
-    if (!ctx.arguments().argumentList()) {
+    if (args.length === 0) {
       args = ['0'];
       argType = this.Types._integer;
     } else {
-      const argNode = ctx.arguments().argumentList().singleExpression()[0];
+      const argNode = this.getArgumentAt(ctx, 0);
       const typed = this.getTyped(argNode);
       argType = typed.originalType !== undefined ?
         typed.originalType :
@@ -694,8 +693,9 @@ class Visitor extends ECMAScriptVisitor {
    * @return {String}
    */
   processRegExp(ctx) {
-    const argList = ctx.arguments().argumentList();
-    this.checkArguments(this.Symbols.RegExp.args, argList, 'RegExp');
+    this.checkArguments(
+      this.Symbols.RegExp.args, this.getArguments(ctx), 'RegExp'
+    );
     return this.process_regex(ctx);
   }
 
@@ -747,9 +747,8 @@ class Visitor extends ECMAScriptVisitor {
     ctx.type = this.Types.BSONRegExpType;
     const symbolType = this.Symbols.BSONRegExp;
 
-    const argList = ctx.arguments().argumentList();
     const args = this.checkArguments(
-      [[this.Types._string], [this.Types._string, null]], argList, 'BSONRegExp'
+      [[this.Types._string], [this.Types._string, null]], this.getArguments(ctx), 'BSONRegExp'
     );
 
     let flags = null;
@@ -790,26 +789,23 @@ class Visitor extends ECMAScriptVisitor {
   processCodeFromJS(ctx) {
     ctx.type = this.Types.Code;
     const symbolType = this.Symbols.Code;
-    const argList = ctx.arguments().argumentList();
-    if (!argList ||
-      !(argList.singleExpression().length === 1 ||
-        argList.singleExpression().length === 2)) {
+    const argList = this.getArguments(ctx);
+    if (!(argList.length === 1 || argList.length === 2)) {
       throw new BsonTranspilersArgumentError(
         'Argument count mismatch: Code requires one or two arguments'
       );
     }
-    const args = argList.singleExpression();
-    const code = args[0].getText();
+    const code = this.getArgumentAt(ctx, 0).getText();
     let scope = undefined;
     let scopestr = '';
 
-    if (args.length === 2) {
+    if (argList.length === 2) {
       const idiomatic = this.idiomatic;
       this.idiomatic = false;
-      scope = this.visit(args[1]);
+      scope = this.visit(this.getArgumentAt(ctx, 1));
       this.idiomatic = idiomatic;
       scopestr = `, ${scope}`;
-      if (args[1].type !== this.Types._object) {
+      if (this.getArgumentAt(ctx, 1).type !== this.Types._object) {
         throw new BsonTranspilersArgumentError(
           'Argument type mismatch: Code requires scope to be an object'
         );
@@ -838,14 +834,16 @@ class Visitor extends ECMAScriptVisitor {
   processObjectId(ctx) {
     ctx.type = this.Types.ObjectId;
     const symbolType = this.Symbols.ObjectId;
-    const argList = ctx.arguments().argumentList();
     const lhs = symbolType.template ? symbolType.template() : 'ObjectId';
-    if (!argList) {
+    const argsList = this.getArguments(ctx);
+
+    if (argsList.length === 0) {
       return this.Syntax.new.template
         ? this.Syntax.new.template(`${lhs}()`, false, ctx.type.code)
         : `${lhs}()`;
     }
-    this.checkArguments(symbolType.args, argList, 'ObjectId');
+
+    this.checkArguments(symbolType.args, argsList, 'ObjectId');
     let hexstr;
     try {
       hexstr = this.executeJavascript(ctx.getText()).toHexString();
@@ -872,9 +870,8 @@ class Visitor extends ECMAScriptVisitor {
   processLong(ctx) {
     ctx.type = this.Types.Long;
     const symbolType = this.Symbols.Long;
-    const argList = ctx.arguments().argumentList();
     let longstr;
-    this.checkArguments(symbolType.args, argList, 'Long');
+    this.checkArguments(symbolType.args, this.getArguments(ctx), 'Long');
     try {
       longstr = this.executeJavascript(`new ${ctx.getText()}`).toString();
     } catch (error) {
@@ -907,9 +904,9 @@ class Visitor extends ECMAScriptVisitor {
     ctx.type = this.Types.Decimal128;
     const symbolType = this.Symbols.Decimal128;
     let decstr;
-    const argList = ctx.arguments().argumentList();
+    const argList = this.getArguments(ctx);
 
-    if (!argList || argList.singleExpression().length !== 1) {
+    if (argList.length !== 1) {
       throw new BsonTranspilersArgumentError(
         'Argument count mismatch: Decimal128 requires one argument'
       );
@@ -948,8 +945,7 @@ class Visitor extends ECMAScriptVisitor {
     ctx.type = this.Types._string;
     const long = ctx.singleExpression().singleExpression();
     let longstr;
-    const argList = ctx.arguments().argumentList();
-    this.checkArguments([[this.Types._numeric, null]], argList, 'Long toString');
+    this.checkArguments([[this.Types._numeric, null]], this.getArguments(ctx), 'Long toString');
 
     try {
       longstr = this.executeJavascript(long.getText()).toString();
@@ -968,36 +964,46 @@ class Visitor extends ECMAScriptVisitor {
    * @return {String}
    */
   processDate(ctx) {
+    const isStr = !(ctx.getText().includes('ISODate') || ctx.wasNew);
+    const symbolType = this.Symbols.Date;
+
     ctx.type = this.Types.Date;
+    if (isStr) {
+      ctx.type = this.Types._string;
+      this.requiredImports[201] = true;
+    }
 
-    const args = ctx.arguments();
-    if (!args.argumentList()) {
-      if ('emitDate' in this) {
-        return this.emitDate(ctx);
+    const argsList = this.getArguments(ctx);
+    let date = null;
+
+    if (argsList.length !== 0) {
+      try {
+        this.checkArguments(this.Symbols.Date.args, argsList, 'Date');
+      } catch (e) {
+        throw new BsonTranspilersArgumentError(
+          'Invalid argument to Date: requires either no args, one string or number, or up to 7 numbers'
+        );
       }
-    }
 
-    const argList = ctx.arguments().argumentList();
-    try {
-      this.checkArguments(this.Symbols.Date.args, argList, 'Date');
-    } catch (e) {
-      throw new BsonTranspilersArgumentError(
-        'Invalid argument to Date: requires either no args, one string or number, or up to 7 numbers'
-      );
-    }
-
-    let text = ctx.getText();
-    text = text.startsWith('new ') ? text : `new ${text}`;
-    let date;
-    try {
-      date = this.executeJavascript(text);
-    } catch (error) {
-      throw new BsonTranspilersRuntimeError(error.message);
+      let text = ctx.getText();
+      text = text.startsWith('new ') ? text : `new ${text}`;
+      try {
+        date = this.executeJavascript(text);
+      } catch (error) {
+        throw new BsonTranspilersRuntimeError(error.message);
+      }
     }
     if ('emitDate' in this) {
       return this.emitDate(ctx, date);
     }
-    return ctx.getText();
+
+    const lhs = symbolType.template ? symbolType.template() : 'Date';
+    const rhs = symbolType.argsTemplate ?
+      symbolType.argsTemplate(lhs, date, isStr) :
+      `${lhs}(${date ? this.Types._string.template(date.toUTCString()) : ''})`;
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(`${rhs}`, isStr, this.Types.Date.code)
+      : `${rhs}`;
   }
 
   /**
@@ -1011,14 +1017,16 @@ class Visitor extends ECMAScriptVisitor {
   }
 
   // Getters
-  getExpression(ctx) {
-    return ctx.singleExpression();
-  }
   getArguments(ctx) {
-    return ctx.arguments().argumentList();
+    if (!('arguments' in ctx) ||
+        !('argumentList' in ctx.arguments()) ||
+        !ctx.arguments().argumentList()) {
+      return [];
+    }
+    return ctx.arguments().argumentList().singleExpression();
   }
   getArgumentAt(ctx, i) {
-    return this.getArguments(ctx).singleExpression()[i];
+    return this.getArguments(ctx)[i];
   }
   getList(ctx) {
     if (!('elementList' in ctx) || !ctx.elementList()) {

@@ -67,6 +67,13 @@ class Visitor extends ECMAScriptVisitor {
     return copy;
   }
 
+  /**
+   * As code is generated, any classes that require imports are tracked in
+   * this.Imports. Each class has a "code" that is defined in the symbol table.
+   * The imports are then generated based on the output language templates.
+   *
+   *  @return {String} - The list of imports in the target language.
+   */
   getImports() {
     const importTemplate = this.Imports.import.template ?
       this.Imports.import.template :
@@ -105,6 +112,61 @@ class Visitor extends ECMAScriptVisitor {
     );
   }
 
+  /**
+   * This helper function checks for an emit method then applies the templates
+   * if they exist for a function call node.
+   *
+   * @param {ParserRuleContext} ctx - The function call node
+   * @param {Object} lhsType - The type
+   * @param {Array} args - Arguments to the template
+   * @param {String} defaultT - The default name if no template exists.
+   * @param {String} defaultA - The default arguments if no argsTemplate exists.
+   * @param {Boolean} skipNew - Optional: If true, never add new.
+   * @param {Boolean} skipLhs - Optional: If true, don't add lhs to result.
+   *
+   * @return {String}
+   */
+  generateCall(ctx, lhsType, args, defaultT, defaultA, skipNew, skipLhs) {
+    if (`emit${lhsType.id}` in this) {
+      return this[`emit${lhsType.id}`](ctx);
+    }
+    const lhsArg = lhsType.template ? lhsType.template() : defaultT;
+    const rhs = lhsType.argsTemplate ? lhsType.argsTemplate(lhsArg, ...args) : defaultA;
+    const lhs = skipLhs ? '' : lhsArg;
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(`${lhs}${rhs}`, skipNew, lhsType.code)
+      : `${lhs}${rhs}`;
+  }
+
+  /**
+   * Same as generateCall but for type literals instead of function calls.
+   * @param {ParserRuleContext} ctx - The literal node
+   * @param {Object} lhsType - The type
+   * @param {Array} args - Arguments to the template
+   * @param {String} defaultT - The default if no template exists.
+   * @param {Boolean} skipNew - Optional: If true, never add new.
+   *
+   * @return {String}
+   */
+  generateLiteral(ctx, lhsType, args, defaultT, skipNew) {
+    if (`emit${lhsType.id}` in this) {
+      return this[`emit${lhsType.id}`](ctx);
+    }
+    if (lhsType.template) {
+      const str = lhsType.template(...args);
+      return this.Syntax.new.template
+        ? this.Syntax.new.template(str, skipNew, lhsType.code)
+        : str;
+    }
+    return defaultT;
+  }
+
+  /**
+   * The entry point for the compiler.
+   *
+   * @param {ParserRuleContext} ctx - tree node.
+   * @return {String} - generated code.
+   */
   start(ctx) {
     this.requiredImports = {};
     [300, 301, 302, 303, 304, 305, 306].forEach(
@@ -195,15 +257,8 @@ class Visitor extends ECMAScriptVisitor {
     if (`process${ctx.type.id}` in this) {
       return this[`process${ctx.type.id}`](ctx);
     }
-    if (`emit${ctx.type.id}` in this) {
-      return this[`emit${ctx.type.id}`](ctx);
-    }
-
-    if (ctx.type.template) {
-      return ctx.type.template(this.visitChildren(ctx), type.id);
-    }
-
-    return this.visitChildren(ctx);
+    const children = this.visitChildren(ctx);
+    return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
   }
 
   getIndentDepth(ctx) {
@@ -296,7 +351,6 @@ class Visitor extends ECMAScriptVisitor {
     }
     return 'null';
   }
-
 
   /**
    * Child nodes: singleExpression arguments
@@ -672,18 +726,9 @@ class Visitor extends ECMAScriptVisitor {
         typed.type;
     }
 
-    if (`emit${lhsType.id}` in this) {
-      return this[`emit${lhsType.id}`](ctx, argType);
-    }
-
-    // Apply the templates
-    const lhs = lhsType.template ? lhsType.template() : lhsStr;
-    const rhs = lhsType.argsTemplate ?
-      lhsType.argsTemplate(lhs, args[0], argType.id) :
-      `(${args.join(', ')})`;
-    return this.Syntax.new.template
-      ? this.Syntax.new.template(`${lhs}${rhs}`, false, lhsType.code)
-      : `${lhs}${rhs}`;
+    return this.generateCall(
+      ctx, lhsType, [args[0], argType.id], lhsStr, `(${args.join(', ')})`
+    );
   }
 
   /**
@@ -724,17 +769,7 @@ class Visitor extends ECMAScriptVisitor {
       '' :
       `${targetflags.split('').sort().join('')}`;
 
-    if ('emitRegExp' in this) {
-      return this.emitRegExp(ctx, pattern, targetflags);
-    }
-
-    if (ctx.type.template) {
-      const reg = ctx.type.template(pattern, targetflags);
-      return this.Syntax.new.template
-        ? this.Syntax.new.template(reg, false, ctx.type.code)
-        : reg;
-    }
-    return this.visitChildren(ctx);
+    return this.generateLiteral(ctx, ctx.type, [pattern, targetflags], 'RegExp');
   }
 
   /**
@@ -765,17 +800,10 @@ class Visitor extends ECMAScriptVisitor {
       flags = flags.replace(/[imxlsu]/g, m => this.Syntax.bsonRegexFlags[m]);
     }
 
-    if ('emitBSONRegExp' in this) {
-      return this.emitBSONRegExp(ctx, pattern, flags);
-    }
-    const lhs = symbolType.template ? symbolType.template() : 'BSONRegExp';
-    const rhs = symbolType.argsTemplate ?
-      symbolType.argsTemplate(lhs, pattern, flags) :
-      `(${pattern}${flags ? ', ' + flags : ''})`;
-
-    return this.Syntax.new.template
-      ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
-      : `${lhs}${rhs}`;
+    return this.generateCall(
+      ctx, symbolType, [pattern, flags], 'BSONRegExp',
+      `(${pattern}${flags ? ', ' + flags : ''})`
+    );
   }
 
   /**
@@ -813,16 +841,7 @@ class Visitor extends ECMAScriptVisitor {
       this.requiredImports[113] = true;
       this.requiredImports[10] = true;
     }
-    if ('emitCode' in this) {
-      return this.emitCode(ctx, code, scope);
-    }
-    const lhs = symbolType.template ? symbolType.template() : 'Code';
-    const rhs = symbolType.argsTemplate ?
-      symbolType.argsTemplate(lhs, code, scope) :
-      `(${code}${scopestr})`;
-    return this.Syntax.new.template
-      ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
-      : `${lhs}${rhs}`;
+    return this.generateCall(ctx, symbolType, [code, scope], 'Code', `(${code}${scopestr})`);
   }
 
   /**
@@ -850,15 +869,7 @@ class Visitor extends ECMAScriptVisitor {
     } catch (error) {
       throw new BsonTranspilersRuntimeError(error.message);
     }
-    if ('emitObjectId' in this) {
-      return this.emitObjectId(ctx, hexstr);
-    }
-    const rhs = symbolType.argsTemplate ?
-      symbolType.argsTemplate(lhs, hexstr) :
-      `(${hexstr})`;
-    return this.Syntax.new.template
-      ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
-      : `${lhs}${rhs}`;
+    return this.generateCall(ctx, symbolType, [hexstr], 'ObjectId', `(${hexstr})`);
   }
 
   /**
@@ -877,16 +888,7 @@ class Visitor extends ECMAScriptVisitor {
     } catch (error) {
       throw new BsonTranspilersRuntimeError(error.message);
     }
-    if ('emitLong' in this) {
-      return this.emitLong(ctx, longstr);
-    }
-    const lhs = symbolType.template ? symbolType.template() : 'Long';
-    const rhs = symbolType.argsTemplate ?
-      symbolType.argsTemplate(lhs, longstr, '_long') :
-      `(${longstr})`;
-    return this.Syntax.new.template
-      ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
-      : `${lhs}${rhs}`;
+    return this.generateCall(ctx, symbolType, [longstr, '_long'], 'Long', `(${longstr})`);
   }
 
   processLongfromBits(ctx) {
@@ -922,17 +924,7 @@ class Visitor extends ECMAScriptVisitor {
 
       throw new BsonTranspilersRuntimeError(error.message);
     }
-
-    if ('emitDecimal128' in this) {
-      return this.emitDecimal128(ctx, decstr);
-    }
-    const lhs = symbolType.template ? symbolType.template() : 'Decimal128';
-    const rhs = symbolType.argsTemplate ?
-      symbolType.argsTemplate(lhs, decstr) :
-      `(${decstr})`;
-    return this.Syntax.new.template
-      ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
-      : `${lhs}${rhs}`;
+    return this.generateCall(ctx, symbolType, [decstr], 'Decimal128', `(${decstr})`);
   }
 
   /**
@@ -958,7 +950,7 @@ class Visitor extends ECMAScriptVisitor {
   /**
    * Preprocessed because different target languages need different info out
    * of the constructed date, so we want to execute it. Passes a constructed
-   * date object to the emit methods.
+   * date object to the template or generator.
    *
    * @param {FuncCallExpressionContext} ctx
    * @return {String}
@@ -993,17 +985,12 @@ class Visitor extends ECMAScriptVisitor {
         throw new BsonTranspilersRuntimeError(error.message);
       }
     }
-    if ('emitDate' in this) {
-      return this.emitDate(ctx, date);
-    }
-
-    const lhs = symbolType.template ? symbolType.template() : 'Date';
-    const rhs = symbolType.argsTemplate ?
-      symbolType.argsTemplate(lhs, date, isStr) :
-      `${lhs}(${date ? this.Types._string.template(date.toUTCString()) : ''})`;
-    return this.Syntax.new.template
-      ? this.Syntax.new.template(`${rhs}`, isStr, this.Types.Date.code)
-      : `${rhs}`;
+    const dargs = `Date(${date
+      ? this.Types._string.template(date.toUTCString())
+      : ''})`;
+    return this.generateCall(
+      ctx, symbolType, [date, isStr], '', dargs, isStr, true
+    );
   }
 
   /**

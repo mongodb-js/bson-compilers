@@ -387,15 +387,6 @@ class Visitor extends Python3Visitor {
   }
 
   /**
-   * Int64 needs processing because sometimes it's generated as a class, and
-   * needs "new", but other times it's generated as a literal and can't have "new".
-   * So adding "new" is left up to the templates.
-   * @param ctx
-   */
-  processInt64(ctx) {
-    return this.handleFuncCallWithoutNew(ctx); // TODO: can remove
-  }
-  /**
    * Need process method because we want to pass the argument type to the template
    * so that we can determine if the generated number needs to be parsed or casted.
    *
@@ -438,39 +429,6 @@ class Visitor extends Python3Visitor {
     const rhs = lhsType.argsTemplate ?
       lhsType.argsTemplate(lhs, args[0], argType.id) :
       `(${args.join(', ')})`;
-    return `${lhs}${rhs}`;
-  }
-
-  handleFuncCallWithoutNew(ctx) {
-    const lhs = this.visit(ctx.atom());
-    let lhsType = ctx.atom().type;
-    if (typeof lhsType === 'string') {
-      lhsType = this.Types[lhsType];
-    }
-    if (`emit${lhsType.id}` in this) {
-      return this[`emit${lhsType.id}`](ctx);
-    }
-    // Check arguments
-    const expectedArgs = lhsType.args;
-    let rhs = this.checkArguments(// TODO: chained calls
-      expectedArgs, this.getArguments(ctx), lhsType.id
-    );
-
-    let argType;
-    if (rhs.length > 0) {
-      argType = this.getArgumentAt(ctx, 0).type.id;
-    }
-
-    // Apply the arguments template
-    if (lhsType.argsTemplate) {
-      let l = lhs;
-      if ('identifier' in ctx.atom()) {
-        l = this.visit(ctx.atom().identifier());
-      }
-      rhs = lhsType.argsTemplate(l, ...rhs, argType);
-    } else {
-      rhs = `(${rhs.join(', ')})`;
-    }
     return `${lhs}${rhs}`;
   }
 

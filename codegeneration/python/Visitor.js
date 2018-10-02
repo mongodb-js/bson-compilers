@@ -3,7 +3,7 @@ const Python3Visitor = require('../../lib/antlr/Python3Visitor').Python3Visitor;
 const {
   BsonTranspilersArgumentError,
   BsonTranspilersAttributeError,
-  // BsonTranspilersRuntimeError,
+  BsonTranspilersRuntimeError,
   BsonTranspilersTypeError,
   BsonTranspilersReferenceError,
   BsonTranspilersInternalError,
@@ -22,8 +22,7 @@ class Visitor extends Python3Visitor {
     this.requiredImports = {};
     this.idiomatic = true;
     this.processfloat = this.processint;
-    this.processlong = this.processint;
-    this.processint64 = this.processint;
+    this.processInt64 = this.processint;
   }
   deepCopyRequiredImports() {
     const copy = Object.assign({}, this.requiredImports);
@@ -141,7 +140,7 @@ class Visitor extends Python3Visitor {
   }
 
   /**
-   * Helper to check if process, emit, or template is required.
+   * Helper for literals.
    *
    * @param setType {Object}
    * @param ctx {ParserContext}
@@ -168,14 +167,7 @@ class Visitor extends Python3Visitor {
     let result = this.visitChildren(ctx);
     result = result.replace(/^([rubf]?[rubf]["']|'''|"""|'|")/gi, '');
     result = result.replace(/(["]{3}|["]|[']{3}|['])$/, '');
-    if (`emit${ctx.type.id}` in this) {
-      return this[`emit${ctx.type.id}`](ctx, result);
-    }
-
-    if (ctx.type.template) {
-      return ctx.type.template(result, type.id);
-    }
-    return `'${result}'`;
+    return this.generateLiteral(ctx, ctx.type, [result, type.id], `'${result}'`, true);
   }
   visitInteger_literal(ctx) {
     return this.leafHelper(this.Types._long, ctx);
@@ -374,6 +366,65 @@ class Visitor extends Python3Visitor {
   // processcompile(ctx) {
   //   return this.process_regex(ctx);
   // }
+  /**
+   * Process BSON regexps because we need to verify the flags are valid.
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @return {string}
+   */
+  processRegex(ctx) {
+    ctx.type = this.Types.Regex;
+    const symbolType = this.Symbols.Regex;
+
+    const args = this.checkArguments(
+      symbolType.args, this.getArguments(ctx), 'Regex'
+    );
+
+    let flags = null;
+    const pattern = args[0];
+    if (args.length === 2) {
+      flags = args[1];
+      for (let i = 1; i < flags.length - 1; i++) {
+        if (!(flags[i] in this.Syntax.bsonRegexFlags)) {
+          throw new BsonTranspilersRuntimeError(
+            `Invalid flag '${flags[i]}' passed to Regexp`
+          );
+        }
+      }
+      flags = flags.replace(/[imxlsu]/g, m => this.Syntax.bsonRegexFlags[m]);
+    }
+
+    return this.generateCall(
+      ctx, symbolType, [pattern, flags], 'Regex',
+      `(${pattern}${flags ? ', ' + flags : ''})`
+    );
+  }
+  /**
+   * Code is processed in every language because want to generate the scope as
+   * a non-idiomatic document.
+   *
+   * @param {ParserContext} ctx
+   * @return {String}
+   */
+  processCode(ctx) {
+    ctx.type = this.Types.Code;
+    const symbolType = this.Symbols.Code;
+    const args = this.checkArguments(symbolType.args, this.getArguments(ctx), 'Code');
+    let scopeStr = '';
+
+    if (args.length === 2) {
+      const idiomatic = this.idiomatic;
+      this.idiomatic = false;
+      const scope = this.visit(this.getArgumentAt(ctx, 1));
+      this.idiomatic = idiomatic;
+      scopeStr = `, ${scope}`;
+      this.requiredImports[113] = true;
+      this.requiredImports[10] = true;
+      args[1] = scope;
+    }
+    return this.generateCall(ctx, symbolType, args, 'Code', `(${args[0]}${scopeStr})`);
+  }
+
   processdatetime(ctx) {
     ctx.type = this.Types.Date;
     ctx.wasNew = true; // Always true for non-js
@@ -416,16 +467,12 @@ class Visitor extends Python3Visitor {
         );
       }
     }
-    if ('emitDate' in this) {
-      return this.emitDate(ctx, date);
-    }
-    const lhs = symbolType.template ? symbolType.template() : 'Date';
-    const rhs = symbolType.argsTemplate ?
-      symbolType.argsTemplate(lhs, date, false) :
-      `${lhs}(${date ? this.Types._string.template(date.toUTCString()) : ''})`;
-    return this.Syntax.new.template
-      ? this.Syntax.new.template(`${rhs}`, false, this.Types.Date.code)
-      : `${rhs}`;
+    const dargs = `Date(${date
+      ? this.Types._string.template(date.toUTCString())
+      : ''})`;
+    return this.generateCall(
+      ctx, symbolType, [date, false], '', dargs, false, true
+    );
   }
 
   /**

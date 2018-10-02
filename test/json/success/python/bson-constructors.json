@@ -11,17 +11,17 @@
       },
       {
         "description": "Code with string code and object scope",
-        "javascript": "Code('string', {x: '1'})",
+        "javascript": "new Code('string', {\n    'x': '1'\n  })",
         "python": "Code('string', {\n    'x': '1'\n})",
         "java": "new CodeWithScope(\"string\", new Document(\"x\", \"1\"))",
         "csharp": "new BsonJavaScriptWithScope(\"string\", new BsonDocument(\"x\", \"1\"))",
-        "shell": "new Code('string', {\n  'x': '1'\n})"
+        "shell": "new Code('string', {\n    'x': '1'\n  })"
       }
     ],
     "ObjectId": [
       {
         "description": "ObjectId with no arg",
-        "javascript": "ObjectId()",
+        "javascript": "new ObjectId()",
         "python": "ObjectId()",
         "java": "new ObjectId()",
         "csharp": "new ObjectId()",
@@ -29,7 +29,7 @@
       },
       {
         "description": "ObjectId with hex string arg",
-        "javascript": "ObjectId('5a7382114ec1f67ae445f778')",
+        "javascript": "new ObjectId('5a7382114ec1f67ae445f778')",
         "python": "ObjectId('5a7382114ec1f67ae445f778')",
         "java": "new ObjectId(\"5a7382114ec1f67ae445f778\")",
         "csharp": "new ObjectId(\"5a7382114ec1f67ae445f778\")",
@@ -47,7 +47,7 @@
       },
       {
         "description": "new DBRef with (string, ObjectId, string) args",
-        "javascript": "new DBRef('coll', ObjectId(), 'db')",
+        "javascript": "new DBRef('coll', new ObjectId(), 'db')",
         "python": "DBRef('coll', ObjectId(), 'db')",
         "java": "new DBRef(\"db\", \"coll\", new ObjectId())",
         "csharp": "new MongoDBRef(\"coll\", new ObjectId(), \"db\")",
@@ -57,7 +57,7 @@
     "Int64": [
       {
         "description": "Int64 with number arg",
-        "javascript": "new Long(-1, 2147483647)",
+        "javascript": "Long.fromNumber(9223372036854775807)",
         "python": "Int64(9223372036854775807)",
         "java": "9223372036854775807L",
         "csharp": "9223372036854775807L",
@@ -65,15 +65,15 @@
       },
       {
         "description": "Int64 with string",
-        "javascript": "new Long(-1, 2147483647)",
+        "javascript": "Long.fromString('9223372036854775807')",
         "python": "Int64('9223372036854775807')",
-        "java": "9223372036854775807L",
-        "csharp": "9223372036854775807L",
-        "shell": "new NumberLong(9223372036854775807)"
+        "java": "Long.parseLong(\"9223372036854775807\")",
+        "csharp": "Convert.ToInt64(\"9223372036854775807\")",
+        "shell": "new NumberLong('9223372036854775807')"
       },
       {
         "description": "Int64 with no arg",
-        "javascript": "new Long(0, 0)",
+        "javascript": "Long.fromNumber(0)",
         "python": "Int64()",
         "java": "0L",
         "csharp": "0L",
@@ -119,7 +119,7 @@
     "Timestamp": [
       {
         "description": "Timestamp with two number args",
-        "javascript": "Timestamp(10, 100)",
+        "javascript": "new Timestamp(10, 100)",
         "python": "Timestamp(10, 100)",
         "java": "new BSONTimestamp(10, 100)",
         "csharp": "new BsonTimestamp(10, 100)",
@@ -129,11 +129,11 @@
     "Decimal128": [
       {
         "description": "Decimal128 with string arg",
-        "javascript": "new Decimal128(Buffer.from('5'))",
+        "javascript": "Decimal128.fromString('5.3E-6175')",
         "python": "Decimal128('5.3E-6175')",
         "java": "Decimal128.parse(\"5.3E-6175\")",
         "csharp": "Decimal128.Parse(\"5.3E-6175\")",
-        "shell": "new NumberDecimal(5.3E-6175)"
+        "shell": "new NumberDecimal('5.3E-6175')"
       }
     ]
   }

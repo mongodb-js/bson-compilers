@@ -605,7 +605,11 @@ Templates:
         () => {
             return 'NumberLong';
         }
-    LongSymbolArgsTemplate: &LongSymbolArgsTemplate null # Has process method
+    LongSymbolArgsTemplate: &LongSymbolArgsTemplate !!js/function >
+        (lhs, arg) => {
+            arg = arg === undefined ? 0 : arg;
+            return `(${arg})`;
+        }
     LongSymbolMaxTemplate: &LongSymbolMaxTemplate !!js/function >
         () => {
             return 'Math.max()';

@@ -1,6 +1,6 @@
 BsonSymbols:
     Code: &CodeSymbol
-        id: "CodeFromPython"
+        id: "Code"
         code: 100
         callable: *constructor
         args:
@@ -87,7 +87,7 @@ BsonSymbols:
         template: *MaxKeySymbolTemplate
         argsTemplate: *MaxKeySymbolArgsTemplate
     Regex:
-        id: "regex.Regex"
+        id: "Regex"
         code: 109
         callable: *constructor
         args:

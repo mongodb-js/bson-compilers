@@ -93,7 +93,7 @@ BsonTypes:
         id: "MaxKey"
         code: 108
         type: *ObjectType
-    BSONRegExp: &BSONRegExpType
+    Regex: &BSONRegExpType
         <<: *__type
         id: "BSONRegExp"
         code: 109

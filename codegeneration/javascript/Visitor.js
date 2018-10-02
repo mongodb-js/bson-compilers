@@ -783,7 +783,7 @@ class Visitor extends ECMAScriptVisitor {
     const symbolType = this.Symbols.BSONRegExp;
 
     const args = this.checkArguments(
-      [[this.Types._string], [this.Types._string, null]], this.getArguments(ctx), 'BSONRegExp'
+      symbolType.args, this.getArguments(ctx), 'BSONRegExp'
     );
 
     let flags = null;

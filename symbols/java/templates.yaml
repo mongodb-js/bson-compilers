@@ -693,7 +693,7 @@ Templates:
                 }
                 return `${arg}L`;
             }
-            return `new 9Long(${arg})`;
+            return `new Long(${arg})`;
         }
     LongSymbolMaxTemplate: &LongSymbolMaxTemplate !!js/function >
         () => {

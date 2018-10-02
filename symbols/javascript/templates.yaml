@@ -390,7 +390,10 @@ Templates:
         }
     SymbolSymbolTemplate: &SymbolSymbolTemplate null
     SymbolSymbolArgsTemplate: &SymbolSymbolArgsTemplate null
-    BSONRegExpSymbolTemplate: &BSONRegExpSymbolTemplate null # Has process method
+    BSONRegExpSymbolTemplate: &BSONRegExpSymbolTemplate !!js/function >
+        () => {
+            return 'BSONRegExp';
+        }
     BSONRegExpSymbolArgsTemplate: &BSONRegExpSymbolArgsTemplate null
     Decimal128SymbolTemplate: &Decimal128SymbolTemplate !!js/function >
         () => {

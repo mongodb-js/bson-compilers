@@ -134,38 +134,88 @@
         "shell": "[\n  1, 2\n].indexOf(4) === -1"
       }
     ],
-    "numbers": [
+    "int": [
       {
         "description": "int with number arg",
-        "python": "int(2)",
-        "javascript": "Int32(2)",
-        "java": "2",
-        "csharp": "2",
-        "shell": "NumberInt(2)"
+        "javascript": "new Int32(3)",
+        "python": "int(3)",
+        "java": "3",
+        "csharp": "3",
+        "shell": "new NumberInt(3)"
       },
       {
-        "description": "int with string arg",
-        "python": "int('2')",
-        "javascript": "Int32('2')",
-        "java": "Integer.parseInt(\"2\")",
-        "csharp": "Convert.ToInt32(\"2\")",
-        "shell": "NumberInt('2')"
+        "description": "int with valid string arg",
+        "javascript": "new Int32('3')",
+        "python": "int('3')",
+        "java": "Integer.parseInt(\"3\")",
+        "csharp": "Convert.ToInt32(\"3\")",
+        "shell": "new NumberInt('3')"
       },
+      {
+        "description": "int with decimal arg",
+        "javascript": "new Int32(3.0001)",
+        "python": "int(3.0001)",
+        "java": "(int) 3.0001d",
+        "csharp": "Convert.ToInt32(3.0001)",
+        "shell": "new NumberInt(3.0001)"
+      },
+      {
+        "description": "int with hex arg",
+        "javascript": "new Int32(0x3)",
+        "python": "int(0x3)",
+        "java": "(int) 0x3",
+        "csharp": "Convert.ToInt32(0x3)",
+        "shell": "new NumberInt(0x3)"
+      },
+      {
+        "description": "int with octal arg",
+        "javascript": "new Int32(0o5)",
+        "python": "int(0o5)",
+        "java": "(int) 05",
+        "csharp": "5",
+        "shell": "new NumberInt(0o5)"
+      }
+    ],
+    "float": [
       {
         "description": "float with number arg",
-        "python": "float(1.001)",
-        "javascript": "Number(1.001)",
-        "java": "1.001d",
-        "csharp": "(float) 1.001",
-        "shell": "Number(1.001)"
+        "javascript": "new Double(3)",
+        "python": "float(3)",
+        "java": "3d",
+        "csharp": "3.0",
+        "shell": "3"
       },
       {
-        "description": "float with string arg",
-        "python": "float('1.0001')",
-        "javascript": "Number('1.0001')",
-        "java": "Double.parseDouble(\"1.0001\")",
-        "csharp": "float.Parse(\"1.0001\")",
-        "shell": "Number('1.0001')"
+        "description": "float with valid string arg",
+        "javascript": "new Double('3')",
+        "python": "float('3')",
+        "java": "Double.parseDouble(\"3\")",
+        "csharp": "Convert.ToDouble(\"3\")",
+        "shell": "3"
+      },
+      {
+        "description": "float with decimal arg",
+        "javascript": "new Double(3.005)",
+        "python": "float(3.005)",
+        "java": "3.005d",
+        "csharp": "3.005",
+        "shell": "3.005"
+      },
+      {
+        "description": "float with hex arg",
+        "javascript": "new Double(0x3)",
+        "python": "float(0x3)",
+        "java": "(double) 0x3",
+        "csharp": "Convert.ToDouble(0x3)",
+        "shell": "0x3"
+      },
+      {
+        "description": "float with octal arg",
+        "javascript": "new Double(0o5)",
+        "python": "float(0o5)",
+        "java": "(double) 05",
+        "csharp": "5.0",
+        "shell": "0o5"
       }
     ],
     "numeric literals": [
@@ -431,7 +481,6 @@
         "csharp": "new BsonDocument\n{\n    { \"status\", \"A\" }, \n    { \"$or\", new BsonArray\n    {\n        new BsonDocument(\"qty\", \n        new BsonDocument(\"$lt\", 30)),\n        new BsonDocument(\"item\", \n        new BsonDocument(\"$regex\", \"^p\"))\n    } }\n}",
         "shell": "{\n  'status': 'A', \n  '$or': [\n    {\n      'qty': {\n        '$lt': 30\n      }\n    }, {\n      'item': {\n        '$regex': '^p'\n      }\n    }\n  ]\n}"
       }
-
     ],
     "Array": [
       {
@@ -583,9 +632,9 @@
         "shell": "new Date('Sun, 17 Dec 1995 03:24:55 GMT')"
       }
     ],
-    "RegExp": [
+    "re.compile": [
       {
-        "description": "empty RegExp",
+        "description": "empty regex object",
         "javascript": "RegExp('')",
         "python": "re.compile(r\"(?:)\")",
         "java": "Pattern.compile(\"(?:)\")",
@@ -593,7 +642,7 @@
         "shell": "RegExp('(?:)')"
       },
       {
-        "description": "RegExp without options",
+        "description": "regex object without options",
         "javascript": "RegExp('abc')",
         "python": "re.compile(r\"abc\")",
         "java": "Pattern.compile(\"abc\")",

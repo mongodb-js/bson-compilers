@@ -73,6 +73,55 @@ class Visitor extends Python3Visitor {
     return code.trim();
   }
 
+  /**
+   * This helper function checks for an emit method then applies the templates
+   * if they exist for a function call node.
+   *
+   * @param {ParserRuleContext} ctx - The function call node
+   * @param {Object} lhsType - The type
+   * @param {Array} args - Arguments to the template
+   * @param {String} defaultT - The default name if no template exists.
+   * @param {String} defaultA - The default arguments if no argsTemplate exists.
+   * @param {Boolean} skipNew - Optional: If true, never add new.
+   * @param {Boolean} skipLhs - Optional: If true, don't add lhs to result.
+   *
+   * @return {String}
+   */
+  generateCall(ctx, lhsType, args, defaultT, defaultA, skipNew, skipLhs) {
+    if (`emit${lhsType.id}` in this) {
+      return this[`emit${lhsType.id}`](ctx);
+    }
+    const lhsArg = lhsType.template ? lhsType.template() : defaultT;
+    const rhs = lhsType.argsTemplate ? lhsType.argsTemplate(lhsArg, ...args) : defaultA;
+    const lhs = skipLhs ? '' : lhsArg;
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(`${lhs}${rhs}`, skipNew, lhsType.code)
+      : `${lhs}${rhs}`;
+  }
+
+  /**
+   * Same as generateCall but for type literals instead of function calls.
+   * @param {ParserRuleContext} ctx - The literal node
+   * @param {Object} lhsType - The type
+   * @param {Array} args - Arguments to the template
+   * @param {String} defaultT - The default if no template exists.
+   * @param {Boolean} skipNew - Optional: If true, never add new.
+   *
+   * @return {String}
+   */
+  generateLiteral(ctx, lhsType, args, defaultT, skipNew) {
+    if (`emit${lhsType.id}` in this) {
+      return this[`emit${lhsType.id}`](ctx);
+    }
+    if (lhsType.template) {
+      const str = lhsType.template(...args);
+      return this.Syntax.new.template
+        ? this.Syntax.new.template(str, skipNew, lhsType.code)
+        : str;
+    }
+    return defaultT;
+  }
+
   start(ctx) {
     this.requiredImports = {};
     [300, 301, 302, 303, 304, 305, 306].forEach(
@@ -106,15 +155,8 @@ class Visitor extends Python3Visitor {
     if (`process${ctx.type.id}` in this) {
       return this[`process${ctx.type.id}`](ctx);
     }
-    if (`emit${ctx.type.id}` in this) {
-      return this[`emit${ctx.type.id}`](ctx);
-    }
-
-    if (ctx.type.template) {
-      return ctx.type.template(this.visitChildren(ctx), type.id);
-    }
-
-    return this.visitChildren(ctx);
+    const children = this.visitChildren(ctx);
+    return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
   }
 
   visitString_literal(ctx) {
@@ -420,16 +462,9 @@ class Visitor extends Python3Visitor {
         typed.type;
     }
 
-    if (`emit${lhsType.id}` in this) {
-      return this[`emit${lhsType.id}`](ctx, argType);
-    }
-
-    // Apply the arguments template
-    const lhs = lhsType.template ? lhsType.template() : lhsStr;
-    const rhs = lhsType.argsTemplate ?
-      lhsType.argsTemplate(lhs, args[0], argType.id) :
-      `(${args.join(', ')})`;
-    return `${lhs}${rhs}`;
+    return this.generateCall(
+      ctx, lhsType, [args[0], argType.id], lhsStr, `(${args.join(', ')})`
+    );
   }
 
   handleFuncCall(ctx) {
@@ -474,7 +509,7 @@ class Visitor extends Python3Visitor {
     const constructor = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR;
 
     return this.Syntax.new.template
-      ? this.Syntax.new.template(expr, !constructor, lhsType.id)
+      ? this.Syntax.new.template(expr, !constructor, lhsType.code)
       : expr;
   }
 

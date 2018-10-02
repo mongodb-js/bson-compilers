@@ -335,7 +335,10 @@ Templates:
     BinarySymbolSubtypeUserDefinedTemplate: &BinarySymbolSubtypeUserDefinedTemplate null
     DBRefSymbolTemplate: &DBRefSymbolTemplate null
     DBRefSymbolArgsTemplate: &DBRefSymbolArgsTemplate null
-    DoubleSymbolTemplate: &DoubleSymbolTemplate null
+    DoubleSymbolTemplate: &DoubleSymbolTemplate !!js/function >
+        () => {
+            return 'Double';
+        }
     DoubleSymbolArgsTemplate: &DoubleSymbolArgsTemplate null
     Int32SymbolTemplate: &Int32SymbolTemplate !!js/function >
         () => {

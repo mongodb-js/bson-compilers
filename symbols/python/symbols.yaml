@@ -121,7 +121,7 @@ BsonSymbols:
         code: 112
         callable: *constructor
         args:
-            - [ *ObjectType ]
+            - [ *StringType ]
         type: *Decimal128Type
         attr: {}
         template: *Decimal128SymbolTemplate
@@ -172,8 +172,8 @@ JSSymbols:
         - [ *IntegerType, *StringType, null ]
         type: *NumericType
         attr: {}
-        template: *NumberSymbolTemplate
-        argsTemplate: *NumberSymbolArgsTemplate
+        template: *DoubleSymbolTemplate
+        argsTemplate: *DoubleSymbolArgsTemplate
     int:
         id: "int"
         code: 105

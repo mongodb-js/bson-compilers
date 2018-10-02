@@ -10,22 +10,34 @@ const unsupported = {
     python: {
       java: {
         'language-types': [
-          'RegExp'
+          're.compile'
+        ],
+        'bson-constructors': [
+          'Code', 'ObjectId', 'DBRef', 'Int64', 'MinKey/MaxKey', 'Regexp', 'Timestamp', 'Decimal128'
         ]
       },
       javascript: {
         'language-types': [
-          'RegExp'
+          're.compile'
+        ],
+        'bson-constructors': [
+          'Code', 'ObjectId', 'DBRef', 'Int64', 'MinKey/MaxKey', 'Regexp', 'Timestamp', 'Decimal128'
         ]
       },
       shell: {
         'language-types': [
-          'RegExp'
+          're.compile'
+        ],
+        'bson-constructors': [
+          'Code', 'ObjectId', 'DBRef', 'Int64', 'MinKey/MaxKey', 'Regexp', 'Timestamp', 'Decimal128'
         ]
       },
       csharp: {
         'language-types': [
-          'RegExp'
+          're.compile'
+        ],
+        'bson-constructors': [
+          'Code', 'ObjectId', 'DBRef', 'Int64', 'MinKey/MaxKey', 'Regexp', 'Timestamp', 'Decimal128'
         ]
       }
     }

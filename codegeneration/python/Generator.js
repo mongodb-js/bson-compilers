@@ -8,24 +8,6 @@
 module.exports = (superClass) => class ExtendedVisitor extends superClass {
   constructor() {
     super();
-    this.regexFlags = {
-      i: 'i', // re.IGNORECASE
-      m: 'm', // re.MULTILINE
-      u: 'a', // re.ASCII
-      y: '', // Sticky flag matches only from the index indicated by the lastIndex property
-      g: 's' // re.DOTALL matches all
-      // re.DEBUG - Display debug information. No corresponding inline flag.
-      // re.LOCALE - Case-insensitive matching dependent on the current locale. Inline flag (?L)
-      // re.VERBOSE - More readable way of writing patterns (eg. with comments)
-    };
-    this.bsonRegexFlags = {
-      i: 'i', // Case insensitivity to match
-      m: 'm', // Multiline match
-      x: 'x', // Ignore all white space characters
-      s: 's', // Matches all
-      l: 'l', // Case-insensitive matching dependent on the current locale?
-      u: 'u' // Unicode?
-    };
   }
 
   /**

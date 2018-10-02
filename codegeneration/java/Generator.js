@@ -12,12 +12,6 @@ const {
 module.exports = (superClass) => class ExtendedVisitor extends superClass {
   constructor() {
     super();
-    this.regexFlags = {
-      i: 'i', m: 'm', u: 'u', y: '', g: ''
-    };
-    this.bsonRegexFlags = {
-      i: 'i', m: 'm', x: 'x', s: 's', l: 'l', u: 'u'
-    };
     // Operations that take the field name as an argument
     this.field_opts = [
       'gt', 'lt', 'lte', 'gte', 'eq', 'ne', 'nin', 'in', 'not', 'exists',

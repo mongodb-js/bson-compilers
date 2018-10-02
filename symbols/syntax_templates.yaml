@@ -1,19 +1,23 @@
 Syntax:
-    equality: &EqualitySyntax
+    equality:
         template: *EqualitySyntaxTemplate
-    in: &InSyntax
+    in:
         template: *InSyntaxTemplate
-    eos: &EosSyntax
+    eos:
         template: *EosSyntaxTemplate
-    eof: &EosSyntax
+    eof:
         template: *EofSyntaxTemplate
-    floorDiv: &FloorDivSyntax
+    floorDiv:
         template: *FloorDivSyntaxTemplate
-    power: &PowerSyntax
+    power:
         template: *PowerSyntaxTemplate
     # The new template takes in expr, and an optional skip argument and optional
     # id argument. The skip argument is a boolean that if true then doesn't add
     # new. The code argument is the symbol code being called. The template will check
     # if it is an exception, i.e. a type that is a constructor but may not use new.
-    new: &NewSyntax
+    new:
         template: *NewSyntaxTemplate
+    # The regex flags that change symbols between languages can be defined here.
+    # Flags that aren't defined can be left blank and will be ignored.
+    regexFlags: *RegexFlags
+    bsonRegexFlags: *BSONRegexFlags

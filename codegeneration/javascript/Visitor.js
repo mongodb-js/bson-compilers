@@ -719,7 +719,7 @@ class Visitor extends ECMAScriptVisitor {
       throw new BsonTranspilersRuntimeError(error.message);
     }
 
-    let targetflags = flags.replace(/[imuyg]/g, m => this.regexFlags[m]);
+    let targetflags = flags.replace(/[imuyg]/g, m => this.Syntax.regexFlags[m]);
     targetflags = targetflags === '' ?
       '' :
       `${targetflags.split('').sort().join('')}`;
@@ -756,13 +756,13 @@ class Visitor extends ECMAScriptVisitor {
     if (args.length === 2) {
       flags = args[1];
       for (let i = 1; i < flags.length - 1; i++) {
-        if (!(flags[i] in this.bsonRegexFlags)) {
+        if (!(flags[i] in this.Syntax.bsonRegexFlags)) {
           throw new BsonTranspilersRuntimeError(
             `Invalid flag '${flags[i]}' passed to BSONRegExp`
           );
         }
       }
-      flags = flags.replace(/[imxlsu]/g, m => this.bsonRegexFlags[m]);
+      flags = flags.replace(/[imxlsu]/g, m => this.Syntax.bsonRegexFlags[m]);
     }
 
     if ('emitBSONRegExp' in this) {

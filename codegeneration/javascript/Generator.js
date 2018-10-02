@@ -5,12 +5,5 @@
 module.exports = (superClass) => class ExtendedVisitor extends superClass {
   constructor() {
     super();
-    this.regexFlags = {
-      i: 'i',  // ignore case
-      m: 'm',  // multiline
-      u: 'u', // unicode
-      y: 'y',   // sticky search
-      g: 'g'    // global
-    };
   }
 };

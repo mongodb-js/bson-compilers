@@ -5,12 +5,6 @@
 module.exports = (superClass) => class ExtendedVisitor extends superClass {
   constructor() {
     super();
-    this.regexFlags = {
-      i: 'i', m: 'm', u: 'u', y: 'y', g: 'g'
-    };
-    this.bsonRegexFlags = {
-      i: 'i', m: 'm', x: 'x', s: 's', l: 'l', u: 'u'
-    };
   }
 
   /**

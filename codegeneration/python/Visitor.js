@@ -45,7 +45,6 @@ class Visitor extends Python3Visitor {
    * @returns {String}
    */
   visitChildren(ctx, options) {
-    // console.log(`visitChildren: ${ctx.constructor.name} children.length=${ctx.children.length}`);
     const opts = {
       start: 0, step: 1, separator: '', ignore: [], children: ctx.children
     };
@@ -326,7 +325,7 @@ class Visitor extends Python3Visitor {
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
-    return this.Syntax.power.template(this.visit(ctx.atom_expr()), this.visit(ctx.factor()));
+    return this.Syntax.power.template(this.visit(ctx.atom()), this.visit(ctx.factor()));
   }
 
   visitComparison(ctx) {
@@ -514,7 +513,11 @@ class Visitor extends Python3Visitor {
     );
   }
 
-  handleFuncCall(ctx) {
+  visitFunctionCall(ctx) {
+    // Skip if fake node
+    if (ctx.getChildCount() === 1) {
+      return this.visitChildren(ctx);
+    }
     const lhs = this.visit(ctx.atom());
     let lhsType = ctx.atom().type;
     if (typeof lhsType === 'string') {
@@ -537,7 +540,7 @@ class Visitor extends Python3Visitor {
 
     // Check arguments
     const expectedArgs = lhsType.args;
-    let rhs = this.checkArguments(// TODO: chained calls
+    let rhs = this.checkArguments(
       expectedArgs, this.getArguments(ctx), lhsType.id
     );
 
@@ -560,9 +563,13 @@ class Visitor extends Python3Visitor {
       : expr;
   }
 
-  handleAttrAccess(ctx) {
+  visitAttributeAccess(ctx) {
+    // Skip if fake node
+    if (ctx.getChildCount() === 1) {
+      return this.visitChildren(ctx);
+    }
     const lhs = this.visit(ctx.atom());
-    const rhs = ctx.dot_trailer()[0].identifier().getText(); // TODO: nested
+    const rhs = ctx.dot_trailer().identifier().getText(); // TODO: nested
 
     if (! ('identifier' in ctx.atom())) {
       throw new BsonTranspilersUnimplementedError(
@@ -602,23 +609,12 @@ class Visitor extends Python3Visitor {
     return `${lhs}.${rhs}`;
   }
 
-  visitAtom_expr(ctx) {
+  visitIndexAccess(ctx) {
     // Skip if fake node
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
-    if (ctx.paren_trailer() !== null && ctx.paren_trailer().length !== 0) {
-      // function call
-      return this.handleFuncCall(ctx);
-    } else if (ctx.bracket_trailer() !== null && ctx.bracket_trailer().length !== 0) {
-      // indexing
-      throw new BsonTranspilersUnimplementedError('Indexing not currently supported');
-    } else if (ctx.dot_trailer() !== null && ctx.dot_trailer().length !== 0) {
-      // attribute access
-      return this.handleAttrAccess(ctx);
-    } else {
-      throw new BsonTranspilersInternalError('Unknown second argument to atom expr');
-    }
+    throw new BsonTranspilersUnimplementedError('Indexing not currently supported');
   }
 
   visitIdentifier(ctx) {
@@ -800,7 +796,7 @@ class Visitor extends Python3Visitor {
     return k[1];
   }
   getArguments(ctx) {
-    const trailer = ctx.paren_trailer()[0];
+    const trailer = ctx.paren_trailer();
     if (!('arglist' in trailer) || trailer.arglist() === null) {
       return [];
     }

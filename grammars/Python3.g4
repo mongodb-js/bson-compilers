@@ -234,18 +234,20 @@ shift_expr: arith_expr (('<<'|'>>') arith_expr)*;
 arith_expr: term (('+'|'-') term)*;
 term: factor (('*'|'@'|'/'|'%'|'//') factor)*;
 factor: ('+'|'-'|'~') factor | power;
-power: atom_expr ('**' factor)?;
-atom_expr: (AWAIT)? atom ( paren_trailer | bracket_trailer | dot_trailer )*;
+power: atom ('**' factor)?;
 atom
- : set_literal
- | object_literal
- | array_literal
- | identifier
- | number_literal
- | string_literal+
- | '...'
- | none_literal
- | boolean_literal
+ : set_literal          #AtomLiteral
+ | object_literal       #ObjectLiteral
+ | array_literal        #ArrayLiteral
+ | identifier           #Identfier
+ | number_literal       #NumberLiteral
+ | string_literal+      #StringLiteral
+ | '...'                #DotDotDot
+ | none_literal         #NoneLiteral
+ | boolean_literal      #BooleanLiteral
+ | atom paren_trailer   #FunctionCall
+ | atom bracket_trailer #IndexAccess
+ | atom dot_trailer     #AttributeAccess
  ;
 
 testlist_comp: (test|star_expr) ( comp_for | (',' (test|star_expr))* (',')? );

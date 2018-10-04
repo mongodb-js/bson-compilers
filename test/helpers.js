@@ -9,24 +9,24 @@ const unsupported = {
   success: {
     python: {
       java: {
-        'language-types': [
-          're.compile'
-        ]
+        'language-types': ['re.compile'],
+        'bson-utils': ['*'],
+        'bson-methods': ['*']
       },
       javascript: {
-        'language-types': [
-          're.compile'
-        ]
+        'language-types': ['re.compile'],
+        'bson-utils': ['*'],
+        'bson-methods': ['*']
       },
       shell: {
-        'language-types': [
-          're.compile'
-        ]
+        'language-types': ['re.compile'],
+        'bson-utils': ['*'],
+        'bson-methods': ['*']
       },
       csharp: {
-        'language-types': [
-          're.compile'
-        ]
+        'language-types': ['re.compile'],
+        'bson-utils': ['*'],
+        'bson-methods': ['*']
       }
     }
   },

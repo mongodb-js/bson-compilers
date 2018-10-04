@@ -1,0 +1,40 @@
+{
+  "tests": {
+    "ObjectId": [
+      {
+        "description": "createFromTime",
+        "javascript": "ObjectId.createFromTime(1522075031642)",
+        "python": "ObjectId.from_datetime(datetime.datetime.fromtimestamp(1522075031642 / 1000))",
+        "java": "new ObjectId(new java.util.Date(1522075031642L))",
+        "csharp": "new ObjectId.GenerateNewId(Convert.ToInt32(1522075031642))",
+        "shell": "ObjectId.fromDate(new Date(1522075031642))"
+      },
+      {
+        "description": "createFromTime with date",
+        "javascript": "ObjectId.createFromTime(new Date())",
+         "python": "ObjectId.from_datetime(datetime.datetime.utcnow())",
+        "java": "new ObjectId(new java.util.Date())",
+        "csharp": "new ObjectId.GenerateNewId(DateTime.Now)",
+        "shell": "ObjectId.fromDate(new Date())"
+      },
+      {
+        "description": "isValid",
+        "javascript": "ObjectId.isValid('5ab901c29ee65f5c8550c5b9')",
+        "python": "ObjectId.is_valid('5ab901c29ee65f5c8550c5b9')",
+        "java": "ObjectId.isValid(\"5ab901c29ee65f5c8550c5b9\")",
+        "csharp": "new ObjectId(\"5ab901c29ee65f5c8550c5b9\")",
+        "shell": "new ObjectId('5ab901c29ee65f5c8550c5b9')"
+      }
+    ],
+    "Regex": [
+      {
+        "description": "from_native",
+        "javascript": "",
+        "python": "RegExp(re.compile('abc', 1))",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      }
+    ]
+  }
+}

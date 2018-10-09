@@ -134,12 +134,24 @@ Templates:
     CodeCodeArgsTemplate: &CodeCodeArgsTemplate null
     CodeScopeTemplate: &CodeScopeTemplate null
     CodeScopeArgsTemplate: &CodeScopeArgsTemplate null
-    ObjectIdToStringTemplate: &ObjectIdToStringTemplate null
-    ObjectIdToStringArgsTemplate: &ObjectIdToStringArgsTemplate null
+    ObjectIdToStringTemplate: &ObjectIdToStringTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.toString()`;
+        }
+    ObjectIdToStringArgsTemplate: &ObjectIdToStringArgsTemplate !!js/function >
+        () => {
+            return '';
+        }
     ObjectIdEqualsTemplate: &ObjectIdEqualsTemplate null
     ObjectIdEqualsArgsTemplate: &ObjectIdEqualsArgsTemplate null
-    ObjectIdGetTimestampTemplate: &ObjectIdGetTimestampTemplate null
-    ObjectIdGetTimestampArgsTemplate: &ObjectIdGetTimestampArgsTemplate null
+    ObjectIdGetTimestampTemplate: &ObjectIdGetTimestampTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.getTimestamp()`;
+        }
+    ObjectIdGetTimestampArgsTemplate: &ObjectIdGetTimestampArgsTemplate !!js/function >
+        () => {
+            return '';
+        }
     BinaryValueTemplate: &BinaryValueTemplate null
     BinaryValueArgsTemplate: &BinaryValueArgsTemplate null
     BinaryLengthTemplate: &BinaryLengthTemplate null
@@ -274,9 +286,17 @@ Templates:
         (lhs) => {
             return `${lhs}.getLowBits()`;
         }
-    TimestampITemplate: &TimestampITemplate !!js/function
+    TimestampITemplate: &TimestampITemplate !!js/function >
         (lhs) => {
             return `${lhs}.getHighBits()`;
+        }
+    TimestampAsDateTemplate: &TimestampAsDateTemplate !!js/function >
+        (lhs) => {
+            return `new Date(${lhs}.getHighBits() * 1000)`;
+        }
+    TimestampAsDateArgsTemplate: &TimestampAsDateArgsTemplate !!js/function >
+        () => {
+            return '';
         }
     TimestampCompareTemplate: &TimestampCompareTemplate null
     TimestampCompareArgsTemplate: &TimestampCompareArgsTemplate null

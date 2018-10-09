@@ -3,7 +3,7 @@
     "Code": [
       {
         "description": "CodeWithScope scope",
-        "javascript": "Code('test code', {x: 1}).scope",
+        "javascript": "new Code('test code', {\n  'x': 1\n}).scope",
         "python": "Code('test code', {\n    'x': 1\n}).scope",
         "java": "new CodeWithScope(\"test code\", new Document(\"x\", 1L)).getScope()",
         "csharp": "new BsonJavaScriptWithScope(\"test code\", new BsonDocument(\"x\", 1)).Scope",
@@ -13,7 +13,7 @@
     "ObjectId": [
       {
         "description": "binary",
-        "javascript": "ObjectId('5ab901c29ee65f5c8550c5b9').toString()",
+        "javascript": "new ObjectId('5ab901c29ee65f5c8550c5b9').toString()",
         "python": "ObjectId('5ab901c29ee65f5c8550c5b9').binary",
         "java": "new ObjectId(\"5ab901c29ee65f5c8550c5b9\").toHexString()",
         "csharp": "new ObjectId(\"5ab901c29ee65f5c8550c5b9\").ToString()",
@@ -21,7 +21,7 @@
       },
       {
         "description": "getTimestamp",
-        "javascript": "ObjectId('5ab901c29ee65f5c8550c5b9').getTimestamp()",
+        "javascript": "new ObjectId('5ab901c29ee65f5c8550c5b9').getTimestamp()",
         "python": "ObjectId('5ab901c29ee65f5c8550c5b9').generation_time",
         "java": "new ObjectId(\"5ab901c29ee65f5c8550c5b9\").getTimestamp()",
         "csharp": "new ObjectId(\"5ab901c29ee65f5c8550c5b9\").Timestamp",
@@ -57,7 +57,7 @@
     "Timestamp": [
       {
         "description": "time",
-        "javascript": "Timestamp(1, 100).getLowBits()",
+        "javascript": "new Timestamp(1, 100).getLowBits()",
         "python": "Timestamp(1, 100).time",
         "java": "new BSONTimestamp(1, 100).getTime()",
         "csharp": "new BsonTimestamp(1, 100).ToUniversalTime()",
@@ -65,7 +65,7 @@
       },
       {
         "description": "inc",
-        "javascript": "Timestamp(1, 100).getHighBits()",
+        "javascript": "new Timestamp(1, 100).getHighBits()",
         "python": "Timestamp(1, 100).inc",
         "java": "new BSONTimestamp(1, 100).getInc()",
         "csharp": "new BsonTimestamp(1, 100).Increment",
@@ -73,11 +73,11 @@
       },
       {
         "description": "as_datetime",
-        "javascript": "",
+        "javascript": "new Date(new Timestamp(1, 100).getHighBits() * 1000)",
         "python": "Timestamp(1, 100).as_datetime",
-        "java": "",
-        "csharp": "",
-        "shell": ""
+        "java": "new Date(new BSONTimestamp(1, 100).getTime())",
+        "csharp": "new DateTime(1970, 1, 1).AddSeconds(new BsonTimestamp(1, 100).Timestamp)",
+        "shell": "new Date(new Timestamp(1, 100).getHighBits() * 1000)"
       }
     ]
   }

@@ -236,15 +236,15 @@ term: factor (('*'|'@'|'/'|'%'|'//') factor)*;
 factor: ('+'|'-'|'~') factor | power;
 power: atom ('**' factor)?;
 atom
- : set_literal          #AtomLiteral
- | object_literal       #ObjectLiteral
- | array_literal        #ArrayLiteral
- | identifier           #Identfier
- | number_literal       #NumberLiteral
- | string_literal+      #StringLiteral
- | '...'                #DotDotDot
- | none_literal         #NoneLiteral
- | boolean_literal      #BooleanLiteral
+ : set_literal          #SetAtom
+ | object_literal       #ObjectAtom
+ | array_literal        #ArrayAtom
+ | identifier           #IdentifierAtom
+ | number_literal       #NumberAtom
+ | string_literal+      #StringAtom
+ | '...'                #DotDotDotAtom
+ | none_literal         #NoneAtom
+ | boolean_literal      #BooleanAtom
  | atom paren_trailer   #FunctionCall
  | atom bracket_trailer #IndexAccess
  | atom dot_trailer     #AttributeAccess
@@ -324,12 +324,12 @@ string_literal
  ;
 
 number_literal
- : integer_literal
- | oct_literal
- | hex_literal
- | bin_literal
- | float_literal
- | imag_literal
+ : integer_literal  #IntegerLiteral
+ | oct_literal      #OctLiteral
+ | hex_literal      #HexLiteral
+ | bin_literal      #BinLiteral
+ | float_literal    #FloatLiteral
+ | imag_literal     #ImagLiteral
  ;
 
 integer_literal

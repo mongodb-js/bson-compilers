@@ -10,23 +10,19 @@ const unsupported = {
     python: {
       java: {
         'language-types': ['re.compile'],
-        'bson-utils': ['*'],
-        'bson-methods': ['*']
+        'bson-utils': ['ObjectId', 'Regex']
       },
       javascript: {
         'language-types': ['re.compile'],
-        'bson-utils': ['*'],
-        'bson-methods': ['*']
+        'bson-utils': ['ObjectId', 'Regex']
       },
       shell: {
         'language-types': ['re.compile'],
-        'bson-utils': ['*'],
-        'bson-methods': ['*']
+        'bson-utils': ['ObjectId', 'Regex']
       },
       csharp: {
         'language-types': ['re.compile'],
-        'bson-utils': ['*'],
-        'bson-methods': ['*']
+        'bson-utils': ['ObjectId', 'Regex']
       }
     }
   },

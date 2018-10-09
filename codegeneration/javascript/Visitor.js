@@ -301,6 +301,7 @@ class Visitor extends ECMAScriptVisitor {
         args = this.visit(properties);
       }
     }
+    ctx.indentDepth--;
     if (ctx.type.template) {
       return ctx.type.template(args, ctx.indentDepth);
     }

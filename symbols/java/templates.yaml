@@ -178,13 +178,22 @@ Templates:
     # BSON Object Method templates
     ObjectIdToStringTemplate: &ObjectIdToStringTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.toHexString`;
+            return `${lhs}.toHexString()`;
         }
-    ObjectIdToStringArgsTemplate: &ObjectIdToStringArgsTemplate null
+    ObjectIdToStringArgsTemplate: &ObjectIdToStringArgsTemplate !!js/function >
+        () => {
+            return '';
+        }
     ObjectIdEqualsTemplate: &ObjectIdEqualsTemplate null
     ObjectIdEqualsArgsTemplate: &ObjectIdEqualsArgsTemplate null
-    ObjectIdGetTimestampTemplate: &ObjectIdGetTimestampTemplate null
-    ObjectIdGetTimestampArgsTemplate: &ObjectIdGetTimestampArgsTemplate null
+    ObjectIdGetTimestampTemplate: &ObjectIdGetTimestampTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.getTimestamp()`;
+        }
+    ObjectIdGetTimestampArgsTemplate: &ObjectIdGetTimestampArgsTemplate !!js/function >
+            () => {
+                return '';
+            }
     CodeCodeTemplate: &CodeCodeTemplate !!js/function >
         (lhs) => {
             return `${lhs}.getCode()`;
@@ -500,6 +509,14 @@ Templates:
     TimestampITemplate: &TimestampITemplate !!js/function >
         (lhs) => {
             return `${lhs}.getInc()`;
+        }
+    TimestampAsDateTemplate: &TimestampAsDateTemplate !!js/function >
+        (lhs) => {
+            return `new Date(${lhs}.getTime())`;
+        }
+    TimestampAsDateArgsTemplate: &TimestampAsDateArgsTemplate !!js/function >
+        () => {
+            return '';
         }
     TimestampCompareTemplate: &TimestampCompareTemplate !!js/function >
         (lhs) => {

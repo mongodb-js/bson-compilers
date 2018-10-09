@@ -158,11 +158,15 @@ Templates:
             return `${lhs}.Scope`;
         }
     CodeScopeArgsTemplate: &CodeScopeArgsTemplate null
+    # Since in python, generated from attr access instead of func call, add () in template.
     ObjectIdToStringTemplate: &ObjectIdToStringTemplate !!js/function >
         (lhs) => {
-            return `${lhs}.ToString`;
+            return `${lhs}.ToString()`;
         }
-    ObjectIdToStringArgsTemplate: &ObjectIdToStringArgsTemplate null
+    ObjectIdToStringArgsTemplate: &ObjectIdToStringArgsTemplate !!js/function >
+        () => {
+            return '';
+        }
     ObjectIdEqualsTemplate: &ObjectIdEqualsTemplate !!js/function >
         (lhs) => {
             return `${lhs}.Equals`;
@@ -506,6 +510,14 @@ Templates:
     TimestampITemplate: &TimestampITemplate !!js/function >
         (lhs) => {
             return `${lhs}.Increment`;
+        }
+    TimestampAsDateTemplate: &TimestampAsDateTemplate !!js/function >
+        (lhs) => {
+            return `new DateTime(1970, 1, 1).AddSeconds(${lhs}.Timestamp)`;
+        }
+    TimestampAsDateArgsTemplate: &TimestampAsDateArgsTemplate !!js/function >
+        () => {
+            return '';
         }
     TimestampCompareTemplate: &TimestampCompareTemplate !!js/function >
         (lhs) => {

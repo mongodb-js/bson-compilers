@@ -53,7 +53,7 @@ BsonTypes:
         code: 103
         type: *ObjectType
         attr:
-            db:
+            database:
                 callable: *var
                 args: null
                 attr: null
@@ -121,13 +121,11 @@ BsonTypes:
                 template: *TimestampITemplate
                 argsTemplate: null
             as_datetime:
-                callable: *func
-                args: null
-                attr: null
+                <<: *__func
                 id: "inc"
                 type: *DateType
-                template: null #TODO: add to templates
-                argsTemplate: null
+                template: *TimestampAsDateTemplate
+                argsTemplate: *TimestampAsDateArgsTemplate
     Decimal128: &Decimal128Type
         <<: *__type
         id: "Decimal128"

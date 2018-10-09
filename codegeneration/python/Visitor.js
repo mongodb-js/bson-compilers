@@ -45,6 +45,7 @@ class Visitor extends Python3Visitor {
    * @returns {String}
    */
   visitChildren(ctx, options) {
+    // console.log('visiting children of ' + ctx.constructor.name);
     const opts = {
       start: 0, step: 1, separator: '', ignore: [], children: ctx.children
     };
@@ -157,7 +158,7 @@ class Visitor extends Python3Visitor {
     return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
   }
 
-  visitString_literal(ctx) {
+  visitStringAtom(ctx) {
     ctx.type = this.Types._string;
     this.requiredImports[ctx.type.code] = true;
     // Pass the original argument type to the template, not the casted type.
@@ -170,9 +171,6 @@ class Visitor extends Python3Visitor {
   }
   visitInteger_literal(ctx) {
     return this.leafHelper(this.Types._long, ctx);
-  }
-  visitOct_literal(ctx) {
-    return this.leafHelper(this.Types._octal, ctx);
   }
   visitOct_literal(ctx) {
     return this.leafHelper(this.Types._octal, ctx);
@@ -223,6 +221,7 @@ class Visitor extends Python3Visitor {
         args = this.visit(properties);
       }
     }
+    ctx.indentDepth--;
     if (ctx.type.template) {
       return ctx.type.template(args, ctx.indentDepth);
     }
@@ -356,6 +355,119 @@ class Visitor extends Python3Visitor {
       return `${str}${this.visit(arr[i - 1])} ${op} `;
     }, '');
   }
+
+  visitFunctionCall(ctx) {
+    // Skip if fake node
+    if (ctx.getChildCount() === 1) {
+      return this.visitChildren(ctx);
+    }
+    const lhs = this.visit(ctx.atom());
+    let lhsType = ctx.atom().type;
+    if (typeof lhsType === 'string') {
+      lhsType = this.Types[lhsType];
+    }
+
+    // Special case
+    if (`process${lhsType.id}` in this) {
+      return this[`process${lhsType.id}`](ctx);
+    }
+    if (`emit${lhsType.id}` in this) {
+      return this[`emit${lhsType.id}`](ctx);
+    }
+
+    // Check if callable
+    ctx.type = lhsType.type;
+    if (!lhsType.callable) {
+      throw new BsonTranspilersTypeError(`${lhsType.id} is not callable`);
+    }
+
+    // Check arguments
+    const expectedArgs = lhsType.args;
+    let rhs = this.checkArguments(
+      expectedArgs, this.getArguments(ctx), lhsType.id
+    );
+
+    // Apply the arguments template
+    if (lhsType.argsTemplate) {
+      let l = lhs;
+      if ('identifier' in ctx.atom()) {
+        l = this.visit(ctx.atom().identifier());
+      }
+      rhs = lhsType.argsTemplate(l, ...rhs);
+    } else {
+      rhs = `(${rhs.join(', ')})`;
+    }
+
+    const expr = `${lhs}${rhs}`;
+    const constructor = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR;
+
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(expr, !constructor, lhsType.code)
+      : expr;
+  }
+
+  visitAttributeAccess(ctx) {
+    // Skip if fake node
+    if (ctx.getChildCount() === 1) {
+      return this.visitChildren(ctx);
+    }
+    const lhs = this.visit(ctx.atom());
+    const rhs = ctx.dot_trailer().identifier().getText();
+
+    let type = ctx.atom().type;
+    if (typeof type === 'string') {
+      type = this.Types[type];
+    }
+    while (type !== null) {
+      if (!(type.attr.hasOwnProperty(rhs))) {
+        if (type.id in this.BsonTypes && this.BsonTypes[type.id].id !== null) {
+          throw new BsonTranspilersAttributeError(
+            `'${rhs}' not an attribute of ${type.id}`
+          );
+        }
+        type = type.type;
+        if (typeof type === 'string') {
+          type = this.Types[type];
+        }
+      } else {
+        break;
+      }
+    }
+    if (type === null) {
+      ctx.type = this.Types._undefined;
+      // TODO: how strict do we want to be?
+      return `${lhs}.${rhs}`;
+    }
+    ctx.type = type.attr[rhs];
+    if (type.attr[rhs].template) {
+      return type.attr[rhs].template(lhs, rhs);
+    }
+
+    return `${lhs}.${rhs}`;
+  }
+
+  visitIndexAccess(ctx) {
+    // Skip if fake node
+    if (ctx.getChildCount() === 1) {
+      return this.visitChildren(ctx);
+    }
+    throw new BsonTranspilersUnimplementedError('Indexing not currently supported');
+  }
+
+  visitIdentifier(ctx) {
+    const name = this.visitChildren(ctx);
+    ctx.type = this.Symbols[name];
+    if (ctx.type === undefined) {
+      throw new BsonTranspilersReferenceError(`Symbol '${name}' is undefined`);
+    }
+    this.requiredImports[ctx.type.code] = true;
+
+    if (ctx.type.template) {
+      return ctx.type.template();
+    }
+    return name;
+  }
+
   // TODO: translate flags
   // process_regex(ctx) { // eslint-disable-line camelcase
   //   ctx.type = this.Types._regex;
@@ -511,124 +623,6 @@ class Visitor extends Python3Visitor {
     return this.generateCall(
       ctx, lhsType, [args[0], argType.id], lhsStr, `(${args.join(', ')})`
     );
-  }
-
-  visitFunctionCall(ctx) {
-    // Skip if fake node
-    if (ctx.getChildCount() === 1) {
-      return this.visitChildren(ctx);
-    }
-    const lhs = this.visit(ctx.atom());
-    let lhsType = ctx.atom().type;
-    if (typeof lhsType === 'string') {
-      lhsType = this.Types[lhsType];
-    }
-
-    // Special case
-    if (`process${lhsType.id}` in this) {
-      return this[`process${lhsType.id}`](ctx);
-    }
-    if (`emit${lhsType.id}` in this) {
-      return this[`emit${lhsType.id}`](ctx);
-    }
-
-    // Check if callable
-    ctx.type = lhsType.type;
-    if (!lhsType.callable) {
-      throw new BsonTranspilersTypeError(`${lhsType.id} is not callable`);
-    }
-
-    // Check arguments
-    const expectedArgs = lhsType.args;
-    let rhs = this.checkArguments(
-      expectedArgs, this.getArguments(ctx), lhsType.id
-    );
-
-    // Apply the arguments template
-    if (lhsType.argsTemplate) {
-      let l = lhs;
-      if ('identifier' in ctx.atom()) {
-        l = this.visit(ctx.atom().identifier());
-      }
-      rhs = lhsType.argsTemplate(l, ...rhs);
-    } else {
-      rhs = `(${rhs.join(', ')})`;
-    }
-
-    const expr = `${lhs}${rhs}`;
-    const constructor = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR;
-
-    return this.Syntax.new.template
-      ? this.Syntax.new.template(expr, !constructor, lhsType.code)
-      : expr;
-  }
-
-  visitAttributeAccess(ctx) {
-    // Skip if fake node
-    if (ctx.getChildCount() === 1) {
-      return this.visitChildren(ctx);
-    }
-    const lhs = this.visit(ctx.atom());
-    const rhs = ctx.dot_trailer().identifier().getText(); // TODO: nested
-
-    if (! ('identifier' in ctx.atom())) {
-      throw new BsonTranspilersUnimplementedError(
-        'Attribute access for non-symbols not currently supported'
-      );
-    }
-
-    let type = ctx.atom().type;
-    if (typeof type === 'string') {
-      type = this.Types[type];
-    }
-    while (type !== null) {
-      if (!(type.attr.hasOwnProperty(rhs))) {
-        if (type.id in this.BsonTypes && this.BsonTypes[type.id].id !== null) {
-          throw new BsonTranspilersAttributeError(
-            `'${rhs}' not an attribute of ${type.id}`
-          );
-        }
-        type = type.type;
-        if (typeof type === 'string') {
-          type = this.Types[type];
-        }
-      } else {
-        break;
-      }
-    }
-    if (type === null) {
-      ctx.type = this.Types._undefined;
-      // TODO: how strict do we want to be?
-      return `${lhs}.${rhs}`;
-    }
-    ctx.type = type.attr[rhs];
-    if (type.attr[rhs].template) {
-      return type.attr[rhs].template(lhs, rhs);
-    }
-
-    return `${lhs}.${rhs}`;
-  }
-
-  visitIndexAccess(ctx) {
-    // Skip if fake node
-    if (ctx.getChildCount() === 1) {
-      return this.visitChildren(ctx);
-    }
-    throw new BsonTranspilersUnimplementedError('Indexing not currently supported');
-  }
-
-  visitIdentifier(ctx) {
-    const name = this.visitChildren(ctx);
-    ctx.type = this.Symbols[name];
-    if (ctx.type === undefined) {
-      throw new BsonTranspilersReferenceError(`Symbol '${name}' is undefined`);
-    }
-    this.requiredImports[ctx.type.code] = true;
-
-    if (ctx.type.template) {
-      return ctx.type.template();
-    }
-    return name;
   }
 
   /**

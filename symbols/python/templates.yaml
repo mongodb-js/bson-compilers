@@ -519,6 +519,11 @@ Templates:
         (lhs) => {
             return `${lhs}.inc`;
         }
+    TimestampAsDateTemplate: &TimestampAsDateTemplate null
+    TimestampAsDateArgsTemplate: &TimestampAsDateArgsTemplate !!js/function >
+        () => {
+            return '.as_datetime()';
+        }
     TimestampCompareTemplate: &TimestampCompareTemplate !!js/function >
         (lhs) => {
             return `(${lhs}.as_datetime() - `;

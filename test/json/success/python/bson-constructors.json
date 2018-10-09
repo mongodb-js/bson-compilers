@@ -11,11 +11,11 @@
       },
       {
         "description": "Code with string code and object scope",
-        "javascript": "new Code('string', {\n    'x': '1'\n  })",
+        "javascript": "new Code('string', {\n  'x': '1'\n})",
         "python": "Code('string', {\n    'x': '1'\n})",
         "java": "new CodeWithScope(\"string\", new Document(\"x\", \"1\"))",
         "csharp": "new BsonJavaScriptWithScope(\"string\", new BsonDocument(\"x\", \"1\"))",
-        "shell": "new Code('string', {\n    'x': '1'\n  })"
+        "shell": "new Code('string', {\n  'x': '1'\n})"
       }
     ],
     "ObjectId": [

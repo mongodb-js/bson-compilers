@@ -820,11 +820,20 @@ Templates:
             return 'new ObjectId';
         }
     ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate !!js/function >
+        (lhs, arg, isNumber) => {
+            if (isNumber) {
+                return `(new java.util.Date(${arg}))`;
+            }
+            return `(${arg})`;
+        }
+    ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate !!js/function >
+        () => {
+            return 'ObjectId.isValid';
+        }
+    ObjectIdIsValidArgsTemplate: &ObjectIdIsValidArgsTemplate !!js/function >
         (lhs, arg) => {
             return `(${arg})`;
         }
-    ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate null
-    ObjectIdIsValidArgsTemplate: &ObjectIdIsValidArgsTemplate null
     # JS Symbol Templates
     ObjectSymbolTemplate: &ObjectSymbolTemplate null
     ObjectSymbolArgsTemplate: &ObjectSymbolArgsTemplate null

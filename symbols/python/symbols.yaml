@@ -21,9 +21,9 @@ BsonSymbols:
         attr:
             from_datetime:
                 <<: *__func
-                id: "from_datetime"
+                id: "ObjectIdfrom_datetime"
                 args:
-                    - [ *NumericType, "Date" ]
+                    - [ "Date" ]
                 type: *ObjectIdType
                 template: *ObjectIdCreateFromTimeTemplate
                 argsTemplate: *ObjectIdCreateFromTimeArgsTemplate

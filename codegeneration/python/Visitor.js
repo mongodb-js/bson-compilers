@@ -626,6 +626,29 @@ class Visitor extends Python3Visitor {
   }
 
   /**
+   * Gets a process method because need to tell the template if
+   * the argument is a number or a date.
+   *
+   * @param {ParserRuleContext} ctx
+   * @returns {String} - generated code
+   */
+  processObjectIdfrom_datetime(ctx) {
+    const lhsStr = this.visit(ctx.atom());
+    let lhsType = ctx.atom().type;
+    if (typeof lhsType === 'string') {
+      lhsType = this.Types[lhsType];
+    }
+
+    const args = this.checkArguments(
+      lhsType.args, this.getArguments(ctx), lhsType.id
+    );
+    const isNumber = this.getArgumentAt(ctx, 0).type.code !== 200;
+    return this.generateCall(
+      ctx, lhsType, [args[0], isNumber], lhsStr, `(${args.join(', ')})`, true
+    );
+  }
+
+  /**
    * Validate each argument against the expected argument types defined in the
    * Symbol table.
    *

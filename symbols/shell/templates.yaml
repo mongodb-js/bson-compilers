@@ -728,10 +728,16 @@ Templates:
             return `(${arg})`;
         }
     ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function > # Also has an emit method
-        (lhs) => {
-            return 'ObjectId.fromDate';
+        () => {
+            return `ObjectId.fromDate`;
         }
-    ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate null
+    ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate !!js/function >
+        (lhs, arg, isNumber) => {
+            if (isNumber) {
+                return `(new Date(${arg}))`;
+            }
+            return `(${arg})`;
+        }
     ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate !!js/function >
         (lhs) => {
             return 'new ObjectId';

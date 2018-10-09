@@ -1004,6 +1004,29 @@ class Visitor extends ECMAScriptVisitor {
     throw new BsonTranspilersUnimplementedError('Binary type not supported');
   }
 
+  /**
+   * Gets a process method because need to tell the template if
+   * the argument is a number or a date.
+   *
+   * @param {ParserRuleContext} ctx
+   * @returns {String} - generated code
+   */
+  processObjectIdCreateFromTime(ctx) {
+    const lhsStr = this.visit(ctx.singleExpression());
+    let lhsType = ctx.singleExpression().type;
+    if (typeof lhsType === 'string') {
+      lhsType = this.Types[lhsType];
+    }
+
+    const args = this.checkArguments(
+      lhsType.args, this.getArguments(ctx), lhsType.id
+    );
+    const isNumber = this.getArgumentAt(ctx, 0).type.code !== 200;
+    return this.generateCall(
+      ctx, lhsType, [args[0], isNumber], lhsStr, `(${args.join(', ')})`, true
+    );
+  }
+
   // Getters
   getArguments(ctx) {
     if (!('arguments' in ctx) ||

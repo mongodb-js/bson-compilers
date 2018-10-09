@@ -5,9 +5,8 @@ const {
   BsonTranspilersUnimplementedError
 } = require('../../helper/error');
 
-/**
- * @param {class} superClass - where the `visitX` methods live.
- * @returns {Generator}
+/*
+ * Class for handling edge cases for java code generation. Defines "emit" methods.
  */
 module.exports = (superClass) => class ExtendedVisitor extends superClass {
   constructor() {
@@ -53,26 +52,6 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
       });
       return obj;
     }, {});
-  }
-
-  /**
-   * Accepts date or number, if date then don't convert to date.
-   *
-   * @param {FuncCallExpressionContext} ctx
-   * @return {String}
-   */
-  emitObjectIdCreateFromTime(ctx) {
-    ctx.type = 'createFromTime' in this.Symbols.ObjectId.attr ?
-      this.Symbols.ObjectId.attr.createFromTime :
-      this.Symbols.ObjectId.attr.fromDate;
-
-    const args = this.checkArguments(ctx.type.args, this.getArguments(ctx), 'ObjectId.createFromTime');
-    const template = ctx.type.template ? ctx.type.template() : '';
-    if (this.getArgumentAt(ctx, 0).type.id === 'Date') {
-      return `${template}${ctx.type.argsTemplate('', args[0])}`;
-    }
-    return `${template}${ctx.type.argsTemplate(
-      '', `new java.util.Date(${args[0]})`)}`;
   }
 
   /** The rest of the functions in this file are for generating builders **/

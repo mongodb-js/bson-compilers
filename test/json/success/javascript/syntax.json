@@ -270,20 +270,20 @@
     ],
     "Methods without args": [
       {
-        "description": "ObjectId().toString without args",
+        "description": "ObjectId().toString without args (exception)",
         "javascript": "ObjectId().toString",
-        "python": "str",
-        "java": "new ObjectId().toHexString",
-        "csharp": "new ObjectId().ToString",
-        "shell": "new ObjectId().toString"
+        "python": "str(ObjectId())",
+        "java": "new ObjectId().toHexString()",
+        "csharp": "new ObjectId().ToString()",
+        "shell": "new ObjectId().toString()"
       },
       {
-        "description": "ObjectId().getTimestamp without args",
+        "description": "ObjectId().getTimestamp without args (exception)",
         "javascript": "ObjectId().getTimestamp",
         "python": "ObjectId().generation_time",
-        "java": "new ObjectId().getTimestamp",
+        "java": "new ObjectId().getTimestamp()",
         "csharp": "new ObjectId().Timestamp",
-        "shell": "new ObjectId().getTimestamp"
+        "shell": "new ObjectId().getTimestamp()"
       },
       {
         "description": "ObjectId().equals without args",

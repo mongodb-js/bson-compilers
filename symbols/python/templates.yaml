@@ -151,12 +151,12 @@ Templates:
     CodeScopeTemplate: &CodeScopeTemplate null
     CodeScopeArgsTemplate: &CodeScopeArgsTemplate null
     ObjectIdToStringTemplate: &ObjectIdToStringTemplate !!js/function >
-        () => {
-            return 'str';
+        (lhs) => {
+            return `str(${lhs})`;
         }
     ObjectIdToStringArgsTemplate: &ObjectIdToStringArgsTemplate !!js/function >
         (lhs) => {
-            return `(${lhs})`;
+            return '';
         }
     ObjectIdEqualsTemplate: &ObjectIdEqualsTemplate !!js/function >
         (lhs) => {
@@ -824,7 +824,10 @@ Templates:
             return `ObjectId.from_datetime`;
         }
     ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate !!js/function >
-        (lhs, arg) => {
+        (lhs, arg, isNumber) => {
+            if (isNumber) {
+                return `(datetime.datetime.fromtimestamp(${arg}))`;
+            }
             return `(${arg})`;
         }
     ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate !!js/function >

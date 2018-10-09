@@ -3,19 +3,11 @@
     "ObjectId": [
       {
         "description": "createFromTime",
-        "javascript": "ObjectId.createFromTime(1522075031642)",
-        "python": "ObjectId.from_datetime(datetime.datetime.fromtimestamp(1522075031642 / 1000))",
-        "java": "new ObjectId(new java.util.Date(1522075031642L))",
-        "csharp": "new ObjectId.GenerateNewId(Convert.ToInt32(1522075031642))",
-        "shell": "ObjectId.fromDate(new Date(1522075031642))"
-      },
-      {
-        "description": "createFromTime with date",
-        "javascript": "ObjectId.createFromTime(new Date())",
-         "python": "ObjectId.from_datetime(datetime.datetime.utcnow())",
-        "java": "new ObjectId(new java.util.Date())",
-        "csharp": "new ObjectId.GenerateNewId(DateTime.Now)",
-        "shell": "ObjectId.fromDate(new Date())"
+        "javascript": "ObjectId.createFromTime(new Date('Sun, 03 Feb 1901 00:00:00 GMT').getTime() / 1000)",
+        "python": "ObjectId.from_datetime(datetime(1, 2, 3))",
+        "java": "new ObjectId(new java.util.Date(-2174601600000L))",
+        "csharp": "new ObjectId.GenerateNewId(new DateTime(1901, 2, 3, 0, 0, 0))",
+        "shell": "ObjectId.fromDate(new Date('Sun, 03 Feb 1901 00:00:00 GMT'))"
       },
       {
         "description": "isValid",

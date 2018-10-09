@@ -853,12 +853,12 @@ Templates:
         }
     ObjectIdCreateFromHexStringArgsTemplate: &ObjectIdCreateFromHexStringArgsTemplate null
     ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function > # Also has emit method
-        (lhs) => {
-            return `new ${lhs}.GenerateNewId`;
+        () => {
+            return `new ObjectId.GenerateNewId`;
         }
     ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate !!js/function >
-        (lhs, arg) => {
-            if (!Number.isNaN(parseInt(arg, 10))) {
+        (lhs, arg, isNumber) => {
+            if (isNumber) {
               return `(Convert.ToInt32(${arg}))`;
             }
             return `(${arg})`;

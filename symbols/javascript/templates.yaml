@@ -435,11 +435,20 @@ Templates:
     ObjectIdCreateFromHexStringTemplate: &ObjectIdCreateFromHexStringTemplate null
     ObjectIdCreateFromHexStringArgsTemplate: &ObjectIdCreateFromHexStringArgsTemplate null
     ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function >
-        (lhs) => {
-            return `${lhs}.createFromTime`;
+        () => {
+            return `ObjectId.createFromTime`;
         }
-    ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate null
-    ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate null
+    ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate !!js/function >
+        (lhs, arg, isNumber) => {
+            if (!isNumber) {
+                return `(${arg}.getTime() / 1000)`;
+            }
+            return `(${arg})`;
+        }
+    ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate !!js/function >
+        (lhs) => {
+            return `${lhs}.isValid`;
+        }
     ObjectIdIsValidArgsTemplate: &ObjectIdIsValidArgsTemplate null
     # JS Symbol Templates
     ObjectSymbolTemplate: &ObjectSymbolTemplate null

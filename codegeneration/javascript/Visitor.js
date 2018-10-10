@@ -172,14 +172,14 @@ class Visitor extends ECMAScriptVisitor {
     [300, 301, 302, 303, 304, 305, 306].forEach(
       (i) => (this.requiredImports[i] = [])
     );
-    return this.visitProgram(ctx);
+    return this.visitProgram(ctx).trim();
   }
 
   visitEof() {
     if (this.Syntax.eof.template) {
       return this.Syntax.eof.template();
     }
-    return '\n';
+    return '';
   }
 
   visitEos() {
@@ -228,7 +228,7 @@ class Visitor extends ECMAScriptVisitor {
         opts.children[0].type :
         this.Types._undefined;
     }
-    return code.trim();
+    return code;
   }
 
   visitEqualityExpression(ctx) {
@@ -238,6 +238,27 @@ class Visitor extends ECMAScriptVisitor {
     const op = this.visit(ctx.children[1]);
     if (this.Syntax.equality) {
       return this.Syntax.equality.template(lhs, op, rhs);
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitLogicalAndExpression(ctx) {
+    if (this.Syntax.and) {
+      return this.Syntax.and.template(ctx.singleExpression().map((t) => (this.visit(t))));
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitLogicalOrExpression(ctx) {
+    if (this.Syntax.or) {
+      return this.Syntax.or.template(ctx.singleExpression().map((t) => ( this.visit(t) )));
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitNotExpression(ctx) {
+    if (this.Syntax.not) {
+      return this.Syntax.not.template(this.visit(ctx.singleExpression()));
     }
     return this.visitChildren(ctx);
   }
@@ -265,7 +286,7 @@ class Visitor extends ECMAScriptVisitor {
     while (ctx.indentDepth === undefined) {
       ctx = ctx.parentCtx;
       if (ctx === undefined || ctx === null) {
-        return 0;
+        return -1;
       }
     }
     return ctx.indentDepth;
@@ -301,10 +322,10 @@ class Visitor extends ECMAScriptVisitor {
         args = this.visit(properties);
       }
     }
-    ctx.indentDepth--;
     if (ctx.type.template) {
       return ctx.type.template(args, ctx.indentDepth);
     }
+    ctx.indentDepth--;
     return this.visitChildren(ctx);
   }
 

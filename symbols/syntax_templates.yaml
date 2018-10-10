@@ -3,6 +3,12 @@ Syntax:
         template: *EqualitySyntaxTemplate
     in:
         template: *InSyntaxTemplate
+    and:
+        template: *AndSyntaxTemplate
+    or:
+        template: *OrSyntaxTemplate
+    not:
+        template: *NotSyntaxTemplate
     eos:
         template: *EosSyntaxTemplate
     eof:

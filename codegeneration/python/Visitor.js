@@ -69,7 +69,7 @@ class Visitor extends Python3Visitor {
         opts.children[0].type :
         this.Types._undefined;
     }
-    return code.trim();
+    return code;
   }
 
   /**
@@ -126,14 +126,14 @@ class Visitor extends Python3Visitor {
     [300, 301, 302, 303, 304, 305, 306].forEach(
       (i) => (this.requiredImports[i] = [])
     );
-    return this.visitExpr_stmt(ctx);
+    return this.visitFile_input(ctx).trim();
   }
 
   getIndentDepth(ctx) {
     while (ctx.indentDepth === undefined) {
       ctx = ctx.parentCtx;
       if (ctx === undefined || ctx === null) {
-        return 0;
+        return -1;
       }
     }
     return ctx.indentDepth;
@@ -156,6 +156,20 @@ class Visitor extends Python3Visitor {
     }
     const children = this.visitChildren(ctx);
     return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
+  }
+
+  visitEof() {
+    if (this.Syntax.eof.template) {
+      return this.Syntax.eof.template();
+    }
+    return '';
+  }
+
+  visitEos() {
+    if (this.Syntax.eos.template) {
+      return this.Syntax.eos.template();
+    }
+    return '\n';
   }
 
   visitStringAtom(ctx) {
@@ -327,6 +341,30 @@ class Visitor extends Python3Visitor {
     return this.Syntax.power.template(this.visit(ctx.atom()), this.visit(ctx.factor()));
   }
 
+  visitAnd_test(ctx) {
+    // Skip if fake node
+    if (ctx.getChildCount() === 1) {
+      return this.visitChildren(ctx);
+    }
+    return this.Syntax.and.template(ctx.not_test().map((t) => ( this.visit(t) )));
+  }
+
+  visitOr_test(ctx) {
+    // Skip if fake node
+    if (ctx.getChildCount() === 1) {
+      return this.visitChildren(ctx);
+    }
+    return this.Syntax.or.template(ctx.and_test().map((t) => ( this.visit(t) )));
+  }
+
+  visitNot_test(ctx) {
+    // Skip if fake node
+    if (ctx.getChildCount() === 1) {
+      return this.visitChildren(ctx);
+    }
+    return this.Syntax.not.template(this.visit(ctx.children[1]));
+  }
+
   visitComparison(ctx) {
     // Skip if fake node
     if (ctx.getChildCount() === 1) {
@@ -339,7 +377,7 @@ class Visitor extends Python3Visitor {
         return str;
       }
       if (i === arr.length - 1) { // Always visit the last element
-        return ` ${str}${this.visit(e)}`;
+        return `${str}${this.visit(e)}`;
       }
       if (i % 2 === 0) { // Only ops
         return str;

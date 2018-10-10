@@ -140,11 +140,11 @@ tokens { INDENT, DEDENT }
  * parser rules
  */
 
-single_input: NEWLINE | simple_stmt | compound_stmt NEWLINE;
-file_input: (NEWLINE | stmt)* EOF;
-eval_input: testlist NEWLINE* EOF;
+single_input: eos | simple_stmt | compound_stmt eos;
+file_input: (eos | stmt)* eof;
+eval_input: testlist eos* eof;
 
-decorator: '@' dotted_name ( '(' (arglist)? ')' )? NEWLINE;
+decorator: '@' dotted_name ( '(' (arglist)? ')' )? eos;
 decorators: decorator+;
 decorated: decorators (classdef | funcdef | async_funcdef);
 
@@ -167,7 +167,7 @@ varargslist: (vfpdef ('=' test)? (',' vfpdef ('=' test)?)* (',' (
 vfpdef: NAME;
 
 stmt: simple_stmt | compound_stmt;
-simple_stmt: small_stmt (';' small_stmt)* (';')? NEWLINE;
+simple_stmt: small_stmt eos;// TODO: maybe return (eos small_stmt)* to middle?
 small_stmt: (expr_stmt | del_stmt | pass_stmt | flow_stmt |
              import_stmt | global_stmt | nonlocal_stmt | assert_stmt);
 expr_stmt: testlist_star_expr (annassign | augassign (yield_expr|testlist) |
@@ -213,7 +213,7 @@ with_stmt: 'with' with_item (',' with_item)*  ':' suite;
 with_item: test ('as' expr)?;
 // NB compile.c makes sure that the default except clause is last
 except_clause: 'except' (test ('as' NAME)?)?;
-suite: simple_stmt | NEWLINE INDENT stmt+ DEDENT;
+suite: simple_stmt | eos INDENT stmt+ DEDENT;
 
 test: or_test ('if' or_test 'else' test)? | lambdef;
 test_nocond: or_test | lambdef_nocond;
@@ -362,6 +362,15 @@ none_literal
 
 identifier
  : NAME
+ ;
+
+eof
+ : EOF
+ ;
+
+eos
+ : NEWLINE? SEMI_COLON
+ | NEWLINE SEMI_COLON?
  ;
 
 /*

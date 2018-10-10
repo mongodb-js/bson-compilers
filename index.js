@@ -74,7 +74,7 @@ const loadPyTree = (input) => {
   parser.removeErrorListeners(); // Remove the default ConsoleErrorListener
   parser.addErrorListener(listener); // Add back a custom error listener
 
-  return parser.single_input();
+  return parser.file_input();
 };
 
 const getTranspiler = (loadTree, visitor, generator, symbols) => {

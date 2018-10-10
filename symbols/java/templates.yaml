@@ -32,6 +32,18 @@ Templates:
             }
             return `${str}${rhs}.contains(${lhs})`
         }
+    AndSyntaxTemplate: &AndSyntaxTemplate !!js/function >
+        (args) => {
+            return args.join(' && ');
+        }
+    OrSyntaxTemplate: &OrSyntaxTemplate !!js/function >
+        (args) => {
+            return args.join(' || ');
+        }
+    NotSyntaxTemplate: &NotSyntaxTemplate !!js/function >
+        (arg) => {
+            return `!${arg}`;
+        }
     EosSyntaxTemplate: &EosSyntaxTemplate null
     EofSyntaxTemplate: &EofSyntaxTemplate null
     FloorDivTemplate: &FloorDivSyntaxTemplate !!js/function >
@@ -111,6 +123,7 @@ Templates:
     NumericTypeTemplate: &NumericTypeTemplate null
     ArrayTypeTemplate: &ArrayTypeTemplate !!js/function >
         (literal, depth) => {
+            depth++;
             // TODO: figure out how to best do depth in an array and where to
             // insert and indent
             const indent = '\n' + '    '.repeat(depth);
@@ -140,6 +153,7 @@ Templates:
         }
     ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate !!js/function >
         (args, depth) => {
+            depth++;
             const indent = '\n' + '    '.repeat(depth);
             const doubleStringify = (str) => {
                 let newStr = str;
@@ -150,7 +164,7 @@ Templates:
                 }
                 return `"${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}"`;
             }
-            const start = `${indent}new Document(${doubleStringify(args[0][0])}, ${args[0][1]})`;
+            const start = `new Document(${doubleStringify(args[0][0])}, ${args[0][1]})`;
 
             args = args.slice(1);
             const result = args.reduce((str, pair) => {

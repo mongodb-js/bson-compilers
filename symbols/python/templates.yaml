@@ -32,6 +32,18 @@ Templates:
             }
             return `${lhs} ${str} ${rhs}`
         }
+    AndSyntaxTemplate: &AndSyntaxTemplate !!js/function >
+        (args) => {
+            return args.join(' and ');
+        }
+    OrSyntaxTemplate: &OrSyntaxTemplate !!js/function >
+        (args) => {
+            return args.join(' or ');
+        }
+    NotSyntaxTemplate: &NotSyntaxTemplate !!js/function >
+        (arg) => {
+            return `not ${arg}`;
+        }
     EosTemplate: &EosSyntaxTemplate null
     EofTemplate: &EofSyntaxTemplate null
     FloorDivTemplate: &FloorDivSyntaxTemplate !!js/function >
@@ -98,6 +110,7 @@ Templates:
     NumericTypeTemplate: &NumericTypeTemplate null
     ArrayTypeTemplate: &ArrayTypeTemplate !!js/function >
         (literal, depth) => {
+            depth++;
             if (literal === '') {
                 return '[]'
             }
@@ -124,6 +137,7 @@ Templates:
         }
     ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate !!js/function >
         (args, depth) => {
+            depth++;
             const indent = '\n' + '    '.repeat(depth);
             const closingIndent = '\n' + '    '.repeat(depth - 1);
             const singleStringify = (str) => {

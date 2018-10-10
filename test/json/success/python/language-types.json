@@ -76,64 +76,6 @@
         "shell": "~1"
       }
     ],
-    "compare": [
-      {
-        "description": "equals",
-        "python": "1 == 2",
-        "javascript": "1 === 2",
-        "java": "1L == 2L",
-        "csharp": "1 == 2",
-        "shell": "1 === 2"
-      },
-      {
-        "description": "not equals",
-        "python": "1 != 2",
-        "javascript": "1 !== 2",
-        "java": "1L != 2L",
-        "csharp": "1 != 2",
-        "shell": "1 !== 2"
-      },
-      {
-        "description": "greater/less than, or equal",
-        "python": "1 > 2 < 3 >= 4 <= 6",
-        "javascript": "1 > 2 < 3 >= 4 <= 6",
-        "java": "1L > 2L < 3L >= 4L <= 6L",
-        "csharp": "1 > 2 < 3 >= 4 <= 6",
-        "shell": "1 > 2 < 3 >= 4 <= 6"
-      },
-      {
-        "description": "is",
-        "python": "4 is 5",
-        "javascript": "4 === 5",
-        "java": "4L == 5L",
-        "csharp": "4 == 5",
-        "shell": "4 === 5"
-      },
-      {
-        "description": "is not",
-        "python": "4 is not 5",
-        "javascript": "4 !== 5",
-        "java": "4L != 5L",
-        "csharp": "4 != 5",
-        "shell": "4 !== 5"
-      },
-      {
-        "description": "in",
-        "python": "4 in [1, 2]",
-        "javascript": "[\n  1, 2\n].indexOf(4) !== -1",
-        "java": "Arrays.asList(1L, 2L).contains(4L)",
-        "csharp": "new BsonArray\n{\n    1,\n    2\n}.indexOf(4) != -1",
-        "shell": "[\n  1, 2\n].indexOf(4) !== -1"
-      },
-      {
-        "description": "not in",
-        "python": "4 not in [1, 2]",
-        "javascript": "[\n  1, 2\n].indexOf(4) === -1",
-        "java": "!Arrays.asList(1L, 2L).contains(4L)",
-        "csharp": "new BsonArray\n{\n    1,\n    2\n}.indexOf(4) == -1",
-        "shell": "[\n  1, 2\n].indexOf(4) === -1"
-      }
-    ],
     "int": [
       {
         "description": "int with number arg",

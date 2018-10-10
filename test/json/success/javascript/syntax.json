@@ -60,6 +60,48 @@
         "shell": ""
       }
     ],
+    "compare": [
+      {
+        "description": "Triple equals",
+        "javascript": "1 === 2",
+        "python": "1 == 2",
+        "java": "1L == 2L",
+        "csharp": "1 == 2",
+        "shell": "1 === 2"
+      },
+      {
+        "description": "Triple not equals",
+        "javascript": "1 !== 2",
+        "python": "1 != 2",
+        "java": "1L != 2L",
+        "csharp": "1 != 2",
+        "shell": "1 !== 2"
+      },
+      {
+        "description": "and",
+        "python": "1 and 2",
+        "javascript": "1 && 2",
+        "java": "1L && 2L",
+        "csharp": "1 && 2",
+        "shell": "1 && 2"
+      },
+      {
+        "description": "or",
+        "python": "1 or 2",
+        "javascript": "1 || 2",
+        "java": "1L || 2L",
+        "csharp": "1 || 2",
+        "shell": "1 || 2"
+      },
+      {
+        "description": "not",
+        "python": "not 2",
+        "javascript": "!2",
+        "java": "!2L",
+        "csharp": "!2",
+        "shell": "!2"
+      }
+    ],
     "Comments": [
       {
         "description": "single line comment",

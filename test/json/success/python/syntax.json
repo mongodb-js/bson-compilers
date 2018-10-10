@@ -1,0 +1,306 @@
+{
+  "tests": {
+    "Empty statement": [
+      {
+        "description": "empty",
+        "javascript": "",
+        "python": "",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "whitespace",
+        "javascript": "",
+        "python": "    ",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "semicolon",
+        "javascript": "",
+        "python": ";",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "newlines",
+        "javascript": "",
+        "python": "\n\n\n",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      }
+    ],
+    "Whitespace": [
+      {
+        "description": "newline between statements",
+        "javascript": "1\n+2",
+        "python": "1\n+2",
+        "java": "1L\n+2L",
+        "csharp": "1\n+2",
+        "shell": "1\n+2"
+      },
+      {
+        "description": "semicolon between statements",
+        "javascript": "1\n+2",
+        "python": "1; +2",
+        "java": "1L\n+2L",
+        "csharp": "1\n+2",
+        "shell": "1\n+2"
+      },
+      {
+        "description": "tabs between statements",
+        "javascript": "1+2",
+        "python": "1 \t\t +2",
+        "java": "1L+2L",
+        "csharp": "1+2",
+        "shell": "1+2"
+      },
+      {
+        "description": "escaped chars",
+        "javascript": "",
+        "python": "\r\t\n",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      }
+    ],
+    "compare": [
+      {
+        "description": "equals",
+        "python": "1 == 2",
+        "javascript": "1 === 2",
+        "java": "1L == 2L",
+        "csharp": "1 == 2",
+        "shell": "1 === 2"
+      },
+      {
+        "description": "not equals",
+        "python": "1 != 2",
+        "javascript": "1 !== 2",
+        "java": "1L != 2L",
+        "csharp": "1 != 2",
+        "shell": "1 !== 2"
+      },
+      {
+        "description": "greater/less than, or equal",
+        "python": "1 > 2 < 3 >= 4 <= 6",
+        "javascript": "1 > 2 < 3 >= 4 <= 6",
+        "java": "1L > 2L < 3L >= 4L <= 6L",
+        "csharp": "1 > 2 < 3 >= 4 <= 6",
+        "shell": "1 > 2 < 3 >= 4 <= 6"
+      },
+      {
+        "description": "is",
+        "python": "4 is 5",
+        "javascript": "4 === 5",
+        "java": "4L == 5L",
+        "csharp": "4 == 5",
+        "shell": "4 === 5"
+      },
+      {
+        "description": "is not",
+        "python": "4 is not 5",
+        "javascript": "4 !== 5",
+        "java": "4L != 5L",
+        "csharp": "4 != 5",
+        "shell": "4 !== 5"
+      },
+      {
+        "description": "in",
+        "python": "4 in [1, 2]",
+        "javascript": "[\n  1, 2\n].indexOf(4) !== -1",
+        "java": "Arrays.asList(1L, 2L).contains(4L)",
+        "csharp": "new BsonArray\n{\n    1,\n    2\n}.indexOf(4) != -1",
+        "shell": "[\n  1, 2\n].indexOf(4) !== -1"
+      },
+      {
+        "description": "not in",
+        "python": "4 not in [1, 2]",
+        "javascript": "[\n  1, 2\n].indexOf(4) === -1",
+        "java": "!Arrays.asList(1L, 2L).contains(4L)",
+        "csharp": "new BsonArray\n{\n    1,\n    2\n}.indexOf(4) == -1",
+        "shell": "[\n  1, 2\n].indexOf(4) === -1"
+      },
+      {
+        "description": "and",
+        "python": "1 and 2",
+        "javascript": "1 && 2",
+        "java": "1L && 2L",
+        "csharp": "1 && 2",
+        "shell": "1 && 2"
+      },
+      {
+        "description": "or",
+        "python": "1 or 2",
+        "javascript": "1 || 2",
+        "java": "1L || 2L",
+        "csharp": "1 || 2",
+        "shell": "1 || 2"
+      },
+      {
+        "description": "not",
+        "python": "not 2",
+        "javascript": "!2",
+        "java": "!2L",
+        "csharp": "!2",
+        "shell": "!2"
+      }
+    ],
+    "Comments": [
+      {
+        "description": "single line comment",
+        "javascript": "1",
+        "python": "1 # a comment",
+        "java": "1L",
+        "csharp": "1",
+        "shell": "1"
+      },
+      {
+        "description": "single line comment with an expression on the next line",
+        "javascript": "1\n2",
+        "python": "1 # a comment\n2",
+        "java": "1L\n2L",
+        "csharp": "1\n2",
+        "shell": "1\n2"
+      }
+    ],
+    "Parens": [
+      {
+        "description": "one set",
+        "javascript": "(1 === 1)",
+        "python": "(1 == 1)",
+        "java": "(1L == 1L)",
+        "csharp": "(1 == 1)",
+        "shell": "(1 === 1)"
+      },
+      {
+        "description": "nested parens",
+        "javascript": "((1 === (1)))",
+        "python": "((1 == (1)))",
+        "java": "((1L == (1L)))",
+        "csharp": "((1 == (1)))",
+        "shell": "((1 === (1)))"
+      }
+    ],
+    "Constructors without args": [
+      {
+        "description": "Double without args",
+        "javascript": "Double",
+        "python": "float",
+        "java": "",
+        "csharp": "",
+        "shell": ""
+      },
+      {
+        "description": "Int32 without args",
+        "javascript": "Int32",
+        "python": "int",
+        "java": "",
+        "csharp": "",
+        "shell": "NumberInt"
+      },
+      {
+        "description": "Long without args",
+        "javascript": "Long",
+        "python": "Int64",
+        "java": "",
+        "csharp": "",
+        "shell": "NumberLong"
+      },
+      {
+        "description": "Decimal128 without args",
+        "javascript": "Decimal128",
+        "python": "Decimal128",
+        "java": "Decimal128",
+        "csharp": "Decimal128",
+        "shell": "NumberDecimal"
+      },
+      {
+        "description": "ObjectId without args",
+        "javascript": "ObjectId",
+        "python": "ObjectId",
+        "java": "ObjectId",
+        "csharp": "ObjectId",
+        "shell": "ObjectId"
+      },
+      {
+        "description": "Code without args",
+        "javascript": "Code",
+        "python": "Code",
+        "java": "Code",
+        "csharp": "BsonJavaScript",
+        "shell": "Code"
+      },
+      {
+        "description": "DBRef without args",
+        "javascript": "DBRef",
+        "python": "DBRef",
+        "java": "DBRef",
+        "csharp": "MongoDBRef",
+        "shell": "DBRef"
+      },
+      {
+        "description": "Timestamp without args",
+        "javascript": "Timestamp",
+        "python": "Timestamp",
+        "java": "BSONTimestamp",
+        "csharp": "BsonTimestamp",
+        "shell": "Timestamp"
+      },
+      {
+        "description": "MinKey without args",
+        "javascript": "MinKey",
+        "python": "MinKey",
+        "java": "MinKey",
+        "csharp": "BsonMinKey",
+        "shell": "MinKey"
+      },
+      {
+        "description": "MaxKey without args",
+        "javascript": "MaxKey",
+        "python": "MaxKey",
+        "java": "MaxKey",
+        "csharp": "BsonMaxKey",
+        "shell": "MaxKey"
+      },
+      {
+        "description": "BSONRegExp without args",
+        "javascript": "BSONRegExp",
+        "python": "Regex",
+        "java": "BsonRegularExpression",
+        "csharp": "BsonRegularExpression",
+        "shell": "RegExp"
+      },
+      {
+        "description": "Date without args",
+        "javascript": "Date",
+        "python": "datetime.datetime",
+        "java": "java.util.Date",
+        "csharp": "DateTime",
+        "shell": "Date"
+      }
+    ],
+    "Methods without args": [
+      {
+        "description": "createFromTime",
+        "javascript": "ObjectId.createFromTime",
+        "python": "ObjectId.from_datetime",
+        "java": "",
+        "csharp": "",
+        "shell": "ObjectId.fromDate"
+      },
+      {
+        "description": "isValid",
+        "javascript": "ObjectId.isValid",
+        "python": "ObjectId.is_valid",
+        "java": "ObjectId.isValid",
+        "csharp": "",
+        "shell": ""
+      }
+    ]
+  }
+}

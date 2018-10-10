@@ -27,7 +27,20 @@ const unsupported = {
     }
   },
   error: {
-    python: '*'
+    python: {
+      java: {
+        'argument-error': []
+      },
+      javascript: {
+        'argument-error': ['*']
+      },
+      shell: {
+        'argument-error': ['*']
+      },
+      csharp: {
+        'argument-error': ['*']
+      }
+    }
   }
 };
 

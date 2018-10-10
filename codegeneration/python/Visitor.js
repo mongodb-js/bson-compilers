@@ -601,7 +601,12 @@ class Visitor extends Python3Visitor {
         try {
           v = parseInt(k.getText(), 10);
         } catch (e) {
-          throw new BsonTranspilersInternalError(
+          throw new BsonTranspilersRuntimeError(
+            `Unable to convert datetime argument to integer: ${k.getText()}`
+          );
+        }
+        if (isNaN(v)) {
+          throw new BsonTranspilersRuntimeError(
             `Unable to convert datetime argument to integer: ${k.getText()}`
           );
         }

@@ -1,0 +1,75 @@
+{
+  "tests": {
+    "Code": [
+      {
+        "description": "Code with invalidMethod",
+        "query": "Code('test code', {'x': 1}).invalidMethod()",
+        "errorCode": "E_BSONTRANSPILERS_ATTRIBUTE"
+      }
+    ],
+    "ObjectId": [
+      {
+        "description": "ObjectId with invalidMethod",
+        "query": "ObjectId().invalidMethod()",
+        "errorCode": "E_BSONTRANSPILERS_ATTRIBUTE"
+      }
+    ],
+    "DBRef": [
+      {
+        "description": "DBRef with invalidMethod",
+        "query": "DBRef('coll', ObjectId()).invalidMethod()",
+        "errorCode": "E_BSONTRANSPILERS_ATTRIBUTE"
+      },
+      {
+        "description": "DBRef with invalidProperty",
+        "query": "DBRef('coll', ObjectId()).invalidProperty",
+        "errorCode": "E_BSONTRANSPILERS_ATTRIBUTE"
+      }
+    ],
+    "int": [
+      {
+        "description": "int with invalidOtherMethod",
+        "query": "int(3).invalidOtherMethod()",
+        "errorCode": "E_BSONTRANSPILERS_TYPE"
+      }
+    ],
+    "float": [
+      {
+        "description": "float with invalidOtherMethod",
+        "query": "float(3).invalidOtherMethod()",
+        "errorCode": "E_BSONTRANSPILERS_TYPE"
+      }
+    ],
+    "Int64": [
+      {
+        "description": "Int64 with invalidMethod",
+        "query": "Int64(100).invalidMethod()",
+        "errorCode": "E_BSONTRANSPILERS_ATTRIBUTE"
+      },
+      {
+        "description": "Int64 with wrong attribute",
+        "query": "Int64.WRONG_ATTRIBUTE",
+        "errorCode": "E_BSONTRANSPILERS_ATTRIBUTE"
+      }
+    ],
+    "Decimal128": [
+      {
+        "description": "Decimal128 with invalidMethod",
+        "query": "Decimal128('1').invalidMethod()",
+        "errorCode": "E_BSONTRANSPILERS_ATTRIBUTE"
+      }
+    ],
+    "Timestamp": [
+      {
+        "description": "Timestamp with invalidMethod",
+        "query": "Timestamp(1, 100).invalidMethod()",
+        "errorCode": "E_BSONTRANSPILERS_ATTRIBUTE"
+      },
+      {
+        "description": "Timestamp with invalidProperty",
+        "query": "Timestamp(1, 100).invalidProperty",
+        "errorCode": "E_BSONTRANSPILERS_ATTRIBUTE"
+      }
+    ]
+  }
+}

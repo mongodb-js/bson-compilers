@@ -965,7 +965,7 @@ const basicTest = {
   ]
 };
 
-describe('Java Builders', () => {
+xdescribe('Java Builders', () => {
   describe('The default', () => {
     it('is idiomatic', () => {
       expect(

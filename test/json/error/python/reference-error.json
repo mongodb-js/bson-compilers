@@ -1,0 +1,18 @@
+{
+  "tests": {
+    "Identifier": [
+      {
+        "description": "top level symbol",
+        "query": "x",
+        "errorCode": "E_BSONTRANSPILERS_REFERENCE",
+        "message": "x"
+      },
+      {
+        "description": "argument symbol",
+        "query": "Int64(x)",
+        "errorCode": "E_BSONTRANSPILERS_REFERENCE",
+        "message": "x"
+      }
+    ]
+  }
+}

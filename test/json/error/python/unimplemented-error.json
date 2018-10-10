@@ -1,0 +1,12 @@
+{
+  "tests": {
+    "Binary": [
+      {
+        "description": "Binary",
+        "query": "Binary(1)",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Binary"
+      }
+    ],
+  }
+}

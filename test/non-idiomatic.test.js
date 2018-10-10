@@ -71,7 +71,7 @@ const nonIdiomaticDocs = [
   }
 ];
 
-describe('Non-idiomatic documents', () => {
+xdescribe('Non-idiomatic documents', () => {
   describe('non-idiomatic java documents from javascript', () => {
     for (const test of nonIdiomaticDocs) {
       it(test.description, () => {

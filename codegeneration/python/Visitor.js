@@ -260,6 +260,9 @@ class Visitor extends Python3Visitor {
    * @param {ParserContext} ctx
    */
   testComprehension(ctx) {
+    if (ctx === null) {
+      return;
+    }
     if (('comp_for' in ctx && ctx.comp_for() !== null) || ('comp_if' in ctx && ctx.comp_if() !== null)) {
       throw new BsonTranspilersUnimplementedError(
         'Comprehensions not yet implemented'

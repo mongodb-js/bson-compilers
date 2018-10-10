@@ -170,8 +170,8 @@ stmt: simple_stmt | compound_stmt;
 simple_stmt: small_stmt eos;// TODO: maybe return (eos small_stmt)* to middle?
 small_stmt: (expr_stmt | del_stmt | pass_stmt | flow_stmt |
              import_stmt | global_stmt | nonlocal_stmt | assert_stmt);
-expr_stmt: testlist_star_expr (annassign | augassign (yield_expr|testlist) |
-                     ('=' (yield_expr|testlist_star_expr))*);
+expr_stmt: testlist_star_expr (annassign | augassign (yield_expr|testlist) | assign_stmt?);
+assign_stmt: ('=' (yield_expr|testlist_star_expr))+;
 annassign: ':' test ('=' test)?;
 testlist_star_expr: (test|star_expr) (',' (test|star_expr))* (',')?;
 augassign: ('+=' | '-=' | '*=' | '@=' | '/=' | '%=' | '&=' | '|=' | '^=' |
@@ -215,7 +215,8 @@ with_item: test ('as' expr)?;
 except_clause: 'except' (test ('as' NAME)?)?;
 suite: simple_stmt | eos INDENT stmt+ DEDENT;
 
-test: or_test ('if' or_test 'else' test)? | lambdef;
+test: or_test inline_if? | lambdef;
+inline_if: 'if' or_test 'else' test;
 test_nocond: or_test | lambdef_nocond;
 lambdef: 'lambda' (varargslist)? ':' test;
 lambdef_nocond: 'lambda' (varargslist)? ':' test_nocond;
@@ -242,7 +243,7 @@ atom
  | identifier           #IdentifierAtom
  | number_literal       #NumberAtom
  | string_literal+      #StringAtom
- | '...'                #DotDotDotAtom
+ | '...'                #EllipsesAtom
  | none_literal         #NoneAtom
  | boolean_literal      #BooleanAtom
  | atom paren_trailer   #FunctionCall

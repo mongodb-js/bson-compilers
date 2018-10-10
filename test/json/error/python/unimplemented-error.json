@@ -8,5 +8,298 @@
         "message": "Binary"
       }
     ],
+    "small_stmt": [
+      {
+        "description": "del_stmt",
+        "query": "del x[1]",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Del"
+      },
+      {
+        "description": "pass_stmt",
+        "query": "pass",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Pass"
+      },
+      {
+        "description": "flow_stmt:break",
+        "query": "break",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Flow"
+      },
+      {
+        "description": "flow_stmt:continue",
+        "query": "continue",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Flow"
+      },
+      {
+        "description": "flow_stmt:return",
+        "query": "return 1",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Flow"
+      },
+      {
+        "description": "flow_stmt:raise",
+        "query": "raise",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Flow"
+      },
+      {
+        "description": "flow_stmt:yield",
+        "query": "yield",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Flow"
+      },
+      {
+        "description": "import_stmt:name",
+        "query": "import bson",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Import"
+      },
+      {
+        "description": "import_stmt:from",
+        "query": "from bson import *",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Import"
+      },
+      {
+        "description": "global_stmt",
+        "query": "global x",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Global"
+      },
+      {
+        "description": "nonlocal_stmt",
+        "query": "nonlocal x",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Nonlocal"
+      },
+      {
+        "description": "assert_stmt",
+        "query": "assert True",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Assert"
+      }
+    ],
+    "compound_stmt": [
+      {
+        "description": "if_stmt",
+        "query": "if(True):\n    1",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "If"
+      },
+      {
+        "description": "if_stmt:else",
+        "query": "if(True):\n    1\nelse:\n    2",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "If"
+      },
+      {
+        "description": "while_stmt",
+        "query": "while(True):\n    1",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "While"
+      },{
+        "description": "while_stmt:else",
+        "query": "while(True):\n    1\nelse:\n    2",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "While"
+      },
+      {
+        "description": "for_stmt",
+        "query": "for x in []:\n    1",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "For"
+      },
+      {
+        "description": "for_stmt:else",
+        "query": "for x in []:\n    1\nelse:\n    2",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "For"
+      },
+      {
+        "description": "try_stmt",
+        "query": "try:\n    1\nexcept e:\n    2",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Try"
+      },
+      {
+        "description": "try_stmt:multiple except",
+        "query": "try:\n    1\nexcept e:\n    2\nexcept a:\n    3",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Try"
+      },
+      {
+        "description": "try_stmt:finally",
+        "query": "try:\n    1\nexcept e:\n    2\nfinally:\n    3",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Try"
+      },
+      {
+        "description": "try_stmt:else",
+        "query": "try:\n    1\nexcept e:\n    2\nelse:\n    3",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Try"
+      },
+      {
+        "description": "with_stmt",
+        "query": "with x as y:\n    1",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "With"
+      },
+      {
+        "description": "funcdef",
+        "query": "def x(a, b):\n    1",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Funcdef"
+      },
+      {
+        "description": "classdef",
+        "query": "class x(a, b):\n    1",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Classdef"
+      },
+      {
+        "description": "decorated:class",
+        "query": "@a\nclass x(a, b):\n    1",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Decorated"
+      },
+      {
+        "description": "decorated:func",
+        "query": "@a\ndef x(a, b):\n    1",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Decorated"
+      },
+      {
+        "description": "decorated:async",
+        "query": "@a\nasync def x(a, b):\n    1",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Decorated"
+      },
+      {
+        "description": "async_stmt:with",
+        "query": "async with x as y:\n    1",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Async"
+      },
+      {
+        "description": "async_stmt:funcdef",
+        "query": "async def x(a, b):\n    1",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Async"
+      },
+      {
+        "description": "async_stmt:for",
+        "query": "async for x in []:\n    1\nelse:\n    2",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Async"
+      }
+    ],
+    "comprehensions": [
+      {
+        "description": "list comprehension for",
+        "query": "[x for x in range(100)]",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Comprehensions"
+      },
+      {
+        "description": "list comprehension for",
+        "query": "[x for x in [1, 2]]",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Comprehensions"
+      },
+      {
+        "description": "list comprehension for",
+        "query": "[x for x in y]",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Comprehensions"
+      },
+      {
+        "description": "dict comprehension for",
+        "query": "{x: 1 for x in range(100)}",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Comprehensions"
+      },
+      {
+        "description": "dict comprehension for",
+        "query": "{x: 1 for x in [1, 2]}",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Comprehensions"
+      },
+      {
+        "description": "dict comprehension for",
+        "query": "{x for x in y}",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Comprehensions"
+      }
+    ],
+    "inline_if": [
+      {
+        "description": "inline if",
+        "query": "1 if 1 in y else z",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Inline_ifContext"
+      },
+      {
+        "description": "array inline if",
+        "query": "[1 if 1 in y else z]",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Inline_ifContext"
+      },
+      {
+        "description": "set inline if",
+        "query": "(1 if 1 in y else z)",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Inline_ifContext"
+      },
+      {
+        "description": "dict inline if",
+        "query": "{'x': 1 if 1 in y else z}",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Inline_ifContext"
+      }
+    ],
+    "spread": [
+      {
+        "description": "EllipsesAtom",
+        "query": "...",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Ellipses"
+      }
+    ],
+    "assign": [
+      {
+        "description": "Assign",
+        "query": "x = 10",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Assignment"
+      },
+      {
+        "description": "AugAssign:+",
+        "query": "x += 10",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Assignment"
+      },
+      {
+        "description": "AugAssign:+",
+        "query": "x -= 10",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Assignment"
+      },
+      {
+        "description": "AugAssign:+",
+        "query": "x *= 10",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Assignment"
+      },
+      {
+        "description": "AnnAssign",
+        "query": "x:y = 1",
+        "errorCode": "E_BSONTRANSPILERS_UNIMPLEMENTED",
+        "message": "Assignment"
+      }
+    ]
   }
 }

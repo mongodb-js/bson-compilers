@@ -23,6 +23,32 @@ class Visitor extends Python3Visitor {
     this.idiomatic = true;
     this.processfloat = this.processint;
     this.processInt64 = this.processint;
+
+
+    // Throw UnimplementedError for nodes with expressions that we don't support
+    this.visitDel_stmt =
+    this.visitPass_stmt =
+    this.visitFlow_stmt =
+    this.visitImport_stmt =
+    this.visitGlobal_stmt =
+    this.visitNonlocal_stmt =
+    this.visitAssert_stmt =
+    this.visitIf_stmt =
+    this.visitWhile_stmt =
+    this.visitFor_stmt =
+    this.visitTry_stmt =
+    this.visitWith_stmt =
+    this.visitFuncdef =
+    this.visitClassdef =
+    this.visitDecorated =
+    this.visitAsync_stmt =
+    this.visitComp_iter =
+    this.visitStar_expr =
+    this.visitInline_if =
+    this.visitAssign_stmt =
+    this.visitEllipsesAtom =
+    this.visitAugassign =
+      this.unimplemented;
   }
   deepCopyRequiredImports() {
     const copy = Object.assign({}, this.requiredImports);
@@ -70,6 +96,14 @@ class Visitor extends Python3Visitor {
         this.Types._undefined;
     }
     return code;
+  }
+
+  unimplemented(ctx) {
+    const name = ctx.constructor.name ?
+      ctx.constructor.name.replace('_stmt', '') : 'Expression';
+    throw new BsonTranspilersUnimplementedError(
+      `'${name}' not yet implemented`
+    );
   }
 
   /**
@@ -207,7 +241,36 @@ class Visitor extends Python3Visitor {
   visitNone_literal(ctx) {
     return this.leafHelper(this.Types._null, ctx);
   }
+
+  visitExpr_stmt(ctx) {
+    if (
+      ('assign_stmt' in ctx && ctx.assign_stmt() !== null) ||
+      ('augassign' in ctx && ctx.augassign() !== null) ||
+      ('annassign' in ctx && ctx.annassign() !== null)
+    ) {
+      throw new BsonTranspilersUnimplementedError(
+        'Assignment not yet implemented'
+      );
+    }
+    return this.visitChildren(ctx);
+  }
+
+  /**
+   * Want to throw unimplemented for comprehensions instead of reference errors.
+   * @param {ParserContext} ctx
+   */
+  testComprehension(ctx) {
+    if (('comp_for' in ctx && ctx.comp_for() !== null) || ('comp_if' in ctx && ctx.comp_if() !== null)) {
+      throw new BsonTranspilersUnimplementedError(
+        'Comprehensions not yet implemented'
+      );
+    }
+  }
+
   visitObject_literal(ctx) {
+    if (ctx.dictorsetmaker()) {
+      this.testComprehension(ctx.dictorsetmaker());
+    }
     if (this.idiomatic && 'emitIdiomaticObjectLiteral' in this) {
       return this.emitIdiomaticObjectLiteral(ctx);
     }
@@ -248,6 +311,7 @@ class Visitor extends Python3Visitor {
     this.requiredImports[9] = true;
     let args = '';
     const list = ctx.testlist_comp();
+    this.testComprehension(list);
     if (list) {
       // Sets of 1 item is the same as the item itself, but keep parens for math
       if (list.children.length === 1) {
@@ -279,6 +343,7 @@ class Visitor extends Python3Visitor {
     this.requiredImports[9] = true;
     let args = '';
     if (ctx.testlist_comp()) {
+      this.testComprehension(ctx.testlist_comp());
       const visitedChildren = ctx.testlist_comp().children.map((child) => {
         return this.visit(child);
       });
@@ -689,6 +754,16 @@ class Visitor extends Python3Visitor {
     return this.generateCall(
       ctx, lhsType, [args[0], isNumber], lhsStr, `(${args.join(', ')})`, true
     );
+  }
+
+  /**
+   * Binary needs preprocessing because it needs to be executed. Manually check
+   * argument length because 'Buffer' not supported.
+   *
+   * TODO: figure out if it ever makes sense to support Binary.
+   */
+  processBinary() {
+    throw new BsonTranspilersUnimplementedError('Binary type not supported');
   }
 
   /**

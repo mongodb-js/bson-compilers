@@ -205,7 +205,7 @@
       },
       {
         "description": "Long without args",
-        "javascript": "Long",
+        "javascript": "",
         "python": "Int64",
         "java": "",
         "csharp": "",
@@ -278,7 +278,7 @@
       {
         "description": "Date without args",
         "javascript": "Date",
-        "python": "datetime.datetime",
+        "python": "datetime",
         "java": "java.util.Date",
         "csharp": "DateTime",
         "shell": "Date"
@@ -289,8 +289,8 @@
         "description": "createFromTime",
         "javascript": "ObjectId.createFromTime",
         "python": "ObjectId.from_datetime",
-        "java": "",
-        "csharp": "",
+        "java": "new ObjectId",
+        "csharp": "new ObjectId.GenerateNewId",
         "shell": "ObjectId.fromDate"
       },
       {
@@ -298,8 +298,8 @@
         "javascript": "ObjectId.isValid",
         "python": "ObjectId.is_valid",
         "java": "ObjectId.isValid",
-        "csharp": "",
-        "shell": ""
+        "csharp": "new ObjectId",
+        "shell": "new ObjectId"
       }
     ]
   }

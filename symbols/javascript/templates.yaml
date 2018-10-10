@@ -431,15 +431,15 @@ Templates:
     BSONRegExpSymbolArgsTemplate: &BSONRegExpSymbolArgsTemplate null
     Decimal128SymbolTemplate: &Decimal128SymbolTemplate !!js/function >
         () => {
-            return 'Decimal128.fromString';
+            return 'Decimal128';
         }
     Decimal128SymbolArgsTemplate: &Decimal128SymbolArgsTemplate !!js/function >
         (lhs, arg) => {
             arg = arg === undefined ? '0' : arg.toString();
             if (arg.charAt(0) === '\'' && arg.charAt(arg.length - 1) === '\'') {
-                return `(${arg})`;
+                return `.fromString(${arg})`;
             }
-            return `('${arg}')`;
+            return `.fromString('${arg}')`;
         }
     Decimal128SymbolFromStringTemplate: &Decimal128SymbolFromStringTemplate null
     Decimal128SymbolFromStringArgsTemplate: &Decimal128SymbolFromStringArgsTemplate null

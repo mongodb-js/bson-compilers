@@ -1,4 +1,4 @@
-/* eslint complexity: 0 */
+/* eslint complexity: 0 camelcase: 0*/
 const Python3Visitor = require('../../lib/antlr/Python3Visitor').Python3Visitor;
 const {
   BsonTranspilersArgumentError,
@@ -142,8 +142,8 @@ class Visitor extends Python3Visitor {
   /**
    * Helper for literals.
    *
-   * @param setType {Object}
-   * @param ctx {ParserContext}
+   * @param {Object} setType
+   * @param {ParserContext} ctx
    * @return {String}
    */
   leafHelper(setType, ctx) {

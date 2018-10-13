@@ -972,7 +972,10 @@ Templates:
         () => {
             return 'MaxKey';
         }
-    109ImportTemplate: &109ImportTemplate null
+    109ImportTemplate: &109ImportTemplate !!js/function >
+        () => {
+            return 'Regex';
+        }
     110ImportTemplate: &110ImportTemplate !!js/function >
         () => {
             return 'Timestamp';

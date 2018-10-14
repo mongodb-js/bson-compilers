@@ -1,5 +1,6 @@
 /* eslint no-sync: 0 */
 const parse = require('fast-json-parse');
+const yaml = require('js-yaml');
 const fs = require('fs');
 const chai = require('chai');
 const expect = chai.expect;
@@ -66,6 +67,11 @@ const readJSON = (filename) => {
   return parseResult.value;
 };
 
+const readYAML = (filename) => {
+  const parseResult = yaml.load(fs.readFileSync(filename));
+  return parseResult;
+};
+
 const runTest = function(mode, testname, inputLang, outputLang, tests) {
   if (inputLang === outputLang) {
     return;
@@ -92,4 +98,4 @@ const runTest = function(mode, testname, inputLang, outputLang, tests) {
   });
 };
 
-module.exports = { readJSON, runTest };
+module.exports = { readJSON, runTest, readYAML };

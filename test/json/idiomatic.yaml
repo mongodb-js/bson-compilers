@@ -2,12 +2,12 @@ runner: !!js/function >
     (it, expect, input, output, transpiler, test) => {
         it(`${test.input[input]} equals expected`, () => {
             expect(
-                transpiler[input].java.compile(test.input[input], true)
-            ).to.equal(test.output.java);
+                transpiler[input][output].compile(test.input[input], true)
+            ).to.equal(test.output[output]);
         });
         it(`${test.input[input]} imports correctly`, () => {
             expect(
-                transpiler[input].java.getImports()
+                transpiler[input][output].getImports()
             ).to.equal(test.imports);
         });
     }

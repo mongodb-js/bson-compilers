@@ -1,3 +1,16 @@
+runner: !!js/function >
+    (it, expect, input, output, transpiler, test) => {
+        it(`${test.input[input]} equals expected`, () => {
+            expect(
+                transpiler[input].java.compile(test.input[input], true)
+            ).to.equal(test.output.java);
+        });
+        it(`${test.input[input]} imports correctly`, () => {
+            expect(
+                transpiler[input].java.getImports()
+            ).to.equal(test.imports);
+        });
+    }
 tests:
     default doc:
     - input:

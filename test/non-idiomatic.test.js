@@ -71,19 +71,19 @@ const nonIdiomaticDocs = [
   }
 ];
 
-xdescribe('Non-idiomatic documents', () => {
-  describe('non-idiomatic java documents from javascript', () => {
-    for (const test of nonIdiomaticDocs) {
-      it(test.description, () => {
-        expect(transpiler.javascript.java.compile(test.javascript, false)).to.equal(test.java);
-      });
-    }
-  });
-  describe('non-idiomatic java documents from shell', () => {
-    for (const test of nonIdiomaticDocs) {
-      it(test.description, () => {
-        expect(transpiler.shell.java.compile(test.javascript, false)).to.equal(test.java);
-      });
-    }
-  });
-});
+// xdescribe('Non-idiomatic documents', () => {
+//   describe('non-idiomatic java documents from javascript', () => {
+//     for (const test of nonIdiomaticDocs) {
+//       it(test.description, () => {
+//         expect(transpiler.javascript.java.compile(test.javascript, false)).to.equal(test.java);
+//       });
+//     }
+//   });
+//   describe('non-idiomatic java documents from shell', () => {
+//     for (const test of nonIdiomaticDocs) {
+//       it(test.description, () => {
+//         expect(transpiler.shell.java.compile(test.javascript, false)).to.equal(test.java);
+//       });
+//     }
+//   });
+// });

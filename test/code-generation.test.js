@@ -16,7 +16,7 @@ describe('Test', () => {
         const testname = file.replace('.json', '');
 
         outputLanguages.forEach((outputLang) => {
-          runTest(mode, testname, inputLang, outputLang, tests);
+          // runTest(mode, testname, inputLang, outputLang, tests);
         });
       });
     });

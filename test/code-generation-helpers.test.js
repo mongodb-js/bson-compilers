@@ -49,6 +49,16 @@ const tests = [
           ["_octal"],
           ["_integer"]
         ]
+      },
+      python: {
+        code: "TestFunc(100, 200, 300, 400, -500)",
+        args: [
+          ["_integer"],
+          ["_decimal"],
+          ["_hex"],
+          ["_octal"],
+          ["_integer"]
+        ]
       }
     },
     output: {
@@ -72,6 +82,18 @@ const tests = [
       },
       shell: {
         code: "TestFunc(10, 10.01, 0x6, 0o5, Number(10), Number('10'), -10)",
+        args: [
+          ["_numeric"],
+          ["_numeric"],
+          ["_numeric"],
+          ["_numeric"],
+          ["_numeric"],
+          ["_numeric"],
+          ["_numeric"]
+        ]
+      },
+      python: {
+        code: "TestFunc(10, 10.01, 0x6, 0o5, int(10), int('10'), -10)",
         args: [
           ["_numeric"],
           ["_numeric"],
@@ -107,6 +129,15 @@ const tests = [
           ["_decimal"],
           ["_integer"]
         ]
+      },
+      python: {
+        code: "TestFunc(int(10), int('10'), int(10), int('10'))",
+        args: [
+          ["_numeric"],
+          ["_long"],
+          ["_decimal"],
+          ["_integer"]
+        ]
       }
     },
     output: {
@@ -127,6 +158,16 @@ const tests = [
         ]
       },
       shell: {
+        code: "TestFunc(10, 10.01, 0x6, 0o5, -10)",
+        args: [
+          ["_long"],
+          ["_long"],
+          ["_long"],
+          ["_long"],
+          ["_long"]
+        ]
+      },
+      python: {
         code: "TestFunc(10, 10.01, 0x6, 0o5, -10)",
         args: [
           ["_long"],
@@ -163,6 +204,16 @@ const tests = [
           ["_integer"],
           ["_integer"]
         ]
+      },
+      python: {
+        code: "TestFunc(10, 10.01, 0x6, 0o5, -10)",
+        args: [
+          ["_integer"],
+          ["_integer"],
+          ["_integer"],
+          ["_integer"],
+          ["_integer"]
+        ]
       }
     },
     output: {
@@ -183,6 +234,16 @@ const tests = [
         ]
       },
       shell: {
+        code: "TestFunc(10, 10.01, 0x6, 0o5, -10)",
+        args: [
+          ["_decimal"],
+          ["_decimal"],
+          ["_decimal"],
+          ["_decimal"],
+          ["_decimal"]
+        ]
+      },
+      python: {
         code: "TestFunc(10, 10.01, 0x6, 0o5, -10)",
         args: [
           ["_decimal"],
@@ -219,6 +280,16 @@ const tests = [
           ["_hex"],
           ["_hex"]
         ]
+      },
+      python: {
+        code: "TestFunc(10, 10.01, 0x6, 0o5, -10)",
+        args: [
+          ["_hex"],
+          ["_hex"],
+          ["_hex"],
+          ["_hex"],
+          ["_hex"]
+        ]
       }
     },
     output: {
@@ -247,6 +318,16 @@ const tests = [
           ["_octal"],
           ["_octal"]
         ]
+      },
+      python: {
+        code: "TestFunc(10, 10.01, 0x6, 0o5, -10)",
+        args: [
+          ["_octal"],
+          ["_octal"],
+          ["_octal"],
+          ["_octal"],
+          ["_octal"]
+        ]
       }
     },
     output: {
@@ -267,6 +348,12 @@ const tests = [
         args: [
           ["_decimal", null]
         ]
+      },
+      python: {
+        code: "TestFunc(100)",
+        args: [
+          ["_decimal", null]
+        ]
       }
     },
     output: {
@@ -282,6 +369,30 @@ const tests = [
       },
       shell: {
         code: "Number(1)",
+        args: null
+      }
+    },
+    output: {
+      java: "1d"
+    }
+  },
+  {
+    description: "accepts float",
+    input: {
+      python: {
+        code: "float(1)",
+        args: null
+      }
+    },
+    output: {
+      java: "1d"
+    }
+  },
+  {
+    description: "accepts int",
+    input: {
+      python: {
+        code: "int(1)",
         args: null
       }
     },

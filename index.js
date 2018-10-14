@@ -85,8 +85,8 @@ const getTranspiler = (loadTree, visitor, generator, symbols) => {
   Object.assign(transpiler, {
     SYMBOL_TYPE: doc.SymbolTypes,
     BsonTypes: doc.BsonTypes,
-    Symbols: Object.assign({}, doc.BsonSymbols, doc.JSSymbols),
-    Types: Object.assign({}, doc.BasicTypes, doc.BsonTypes, doc.JSTypes),
+    Symbols: Object.assign({}, doc.BsonSymbols, doc.NativeSymbols),
+    Types: Object.assign({}, doc.BasicTypes, doc.BsonTypes, doc.NativeTypes),
     Syntax: doc.Syntax,
     Imports: doc.Imports
   });
@@ -135,6 +135,7 @@ module.exports = {
   },
   getTree: {
     javascript: loadJSTree,
+    shell: loadJSTree,
     python: loadPyTree
   }
 };

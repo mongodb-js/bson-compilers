@@ -1,4 +1,4 @@
-JSTypes:
+NativeTypes:
     Date: &DateType
         <<: *__type
         id: "Date"

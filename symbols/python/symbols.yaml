@@ -127,7 +127,7 @@ BsonSymbols:
         template: *Decimal128SymbolTemplate
         argsTemplate: *Decimal128SymbolArgsTemplate
 
-JSSymbols:
+NativeSymbols:
     datetime: # Needs process method
         id: "datetime"
         code: 200

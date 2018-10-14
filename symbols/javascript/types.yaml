@@ -464,7 +464,7 @@ BsonTypes:
                 type: *StringType
                 template: *Decimal128ToStringTemplate
                 argsTemplate: *Decimal128ToStringArgsTemplate
-JSTypes:
+NativeTypes:
     Date: &DateType
         <<: *__type
         id: "Date"

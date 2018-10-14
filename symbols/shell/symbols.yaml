@@ -121,7 +121,7 @@ BsonSymbols:
         template: *Decimal128SymbolTemplate
         argsTemplate: *Decimal128SymbolArgsTemplate
 
-JSSymbols:
+NativeSymbols:
     Object:
         id: "Object"
         code: 10

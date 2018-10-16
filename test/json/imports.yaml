@@ -276,7 +276,7 @@ tests:
               using MongoDB.Bson;
               using MongoDB.Driver;
               using System;
-          python: import datetime
+          python: from datetime import datetime, tzinfo
           javascript: ''
     - description: Single import Date() as object
       input:
@@ -289,7 +289,7 @@ tests:
               using MongoDB.Bson;
               using MongoDB.Driver;
               using System;
-          python: import datetime
+          python: from datetime import datetime, tzinfo
           javascript: ''
     - description: Single import ISODate
       input:
@@ -301,7 +301,7 @@ tests:
               using MongoDB.Bson;
               using MongoDB.Driver;
               using System;
-          python: import datetime
+          python: from datetime import datetime, tzinfo
           javascript: ''
     - description: Multiple imports without Date to string
       input: {}
@@ -347,7 +347,7 @@ tests:
               using System.Text.RegularExpressions;
               using System;
           python: |-
-              import datetime
+              from datetime import datetime, tzinfo
               from bson import Code, ObjectId, DBRef, Int64, MinKey, MaxKey, Timestamp, Decimal128
           javascript: |-
               const {

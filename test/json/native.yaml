@@ -550,21 +550,21 @@ tests:
           csharp: "\"string\""
           shell: "'string'"
     - input:
-        "python": "b'abc'"
+        python: "b'abc'"
       output:
           javascript: "'abc'"
           java: "\"abc\""
           csharp: "\"abc\""
           shell: "'abc'"
     - input:
-        "python": "B'abc'"
+        python: "B'abc'"
       output:
           javascript: "'abc'"
           java: "\"abc\""
           csharp: "\"abc\""
           shell: "'abc'"
     - input:
-        "python": "b\"abc\""
+        python: "b\"abc\""
       output:
           javascript: "'abc'"
           java: "\"abc\""
@@ -827,6 +827,139 @@ tests:
           python: datetime.utcnow()
           java: new java.util.Date()
           csharp: DateTime.Now
+    regular_expressions:
+    - description: "empty RegExp"
+      input:
+          javascript: "RegExp('')"
+          shell: "RegExp('')"
+          # python:
+      output:
+          javascript: "new RegExp('(?:)')"
+          shell: "new RegExp('(?:)')"
+          python: "re.compile(r\"(?:)\")"
+          java: "Pattern.compile(\"(?:)\")"
+          csharp: "new Regex(\"(?:)\")"
+    - description: "RegExp without options"
+      input:
+          javascript: "new RegExp('abc')"
+          shell: "new RegExp('abc')"
+          # python:
+      output:
+          javascript: "new RegExp('abc')"
+          python: "re.compile(r\"abc\")"
+          java: "Pattern.compile(\"abc\")"
+          csharp: "new Regex(\"abc\")"
+          shell: "new RegExp('abc')"
+    - description: "regex object with im flags as args"
+      input:
+          javascript: "new RegExp('ab+c', 'im')"
+          shell: "new RegExp('ab+c', 'im')"
+          # python:
+      output:
+          javascript: "new RegExp('ab+c', 'im')"
+          python: "re.compile(r\"ab+c(?im)\")"
+          java: "Pattern.compile(\"ab+c(?im)\")"
+          csharp: "new Regex(\"(?im)ab+c\")"
+          shell: "new RegExp('ab+c', 'im')"
+    - description: "regex object with ig flags as args"
+      input:
+          javascript: "new RegExp('ab+c', 'ig')"
+          shell: "new RegExp('ab+c', 'ig')"
+          # python:
+      output:
+          javascript: "new RegExp('ab+c', 'gi')"
+          python: "re.compile(r\"ab+c(?is)\")"
+          java: "Pattern.compile(\"ab+c(?i)\")"
+          csharp: "new Regex(\"(?i)ab+c\")"
+          shell: "new RegExp('ab+c', 'gi')"
+    - description: "regex object with forward slash"
+      input:
+          javascript: "new RegExp('ab/cd')"
+          shell: "new RegExp('ab/cd')"
+          # python:
+      output:
+          javascript: "new RegExp('ab\\/cd')"
+          python: "re.compile(r\"ab\\/cd\")"
+          java: "Pattern.compile(\"ab\\\\/cd\")"
+          csharp: "new Regex(\"ab\\/cd\")"
+          shell: "new RegExp('ab\\/cd')"
+    - description: "regex object with escaped double quote"
+      input:
+          javascript: "new RegExp('ab\\\"ab')"
+          shell: "new RegExp('ab\"ab')"
+          # python:
+      output:
+          javascript: "new RegExp('ab\"ab')"
+          python: "re.compile(r\"ab\\\"ab\")"
+          java: "Pattern.compile(\"ab\\\"ab\")"
+          csharp: "new Regex(\"ab\\\"ab\")"
+          shell: "new RegExp('ab\"ab')"
+    - description: "regex object with nonescaped double quote"
+      input:
+          javascript: "new RegExp('ab\"ab')"
+          shell: "new RegExp('ab\"ab')"
+          # python:
+      output:
+          javascript: "new RegExp('ab\"ab')"
+          python: "re.compile(r\"ab\\\"ab\")"
+          java: "Pattern.compile(\"ab\\\"ab\")"
+          csharp: "new Regex(\"ab\\\"ab\")"
+          shell: "new RegExp('ab\"ab')"
+    - description: "regex object with escaped single quote"
+      input:
+          javascript: "new RegExp('ab\\'ab')"
+          shell: "new RegExp('ab\\'ab')"
+          # python:
+      output:
+          javascript: "new RegExp('ab\\'ab')"
+          python: "re.compile(r\"ab'ab\")"
+          java: "Pattern.compile(\"ab'ab\")"
+          csharp: "new Regex(\"ab'ab\")"
+          shell: "new RegExp('ab\\'ab')"
+    - description: "regex object with nonescaped single quote"
+      input:
+          javascript: "new RegExp(\"ab'ab\")"
+          shell: "new RegExp(\"ab'ab\")"
+          # python:
+      output:
+          javascript: "new RegExp('ab\\'ab')"
+          shell: "new RegExp('ab\\'ab')"
+          python: "re.compile(r\"ab'ab\")"
+          java: "Pattern.compile(\"ab'ab\")"
+          csharp: "new Regex(\"ab'ab\")"
+    - description: "regex object with newline"
+      input:
+          javascript: "new RegExp(\"\\\\n\")"
+          shell: "new RegExp(\"\\\\n\")"
+          # python:
+      output:
+          javascript: "new RegExp('\\n')"
+          shell: "new RegExp('\\n')"
+          python: "re.compile(r\"\\\\n\")"
+          java: "Pattern.compile(\"\\\\n\")"
+          csharp: "new Regex(\"\\n\")"
+    - description: "regex literal with ig flags"
+      input:
+          javascript: "/ab+c/ig"
+          shell: "/ab+c/ig"
+          # python:
+      output:
+          javascript: "new RegExp('ab+c', 'gi')"
+          python: "re.compile(r\"ab+c(?is)\")"
+          java: "Pattern.compile(\"ab+c(?i)\")"
+          csharp: "new Regex(\"(?i)ab+c\")"
+          shell: "new RegExp('ab+c', 'gi')"
+    - description: "regex object with regex literal arg"
+      input:
+          javascript: "new RegExp(/ab+c/, 'i')"
+          shell: "new RegExp(/ab+c/, 'i')"
+          # python:
+      output:
+          javascript: "new RegExp('ab+c', 'i')"
+          python: "re.compile(r\"ab+c(?i)\")"
+          java: "Pattern.compile(\"ab+c(?i)\")"
+          csharp: "new Regex(\"(?i)ab+c\")"
+          shell: "new RegExp('ab+c', 'i')"
 #    - input:
 #          javascript:
 #          shell:

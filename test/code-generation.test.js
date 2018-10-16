@@ -20,7 +20,7 @@ describe('Test', () => {
         const testname = file.replace('.json', '');
 
         outputLanguages.forEach((outputLang) => {
-          // runTest(mode, testname, inputLang, outputLang, tests);
+          runTest(mode, testname, inputLang, outputLang, tests);
         });
       });
     });
@@ -31,7 +31,7 @@ for (const mode of ['imports', 'idiomatic', 'non-idiomatic']) {
   describe(mode, () => {
     const testpath = path.join(__dirname, 'json');
     fs.readdirSync(testpath).map((file) => {
-      if (file === 'error' || file === 'success') {
+      if (file === 'error' || file === 'success' || file === 'edge-cases') {
         return; // TODO: remove old JSON tests
       }
       const tests = readYAML(path.join(testpath, file));

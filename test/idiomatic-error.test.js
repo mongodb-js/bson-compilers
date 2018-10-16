@@ -193,7 +193,7 @@ const errors = {
 };
 
 
-xdescribe('Java Builders', () => {
+describe('Java Builders', () => {
   describe('handles errors', () => {
     for (const key of Object.keys(errors)) {
       describe(`${key}`, () => {

@@ -27,7 +27,7 @@ const modes = process.env.MODE ? process.env.MODE.split(',') : [];
   // });
 // });
 
-const skipType = [];
+const skipType = ['Document', 'Array', 'ArrayElision'];
 
 const testpath = path.join(__dirname, 'json');
 fs.readdirSync(testpath).map((file) => {

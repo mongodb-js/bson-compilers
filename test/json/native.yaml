@@ -260,7 +260,447 @@ tests:
           java: "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))"
           csharp: "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}"
           shell: "[\n  '1', [\n    '2', '3'\n  ]\n]"
-
+    binops:
+    - input:
+          javascript: 2+5-1
+          shell: 2+5-1
+          python: 2+5-1
+      output:
+          javascript: 2+5-1
+          shell: 2+5-1
+          python: 2+5-1
+          java: 2L+5L-1L
+          csharp: 2+5-1
+    - input:
+          javascript: 2+(4*36)/3
+          shell: 2+(4*36)/3
+          python: 2+(4*36)/3
+      output:
+          javascript: 2+(4*36)/3
+          shell: 2+(4*36)/3
+          python: 2+(4*36)/3
+          java: 2L+(4L*36L)/3L
+          csharp: 2+(4*36)/3
+    - input:
+          python: 10 // 2 % 3
+      output:
+          javascript: Math.floor(10, 2)%3
+          shell: Math.floor(10, 2)%3
+          python: 10 // 2 % 3
+          java: floor(10L, 2L)%3L
+          csharp: Math.floor(10, 2)%3
+    - input:
+          python: 6 ** 7
+      output:
+          javascript: Math.pow(6, 7)
+          shell: Math.pow(6, 7)
+          python: 6 ** 7
+          java: pow(6L, 7L)
+          csharp: Math.pow(6, 7)
+    - input:
+          javascript: 1 | 2 ^ 3 & 4 << 6 >> 7
+          shell: 1 | 2 ^ 3 & 4 << 6 >> 7
+          python: 1 | 2 ^ 3 & 4 << 6 >> 7
+      output:
+          javascript: 1|2^3&4<<6>>7
+          shell: 1|2^3&4<<6>>7
+          python: 1|2^3&4<<6>>7
+          java: 1L|2L^3L&4L<<6L>>7L
+          csharp: 1|2^3&4<<6>>7
+    - input:
+          javascript: 2+ +5 - -6
+          shell: 2+ +5 - -6
+          python: 2+ +5- -6
+      output:
+          javascript: 2++5--6
+          shell: 2++5--6
+          python: 2++5--6
+          java: 2L++5L--6L
+          csharp: 2++5--6
+    unaryops:
+    - input:
+          javascript: '+1'
+          shell: '+1'
+          python: '+1'
+      output:
+          javascript: '+1'
+          shell: '+1'
+          python: '+1'
+          java: '+1L'
+          csharp: '+1'
+    - input:
+          javascript: '-1'
+          shell: '-1'
+          python: '-1'
+      output:
+          javascript: '-1'
+          shell: '-1'
+          python: '-1'
+          java: '-1L'
+          csharp: '-1'
+    - input:
+          javascript: '~1'
+          shell: '~1'
+          python: '~1'
+      output:
+          javascript: '~1'
+          shell: '~1'
+          python: '~1'
+          java: '~1L'
+          csharp: '~1'
+    Number:
+    - input:
+          javascript: new Number(2)
+          shell: new Number(2)
+      output:
+          javascript: new Number(2)
+          shell: new Number(2)
+          python: '2'
+          java: 2d
+          csharp: (int) 2
+    - input:
+          javascript: Number(2)
+          shell: Number(2)
+      output:
+          javascript: new Number(2)
+          shell: new Number(2)
+          python: '2'
+          java: 2d
+          csharp: (int) 2
+    - input:
+          javascript: Number('2')
+          shell: Number('2')
+      output:
+          javascript: new Number('2')
+          shell: new Number('2')
+          python: float('2')
+          java: Double.parseDouble("2")
+          csharp: int.Parse("2")
+    - input:
+          shell: Number()
+      output:
+          javascript: new Number(0)
+          shell: new Number(0)
+          python: '0'
+          java: 0d
+          csharp: (int) 0
+    numeric_literals:
+    - input:
+          javascript: '2'
+          shell: '2'
+          python: '2'
+      output:
+          javascript: '2'
+          shell: '2'
+          python: '2'
+          java: '2L'
+          csharp: '2'
+    - input:
+          javascript: '429496729601'
+          shell: '429496729601'
+          python: '429496729601'
+      output:
+          javascript: '429496729601'
+          shell: '429496729601'
+          python: '429496729601'
+          java: '429496729601L'
+          csharp: '429496729601'
+    - input:
+          javascript: '2.001'
+          shell: '2.001'
+          python: '2.001'
+      output:
+          javascript: '2.001'
+          shell: '2.001'
+          python: '2.001'
+          java: '2.001d'
+          csharp: '2.001'
+    - input:
+          javascript: '0X123ABC'
+          shell: '0X123ABC'
+          python: '0X123ABC'
+      output:
+          javascript: '0X123ABC'
+          shell: '0X123ABC'
+          python: '0X123ABC'
+          java: '0X123ABC'
+          csharp: '0X123ABC'
+    - input:
+          javascript: '0x123abc'
+          shell: '0x123abc'
+          python: '0x123abc'
+      output:
+          javascript: '0x123abc'
+          shell: '0x123abc'
+          python: '0x123abc'
+          java: '0x123abc'
+          csharp: '0x123abc'
+    - input:
+          javascript: '0o1234567'
+          shell: '0o1234567'
+          python: '0o1234567'
+      output:
+          javascript: '0o1234567'
+          shell: '0o1234567'
+          python: '0o1234567'
+          java: '01234567'
+          csharp: '342391'
+    - input:
+          javascript: '01234567'
+          shell: '01234567'
+      output:
+          javascript: '01234567'
+          shell: '01234567'
+          python: '0o1234567'
+          java: '01234567'
+          csharp: '342391'
+    - input:
+          javascript: '001234567'
+          shell: '001234567'
+      output:
+          javascript: '001234567'
+          shell: '001234567'
+          python: '0o1234567'
+          java: '01234567'
+          csharp: '342391'
+    - input:
+          javascript: '0O1234567'
+          shell: '0O1234567'
+          python: '0O1234567'
+      output:
+          javascript: '0O1234567'
+          shell: '0O1234567'
+          python: '0o1234567'
+          java: '01234567'
+          csharp: '342391'
+    misc_literals:
+    - input:
+          javascript: 'true'
+          shell: 'true'
+          python: 'True'
+      output:
+          javascript: 'true'
+          shell: 'true'
+          python: 'True'
+          java: 'true'
+          csharp: 'true'
+    - input:
+          javascript: 'false'
+          shell: 'false'
+          python: 'False'
+      output:
+          javascript: 'false'
+          shell: 'false'
+          python: 'False'
+          java: 'false'
+          csharp: 'false'
+    - input:
+          javascript: 'null'
+          shell: 'null'
+          python: 'None'
+      output:
+          javascript: 'null'
+          shell: 'null'
+          python: 'None'
+          java: 'new BsonNull()'
+          csharp: 'BsonNull.Value'
+    - input:
+          javascript: 'undefined'
+          shell: 'undefined'
+      output:
+          javascript: 'undefined'
+          shell: 'undefined'
+          python: 'None'
+          java: 'new BsonUndefined()'
+          csharp: 'BsonUndefined.Value'
+    string_literals:
+    - input:
+          javascript: "'string'"
+          shell: "'string'"
+          python: "'string'"
+      output:
+          javascript: "'string'"
+          shell: "'string'"
+          python: "'string'"
+          java: "\"string\""
+          csharp: "\"string\""
+    - input:
+          javascript: "\"string\""
+          shell: "\"string\""
+          python: "\"string\""
+      output:
+          javascript: "'string'"
+          shell: "'string'"
+          python: "'string'"
+          java: "\"string\""
+          csharp: "\"string\""
+    python_strings:
+    - input:
+          python: "'''string'''"
+      output:
+          javascript": "'string'"
+          java": "\"string\""
+          csharp": "\"string\""
+          shell": "'string'"
+    - input:
+          python: "\"\"\"string\"\"\""
+      output:
+          javascript: "'string'"
+          java: "\"string\""
+          csharp: "\"string\""
+          shell: "'string'"
+    - input:
+        "python": "b'abc'"
+      output:
+          javascript: "'abc'"
+          java: "\"abc\""
+          csharp: "\"abc\""
+          shell: "'abc'"
+    - input:
+        "python": "B'abc'"
+      output:
+          javascript: "'abc'"
+          java: "\"abc\""
+          csharp: "\"abc\""
+          shell: "'abc'"
+    - input:
+        "python": "b\"abc\""
+      output:
+          javascript: "'abc'"
+          java: "\"abc\""
+          csharp: "\"abc\""
+          shell: "'abc'"
+    - input:
+          python: "B'abc'"
+      output:
+          javascript: "'abc'"
+          java: "\"abc\""
+          csharp: "\"abc\""
+          shell: "'abc'"
+    - input:
+          python: "u'abc'"
+      output:
+          javascript: "'abc'"
+          java: "\"abc\""
+          csharp: "\"abc\""
+          shell: "'abc'"
+    - input:
+          python: "U'abc'"
+      output:
+          javascript: "'abc'"
+          java: "\"abc\""
+          csharp: "\"abc\""
+          shell: "'abc'"
+    - input:
+          python: "u\"abc\""
+      output:
+          javascript: "'abc'"
+          java: "\"abc\""
+          csharp: "\"abc\""
+          shell: "'abc'"
+    - input:
+          python: "U'abc'"
+      output:
+          javascript: "'abc'"
+          java: "\"abc\""
+          csharp: "\"abc\""
+          shell: "'abc'"
+    - input:
+          python: "fR'abc'"
+      output:
+          javascript: "'abc'"
+          java: "\"abc\""
+          csharp: "\"abc\""
+          shell: "'abc'"
+    - input:
+          python: "rB'abc'"
+      output:
+          javascript: "'abc'"
+          java: "\"abc\""
+          csharp: "\"abc\""
+          shell: "'abc'"
+    # TODO: unescape escaped quotes
+    number_methods:
+    - input:
+          python: int(3)
+      output:
+          javascript: new Int32(3)
+          shell: new NumberInt(3)
+          python: int(3)
+          java: '3'
+          csharp: '3'
+    - input:
+          python: int('3')
+      output:
+          javascript: new Int32('3')
+          shell: new NumberInt('3')
+          python: int('3')
+          java: Integer.parseInt("3")
+          csharp: Convert.ToInt32("3")
+    - input:
+          python: int(3.001)
+      output:
+          javascript: new Int32(3.001)
+          shell: new NumberInt(3.001)
+          python: int(3.001)
+          java: (int) 3.001d
+          csharp: Convert.ToInt32(3.001)
+    - input:
+          python: int(0x3)
+      output:
+          javascript: new Int32(0x3)
+          shell: new NumberInt(0x3)
+          python: int(0x3)
+          java: (int) 0x3
+          csharp: Convert.ToInt32(0x3)
+    - input:
+          python: int(0o3)
+      output:
+          javascript: new Int32(0o3)
+          shell: new NumberInt(0o3)
+          python: int(0o3)
+          java: (int) 03
+          csharp: '3'
+    - input:
+          python: float(3)
+      output:
+          javascript: new Double(3)
+          shell: '3'
+          python: float(3)
+          java: '3d'
+          csharp: '3.0'
+    - input:
+          python: float('3')
+      output:
+          javascript: new Double('3')
+          shell: '3'
+          python: float('3')
+          java: Double.parseDouble("3")
+          csharp: Convert.ToDouble("3")
+    - input:
+          python: float(3.001)
+      output:
+          javascript: new Double(3.001)
+          shell: '3.001'
+          python: float(3.001)
+          java: 3.001d
+          csharp: '3.001'
+    - input:
+          python: float(0x3)
+      output:
+          javascript: new Double(0x3)
+          shell: '0x3'
+          python: float(0x3)
+          java: (double) 0x3
+          csharp: Convert.ToDouble(0x3)
+    - input:
+          python: float(0o3)
+      output:
+          javascript: new Double(0o3)
+          shell: '0o3'
+          python: float(0o3)
+          java: (double) 03
+          csharp: '3.0'
 #    - input:
 #          javascript:
 #          shell:

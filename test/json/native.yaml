@@ -701,6 +701,132 @@ tests:
           python: float(0o3)
           java: (double) 03
           csharp: '3.0'
+    Date:
+    - input:
+          javascript: new Date()
+          shell: new Date()
+          python: datetime()
+      output:
+          javascript: new Date()
+          shell: new Date()
+          python: datetime.utcnow()
+          java: new java.util.Date()
+          csharp: DateTime.Now
+    - input:
+          javascript: Date.now()
+          shell: Date.now()
+          python: datetime.utcnow()
+      output:
+          javascript: Date.now()
+          shell: Date.now()
+          python: datetime.utcnow()
+          java: new java.util.Date()
+          csharp: DateTime.Now
+    - input:
+          javascript: new Date(1995, 11, 17)
+          shell: new Date(1995, 11, 17)
+          python: datetime(1995, 12, 17)
+      output:
+          javascript: new Date('Sun, 17 Dec 1995 00:00:00 GMT')
+          shell: new Date('Sun, 17 Dec 1995 00:00:00 GMT')
+          python: datetime(1995, 12, 17, 0, 0, 0, tzinfo=timezone.utc)
+          java: new java.util.Date(819158400000L)
+          csharp: new DateTime(1995, 12, 17, 0, 0, 0)
+    - input:
+          javascript: new Date(1995, 11, 17, 3, 24)
+          shell: new Date(1995, 11, 17, 3, 24)
+          python: datetime(1995, 12, 17, 3, 24)
+      output:
+          javascript: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
+          shell: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
+          python: datetime(1995, 12, 17, 3, 24, 0, tzinfo=timezone.utc)
+          java: new java.util.Date(819170640000L)
+          csharp: new DateTime(1995, 12, 17, 3, 24, 0)
+    - input:
+          javascript: new Date(1995, 11, 17, 3, 24, 55)
+          shell: new Date(1995, 11, 17, 3, 24, 55)
+          python: datetime(1995, 12, 17, 3, 24, 55)
+      output:
+          javascript: new Date('Sun, 17 Dec 1995 03:24:55 GMT')
+          shell: new Date('Sun, 17 Dec 1995 03:24:55 GMT')
+          python: datetime(1995, 12, 17, 3, 24, 55, tzinfo=timezone.utc)
+          java: new java.util.Date(819170695000L)
+          csharp: new DateTime(1995, 12, 17, 3, 24, 55)
+    - input:
+          javascript: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
+          shell: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
+      output:
+          python: datetime(1995, 12, 17, 3, 24, 0, tzinfo=timezone.utc)
+          java: new java.util.Date(819170640000L)
+          csharp: new DateTime(1995, 12, 17, 3, 24, 0)
+          javascript: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
+          shell: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
+    - input:
+          javascript: new Date(819167040000)
+          shell: new Date(819167040000)
+      output:
+          shell: new Date('Sun, 17 Dec 1995 02:24:00 GMT')
+          javascript: new Date('Sun, 17 Dec 1995 02:24:00 GMT')
+          python: datetime(1995, 12, 17, 2, 24, 0, tzinfo=timezone.utc)
+          java: new java.util.Date(819167040000L)
+          csharp: new DateTime(1995, 12, 17, 2, 24, 0)
+    date_string:
+    - input:
+          javascript: Date('Sun, 17 Dec 1995 03:24:00 GMT')
+          shell: Date('Sun, 17 Dec 1995 03:24:00 GMT')
+      output:
+          python: datetime(1995, 12, 17, 3, 24, 0, tzinfo=timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')
+          java: new SimpleDateFormat("EEE MMMMM dd yyyy HH:mm:ss").format(new java.util.Date(819170640000L))
+          csharp: new DateTime(1995, 12, 17, 3, 24, 0).ToString("ddd MMM dd yyyy HH':'mm':'ss UTC")
+          javascript: Date('Sun, 17 Dec 1995 03:24:00 GMT')
+          shell: Date('Sun, 17 Dec 1995 03:24:00 GMT')
+    - input:
+          javascript: Date(819167040000)
+          shell: Date(819167040000)
+      output:
+          javascript: Date('Sun, 17 Dec 1995 02:24:00 GMT')
+          shell: Date('Sun, 17 Dec 1995 02:24:00 GMT')
+          python: datetime(1995, 12, 17, 2, 24, 0, tzinfo=timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')
+          java: new SimpleDateFormat("EEE MMMMM dd yyyy HH:mm:ss").format(new java.util.Date(819167040000L))
+          csharp: new DateTime(1995, 12, 17, 2, 24, 0).ToString("ddd MMM dd yyyy HH':'mm':'ss UTC")
+    - input:
+          javascript: Date(1995, 11, 17)
+          shell: Date(1995, 11, 17)
+      output:
+          javascript: Date('Sun, 17 Dec 1995 00:00:00 GMT')
+          shell: Date('Sun, 17 Dec 1995 00:00:00 GMT')
+          python: datetime(1995, 12, 17, 0, 0, 0, tzinfo=timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')
+          java: new SimpleDateFormat("EEE MMMMM dd yyyy HH:mm:ss").format(new java.util.Date(819158400000L))
+          csharp: new DateTime(1995, 12, 17, 0, 0, 0).ToString("ddd MMM dd yyyy HH':'mm':'ss UTC")
+    ISODate:
+    - input:
+          shell: new ISODate('1995-12-17T03:24:00.000Z')
+      output:
+          python: datetime(1995, 12, 17, 3, 24, 0, tzinfo=timezone.utc)
+          java: new java.util.Date(819170640000L)
+          csharp: new DateTime(1995, 12, 17, 3, 24, 0)
+          javascript: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
+    - input:
+          shell: ISODate('1995-12-17T03:24:00.000Z')
+      output:
+          python: datetime(1995, 12, 17, 3, 24, 0, tzinfo=timezone.utc)
+          java: new java.util.Date(819170640000L)
+          csharp: new DateTime(1995, 12, 17, 3, 24, 0)
+          javascript: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
+    - input:
+          shell: ISODate()
+      output:
+          javascript: new Date()
+          python: datetime.utcnow()
+          java: new java.util.Date()
+          csharp: DateTime.Now
+    - input:
+          shell: new ISODate()
+      output:
+          javascript: new Date()
+          python: datetime.utcnow()
+          java: new java.util.Date()
+          csharp: DateTime.Now
 #    - input:
 #          javascript:
 #          shell:

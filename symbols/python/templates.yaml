@@ -840,7 +840,7 @@ Templates:
     ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate !!js/function >
         (lhs, arg, isNumber) => {
             if (isNumber) {
-                return `(datetime.datetime.fromtimestamp(${arg}))`;
+                return `(datetime.fromtimestamp(${arg}))`;
             }
             return `(${arg})`;
         }
@@ -880,7 +880,7 @@ Templates:
         }
     DateSymbolTemplate: &DateSymbolTemplate !!js/function >
         () => {
-            return 'datetime.datetime';
+            return 'datetime';
         }
     DateSymbolArgsTemplate: &DateSymbolArgsTemplate !!js/function >
         (lhs, date, isString) => {
@@ -899,11 +899,11 @@ Templates:
                 date.getUTCSeconds()
             ].join(', ');
 
-            return `${lhs}(${dateStr}, tzinfo=datetime.timezone.utc)${toStr}`;
+            return `${lhs}(${dateStr}, tzinfo=timezone.utc)${toStr}`;
         }
     DateSymbolNowTemplate: &DateSymbolNowTemplate !!js/function >
         () => {
-            return 'datetime.datetime.utcnow';
+            return 'datetime.utcnow';
         }
     DateSymbolNowArgsTemplate: &DateSymbolNowArgsTemplate null
     RegExpSymbolTemplate: &RegExpSymbolTemplate !!js/function > # Also has process method
@@ -989,7 +989,7 @@ Templates:
     114ImportTemplate: &114ImportTemplate null
     200ImportTemplate: &200ImportTemplate !!js/function >
         () => {
-            return 'import datetime';
+            return 'from datetime import datetime, tzinfo';
         }
     201ImportTemplate: &201ImportTemplate null
     300ImportTemplate: &300ImportTemplate null

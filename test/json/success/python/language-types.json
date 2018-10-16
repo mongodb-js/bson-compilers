@@ -1,47 +1,5 @@
 {
   "tests": {
-    "Date": [
-      {
-        "description": "Current date",
-        "javascript": "new Date()",
-        "python": "datetime()",
-        "java": "new java.util.Date()",
-        "csharp": "DateTime.Now",
-        "shell": "new Date()"
-      },
-      {
-        "description": "Date now",
-        "javascript": "Date.now()",
-        "python": "datetime.utcnow()",
-        "java": "new java.util.Date()",
-        "csharp": "DateTime.Now",
-        "shell": "Date.now()"
-      },
-      {
-        "description": "new Date from year, month and day",
-        "javascript": "new Date('Sun, 17 Dec 1995 00:00:00 GMT')",
-        "python": "datetime(1995, 12, 17)",
-        "java": "new java.util.Date(819158400000L)",
-        "csharp": "new DateTime(1995, 12, 17, 0, 0, 0)",
-        "shell": "new Date('Sun, 17 Dec 1995 00:00:00 GMT')"
-      },
-      {
-        "description": "new Date from year, month, day, hour and min",
-        "javascript": "new Date('Sun, 17 Dec 1995 03:24:00 GMT')",
-        "python": "datetime(1995, 12, 17, 3, 24)",
-        "java": "new java.util.Date(819170640000L)",
-        "csharp": "new DateTime(1995, 12, 17, 3, 24, 0)",
-        "shell": "new Date('Sun, 17 Dec 1995 03:24:00 GMT')"
-      },
-      {
-        "description": "new Date from year, month, day, hour, min and sec",
-        "javascript": "new Date('Sun, 17 Dec 1995 03:24:55 GMT')",
-        "python": "datetime(1995, 12, 17, 3, 24, 55)",
-        "java": "new java.util.Date(819170695000L)",
-        "csharp": "new DateTime(1995, 12, 17, 3, 24, 55)",
-        "shell": "new Date('Sun, 17 Dec 1995 03:24:55 GMT')"
-      }
-    ],
     "re.compile": [
       {
         "description": "empty regex object",

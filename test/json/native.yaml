@@ -1,45 +1,273 @@
 runner: !!js/function >
     (it, expect, input, output, transpiler, test) => {
-        it(`${input} => ${output}: ${test.input[input]} equals expected`, () => {
+        it(`${input}: ${test.input[input]} => ${output}`, () => {
             expect(
                 transpiler[input][output].compile(test.input[input], true)
             ).to.equal(test.output[output]);
         });
     }
-tests:
-    Document:
-    - description:
-      input:
-          javascript:
-          shell:
-          python:
+tests: 
+    Document: 
+    - input: 
+          javascript: "{x: '1'}"
+          shell: "{x: '1'}"
+          python: "{'x': '1'}"
+      output: 
+          javascript: "{\n  'x': '1'\n}"
+          python: "{\n    'x': '1'\n}"
+          java: "eq(\"x\", \"1\")"
+          csharp: "new BsonDocument(\"x\", \"1\")"
+          shell: "{\n  'x': '1'\n}"
+    - input:
+          javascript: "{x: '1',}"
+          shell: "{x: '1',}"
+          python: "{'x': '1',}"
       output:
-          javascript:
-          shell:
-          python:
-          java:
-          csharp:
+          javascript: "{\n  'x': '1'\n}"
+          python: "{\n    'x': '1'\n}"
+          java: "eq(\"x\", \"1\")"
+          csharp: "new BsonDocument(\"x\", \"1\")"
+          shell: "{\n  'x': '1'\n}"
+    - input:
+          javascript: "{x: ['1', '2']}"
+          shell: "{x: ['1', '2']}"
+          python: "{'x': ['1', '2']}"
+      output:
+          javascript: "{\n  'x': [\n    '1', '2'\n  ]\n}"
+          python: "{\n    'x': [\n        '1', '2'\n    ]\n}"
+          java: "eq(\"x\", Arrays.asList(\"1\", \"2\"))"
+          csharp: "new BsonDocument(\"x\", new BsonArray\n    {\n        \"1\",\n        \"2\"\n    })"
+          shell: "{\n  'x': [\n    '1', '2'\n  ]\n}"
+    - input:
+          javascript: "{x: {y: 2}}"
+          shell: "{x: {y: 2}}"
+          python: "{'x': {'y': 2}}"
+      output:
+          javascript: "{\n  'x': {\n    'y': 2\n  }\n}"
+          python: "{\n    'x': {\n        'y': 2\n    }\n}"
+          java: "eq(\"x\", eq(\"y\", 2L))"
+          csharp: "new BsonDocument(\"x\", new BsonDocument(\"y\", 2))"
+          shell: "{\n  'x': {\n    'y': 2\n  }\n}"
+    - input:
+          javascript: "{}"
+          shell: "{}"
+          python: "{}"
+      output:
+          javascript: "{}"
+          shell: "{}"
+          python: "{}"
+          java: "new Document()"
+          csharp: "new BsonDocument()"
+    - input:
+          javascript: "{x: '1', n: '4'}"
+          shell: "{x: '1', n: '4'}"
+          python: "{'x': '1', 'n': '4'}"
+      output:
+          javascript: "{\n  'x': '1', \n  'n': '4'\n}"
+          python: "{\n    'x': '1', \n    'n': '4'\n}"
+          java: "and(eq(\"x\", \"1\"), eq(\"n\", \"4\"))"
+          csharp: "new BsonDocument\n{\n    { \"x\", \"1\" }, \n    { \"n\", \"4\" }\n}"
+          shell: "{\n  'x': '1', \n  'n': '4'\n}"
+    - input:
+          javascript: "Object.create({x: '1'})"
+          shell: "Object.create({x: '1'})"
+      output:
+          javascript: "Object.create({\n  'x': '1'\n})"
+          python: "{\n    'x': '1'\n}"
+          java: "eq(\"x\", \"1\")"
+          csharp: "new BsonDocument(\"x\", \"1\")"
+          shell: "Object.create({\n  'x': '1'\n})"
+    - input:
+          javascript: "{ graphLookup : { \"from\" : \"raw_data\", \"startWith\" : \"$_id\", \"connectFromField\" : \"_id\", \"connectToField\" : \"manager\", \"as\" : \"reports\" } }"
+          shell: "{ graphLookup : { \"from\" : \"raw_data\", \"startWith\" : \"$_id\", \"connectFromField\" : \"_id\", \"connectToField\" : \"manager\", \"as\" : \"reports\" } }"
+          python: "{'graphLookup': {'from': 'raw_data', 'startWith': '$_id', 'connectFromField': '_id', 'connectToField': 'manager', 'as': 'reports'}}"
+      output:
+          javascript: "{\n  'graphLookup': {\n    'from': 'raw_data', \n    'startWith': '$_id', \n    'connectFromField': '_id', \n    'connectToField': 'manager', \n    'as': 'reports'\n  }\n}"
+          python: "{\n    'graphLookup': {\n        'from': 'raw_data', \n        'startWith': '$_id', \n        'connectFromField': '_id', \n        'connectToField': 'manager', \n        'as': 'reports'\n    }\n}"
+          java: "eq(\"graphLookup\", and(eq(\"from\", \"raw_data\"), eq(\"startWith\", \"$_id\"), eq(\"connectFromField\", \"_id\"), eq(\"connectToField\", \"manager\"), eq(\"as\", \"reports\")))"
+          csharp: "new BsonDocument(\"graphLookup\", new BsonDocument\n    {\n        { \"from\", \"raw_data\" }, \n        { \"startWith\", \"$_id\" }, \n        { \"connectFromField\", \"_id\" }, \n        { \"connectToField\", \"manager\" }, \n        { \"as\", \"reports\" }\n    })"
+          shell: "{\n  'graphLookup': {\n    'from': 'raw_data', \n    'startWith': '$_id', \n    'connectFromField': '_id', \n    'connectToField': 'manager', \n    'as': 'reports'\n  }\n}"
+    - input:
+          javascript: "{ status: 'A', $or: [{ qty: { $lt: 30 } }, { item: { $regex: '^p' } }] }"
+          shell: "{ status: 'A', $or: [{ qty: { $lt: 30 } }, { item: { $regex: '^p' } }] }"
+          python: "{ 'status': 'A', '$or': [{'qty': { '$lt': 30}}, {'item': { '$regex': '^p'}}]}"
+      output:
+          python: "{\n    'status': 'A', \n    '$or': [\n        {\n            'qty': {\n                '$lt': 30\n            }\n        }, {\n            'item': {\n                '$regex': '^p'\n            }\n        }\n    ]\n}"
+          javascript: "{\n  'status': 'A', \n  '$or': [\n    {\n      'qty': {\n        '$lt': 30\n      }\n    }, {\n      'item': {\n        '$regex': '^p'\n      }\n    }\n  ]\n}"
+          java: "and(eq(\"status\", \"A\"), or(Arrays.asList(lt(\"qty\", 30L), regex(\"item\", \"^p\"))))"
+          csharp: "new BsonDocument\n{\n    { \"status\", \"A\" }, \n    { \"$or\", new BsonArray\n    {\n        new BsonDocument(\"qty\", \n        new BsonDocument(\"$lt\", 30)),\n        new BsonDocument(\"item\", \n        new BsonDocument(\"$regex\", \"^p\"))\n    } }\n}"
+          shell: "{\n  'status': 'A', \n  '$or': [\n    {\n      'qty': {\n        '$lt': 30\n      }\n    }, {\n      'item': {\n        '$regex': '^p'\n      }\n    }\n  ]\n}"
+    - input:
+          python: "{ 'status': 'A', '$or': [{'qty': { '$lt': 30}}, {'item': { '$regex': '^p'}}]}"
+      output:
+          javascript: "{\n  'status': 'A', \n  '$or': [\n    {\n      'qty': {\n        '$lt': 30\n      }\n    }, {\n      'item': {\n        '$regex': '^p'\n      }\n    }\n  ]\n}"
+          python: "{ 'status': 'A', '$or': [{'qty': { '$lt': 30}}, {'item': { '$regex': '^p'}}]}"
+          java: "and(eq(\"status\", \"A\"), or(Arrays.asList(lt(\"qty\", 30L), regex(\"item\", \"^p\"))))"
+          csharp: "new BsonDocument\n{\n    { \"status\", \"A\" }, \n    { \"$or\", new BsonArray\n    {\n        new BsonDocument(\"qty\", \n        new BsonDocument(\"$lt\", 30)),\n        new BsonDocument(\"item\", \n        new BsonDocument(\"$regex\", \"^p\"))\n    } }\n}"
+          shell: "{\n  'status': 'A', \n  '$or': [\n    {\n      'qty': {\n        '$lt': 30\n      }\n    }, {\n      'item': {\n        '$regex': '^p'\n      }\n    }\n  ]\n}"
     Array:
-    - description:
-      input:
-          javascript:
-          shell:
-          python:
+    - input:
+          python: "['1', '2']"
+          javascript: "['1', '2']"
+          shell: "['1', '2']"
       output:
-          javascript:
-          shell:
-          python:
-          java:
-          csharp:
+          javascript: "[\n  '1', '2'\n]"
+          java: "Arrays.asList(\"1\", \"2\")"
+          csharp: "new BsonArray\n{\n    \"1\",\n    \"2\"\n}"
+          shell: "[\n  '1', '2'\n]"
+          python: "[\n    '1', '2'\n]"
+    - input:
+          python: "['1', '2',]"
+          javascript: "['1', '2',]"
+          shell: "['1', '2',]"
+      output:
+          javascript: "[\n  '1', '2'\n]"
+          java: "Arrays.asList(\"1\", \"2\")"
+          csharp: "new BsonArray\n{\n    \"1\",\n    \"2\"\n}"
+          shell: "[\n  '1', '2'\n]"
+          python: "[\n    '1', '2'\n]"
+    - input:
+          python: "['1', { 'settings': 'http2' }]"
+          javascript: "['1', { settings: 'http2' }]"
+          shell: "['1', { settings: 'http2' }]"
+      output:
+          javascript: "[\n  '1', {\n    'settings': 'http2'\n  }\n]"
+          java: "Arrays.asList(\"1\", eq(\"settings\", \"http2\"))"
+          csharp: "new BsonArray\n{\n    \"1\",\n    new BsonDocument(\"settings\", \"http2\")\n}"
+          shell: "[\n  '1', {\n    'settings': 'http2'\n  }\n]"
+          python: "[\n    '1', {\n        'settings': 'http2'\n    }\n]"
+    - input:
+          python: "{ 'pipeline': [{'$match': {'$expr': { '$eq': [ '$manager', '$$me' ] } } }, { '$project': { 'managers': 0}}, {'$sort': { 'startQuarter': 1, 'notes': 1, 'job_code': 1}}]}"
+          javascript: "{\"pipeline\": [ { $match: { $expr: { \"$eq\": [ \"$manager\", \"$$me\" ] } } }, { $project: { managers : 0 } }, { $sort: { startQuarter: 1, notes:1, job_code: 1 } } ]}"
+          shell: "{\"pipeline\": [ { $match: { $expr: { \"$eq\": [ \"$manager\", \"$$me\" ] } } }, { $project: { managers : 0 } }, { $sort: { startQuarter: 1, notes:1, job_code: 1 } } ]}"
+      output:
+          javascript: "{\n  'pipeline': [\n    {\n      '$match': {\n        '$expr': {\n          '$eq': [\n            '$manager', '$$me'\n          ]\n        }\n      }\n    }, {\n      '$project': {\n        'managers': 0\n      }\n    }, {\n      '$sort': {\n        'startQuarter': 1, \n        'notes': 1, \n        'job_code': 1\n      }\n    }\n  ]\n}"
+          java: "eq(\"pipeline\", Arrays.asList(match(eq(\"$expr\", Arrays.asList(\"$manager\", \"$$me\"))), project(exclude(\"managers\")), sort(orderBy(ascending(\"startQuarter\"), ascending(\"notes\"), ascending(\"job_code\")))))"
+          csharp: "new BsonDocument(\"pipeline\", new BsonArray\n    {\n        new BsonDocument(\"$match\", \n        new BsonDocument(\"$expr\", \n        new BsonDocument(\"$eq\", \n        new BsonArray\n                    {\n                        \"$manager\",\n                        \"$$me\"\n                    }))),\n        new BsonDocument(\"$project\", \n        new BsonDocument(\"managers\", 0)),\n        new BsonDocument(\"$sort\", \n        new BsonDocument\n            {\n                { \"startQuarter\", 1 }, \n                { \"notes\", 1 }, \n                { \"job_code\", 1 }\n            })\n    })"
+          shell: "{\n  'pipeline': [\n    {\n      '$match': {\n        '$expr': {\n          '$eq': [\n            '$manager', '$$me'\n          ]\n        }\n      }\n    }, {\n      '$project': {\n        'managers': 0\n      }\n    }, {\n      '$sort': {\n        'startQuarter': 1, \n        'notes': 1, \n        'job_code': 1\n      }\n    }\n  ]\n}"
+          python: "{\n    'pipeline': [\n        {\n            '$match': {\n                '$expr': {\n                    '$eq': [\n                        '$manager', '$$me'\n                    ]\n                }\n            }\n        }, {\n            '$project': {\n                'managers': 0\n            }\n        }, {\n            '$sort': {\n                'startQuarter': 1, \n                'notes': 1, \n                'job_code': 1\n            }\n        }\n    ]\n}"
+    - input:
+          python: "['1', ['2', '3']]"
+          "javpscript": "['1', ['2', '3']]"
+          shell: "['1', ['2', '3']]"
+      output:
+          javascript: "[\n  '1', [\n    '2', '3'\n  ]\n]"
+          java: "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))"
+          csharp: "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}"
+          shell: "[\n  '1', [\n    '2', '3'\n  ]\n]"
+          python: "[\n    '1', [\n        '2', '3'\n    ]\n]"
+    - input:
+          python: "[]"
+          javascript: "[]"
+          shell: "[]"
+      output:
+          javascript: "[]"
+          java: "Arrays.asList()"
+          csharp: "new BsonArray()"
+          shell: "[]"
+          python: "[]"
+    - input:
+          python: "['1', ('2', '3')]"
+      output:
+          javascript: "[\n  '1', [\n    '2', '3'\n  ]\n]"
+          java: "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))"
+          csharp: "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}"
+          shell: "[\n  '1', [\n    '2', '3'\n  ]\n]"
+          python: "[\n    '1', [\n        '2', '3'\n  ]\n]"
     ArrayElision:
-    - description:
-      input:
-          javascript:
-          shell:
-          python:
+    - input:
+          javascript: "[,'1', '2',]"
+          shell: "[,'1', '2',]"
       output:
-          javascript:
-          shell:
-          python:
-          java:
-          csharp:
+          python: "[\n    None, '1', '2'\n]"
+          java: "Arrays.asList(new BsonUndefined(), \"1\", \"2\")"
+          csharp: "new BsonArray\n{\n    BsonUndefined.Value,\n    \"1\",\n    \"2\"\n}"
+          shell: "[\n  undefined, '1', '2'\n]"
+          javascript: "[\n  undefined, '1', '2'\n]"
+    - input:
+          javascript: "[,]"
+          shell: "[,]"
+      output:
+          python: "[\n    None\n]"
+          java: "Arrays.asList(new BsonUndefined())"
+          csharp: "new BsonArray\n{\n    BsonUndefined.Value\n}"
+          shell: "[\n  undefined\n]"
+          javascript: "[\n  undefined\n]"
+    - input:
+          javascript: "[,,]"
+          shell: "[,,]"
+      output:
+          python: "[\n    None, None\n]"
+          java: "Arrays.asList(new BsonUndefined(), \n    new BsonUndefined())"
+          csharp: "new BsonArray\n{\n    BsonUndefined.Value,\n    BsonUndefined.Value\n}"
+          shell: "[\n  undefined, undefined\n]"
+          javascript: "[\n  undefined, undefined\n]"
+    - input:
+          javascript: "['1',,,,'2']"
+          shell: "['1',,,,'2']"
+      output:
+          python: "[\n    '1', None, None, None, '2'\n]"
+          java: "Arrays.asList(\"1\", \n    new BsonUndefined(), \n    new BsonUndefined(), \n    new BsonUndefined(), \"2\")"
+          csharp: "new BsonArray\n{\n    \"1\",\n    BsonUndefined.Value,\n    BsonUndefined.Value,\n    BsonUndefined.Value,\n    \"2\"\n}"
+          shell: "[\n  '1', undefined, undefined, undefined, '2'\n]"
+          javascript: "[\n  '1', undefined, undefined, undefined, '2'\n]"
+    Tuple:
+    - input:
+          python: "()"
+      output:
+          python: "()"
+          javascript: "[]"
+          java: "Arrays.asList()"
+          csharp: "new BsonArray()"
+          shell: "[]"
+    - input:
+          python: "(1,)"
+      output:
+          python: "(1,)"
+          javascript: "[\n  1\n]"
+          java: "Arrays.asList(1L)"
+          csharp: "new BsonArray\n{\n    1\n}"
+          shell: "[\n  1\n]"
+    - input:
+          python: "(1)"
+      output:
+          python: "(1)"
+          javascript: "(1)"
+          java: "(1L)"
+          csharp: "(1)"
+          shell: "(1)"
+    - input:
+          python: "('1', { 'settings': 'http2' })"
+      output:
+          python: "('1', { 'settings': 'http2' })"
+          javascript: "[\n  '1', {\n    'settings': 'http2'\n  }\n]"
+          java: "Arrays.asList(\"1\", eq(\"settings\", \"http2\"))"
+          csharp: "new BsonArray\n{\n    \"1\",\n    new BsonDocument(\"settings\", \"http2\")\n}"
+          shell: "[\n  '1', {\n    'settings': 'http2'\n  }\n]"
+    - input:
+          python: "('1', ['2', '3'])"
+      output:
+          python: "('1', ['2', '3'])"
+          javascript: "[\n  '1', [\n    '2', '3'\n  ]\n]"
+          java: "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))"
+          csharp: "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}"
+          shell: "[\n  '1', [\n    '2', '3'\n  ]\n]"
+    - input:
+          python: "['1', ('2', '3')]"
+      output:
+          python: "['1', ('2', '3')]"
+          javascript: "[\n  '1', [\n    '2', '3'\n  ]\n]"
+          java: "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))"
+          csharp: "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}"
+          shell: "[\n  '1', [\n    '2', '3'\n  ]\n]"
+
+#    - input:
+#          javascript:
+#          shell:
+#          python:
+#      output:
+#          javascript:
+#          shell:
+#          python:
+#          java:
+#          csharp:

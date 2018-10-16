@@ -27,8 +27,8 @@ describe('Test', () => {
   // });
 });
 
-const skipMode = ['idiomatic', 'imports', 'non-idiomatic'];
-const skipType = ['Document', 'Array', 'ArrayElision'];
+const skipMode = ['idiomatic', 'imports', 'non-idiomatic', 'bson'];
+const skipType = [];
 
 const testpath = path.join(__dirname, 'json');
 fs.readdirSync(testpath).map((file) => {

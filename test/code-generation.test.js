@@ -4,14 +4,14 @@ const fs = require('fs');
 const chai = require('chai');
 const expect = chai.expect;
 
-const { readJSON, readYAML, runTest } = require('./helpers');
+const { readYAML } = require('./helpers');
 const transpiler = require('../index');
 
 const outputLanguages = process.env.OUTPUT ? process.env.OUTPUT.split(',') : [ 'csharp', 'python', 'java', 'javascript', 'shell'];
 const inputLanguages = process.env.INPUT ? process.env.INPUT.split(',') : [ 'shell', 'javascript', 'python' ];
-const modes = process.env.MODE ? process.env.MODE.split(',') : ['success', 'error'];
+const modes = process.env.MODE ? process.env.MODE.split(',') : [];
 
-describe('Test', () => {
+// describe('Test', () => {
   // modes.forEach((mode) => {
   //   const testpath = path.join(__dirname, 'json', mode);
   //   inputLanguages.forEach((inputLang) => {
@@ -25,9 +25,8 @@ describe('Test', () => {
   //     });
   //   });
   // });
-});
+// });
 
-const skipMode = ['idiomatic', 'imports', 'non-idiomatic', 'bson'];
 const skipType = [];
 
 const testpath = path.join(__dirname, 'json');
@@ -36,7 +35,7 @@ fs.readdirSync(testpath).map((file) => {
     return; // TODO: remove old JSON tests
   }
   const mode = file.replace('.yaml', '');
-  if (skipMode.indexOf(mode) !== -1) {
+  if (modes.length > 0 && modes.indexOf(mode) === -1) {
     return;
   }
   describe(mode, () => {
@@ -62,9 +61,7 @@ fs.readdirSync(testpath).map((file) => {
                   continue;
                 }
                 if (input !== output) {
-                  // describe(`${input} => ${output}`, () => {
-                    tests.runner(it, expect, input, output, transpiler, test);
-                  // });
+                  tests.runner(it, expect, input, output, transpiler, test);
                 }
               }
             }

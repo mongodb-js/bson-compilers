@@ -193,18 +193,18 @@ const errors = {
 };
 
 
-describe('Java Builders', () => {
-  describe('handles errors', () => {
-    for (const key of Object.keys(errors)) {
-      describe(`${key}`, () => {
-        for (const test of errors[key]) {
-          it(`${test.input} throws expected error`, () => {
-            expect(() => {
-              transpiler.javascript.java.compile(test.input, true);
-            }).to.throw(test.error);
-          });
-        }
-      });
-    }
-  });
-});
+// describe('Java Builders', () => {
+//   describe('handles errors', () => {
+//     for (const key of Object.keys(errors)) {
+//       describe(`${key}`, () => {
+//         for (const test of errors[key]) {
+//           it(`${test.input} throws expected error`, () => {
+//             expect(() => {
+//               transpiler.javascript.java.compile(test.input, true);
+//             }).to.throw(test.error);
+//           });
+//         }
+//       });
+//     }
+//   });
+// });

@@ -1,0 +1,45 @@
+runner: !!js/function >
+    (it, expect, input, output, transpiler, test) => {
+        it(`${input} => ${output}: ${test.input[input]} equals expected`, () => {
+            expect(
+                transpiler[input][output].compile(test.input[input], true)
+            ).to.equal(test.output[output]);
+        });
+    }
+tests:
+    Document:
+    - description:
+      input:
+          javascript:
+          shell:
+          python:
+      output:
+          javascript:
+          shell:
+          python:
+          java:
+          csharp:
+    Array:
+    - description:
+      input:
+          javascript:
+          shell:
+          python:
+      output:
+          javascript:
+          shell:
+          python:
+          java:
+          csharp:
+    ArrayElision:
+    - description:
+      input:
+          javascript:
+          shell:
+          python:
+      output:
+          javascript:
+          shell:
+          python:
+          java:
+          csharp:

@@ -56,7 +56,7 @@ BsonSymbols:
         code: 105
         callable: *constructor
         args:
-            - [ *IntegerType, *StringType, null ]
+            - [ *NumericType, *StringType, null ]
         type: *Int32Type
         attr: {}
         template: *Int32SymbolTemplate

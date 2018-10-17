@@ -25,22 +25,24 @@ describe('Test', () => {
     //     console.log(tests);
     //   });
     // });
-    const total  = [];
-    const json = readJSON(path.join(testpath, 'javascript', 'syntax.json')).tests;
-    for (const j of json.Constructors) {
-      const doc = {
-        "input": {
-          "javascript": j.javascript
-        },
-        "output": {
-          "javascript": "",
-          "python": j.python,
-          "java": j.java,
-          "csharp": j.csharp,
-          "shell": j.shell
-        }
-      };
-      total.push(doc);
+    const total  = {};
+    const json = readJSON(path.join(testpath, 'shell', 'bson-methods.json')).tests;
+    for (const i of Object.keys(json)) {
+      total[i] = [];
+      for (const j of json[i]) {
+        const doc = {
+          "input": {
+            "shell": j.shell
+          },
+          "output": {
+            "javascript": j.javascript,
+            "java": j.java,
+            "csharp": j.csharp,
+            "python": j.python
+          }
+        };
+        total[i].push(doc);
+      }
     }
     // console.log(JSON.stringify(total));
   // });

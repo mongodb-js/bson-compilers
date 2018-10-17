@@ -50,7 +50,13 @@ const readJSON = (filename) => {
 };
 
 const readYAML = (filename) => {
-  const parseResult = yaml.load(fs.readFileSync(filename));
+  let parseResult;
+  try {
+    parseResult = yaml.load(fs.readFileSync(filename));
+  } catch (err) {
+    err.message = `${filename}: ${err.message}`;
+    throw err;
+  }
   return parseResult;
 };
 

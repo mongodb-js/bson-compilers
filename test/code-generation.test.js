@@ -13,14 +13,14 @@ const modes = process.env.MODE ? process.env.MODE.split(',') : [];
 
 const testpath2 = path.join(__dirname, 'yaml', 'error');
 const total = {};
-const yaml = readJSON(path.join(testpath2, 'python', 'argument-error.json')).tests;
+const yaml = readJSON(path.join(testpath2, 'javascript', 'unimplemented-error.json')).tests;
 for (const i of Object.keys(yaml)) {
   total[i] = [];
   for (const j of yaml[i]) {
     const doc = {
       description: j.description,
       input: {
-        python: j.query
+        javascript: j.query
       },
       errorCode: j.errorCode
     };

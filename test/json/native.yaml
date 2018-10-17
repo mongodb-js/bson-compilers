@@ -960,13 +960,3 @@ tests:
           java: "Pattern.compile(\"ab+c(?i)\")"
           csharp: "new Regex(\"(?i)ab+c\")"
           shell: "new RegExp('ab+c', 'i')"
-#    - input:
-#          javascript:
-#          shell:
-#          python:
-#      output:
-#          javascript:
-#          shell:
-#          python:
-#          java:
-#          csharp:

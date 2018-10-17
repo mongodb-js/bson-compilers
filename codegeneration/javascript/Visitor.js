@@ -193,6 +193,10 @@ class Visitor extends ECMAScriptVisitor {
     return '\n';
   }
 
+  visitRelationalExpression(ctx) {
+    return ctx.children.map((n) => ( this.visit(n) )).join(' ');
+  }
+
   /**
    * Selectively visits children of a node.
    *

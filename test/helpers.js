@@ -87,7 +87,6 @@ const runTest = function(mode, testname, inputLang, outputLang, tests) {
             (unsupported[mode][inputLang][outputLang][testname].indexOf('*') !== -1 ||
              unsupported[mode][inputLang][outputLang][testname].indexOf(key) !== -1)
           );
-
           (skip ? xit : it)(
             test.description,
             () => checkResults[mode](inputLang, outputLang, test)

@@ -4,30 +4,49 @@ const fs = require('fs');
 const chai = require('chai');
 const expect = chai.expect;
 
-const { readYAML } = require('./helpers');
+const { readYAML, readJSON } = require('./helpers');
 const transpiler = require('../index');
 
 const outputLanguages = process.env.OUTPUT ? process.env.OUTPUT.split(',') : [ 'csharp', 'python', 'java', 'javascript', 'shell'];
 const inputLanguages = process.env.INPUT ? process.env.INPUT.split(',') : [ 'shell', 'javascript', 'python' ];
 const modes = process.env.MODE ? process.env.MODE.split(',') : [];
 
-// describe('Test', () => {
+describe('Test', () => {
   // modes.forEach((mode) => {
-  //   const testpath = path.join(__dirname, 'json', mode);
-  //   inputLanguages.forEach((inputLang) => {
-  //     fs.readdirSync(path.join(testpath, inputLang)).map((file) => {
-  //       const tests = readJSON(path.join(testpath, inputLang, file)).tests;
-  //       const testname = file.replace('.json', '');
-  //
-  //       outputLanguages.forEach((outputLang) => {
-  //         // runTest(mode, testname, inputLang, outputLang, tests);
-  //       });
-  //     });
-  //   });
-  // });
-// });
+    const testpath = path.join(__dirname, 'json', 'success');
+    // inputLanguages.forEach((inputLang) => {
+    //   fs.readdirSync(path.join(testpath, inputLang)).map((file) => {
+    //     const tests = readJSON(path.join(testpath, inputLang, file)).tests;
+        // const testname = file.replace('.json', '');
 
-const skipType = ['Document', 'Array', 'ArrayElision'];
+        // outputLanguages.forEach((outputLang) => {
+        //   runTest(mode, testname, inputLang, outputLang, tests);
+        // });
+    //     console.log(tests);
+    //   });
+    // });
+    const total  = [];
+    const json = readJSON(path.join(testpath, 'javascript', 'syntax.json')).tests;
+    for (const j of json.Constructors) {
+      const doc = {
+        "input": {
+          "javascript": j.javascript
+        },
+        "output": {
+          "javascript": "",
+          "python": j.python,
+          "java": j.java,
+          "csharp": j.csharp,
+          "shell": j.shell
+        }
+      };
+      total.push(doc);
+    }
+    // console.log(JSON.stringify(total));
+  // });
+});
+
+const skipType = [];
 
 const testpath = path.join(__dirname, 'json');
 fs.readdirSync(testpath).map((file) => {

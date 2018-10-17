@@ -62,7 +62,7 @@ const checkResults = {
 
 const readJSON = (filename) => {
   const parseResult = parse(fs.readFileSync(filename));
-  // if an error is returned from parsing json, just throw it
+  // if an error is returned from parsing yaml, just throw it
   if (parseResult.err) throw new Error(parseResult.err.message);
   return parseResult.value;
 };

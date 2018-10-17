@@ -11,46 +11,30 @@ const outputLanguages = process.env.OUTPUT ? process.env.OUTPUT.split(',') : [ '
 const inputLanguages = process.env.INPUT ? process.env.INPUT.split(',') : [ 'shell', 'javascript', 'python' ];
 const modes = process.env.MODE ? process.env.MODE.split(',') : [];
 
-describe('Test', () => {
-  // modes.forEach((mode) => {
-    const testpath = path.join(__dirname, 'json', 'success');
-    // inputLanguages.forEach((inputLang) => {
-    //   fs.readdirSync(path.join(testpath, inputLang)).map((file) => {
-    //     const tests = readJSON(path.join(testpath, inputLang, file)).tests;
-        // const testname = file.replace('.json', '');
-
-        // outputLanguages.forEach((outputLang) => {
-        //   runTest(mode, testname, inputLang, outputLang, tests);
-        // });
-    //     console.log(tests);
-    //   });
-    // });
-    const total  = {};
-    const json = readJSON(path.join(testpath, 'shell', 'bson-methods.json')).tests;
-    for (const i of Object.keys(json)) {
-      total[i] = [];
-      for (const j of json[i]) {
-        const doc = {
-          "input": {
-            "shell": j.shell
-          },
-          "output": {
-            "javascript": j.javascript,
-            "java": j.java,
-            "csharp": j.csharp,
-            "python": j.python
-          }
-        };
-        total[i].push(doc);
-      }
-    }
-    // console.log(JSON.stringify(total));
-  // });
-});
+// const testpath = path.join(__dirname, 'yaml', 'success');
+// const total  = {};
+// const yaml = readJSON(path.join(testpath, 'javascript', 'bson-utils.yaml')).tests;
+// for (const i of Object.keys(yaml)) {
+//   total[`${i}-utils`] = [];
+//   for (const j of yaml[i]) {
+//     const doc = {
+//       input: {
+//         javascript: j.javascript
+//       },
+//       output": {
+//         shell: j.shell,
+//         java: j.java,
+//         csharp: j.csharp,
+//         python: j.python
+//       }
+//     };
+//     total[`${i}-utils`].push(doc);
+//   }
+// }
 
 const skipType = [];
 
-const testpath = path.join(__dirname, 'json');
+const testpath = path.join(__dirname, 'yaml');
 fs.readdirSync(testpath).map((file) => {
   if (file === 'error' || file === 'success' || file === 'edge-cases') {
     return; // TODO: remove old JSON tests

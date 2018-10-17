@@ -7,7 +7,7 @@ runner: !!js/function >
         });
     }
 tests:
-    Code:
+    Code-methods:
     -   input:
             javascript: 'Code(''test code'', {x: 1}).scope'
             python: |-
@@ -39,7 +39,7 @@ tests:
             java: new Code("test code").getCode()
             csharp: new BsonJavaScript("test code").Code
             shell: new Code('test code').code
-    ObjectId:
+    ObjectId-methods:
     -   input:
             javascript: ObjectId().toString()
             python: ObjectId().binary
@@ -74,7 +74,7 @@ tests:
             java: new ObjectId().equals(new ObjectId())
             csharp: new ObjectId().Equals(new ObjectId())
             shell: new ObjectId().equals(new ObjectId())
-    DBRef:
+    DBRef-methods:
     -   input:
             javascript: new DBRef('coll', new ObjectId()).toString()
             shell: new DBRef('coll', new ObjectId()).toString()
@@ -138,7 +138,7 @@ tests:
             java: new DBRef("coll", new ObjectId()).getId()
             csharp: new MongoDBRef("coll", new ObjectId()).Id
             shell: new DBRef('coll', new ObjectId()).getId()
-    32-int:
+    32-int-methods:
     -   input:
             javascript: Int32(3).valueOf()
         output:
@@ -161,7 +161,7 @@ tests:
             java: Integer.toString(3)
             csharp: 3.ToString()
             python: str(int(3))
-    Double:
+    Double-methods:
     -   input:
             javascript: Double(3).valueOf()
         output:
@@ -176,7 +176,7 @@ tests:
             java: Double.parseDouble("3")
             csharp: Convert.ToDouble("3")
             shell: '3'
-    Long:
+    Long-methods:
     -   input:
             shell: NumberLong(429496729601).top
         output:
@@ -388,7 +388,7 @@ tests:
             java: Long.rotateRight(429496729601L, 10)
             csharp: 429496729601L >> 10
             shell: new NumberLong(429496729601) >> 10
-    Decimal128:
+    Decimal128-methods:
     -   input:
             javascript: new Decimal128(Buffer.from('5')).toString()
             shell: NumberDecimal('5.3E-6175').toString()
@@ -397,7 +397,7 @@ tests:
             java: Decimal128.parse("5.3E-6175").toString()
             csharp: Decimal128.Parse("5.3E-6175").ToString()
             shell: new NumberDecimal(5.3E-6175).toString()
-    Timestamp:
+    Timestamp-methods:
     -   input:
             javascript: Timestamp(1, 100).toString()
             shell: Timestamp(1, 100).toString()
@@ -494,7 +494,7 @@ tests:
           java: new Date(new BSONTimestamp(1, 100).getTime())
           csharp: new DateTime(1970, 1, 1).AddSeconds(new BsonTimestamp(1, 100).Timestamp)
           shell: new Date(new Timestamp(1, 100).getHighBits() * 1000)
-    Symbol:
+    Symbol-methods:
     -   input:
             javascript: Symbol('2').valueOf()
         output:
@@ -516,4 +516,159 @@ tests:
             java: new Symbol("2").getSymbol()
             csharp: '"2"'
             shell: "'2'"
+    ObjectId-utils:
+    - input:
+          javascript: ObjectId.createFromHexString('5ab901c29ee65f5c8550c5b9')
+      output:
+          shell: new ObjectId('5ab901c29ee65f5c8550c5b9')
+          java: new ObjectId("5ab901c29ee65f5c8550c5b9")
+          csharp: new ObjectId("5ab901c29ee65f5c8550c5b9")
+          python: ObjectId('5ab901c29ee65f5c8550c5b9')
+    - input:
+          python: ObjectId.from_datetime(datetime(1, 2, 3))
+          shell: ObjectId.fromDate(new Date('Sun, 03 Feb 1901 00:00:00 GMT'))
+      output:
+          javascript: ObjectId.createFromTime(new Date('Sun, 03 Feb 1901 00:00:00 GMT').getTime() / 1000)
+          java: new ObjectId(new java.util.Date(-2174601600000L))
+          csharp: new ObjectId.GenerateNewId(new DateTime(1901, 2, 3, 0, 0, 0))
+          shell: ObjectId.fromDate(new Date('Sun, 03 Feb 1901 00:00:00 GMT'))
+    - input:
+          javascript: ObjectId.createFromTime(1522075031642)
+      output:
+          shell: ObjectId.fromDate(new Date(1522075031642))
+          javascript: ObjectId.createFromTime(1522075031642)
+          java: new ObjectId(new java.util.Date(1522075031642L))
+          csharp: new ObjectId.GenerateNewId(Convert.ToInt32(1522075031642))
+          python: ObjectId.from_datetime(datetime.fromtimestamp(1522075031642))
+    - input:
+          javascript: ObjectId.isValid('5ab901c29ee65f5c8550c5b9')
+          python: ObjectId.is_valid('5ab901c29ee65f5c8550c5b9')
+      output:
+          shell: new ObjectId('5ab901c29ee65f5c8550c5b9')
+          java: ObjectId.isValid("5ab901c29ee65f5c8550c5b9")
+          csharp: new ObjectId("5ab901c29ee65f5c8550c5b9")
+          python: ObjectId.is_valid('5ab901c29ee65f5c8550c5b9')
+    Binary-utils:
+    - input:
+          javascript: Binary.SUBTYPE_DEFAULT
+      output:
+          shell: '0'
+          java: BsonBinarySubType.BINARY
+          csharp: BsonBinarySubType.Binary
+          python: binary.BINARY_SUBTYPE
+    - input:
+          javascript: Binary.SUBTYPE_FUNCTION
+      output:
+          shell: '1'
+          java: BsonBinarySubType.FUNCTION
+          csharp: BsonBinarySubType.Function
+          python: binary.FUNCTION_SUBTYPE
+    - input:
+          javascript: Binary.SUBTYPE_BYTE_ARRAY
+      output:
+          shell: '2'
+          java: BsonBinarySubType.BINARY
+          csharp: BsonBinarySubType.OldBinary
+          python: binary.BINARY_SUBTYPE
+    - input:
+          javascript: Binary.SUBTYPE_UUID_OLD
+      output:
+          shell: '3'
+          java: BsonBinarySubType.UUID_LEGACY
+          csharp: BsonBinarySubType.UuidLegacy
+          python: binary.OLD_UUID_SUBTYPE
+    - input:
+          javascript: Binary.SUBTYPE_UUID
+      output:
+          shell: '4'
+          java: BsonBinarySubType.UUID_STANDARD
+          csharp: BsonBinarySubType.UuidStandard
+          python: binary.UUID_SUBTYPE
+    - input:
+          javascript: Binary.SUBTYPE_MD5
+      output:
+          shell: '5'
+          java: BsonBinarySubType.MD5
+          csharp: BsonBinarySubType.MD5
+          python: binary.MD5_SUBTYPE
+    - input:
+          javascript: Binary.SUBTYPE_USER_DEFINED
+      output:
+          shell: '80'
+          java: BsonBinarySubType.USER_DEFINED
+          csharp: BsonBinarySubType.UserDefined
+          python: binary.USER_DEFINED_SUBTYPE
+    Long-utils:
+    - input:
+          javascript: Long.MAX_VALUE
+      output:
+          shell: Math.max()
+          java: Long.MAX_VALUE
+          csharp: Int64.MaxValue
+          python: sys.maxsize
+    - input:
+          javascript: Long.MIN_VALUE
+      output:
+          shell: Math.min()
+          java: Long.MIN_VALUE
+          csharp: Int64.MinValue
+          python: "-sys.maxsize -1"
+    - input:
+          javascript: Long.ZERO
+      output:
+          shell: '0'
+          java: 0L
+          csharp: 0L
+          python: Int64(0)
+    - input:
+          javascript: Long.ONE
+      output:
+          shell: '1'
+          java: 1L
+          csharp: 1L
+          python: Int64(1)
+    - input:
+          javascript: Long.NEG_ONE
+      output:
+          shell: "-1"
+          java: "-1L"
+          csharp: "-1L"
+          python: Int64(-1)
+    - input:
+          javascript: Long.fromInt(5)
+      output:
+          shell: new NumberLong(5)
+          java: 5L
+          csharp: 5L
+          python: Int64(5)
+    - input:
+          javascript: Long.fromString('5')
+      output:
+          shell: new NumberLong('5')
+          java: Long.parseLong("5")
+          csharp: Convert.ToInt64("5", 10)
+          python: Int64(int('5'))
+    - input:
+          javascript: Long.fromString('5', 10)
+      output:
+          shell: new NumberLong('5')
+          java: Long.parseLong("5", 10)
+          csharp: Convert.ToInt64("5", 10)
+          python: Int64(int('5'))
+    - input:
+          javascript: Long.fromBits(-1, 2147483647)
+      output:
+          shell: new NumberLong(9223372036854775807)
+          java: 9223372036854775807L
+          csharp: 9223372036854775807L
+          python: Int64(9223372036854775807)
+    Decimal128-utils:
+    - input:
+          javascript: Decimal128.fromString("5")
+      output:
+          shell: new NumberDecimal('5')
+          java: Decimal128.parse("5")
+          csharp: Decimal128.Parse("5")
+          python: Decimal128('5')
+
 

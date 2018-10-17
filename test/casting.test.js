@@ -9,7 +9,7 @@ const { readYAML } = require('./helpers');
 
 const runTest = () => {
   describe('Casting tests', () => {
-    const testpath = path.join(__dirname, 'json', 'edge-cases', 'casting.yaml');
+    const testpath = path.join(__dirname, 'yaml', 'edge-cases', 'casting.yaml');
     const tests = readYAML(testpath).tests.all;
     for (const test of tests) {
       for (const input of Object.keys(test.input)) {

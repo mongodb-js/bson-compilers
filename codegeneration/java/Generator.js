@@ -812,7 +812,7 @@ module.exports = (superClass) => class ExtendedVisitor extends superClass {
     const copy = this.deepCopyRequiredImports();
     const value = this.visit(ctx.parentCtx);
     this.requiredImports = copy;
-    if (ctx.parentCtx.type.id === '_string') {
+    if (this.getTyped(ctx.parentCtx).type.id === '_string') {
       return `unwind(${value})`;
     }
     return this.handleOptionsObject(

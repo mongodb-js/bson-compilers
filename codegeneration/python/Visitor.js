@@ -125,13 +125,6 @@ class Visitor extends Python3Visitor {
         }`;
       }
     }
-    /* Set the node's type to the first child, if it's not already set.
-      More often than not, type will be set directly by the visitNode method. */
-    if (ctx.type === undefined) {
-      ctx.type = opts.children.length ?
-        opts.children[0].type :
-        this.Types._undefined;
-    }
     return code;
   }
 
@@ -141,6 +134,21 @@ class Visitor extends Python3Visitor {
     throw new BsonTranspilersUnimplementedError(
       `'${name}' not yet implemented`
     );
+  }
+
+  /**
+   * Want to throw unimplemented for comprehensions instead of reference errors.
+   * @param {ParserContext} ctx
+   */
+  testComprehension(ctx) {
+    if (ctx === null) {
+      return;
+    }
+    if (('comp_for' in ctx && ctx.comp_for() !== null) || ('comp_if' in ctx && ctx.comp_if() !== null)) {
+      throw new BsonTranspilersUnimplementedError(
+        'Comprehensions not yet implemented'
+      );
+    }
   }
 
   /**
@@ -180,6 +188,7 @@ class Visitor extends Python3Visitor {
    * @return {String}
    */
   generateLiteral(ctx, lhsType, args, defaultT, skipNew) {
+    // console.log(`generating literal ctx=${ctx.constructor.name}, type=${lhsType.id}`);
     if (`emit${lhsType.id}` in this) {
       return this[`emit${lhsType.id}`](ctx);
     }
@@ -210,6 +219,16 @@ class Visitor extends Python3Visitor {
     return ctx.indentDepth;
   }
 
+  getParentOriginalType(ctx) {
+    if (ctx.originalType !== undefined) {
+      return ctx.originalType;
+    }
+    if (ctx.parentCtx) {
+      return this.getParentOriginalType(ctx.parentCtx);
+    }
+    return null;
+  }
+
   /**
    * Helper for literals.
    *
@@ -221,11 +240,14 @@ class Visitor extends Python3Visitor {
     ctx.type = setType;
     this.requiredImports[ctx.type.code] = true;
     // Pass the original argument type to the template, not the casted type.
-    const type = ctx.originalType === undefined ? ctx.type : ctx.originalType;
+
+    const parentOriginalType = this.getParentOriginalType(ctx);
+    const type = parentOriginalType === null ? ctx.type : parentOriginalType;
+
     if (`process${ctx.type.id}` in this) {
       return this[`process${ctx.type.id}`](ctx);
     }
-    const children = this.visitChildren(ctx);
+    const children = ctx.getText();
     return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
   }
 
@@ -293,18 +315,18 @@ class Visitor extends Python3Visitor {
   }
 
   /**
-   * Want to throw unimplemented for comprehensions instead of reference errors.
+   * For the expression "+1", set the type to the child's type.
    * @param {ParserContext} ctx
+   * @return {String}
    */
-  testComprehension(ctx) {
-    if (ctx === null) {
-      return;
+  visitFactor(ctx) {
+    // Skip if fake node
+    if (ctx.getChildCount() === 1) {
+      return this.visitChildren(ctx);
     }
-    if (('comp_for' in ctx && ctx.comp_for() !== null) || ('comp_if' in ctx && ctx.comp_if() !== null)) {
-      throw new BsonTranspilersUnimplementedError(
-        'Comprehensions not yet implemented'
-      );
-    }
+    const result = this.visitChildren(ctx);
+    ctx.type = this.getTyped(ctx.factor()).type;
+    return result;
   }
 
   visitObject_literal(ctx) {
@@ -377,6 +399,7 @@ class Visitor extends Python3Visitor {
     }
     return this.visitChildren(ctx);
   }
+
   visitArray_literal(ctx) {
     ctx.type = this.Types._array;
     ctx.indentDepth = this.getIndentDepth(ctx) + 1;
@@ -505,7 +528,7 @@ class Visitor extends Python3Visitor {
       return this.visitChildren(ctx);
     }
     const lhs = this.visit(ctx.atom());
-    let lhsType = ctx.atom().type;
+    let lhsType = this.getTyped(ctx.atom()).type;
     if (typeof lhsType === 'string') {
       lhsType = this.Types[lhsType];
     }
@@ -557,7 +580,7 @@ class Visitor extends Python3Visitor {
     const lhs = this.visit(ctx.atom());
     const rhs = ctx.dot_trailer().identifier().getText();
 
-    let type = ctx.atom().type;
+    let type = this.getTyped(ctx.atom()).type;
     if (typeof type === 'string') {
       type = this.Types[type];
     }
@@ -697,7 +720,7 @@ class Visitor extends Python3Visitor {
         this.checkArguments(symbolType.args, argsList, 'datetime');
       } catch (e) {
         throw new BsonTranspilersArgumentError(
-          'Invalid argument to datetime: requires either no args or up to 7 numbers'
+          `Invalid argument to datetime: requires either no args or up to 7 numbers. ${e.message}`
         );
       }
 
@@ -744,7 +767,7 @@ class Visitor extends Python3Visitor {
 
   processint(ctx) {
     const lhsStr = this.visit(ctx.atom());
-    let lhsType = ctx.atom().type;
+    let lhsType = this.getTyped(ctx.atom()).type;
     if (typeof lhsType === 'string') {
       lhsType = this.Types[lhsType];
     }
@@ -782,7 +805,7 @@ class Visitor extends Python3Visitor {
    */
   processObjectIdfrom_datetime(ctx) {
     const lhsStr = this.visit(ctx.atom());
-    let lhsType = ctx.atom().type;
+    let lhsType = this.getTyped(ctx.atom()).type;
     if (typeof lhsType === 'string') {
       lhsType = this.Types[lhsType];
     }
@@ -846,15 +869,28 @@ class Visitor extends Python3Visitor {
         const typeStr = expected[i].map((e) => {
           const id = e && e.id ? e.id : e;
           return e ? id : '[optional]';
-        });
+        }).join(', ');
         const message = `Argument type mismatch: '${name}' expects types ${
-          typeStr} but got type ${args[i].type.id} for argument at index ${i}`;
+          typeStr} but got type ${this.getTyped(args[i]).type.id} for argument at index ${i}`;
 
         throw new BsonTranspilersArgumentError(message);
       }
       argStr.push(result);
     }
     return argStr;
+  }
+
+  /**
+   * Returns true if the type of the child is a literal.
+   *
+   * @param {ParserRuleContext} ctx
+   * @return {boolean}
+   */
+  isLiteralCtx(ctx) {
+    return [
+      'integer_literal', 'oct_literal', 'hex_literal', 'bin_literal',
+      'float_literal', 'string_literal', 'none_literal', 'boolean_literal'
+    ].filter((n) => ( n in ctx.parentCtx )).length > 0;
   }
 
   /**
@@ -866,64 +902,77 @@ class Visitor extends Python3Visitor {
    *
    * @returns {String} - visited result, or null on error.
    */
-  castType(expectedType, actualCtx) {
-    const result = this.visit(actualCtx);
-    const originalCtx = actualCtx;
-    actualCtx = this.getTyped(actualCtx); // TODO, needed??
+  castType(expectedType, ctx) {
+    const result = this.visit(ctx);
+    const typedCtx = this.getTyped(ctx);
+    const type = typedCtx.type;
 
     // If the types are exactly the same, just return.
-    if (expectedType.indexOf(actualCtx.type) !== -1 ||
-      expectedType.indexOf(actualCtx.type.id) !== -1) {
+    if (expectedType.indexOf(type) !== -1 ||
+        expectedType.indexOf(type.id) !== -1) {
       return result;
     }
 
     const numericTypes = [
       this.Types._integer, this.Types._decimal, this.Types._hex,
-      this.Types._octal, this.Types._long, this.Types._numeric
+      this.Types._octal, this.Types._long
     ];
-    // If the expected type is "numeric", accept the numeric basic types + numeric bson types
+    // If both expected and node are numeric literals, cast + return
+    for (let i = 0; i < expectedType.length; i++) {
+      if (numericTypes.indexOf(type) !== -1 &&
+          numericTypes.indexOf(expectedType[i]) !== -1) {
+        // Need to visit the octal node always
+        if (type.id === '_octal') {
+          return this.leafHelper(
+            expectedType[i],
+            {
+              type: expectedType[i],
+              originalType: type.id,
+              getText: () => ( this.visit(ctx) )
+            }
+          );
+        }
+        const child = this.skipFakeNodesDown(ctx);
+        child.originalType = type;
+        child.type = expectedType[i];
+        return this.leafHelper(expectedType[i], child);
+      }
+    }
+
+    console.log(`checking for numeric: type=${type.id}/${type.code}, expectedType=${expectedType.map((m) => (m ? `${m.id}/${m.code}` : '(optionall)')).join(', ')}`);
+    // If the expected type is "numeric", accept the number basic & bson types
     if (expectedType.indexOf(this.Types._numeric) !== -1 &&
-      (numericTypes.indexOf(actualCtx.type) !== -1 ||
-        (actualCtx.type.id === 'Long' ||
-          actualCtx.type.id === 'Int32' ||
-          actualCtx.type.id === 'Double'))) {
+        (numericTypes.indexOf(type) !== -1 || (type.code === 106 || type.code === 105 || type.code === 104))) {
       return result;
     }
 
-    // Check if the arguments are both numbers. If so then cast to expected type.
-    for (let i = 0; i < expectedType.length; i++) {
-      if (numericTypes.indexOf(actualCtx.type) !== -1 &&
-        numericTypes.indexOf(expectedType[i]) !== -1) {
-        // Need to interpret octal always
-        if (actualCtx.type.id === '_octal') {
-          const node = {
-            type: expectedType[i],
-            originalType: actualCtx.type.id,
-            children: [ actualCtx ]
-          };
-          return this.leafHelper(expectedType[i], node);
-        }
-        actualCtx.originalType = actualCtx.type;
-        actualCtx.type = expectedType[i];
-        return this.leafHelper(expectedType[i], this.skipFakeNodesDown(originalCtx));
+    // TODO: START HERE: int(x) is getting cased where it should be treated as generic and not casted.
+
+    return null;
+  }
+
+  _getType(ctx) {
+    if (ctx.type !== undefined) {
+      return ctx;
+    }
+    if (!ctx.children) {
+      return null;
+    }
+    for (const c of ctx.children) {
+      const typed = this._getType(c);
+      if (typed) {
+        return typed;
       }
     }
     return null;
   }
 
   getTyped(actual) {
-    if (actual.type === undefined) {
-      while (actual.getChild(0)) {
-        actual = actual.getChild(0);
-        if (actual.type !== undefined) {
-          break;
-        }
-      }
+    const typed = this._getType(actual);
+    if (!typed) {
+      throw new BsonTranspilersInternalError('Type not set on any child nodes');
     }
-    if (actual.type === undefined) {
-      throw new BsonTranspilersInternalError();
-    }
-    return actual;
+    return typed;
   }
 
   // accessors

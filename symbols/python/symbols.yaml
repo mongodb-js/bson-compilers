@@ -5,8 +5,7 @@ BsonSymbols:
         callable: *constructor
         args:
             - [ *StringType ]
-            - [ *ObjectType, null, 'scope']
-            - [ null, '**kwargs' ]
+            - [ *ObjectType, null ]
         type: *CodeType
         attr: {}
         template: *CodeSymbolTemplate

@@ -188,7 +188,6 @@ class Visitor extends Python3Visitor {
    * @return {String}
    */
   generateLiteral(ctx, lhsType, args, defaultT, skipNew) {
-    // console.log(`generating literal ctx=${ctx.constructor.name}, type=${lhsType.id}`);
     if (`emit${lhsType.id}` in this) {
       return this[`emit${lhsType.id}`](ctx);
     }
@@ -771,7 +770,6 @@ class Visitor extends Python3Visitor {
     if (typeof lhsType === 'string') {
       lhsType = this.Types[lhsType];
     }
-    ctx.type = lhsType.id === 'float' ? this.Types._decimal : lhsType.type;
 
     // Get the original type of the argument
     const expectedArgs = lhsType.args;
@@ -813,7 +811,7 @@ class Visitor extends Python3Visitor {
     const args = this.checkArguments(
       lhsType.args, this.getArguments(ctx), lhsType.id
     );
-    const isNumber = this.getArgumentAt(ctx, 0).type.code !== 200;
+    const isNumber = this.getTyped(this.getArgumentAt(ctx, 0)).type.code !== 200;
     return this.generateCall(
       ctx, lhsType, [args[0], isNumber], lhsStr, `(${args.join(', ')})`, true
     );
@@ -864,6 +862,7 @@ class Visitor extends Python3Visitor {
           `Argument count mismatch: too few arguments passed to '${name}'`
         );
       }
+
       const result = this.castType(expected[i], args[i]);
       if (result === null) {
         const typeStr = expected[i].map((e) => {
@@ -939,14 +938,16 @@ class Visitor extends Python3Visitor {
       }
     }
 
-    console.log(`checking for numeric: type=${type.id}/${type.code}, expectedType=${expectedType.map((m) => (m ? `${m.id}/${m.code}` : '(optionall)')).join(', ')}`);
     // If the expected type is "numeric", accept the number basic & bson types
     if (expectedType.indexOf(this.Types._numeric) !== -1 &&
         (numericTypes.indexOf(type) !== -1 || (type.code === 106 || type.code === 105 || type.code === 104))) {
       return result;
     }
-
-    // TODO: START HERE: int(x) is getting cased where it should be treated as generic and not casted.
+    // If the expected type is any number, accept float/int
+    if ((numericTypes.some((t) => ( expectedType.indexOf(t) !== -1))) &&
+        (type.code === 106 || type.code === 105 || type.code === 104)) {
+      return result;
+    }
 
     return null;
   }

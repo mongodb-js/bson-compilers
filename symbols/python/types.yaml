@@ -5,6 +5,18 @@ NativeTypes:
         code: 200
         type: *ObjectType
         attr: {} # TODO: no built-in date methods added yet
+    int: &intType
+        <<: *__type
+        id: "int"
+        code: 105
+        type: *IntegerType
+        attr: {}
+    float: &floatType
+        <<: *__type
+        id: "float"
+        code: 104
+        type: *IntegerType
+        attr: {}
 BsonTypes:
     Code: &CodeType
         <<: *__type

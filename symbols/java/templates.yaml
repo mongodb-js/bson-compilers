@@ -686,6 +686,9 @@ Templates:
                 return `Double.parseDouble(${arg})`;
             }
             if (type === '_integer' || type === '_long' || type === '_double' || type === '_decimal') {
+                if (arg.includes('L') || arg.includes('d')) {
+                    return `${arg.substr(0, arg.length - 1)}d`;
+                }
                 return `${arg}d`;
             }
             return `(double) ${arg}`;
@@ -870,6 +873,9 @@ Templates:
                 return `Double.parseDouble(${arg})`;
             }
             if (type === '_integer' || type === '_long' || type === '_decimal') {
+                if (arg.includes('L') || arg.includes('d')) {
+                    return `${arg.substr(0, arg.length - 1)}d`;
+                }
                 return `${arg}d`;
             }
             return `(double) ${arg}`;

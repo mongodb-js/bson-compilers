@@ -123,8 +123,23 @@ tests:
               - - _long
               - - _decimal
               - - _integer
+      output:
+          java: TestFunc(10d, Double.parseDouble("10"), 10d, Double.parseDouble("10"))
+    - description: does not cast int class
+      input:
           python:
               code: TestFunc(int(10), int('10'), int(10), int('10'))
+              args:
+              - - _numeric
+              - - _long
+              - - _decimal
+              - - _integer
+      output:
+          java: TestFunc(10, Integer.parseInt("10"), 10, Integer.parseInt("10"))
+    - description: does not cast float class
+      input:
+          python:
+              code: TestFunc(float(10), float('10'), float(10), float('10'))
               args:
               - - _numeric
               - - _long
@@ -314,4 +329,4 @@ tests:
               code: int(1)
               args:
       output:
-          java: 1d
+          java: '1'

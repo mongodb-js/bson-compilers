@@ -168,8 +168,8 @@ NativeSymbols:
         code: 104
         callable: *constructor
         args:
-        - [ *IntegerType, *StringType, null ]
-        type: *NumericType
+        - [ *NumericType, *StringType, null ]
+        type: *floatType
         attr: {}
         template: *DoubleSymbolTemplate
         argsTemplate: *DoubleSymbolArgsTemplate
@@ -179,7 +179,7 @@ NativeSymbols:
         callable: *constructor
         args:
         - [ *NumericType, *StringType, null ]
-        type: *IntegerType
+        type: *intType
         attr: {}
         template: *Int32SymbolTemplate
         argsTemplate: *Int32SymbolArgsTemplate

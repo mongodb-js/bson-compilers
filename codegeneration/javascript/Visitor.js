@@ -225,13 +225,6 @@ class Visitor extends ECMAScriptVisitor {
         )}${(i === opts.end) ? '' : opts.separator}`;
       }
     }
-    /* Set the node's type to the first child, if it's not already set.
-      More often than not, type will be set directly by the visitNode method. */
-    if (ctx.type === undefined) {
-      ctx.type = opts.children.length ?
-        opts.children[0].type :
-        this.Types._undefined;
-    }
     return code;
   }
 
@@ -385,7 +378,7 @@ class Visitor extends ECMAScriptVisitor {
    */
   visitFuncCallExpression(ctx) {
     const lhs = this.visit(ctx.singleExpression());
-    let lhsType = ctx.singleExpression().type;
+    let lhsType = this.getTyped(ctx.singleExpression()).type;
     if (typeof lhsType === 'string') {
       lhsType = this.Types[lhsType];
     }
@@ -462,7 +455,7 @@ class Visitor extends ECMAScriptVisitor {
       );
     }
 
-    let type = ctx.singleExpression().type;
+    let type = this.getTyped(ctx.singleExpression()).type;
     if (typeof type === 'string') {
       type = this.Types[type];
     }
@@ -503,7 +496,7 @@ class Visitor extends ECMAScriptVisitor {
   visitNewExpression(ctx) {
     ctx.singleExpression().wasNew = true; // for dates only
     const res = this.visit(ctx.singleExpression());
-    ctx.type = ctx.singleExpression().type;
+    ctx.type = this.getTyped(ctx.singleExpression()).type;
     return res;
   }
 
@@ -597,21 +590,6 @@ class Visitor extends ECMAScriptVisitor {
     const res = ctx.evaluate('__result = ' + input);
     ctx.destroy();
     return res;
-  }
-
-  getTyped(actual) {
-    if (actual.type === undefined) {
-      while (actual.singleExpression()) {
-        actual = actual.singleExpression();
-        if (actual.type !== undefined) {
-          break;
-        }
-      }
-    }
-    if (actual.type === undefined) {
-      throw new BsonTranspilersInternalError();
-    }
-    return actual;
   }
 
   /**
@@ -710,7 +688,7 @@ class Visitor extends ECMAScriptVisitor {
           return e ? id : '[optional]';
         });
         const message = `Argument type mismatch: '${name}' expects types ${
-          typeStr} but got type ${args[i].type.id} for argument at index ${i}`;
+          typeStr} but got type ${this.getTyped(args[i]).type.id} for argument at index ${i}`;
 
         throw new BsonTranspilersArgumentError(message);
       }
@@ -728,7 +706,7 @@ class Visitor extends ECMAScriptVisitor {
    */
   processNumber(ctx) {
     const lhsStr = this.visit(ctx.singleExpression());
-    let lhsType = ctx.singleExpression().type;
+    let lhsType = this.getTyped(ctx.singleExpression()).type;
     if (typeof lhsType === 'string') {
       lhsType = this.Types[lhsType];
     }
@@ -859,7 +837,7 @@ class Visitor extends ECMAScriptVisitor {
       scope = this.visit(this.getArgumentAt(ctx, 1));
       this.idiomatic = idiomatic;
       scopestr = `, ${scope}`;
-      if (this.getArgumentAt(ctx, 1).type !== this.Types._object) {
+      if (this.getTyped(this.getArgumentAt(ctx, 1)).type !== this.Types._object) {
         throw new BsonTranspilersArgumentError(
           'Argument type mismatch: Code requires scope to be an object'
         );
@@ -1038,7 +1016,7 @@ class Visitor extends ECMAScriptVisitor {
    */
   processObjectIdCreateFromTime(ctx) {
     const lhsStr = this.visit(ctx.singleExpression());
-    let lhsType = ctx.singleExpression().type;
+    let lhsType = this.getTyped(ctx.singleExpression()).type;
     if (typeof lhsType === 'string') {
       lhsType = this.Types[lhsType];
     }
@@ -1050,6 +1028,30 @@ class Visitor extends ECMAScriptVisitor {
     return this.generateCall(
       ctx, lhsType, [args[0], isNumber], lhsStr, `(${args.join(', ')})`, true
     );
+  }
+
+  _getType(ctx) {
+    if (ctx.type !== undefined) {
+      return ctx;
+    }
+    if (!ctx.children) {
+      return null;
+    }
+    for (const c of ctx.children) {
+      const typed = this._getType(c);
+      if (typed) {
+        return typed;
+      }
+    }
+    return null;
+  }
+
+  getTyped(actual) {
+    const typed = this._getType(actual);
+    if (!typed) {
+      throw new BsonTranspilersInternalError('Type not set on any child nodes');
+    }
+    return typed;
   }
 
   // Getters

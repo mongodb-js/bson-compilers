@@ -9,6 +9,18 @@ const yaml = require('js-yaml');
 
 const modes = process.env.MODE ? process.env.MODE.split(',') : [];
 
+const JavascriptANTLRVisitor = require('../lib/antlr/ECMAScriptVisitor').ECMAScriptVisitor;
+const PythonANTLRVisitor = require('../lib/antlr/Python3Visitor').Python3Visitor;
+const getCodeGenerationVisitor = require('../codegeneration/CodeGenerationVisitor');
+const getJavascriptVisitor = require('../codegeneration/javascript/Visitor');
+
+
+const getANTLRVisitor = {
+  javascript: () => ( JavascriptANTLRVisitor ),
+  shell: () => ( getJavascriptVisitor(JavascriptANTLRVisitor) ),
+  python: () => ( PythonANTLRVisitor )
+};
+
 const readYAML = (filename) => {
   let parseResult;
   try {
@@ -29,11 +41,12 @@ describe('Casting tests', () => {
   for (const test of tests) {
     for (const input of Object.keys(test.input)) {
       for (const output of Object.keys(test.output)) {
-        const Visitor = require(`../codegeneration/${input}/Visitor`);
-        const Generator = require(`../codegeneration/${output}/Generator`);
+        const ANTLRVisitor = getANTLRVisitor[input]();
+        const getVisitor = require(`../codegeneration/${input}/Visitor`);
+        const getGenerator = require(`../codegeneration/${output}/Generator`);
         const symbols = require(`../lib/symbol-table/${input}to${output}`);
 
-        const Transpiler = Generator(Visitor);
+        const Transpiler = getGenerator(getVisitor(getCodeGenerationVisitor(ANTLRVisitor)));
         const transpiler = new Transpiler();
         const doc = yaml.load(symbols);
         transpiler.Types = Object.assign({}, doc.BasicTypes, doc.BsonTypes);

@@ -4,20 +4,24 @@ const ECMAScriptParser = require('./lib/antlr/ECMAScriptParser.js');
 const Python3Lexer = require('./lib/antlr/Python3Lexer.js');
 const Python3Parser = require('./lib/antlr/Python3Parser');
 
+const JavascriptANTLRVisitor = require('./lib/antlr/ECMAScriptVisitor').ECMAScriptVisitor;
+const PythonANTLRVisitor = require('./lib/antlr/Python3Visitor').Python3Visitor;
+
 const ErrorListener = require('./codegeneration/ErrorListener.js');
 const { BsonTranspilersInternalError } = require('./helper/error');
 
 const yaml = require('js-yaml');
 
-const JavascriptVisitor = require('./codegeneration/javascript/Visitor');
-const ShellVisitor = require('./codegeneration/shell/Visitor');
-const PythonVisitor = require('./codegeneration/python/Visitor');
+const getCodeGenerationVisitor = require('./codegeneration/CodeGenerationVisitor');
+const getJavascriptVisitor = require('./codegeneration/javascript/Visitor');
+const getShellVisitor = require('./codegeneration/shell/Visitor');
+const getPythonVisitor = require('./codegeneration/python/Visitor');
 
-const JavaGenerator = require('./codegeneration/java/Generator');
-const PythonGenerator = require('./codegeneration/python/Generator');
-const CsharpGenerator = require('./codegeneration/csharp/Generator');
-const ShellGenerator = require('./codegeneration/shell/Generator');
-const JavascriptGenerator = require('./codegeneration/javascript/Generator');
+const getJavaGenerator = require('./codegeneration/java/Generator');
+const getPythonGenerator = require('./codegeneration/python/Generator');
+const getCsharpGenerator = require('./codegeneration/csharp/Generator');
+const getShellGenerator = require('./codegeneration/shell/Generator');
+const getJavascriptGenerator = require('./codegeneration/javascript/Generator');
 
 const javascriptjavasymbols = require('./lib/symbol-table/javascripttojava');
 const javascriptpythonsymbols = require('./lib/symbol-table/javascripttopython');
@@ -113,25 +117,81 @@ const getTranspiler = (loadTree, visitor, generator, symbols) => {
   };
 };
 
-
 module.exports = {
   javascript: {
-    java: getTranspiler(loadJSTree, JavascriptVisitor, JavaGenerator, javascriptjavasymbols),
-    python: getTranspiler(loadJSTree, JavascriptVisitor, PythonGenerator, javascriptpythonsymbols),
-    csharp: getTranspiler(loadJSTree, JavascriptVisitor, CsharpGenerator, javascriptcsharpsymbols),
-    shell: getTranspiler(loadJSTree, JavascriptVisitor, ShellGenerator, javascriptshellsymbols)
+    java: getTranspiler(
+      loadJSTree,
+      getJavascriptVisitor(getCodeGenerationVisitor(JavascriptANTLRVisitor)),
+      getJavaGenerator,
+      javascriptjavasymbols
+    ),
+    python: getTranspiler(
+      loadJSTree,
+      getJavascriptVisitor(getCodeGenerationVisitor(JavascriptANTLRVisitor)),
+      getPythonGenerator,
+      javascriptpythonsymbols
+    ),
+    csharp: getTranspiler(
+      loadJSTree,
+      getJavascriptVisitor(getCodeGenerationVisitor(JavascriptANTLRVisitor)),
+      getCsharpGenerator,
+      javascriptcsharpsymbols
+    ),
+    shell: getTranspiler(
+      loadJSTree,
+      getJavascriptVisitor(getCodeGenerationVisitor(JavascriptANTLRVisitor)),
+      getShellGenerator,
+      javascriptshellsymbols)
   },
   shell: {
-    java: getTranspiler(loadJSTree, ShellVisitor, JavaGenerator, shelljavasymbols),
-    python: getTranspiler(loadJSTree, ShellVisitor, PythonGenerator, shellpythonsymbols),
-    csharp: getTranspiler(loadJSTree, ShellVisitor, CsharpGenerator, shellcsharpsymbols),
-    javascript: getTranspiler(loadJSTree, ShellVisitor, JavascriptGenerator, shelljavascriptsymbols)
+    java: getTranspiler(
+      loadJSTree,
+      getShellVisitor(getJavascriptVisitor(getCodeGenerationVisitor(JavascriptANTLRVisitor))),
+      getJavaGenerator,
+      shelljavasymbols
+    ),
+    python: getTranspiler(
+      loadJSTree,
+      getShellVisitor(getJavascriptVisitor(getCodeGenerationVisitor(JavascriptANTLRVisitor))),
+      getPythonGenerator,
+      shellpythonsymbols
+    ),
+    csharp: getTranspiler(
+      loadJSTree,
+      getShellVisitor(getJavascriptVisitor(getCodeGenerationVisitor(JavascriptANTLRVisitor))),
+      getCsharpGenerator,
+      shellcsharpsymbols
+    ),
+    javascript: getTranspiler(
+      loadJSTree,
+      getShellVisitor(getJavascriptVisitor(getCodeGenerationVisitor(JavascriptANTLRVisitor))),
+      getJavascriptGenerator,
+      shelljavascriptsymbols)
   },
   python: {
-    java: getTranspiler(loadPyTree, PythonVisitor, JavaGenerator, pythonjavasymbols),
-    shell: getTranspiler(loadPyTree, PythonVisitor, ShellGenerator, pythonshellsymbols),
-    csharp: getTranspiler(loadPyTree, PythonVisitor, CsharpGenerator, pythoncsharpsymbols),
-    javascript: getTranspiler(loadPyTree, PythonVisitor, JavascriptGenerator, pythonjavascriptsymbols)
+    java: getTranspiler(
+      loadPyTree,
+      getPythonVisitor(getCodeGenerationVisitor(PythonANTLRVisitor)),
+      getJavaGenerator,
+      pythonjavasymbols
+    ),
+    shell: getTranspiler(
+      loadPyTree,
+      getPythonVisitor(getCodeGenerationVisitor(PythonANTLRVisitor)),
+      getShellGenerator,
+      pythonshellsymbols
+    ),
+    csharp: getTranspiler(
+      loadPyTree,
+      getPythonVisitor(getCodeGenerationVisitor(PythonANTLRVisitor)),
+      getCsharpGenerator,
+      pythoncsharpsymbols
+    ),
+    javascript: getTranspiler(
+      loadPyTree,
+      getPythonVisitor(getCodeGenerationVisitor(PythonANTLRVisitor)),
+      getJavascriptGenerator,
+      pythonjavascriptsymbols)
   },
   getTree: {
     javascript: loadJSTree,

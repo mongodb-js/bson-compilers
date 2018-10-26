@@ -1,5 +1,4 @@
 /* eslint complexity: 0 */
-const JavascriptVisitor = require('../javascript/Visitor');
 const bson = require('bson');
 const Context = require('context-eval');
 const {
@@ -9,12 +8,13 @@ const {
 } = require('../../helper/error');
 
 /**
- * This is a Visitor superclass where helper methods used by all language
- * generators can be defined.
+ * This is a visitor for the shell syntax. It inherits from the javascript visitor
+ * directly.
  *
- * @returns {object}
+ * @param {JSVisitor}
+ * @returns {Visitor}
  */
-class Visitor extends JavascriptVisitor {
+module.exports = (JSVisitor) => class Visitor extends JSVisitor {
   constructor() {
     super();
     this.processNumberLong = this.processNumber;
@@ -148,7 +148,7 @@ class Visitor extends JavascriptVisitor {
       scope = this.visit(args[1]);
       this.idiomatic = idiomatic;
       scopestr = `, ${scope}`;
-      if (args[1].type !== this.Types._object) {
+      if (this.getTyped(args[1]).type !== this.Types._object) {
         throw new BsonTranspilersArgumentError(
           'Argument type mismatch: Code requires scope to be an object'
         );
@@ -165,6 +165,4 @@ class Visitor extends JavascriptVisitor {
       : `${lhs}${rhs}`;
   }
 
-}
-
-module.exports = Visitor;
+};

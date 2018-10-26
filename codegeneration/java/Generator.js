@@ -8,7 +8,7 @@ const {
 /*
  * Class for handling edge cases for java code generation. Defines "emit" methods.
  */
-module.exports = (superClass) => class ExtendedVisitor extends superClass {
+module.exports = (Visitor) => class Generator extends Visitor {
   constructor() {
     super();
     // Operations that take the field name as an argument

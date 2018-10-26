@@ -1,7 +1,7 @@
 /*
  * Class for handling edge cases for csharp code generation. Defines "emit" methods.
  */
-module.exports = (superclass) => class ExtendedVisitor extends superclass {
+module.exports = (Visitor) => class Generator extends Visitor {
   constructor() {
     super();
   }

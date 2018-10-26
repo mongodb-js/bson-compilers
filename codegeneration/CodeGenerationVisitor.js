@@ -3,7 +3,7 @@
  * language-specific visitor code. These are basically all helper methods
  * that are used for all input languages.
  *
- * @param ANTLRVisitor - An ANTLR-generated visitor class
+ * @param {ANTLRVisitor} ANTLRVisitor - An ANTLR-generated visitor class
  * @returns {CodeGenerationVisitor}
  */
 module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisitor {

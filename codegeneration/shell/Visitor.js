@@ -11,10 +11,11 @@ const {
  * This is a visitor for the shell syntax. It inherits from the javascript visitor
  * directly.
  *
- * @param {JSVisitor}
- * @returns {Visitor}
+ * @param {JavascriptVisitor} JavascriptVisitor - The javascript input-language
+ * specific visitor.
+ * @return {Visitor} - Input-language specific visitor.
  */
-module.exports = (JSVisitor) => class Visitor extends JSVisitor {
+module.exports = (JavascriptVisitor) => class Visitor extends JavascriptVisitor {
   constructor() {
     super();
     this.processNumberLong = this.processNumber;

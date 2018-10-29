@@ -23,10 +23,10 @@ const { removeQuotes } = require('../../helper/format');
 module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGenerationVisitor {
   constructor() {
     super();
-    this.idiomatic = true;
+    this.startNode = this.visitProgram;
+
     this.processInt32 = this.processNumber;
     this.processDouble = this.processNumber;
-    this.requiredImports = {};
 
     // Throw UnimplementedError for nodes with expressions that we don't support
     this.visitThisExpression =
@@ -62,262 +62,64 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   /**
-   * This helper function checks for an emit method then applies the templates
-   * if they exist for a function call node.
-   *
-   * @param {ParserRuleContext} ctx - The function call node
-   * @param {Object} lhsType - The type
-   * @param {Array} args - Arguments to the template
-   * @param {String} defaultT - The default name if no template exists.
-   * @param {String} defaultA - The default arguments if no argsTemplate exists.
-   * @param {Boolean} skipNew - Optional: If true, never add new.
-   * @param {Boolean} skipLhs - Optional: If true, don't add lhs to result.
-   *
+   * Takes in the constructor name of a node and returns a human-readable
+   * node name. Used for error reporting.
+   * @param {String} name
    * @return {String}
    */
-  generateCall(ctx, lhsType, args, defaultT, defaultA, skipNew, skipLhs) {
-    if (`emit${lhsType.id}` in this) {
-      return this[`emit${lhsType.id}`](ctx);
-    }
-    const lhsArg = lhsType.template ? lhsType.template() : defaultT;
-    const rhs = lhsType.argsTemplate ? lhsType.argsTemplate(lhsArg, ...args) : defaultA;
-    const lhs = skipLhs ? '' : lhsArg;
-    return this.Syntax.new.template
-      ? this.Syntax.new.template(`${lhs}${rhs}`, skipNew, lhsType.code)
-      : `${lhs}${rhs}`;
+  renameNode(name) {
+    return name ? name.replace('Context', '') : 'Expression';
   }
 
   /**
-   * Same as generateCall but for type literals instead of function calls.
-   * @param {ParserRuleContext} ctx - The literal node
-   * @param {Object} lhsType - The type
-   * @param {Array} args - Arguments to the template
-   * @param {String} defaultT - The default if no template exists.
-   * @param {Boolean} skipNew - Optional: If true, never add new.
+   * Validate each argument against the expected argument types defined in the
+   * Symbol table.
    *
-   * @return {String}
-   */
-  generateLiteral(ctx, lhsType, args, defaultT, skipNew) {
-    if (`emit${lhsType.id}` in this) {
-      return this[`emit${lhsType.id}`](ctx);
-    }
-    if (lhsType.template) {
-      const str = lhsType.template(...args);
-      return this.Syntax.new.template
-        ? this.Syntax.new.template(str, skipNew, lhsType.code)
-        : str;
-    }
-    return defaultT;
-  }
-
-  /**
-   * The entry point for the compiler.
+   * @param {Array} expected - An array of arrays where each subarray represents
+   * possible argument types for that index.
+   * @param {Array} args - empty if no args.
+   * @param {String} name - The name of the function for error reporting.
    *
-   * @param {ParserRuleContext} ctx - tree node.
-   * @return {String} - generated code.
+   * @returns {Array} - Array containing the generated output for each argument.
    */
-  start(ctx) {
-    this.requiredImports = {};
-    [300, 301, 302, 303, 304, 305, 306].forEach(
-      (i) => (this.requiredImports[i] = [])
-    );
-    return this.visitProgram(ctx).trim();
-  }
-
-  visitEof() {
-    if (this.Syntax.eof.template) {
-      return this.Syntax.eof.template();
-    }
-    return '';
-  }
-
-  visitEos() {
-    if (this.Syntax.eos.template) {
-      return this.Syntax.eos.template();
-    }
-    return '\n';
-  }
-
-  visitEmptyStatement() {
-    return '\n';
-  }
-
-  visitRelationalExpression(ctx) {
-    return ctx.children.map((n) => ( this.visit(n) )).join(' ');
-  }
-
-  /**
-   * Selectively visits children of a node.
-   *
-   * @param {ParserRuleContext} ctx
-   * @param {Object} options:
-   *    start - child index to start iterating at.
-   *    end - child index to end iterating after.
-   *    step - how many children to increment each step, 1 visits all children.
-   *    separator - a string separator to go between children.
-   *    ignore - an array of child indexes to skip.
-   *    children - the set of children to visit.
-   * @returns {String}
-   */
-  visitChildren(ctx, options) {
-    const opts = {
-      start: 0, step: 1, separator: '', ignore: [], children: ctx.children
-    };
-    Object.assign(opts, options ? options : {});
-    opts.end = ('end' in opts) ? opts.end : opts.children.length - 1;
-
-    let code = '';
-    for (let i = opts.start; i <= opts.end; i += opts.step) {
-      if (opts.ignore.indexOf(i) === -1) {
-        code = `${code}${this.visit(
-          opts.children[i]
-        )}${(i === opts.end) ? '' : opts.separator}`;
+  checkArguments(expected, args, name) {
+    const argStr = [];
+    if (args.length === 0) { // TODO: if pass array, can skip this?
+      if (expected.length === 0 || expected[0].indexOf(null) !== -1) {
+        return argStr;
       }
+      throw new BsonTranspilersArgumentError(
+        `Argument count mismatch: '${name}' requires least one argument`
+      );
     }
-    return code;
-  }
-
-  visitEqualityExpression(ctx) {
-    ctx.type = this.Types._boolean;
-    const lhs = this.visit(ctx.singleExpression()[0]);
-    const rhs = this.visit(ctx.singleExpression()[1]);
-    const op = this.visit(ctx.children[1]);
-    if (this.Syntax.equality) {
-      return this.Syntax.equality.template(lhs, op, rhs);
+    if (args.length > expected.length) {
+      throw new BsonTranspilersArgumentError(
+        `Argument count mismatch: '${name}' expects ${expected.length} args and got ${args.length}`
+      );
     }
-    return this.visitChildren(ctx);
-  }
-
-  visitLogicalAndExpression(ctx) {
-    if (this.Syntax.and) {
-      return this.Syntax.and.template(ctx.singleExpression().map((t) => (this.visit(t))));
-    }
-    return this.visitChildren(ctx);
-  }
-
-  visitLogicalOrExpression(ctx) {
-    if (this.Syntax.or) {
-      return this.Syntax.or.template(ctx.singleExpression().map((t) => ( this.visit(t) )));
-    }
-    return this.visitChildren(ctx);
-  }
-
-  visitNotExpression(ctx) {
-    if (this.Syntax.not) {
-      return this.Syntax.not.template(this.visit(ctx.singleExpression()));
-    }
-    return this.visitChildren(ctx);
-  }
-
-  /**
-   * Child nodes: literal
-   * @param {LiteralExpressionContext} ctx
-   * @return {String}
-   */
-  visitLiteralExpression(ctx) {
-    if (!ctx.type) {
-      ctx.type = this.getPrimitiveType(ctx.literal());
-    }
-    this.requiredImports[ctx.type.code] = true;
-    // Pass the original argument type to the template, not the casted type.
-    const type = ctx.originalType === undefined ? ctx.type : ctx.originalType;
-    if (`process${ctx.type.id}` in this) {
-      return this[`process${ctx.type.id}`](ctx);
-    }
-    const children = this.visitChildren(ctx);
-    return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
-  }
-
-  getIndentDepth(ctx) {
-    while (ctx.indentDepth === undefined) {
-      ctx = ctx.parentCtx;
-      if (ctx === undefined || ctx === null) {
-        return -1;
+    for (let i = 0; i < expected.length; i++) {
+      if (args[i] === undefined) {
+        if (expected[i].indexOf(null) !== -1) {
+          return argStr;
+        }
+        throw new BsonTranspilersArgumentError(
+          `Argument count mismatch: too few arguments passed to '${name}'`
+        );
       }
-    }
-    return ctx.indentDepth;
-  }
+      const result = this.castType(expected[i], args[i]);
+      if (result === null) {
+        const typeStr = expected[i].map((e) => {
+          const id = e && e.id ? e.id : e;
+          return e ? id : '[optional]';
+        });
+        const message = `Argument type mismatch: '${name}' expects types ${
+          typeStr} but got type ${this.getTyped(args[i]).type.id} for argument at index ${i}`;
 
-  /**
-   * Child nodes: propertyNameAndValueList?
-   * @param {ObjectLiteralContext} ctx
-   * @return {String}
-   */
-  visitObjectLiteral(ctx) {
-    if (this.idiomatic && 'emitIdiomaticObjectLiteral' in this) {
-      return this.emitIdiomaticObjectLiteral(ctx);
-    }
-    this.requiredImports[10] = true;
-    ctx.type = this.Types._object;
-    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
-    let args = '';
-    if (ctx.propertyNameAndValueList()) {
-      const properties = ctx.propertyNameAndValueList().propertyAssignment();
-      if (ctx.type.argsTemplate) {
-        args = ctx.type.argsTemplate(properties.map((pair) => {
-          const key = this.visit(pair.propertyName());
-          let value = pair.singleExpression();
-          if (removeQuotes(key) === '$where') {
-            value = this.Types._string.template(value.getText());
-          } else {
-            value = this.visit(value);
-          }
-          return [key, value];
-        }), ctx.indentDepth);
-      } else {
-        args = this.visit(properties);
+        throw new BsonTranspilersArgumentError(message);
       }
+      argStr.push(result);
     }
-    if (ctx.type.template) {
-      return ctx.type.template(args, ctx.indentDepth);
-    }
-    ctx.indentDepth--;
-    return this.visitChildren(ctx);
-  }
-
-  /**
-   * Child nodes: elementList*
-   * @param {ArrayLiteralContext} ctx
-   * @return {String}
-   */
-  visitArrayLiteral(ctx) {
-    ctx.type = this.Types._array;
-    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
-    this.requiredImports[9] = true;
-    let args = '';
-    if (ctx.elementList()) {
-      const visitedChildren = ctx.elementList().children.map((child) => {
-        return this.visit(child);
-      });
-      const visitedElements = visitedChildren.filter((arg) => {
-        return arg !== ',';
-      });
-      if (ctx.type.argsTemplate) { // NOTE: not currently being used anywhere.
-        args = visitedElements.map((arg, index) => {
-          const last = !visitedElements[index + 1];
-          return ctx.type.argsTemplate(arg, ctx.indentDepth, last);
-        }).join('');
-      } else {
-        args = visitedElements.join(', ');
-      }
-    }
-    if (ctx.type.template) {
-      return ctx.type.template(args, ctx.indentDepth);
-    }
-    return this.visitChildren(ctx);
-  }
-
-  /**
-   * One terminal child.
-   * @param {ElisionContext} ctx
-   * @return {String}
-   */
-  visitElision(ctx) {
-    ctx.type = this.Types._undefined;
-    if (ctx.type.template) {
-      return ctx.type.template();
-    }
-    return 'null';
+    return argStr;
   }
 
   /**
@@ -398,7 +200,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     const rhs = this.visit(ctx.identifierName());
 
     if (!ctx.singleExpression().constructor.name.includes('Identifier') &&
-        !ctx.singleExpression().constructor.name.includes('FuncCall')) {
+      !ctx.singleExpression().constructor.name.includes('FuncCall')) {
       throw new BsonTranspilersUnimplementedError(
         'Attribute access for non-symbols not currently supported'
       );
@@ -437,6 +239,205 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   /**
+   * Child nodes: propertyNameAndValueList?
+   * @param {ObjectLiteralContext} ctx
+   * @return {String}
+   */
+  visitObjectLiteral(ctx) {
+    if (this.idiomatic && 'emitIdiomaticObjectLiteral' in this) {
+      return this.emitIdiomaticObjectLiteral(ctx);
+    }
+    this.requiredImports[10] = true;
+    ctx.type = this.Types._object;
+    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
+    let args = '';
+    if (ctx.propertyNameAndValueList()) {
+      const properties = ctx.propertyNameAndValueList().propertyAssignment();
+      if (ctx.type.argsTemplate) {
+        args = ctx.type.argsTemplate(properties.map((pair) => {
+          const key = this.visit(pair.propertyName());
+          let value = pair.singleExpression();
+          if (removeQuotes(key) === '$where') {
+            value = this.Types._string.template(value.getText());
+          } else {
+            value = this.visit(value);
+          }
+          return [key, value];
+        }), ctx.indentDepth);
+      } else {
+        args = this.visit(properties);
+      }
+    }
+    if (ctx.type.template) {
+      return ctx.type.template(args, ctx.indentDepth);
+    }
+    ctx.indentDepth--;
+    return this.visitChildren(ctx);
+  }
+
+  /**
+   * Child nodes: elementList*
+   * @param {ArrayLiteralContext} ctx
+   * @return {String}
+   */
+  visitArrayLiteral(ctx) {
+    ctx.type = this.Types._array;
+    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
+    this.requiredImports[9] = true;
+    let args = '';
+    if (ctx.elementList()) {
+      const visitedChildren = ctx.elementList().children.map((child) => {
+        return this.visit(child);
+      });
+      const visitedElements = visitedChildren.filter((arg) => {
+        return arg !== ',';
+      });
+      if (ctx.type.argsTemplate) { // NOTE: not currently being used anywhere.
+        args = visitedElements.map((arg, index) => {
+          const last = !visitedElements[index + 1];
+          return ctx.type.argsTemplate(arg, ctx.indentDepth, last);
+        }).join('');
+      } else {
+        args = visitedElements.join(', ');
+      }
+    }
+    if (ctx.type.template) {
+      return ctx.type.template(args, ctx.indentDepth);
+    }
+    return this.visitChildren(ctx);
+  }
+
+  /**
+   * Need process method because we want to pass the argument type to the template
+   * so that we can determine if the generated number needs to be parsed or casted.
+   *
+   * @param {FuncCallExpressionContext} ctx
+   * @returns {String}
+   */
+  processNumber(ctx) {
+    const lhsStr = this.visit(ctx.singleExpression());
+    let lhsType = this.getTyped(ctx.singleExpression()).type;
+    if (typeof lhsType === 'string') {
+      lhsType = this.Types[lhsType];
+    }
+    ctx.type = lhsType.id === 'Number' ? this.Types._decimal : lhsType.type;
+
+    // Get the original type of the argument
+    const expectedArgs = lhsType.args;
+    let args = this.checkArguments(
+      expectedArgs, this.getArguments(ctx), lhsType.id
+    );
+    let argType;
+
+    if (args.length === 0) {
+      args = ['0'];
+      argType = this.Types._integer;
+    } else {
+      const argNode = this.getArgumentAt(ctx, 0);
+      const typed = this.getTyped(argNode);
+      argType = typed.originalType !== undefined ?
+        typed.originalType :
+        typed.type;
+    }
+
+    return this.generateCall(
+      ctx, lhsType, [args[0], argType.id], lhsStr, `(${args.join(', ')})`
+    );
+  }
+
+
+  /**
+   * Convert between numeric types. Required so that we don't end up with
+   * strange conversions like 'Int32(Double(2))', and can just generate '2'.
+   *
+   * @param {Array} expectedType - types to cast to.
+   * @param {antlr4.ParserRuleContext} actualCtx - ctx to cast from, if valid.
+   *
+   * @returns {String} - visited result, or null on error.
+   */
+  castType(expectedType, actualCtx) {
+    const result = this.visit(actualCtx);
+    const originalCtx = actualCtx;
+    actualCtx = this.getTyped(actualCtx);
+
+    // If the types are exactly the same, just return.
+    if (expectedType.indexOf(actualCtx.type) !== -1 ||
+      expectedType.indexOf(actualCtx.type.id) !== -1) {
+      return result;
+    }
+
+    const numericTypes = [
+      this.Types._integer, this.Types._decimal, this.Types._hex,
+      this.Types._octal, this.Types._long, this.Types._numeric
+    ];
+    // If the expected type is "numeric", accept the numeric basic types + numeric bson types
+    if (expectedType.indexOf(this.Types._numeric) !== -1 &&
+      (numericTypes.indexOf(actualCtx.type) !== -1 ||
+        (actualCtx.type.id === 'Long' ||
+          actualCtx.type.id === 'Int32' ||
+          actualCtx.type.id === 'Double'))) {
+      return result;
+    }
+
+    // Check if the arguments are both numbers. If so then cast to expected type.
+    for (let i = 0; i < expectedType.length; i++) {
+      if (numericTypes.indexOf(actualCtx.type) !== -1 &&
+        numericTypes.indexOf(expectedType[i]) !== -1) {
+        // Need to interpret octal always
+        if (actualCtx.type.id === '_octal') {
+          const node = {
+            type: expectedType[i],
+            originalType: actualCtx.type.id,
+            children: [ actualCtx ]
+          };
+          return this.visitLiteralExpression(node);
+        }
+        actualCtx.originalType = actualCtx.type;
+        actualCtx.type = expectedType[i];
+        return this.visit(originalCtx);
+      }
+    }
+    return null;
+  }
+
+
+  visitEmptyStatement() {
+    return '\n';
+  }
+
+  /**
+   * Child nodes: literal
+   * @param {LiteralExpressionContext} ctx
+   * @return {String}
+   */
+  visitLiteralExpression(ctx) {
+    if (!ctx.type) {
+      ctx.type = this.getPrimitiveType(ctx.literal());
+    }
+    this.requiredImports[ctx.type.code] = true;
+    // Pass the original argument type to the template, not the casted type.
+    const type = ctx.originalType === undefined ? ctx.type : ctx.originalType;
+    if (`process${ctx.type.id}` in this) {
+      return this[`process${ctx.type.id}`](ctx);
+    }
+    const children = this.visitChildren(ctx);
+    return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
+  }
+
+  /**
+   * One terminal child.
+   * @param {ElisionContext} ctx
+   * @return {String}
+   */
+  visitElision(ctx) {
+    ctx.type = this.Types._undefined;
+    if (ctx.type.template) {
+      return ctx.type.template();
+    }
+    return 'null';
+  }
+
+  /**
    * Skip new because already included in function calls for constructors
    *
    * @param {NewExpressionContext} ctx
@@ -447,16 +448,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     const res = this.visit(ctx.singleExpression());
     ctx.type = this.getTyped(ctx.singleExpression()).type;
     return res;
-  }
-
-  /**
-   * Visit a leaf node and return a string.
-   * *
-   * @param {ParserRuleContext} ctx
-   * @returns {String}
-   */
-  visitTerminal(ctx) {
-    return ctx.getText();
   }
 
   // //////////
@@ -502,6 +493,43 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.Types._undefined;
   }
 
+  visitRelationalExpression(ctx) {
+    return ctx.children.map((n) => ( this.visit(n) )).join(' ');
+  }
+
+  visitEqualityExpression(ctx) {
+    ctx.type = this.Types._boolean;
+    const lhs = this.visit(ctx.singleExpression()[0]);
+    const rhs = this.visit(ctx.singleExpression()[1]);
+    const op = this.visit(ctx.children[1]);
+    if (this.Syntax.equality) {
+      return this.Syntax.equality.template(lhs, op, rhs);
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitLogicalAndExpression(ctx) {
+    if (this.Syntax.and) {
+      return this.Syntax.and.template(ctx.singleExpression().map((t) => (this.visit(t))));
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitLogicalOrExpression(ctx) {
+    if (this.Syntax.or) {
+      return this.Syntax.or.template(ctx.singleExpression().map((t) => ( this.visit(t) )));
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitNotExpression(ctx) {
+    if (this.Syntax.not) {
+      return this.Syntax.not.template(this.visit(ctx.singleExpression()));
+    }
+    return this.visitChildren(ctx);
+  }
+
+
   executeJavascript(input) {
     const sandbox = {
       RegExp: RegExp,
@@ -539,149 +567,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     const res = ctx.evaluate('__result = ' + input);
     ctx.destroy();
     return res;
-  }
-
-  /**
-   * Convert between numeric types. Required so that we don't end up with
-   * strange conversions like 'Int32(Double(2))', and can just generate '2'.
-   *
-   * @param {Array} expectedType - types to cast to.
-   * @param {antlr4.ParserRuleContext} actualCtx - ctx to cast from, if valid.
-   *
-   * @returns {String} - visited result, or null on error.
-   */
-  castType(expectedType, actualCtx) {
-    const result = this.visit(actualCtx);
-    const originalCtx = actualCtx;
-    actualCtx = this.getTyped(actualCtx);
-
-    // If the types are exactly the same, just return.
-    if (expectedType.indexOf(actualCtx.type) !== -1 ||
-        expectedType.indexOf(actualCtx.type.id) !== -1) {
-      return result;
-    }
-
-    const numericTypes = [
-      this.Types._integer, this.Types._decimal, this.Types._hex,
-      this.Types._octal, this.Types._long, this.Types._numeric
-    ];
-    // If the expected type is "numeric", accept the numeric basic types + numeric bson types
-    if (expectedType.indexOf(this.Types._numeric) !== -1 &&
-       (numericTypes.indexOf(actualCtx.type) !== -1 ||
-         (actualCtx.type.id === 'Long' ||
-          actualCtx.type.id === 'Int32' ||
-          actualCtx.type.id === 'Double'))) {
-      return result;
-    }
-
-    // Check if the arguments are both numbers. If so then cast to expected type.
-    for (let i = 0; i < expectedType.length; i++) {
-      if (numericTypes.indexOf(actualCtx.type) !== -1 &&
-        numericTypes.indexOf(expectedType[i]) !== -1) {
-        // Need to interpret octal always
-        if (actualCtx.type.id === '_octal') {
-          const node = {
-            type: expectedType[i],
-            originalType: actualCtx.type.id,
-            children: [ actualCtx ]
-          };
-          return this.visitLiteralExpression(node);
-        }
-        actualCtx.originalType = actualCtx.type;
-        actualCtx.type = expectedType[i];
-        return this.visit(originalCtx);
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Validate each argument against the expected argument types defined in the
-   * Symbol table.
-   *
-   * @param {Array} expected - An array of arrays where each subarray represents
-   * possible argument types for that index.
-   * @param {Array} args - empty if no args.
-   * @param {String} name - The name of the function for error reporting.
-   *
-   * @returns {Array} - Array containing the generated output for each argument.
-   */
-  checkArguments(expected, args, name) {
-    const argStr = [];
-    if (args.length === 0) { // TODO: if pass array, can skip this?
-      if (expected.length === 0 || expected[0].indexOf(null) !== -1) {
-        return argStr;
-      }
-      throw new BsonTranspilersArgumentError(
-        `Argument count mismatch: '${name}' requires least one argument`
-      );
-    }
-    if (args.length > expected.length) {
-      throw new BsonTranspilersArgumentError(
-        `Argument count mismatch: '${name}' expects ${expected.length} args and got ${args.length}`
-      );
-    }
-    for (let i = 0; i < expected.length; i++) {
-      if (args[i] === undefined) {
-        if (expected[i].indexOf(null) !== -1) {
-          return argStr;
-        }
-        throw new BsonTranspilersArgumentError(
-          `Argument count mismatch: too few arguments passed to '${name}'`
-        );
-      }
-      const result = this.castType(expected[i], args[i]);
-      if (result === null) {
-        const typeStr = expected[i].map((e) => {
-          const id = e && e.id ? e.id : e;
-          return e ? id : '[optional]';
-        });
-        const message = `Argument type mismatch: '${name}' expects types ${
-          typeStr} but got type ${this.getTyped(args[i]).type.id} for argument at index ${i}`;
-
-        throw new BsonTranspilersArgumentError(message);
-      }
-      argStr.push(result);
-    }
-    return argStr;
-  }
-
-  /**
-   * Need process method because we want to pass the argument type to the template
-   * so that we can determine if the generated number needs to be parsed or casted.
-   *
-   * @param {FuncCallExpressionContext} ctx
-   * @returns {String}
-   */
-  processNumber(ctx) {
-    const lhsStr = this.visit(ctx.singleExpression());
-    let lhsType = this.getTyped(ctx.singleExpression()).type;
-    if (typeof lhsType === 'string') {
-      lhsType = this.Types[lhsType];
-    }
-    ctx.type = lhsType.id === 'Number' ? this.Types._decimal : lhsType.type;
-
-    // Get the original type of the argument
-    const expectedArgs = lhsType.args;
-    let args = this.checkArguments(
-      expectedArgs, this.getArguments(ctx), lhsType.id
-    );
-    let argType;
-
-    if (args.length === 0) {
-      args = ['0'];
-      argType = this.Types._integer;
-    } else {
-      const argNode = this.getArgumentAt(ctx, 0);
-      const typed = this.getTyped(argNode);
-      argType = typed.originalType !== undefined ?
-        typed.originalType :
-        typed.type;
-    }
-
-    return this.generateCall(
-      ctx, lhsType, [args[0], argType.id], lhsStr, `(${args.join(', ')})`
-    );
   }
 
   /**
@@ -977,30 +862,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.generateCall(
       ctx, lhsType, [args[0], isNumber], lhsStr, `(${args.join(', ')})`, true
     );
-  }
-
-  _getType(ctx) {
-    if (ctx.type !== undefined) {
-      return ctx;
-    }
-    if (!ctx.children) {
-      return null;
-    }
-    for (const c of ctx.children) {
-      const typed = this._getType(c);
-      if (typed) {
-        return typed;
-      }
-    }
-    return null;
-  }
-
-  getTyped(actual) {
-    const typed = this._getType(actual);
-    if (!typed) {
-      throw new BsonTranspilersInternalError('Type not set on any child nodes');
-    }
-    return typed;
   }
 
   // Getters

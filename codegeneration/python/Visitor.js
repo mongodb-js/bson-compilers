@@ -1,4 +1,4 @@
-/* eslint camelcase: 0*/
+/* eslint camelcase: 0 complexity: 0*/
 const {
   BsonTranspilersArgumentError,
   BsonTranspilersRuntimeError,
@@ -175,7 +175,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   visitFactor(ctx) {
-    // Skip if fake node
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
@@ -186,7 +185,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   visitTerm(ctx) {
-    // Skip if fake node
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
@@ -197,7 +195,11 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
         if (op === '//') {
           const rhs = this.visit(ctx.children[i + 1]);
           const lhs = res.pop();
-          res.push(this.Syntax.floorDiv.template(lhs, rhs));
+          if (this.Syntax.floorDiv) {
+            res.push(this.Syntax.floorDiv.template(lhs, rhs));
+          } else {
+            res.push(`${lhs} // ${rhs}`);
+          }
           i++;
         } else {
           res.push(op);
@@ -209,39 +211,50 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   visitPower(ctx) {
-    // Skip if fake node
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
-    return this.Syntax.power.template(this.visit(ctx.atom()), this.visit(ctx.factor()));
+    const lhs = this.visit(ctx.atom());
+    const rhs = this.visit(ctx.factor());
+    if (this.Syntax.power) {
+      return this.Syntax.power.template(lhs, rhs);
+    }
+    return `${lhs} ** ${rhs}`;
   }
 
   visitAnd_test(ctx) {
-    // Skip if fake node
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
-    return this.Syntax.and.template(ctx.not_test().map((t) => ( this.visit(t) )));
+    const children = ctx.not_test().map((t) => ( this.visit(t) ));
+    if (this.Syntax.and) {
+      return this.Syntax.and.template(children);
+    }
+    return children.join(' and ');
   }
 
   visitOr_test(ctx) {
-    // Skip if fake node
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
-    return this.Syntax.or.template(ctx.and_test().map((t) => ( this.visit(t) )));
+    const children = ctx.and_test().map((t) => (this.visit(t)));
+    if (this.Syntax.or) {
+      return this.Syntax.or.template(children);
+    }
+    return children.join(' or ');
   }
 
   visitNot_test(ctx) {
-    // Skip if fake node
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
-    return this.Syntax.not.template(this.visit(ctx.children[1]));
+    const child = this.visit(ctx.children[1]);
+    if (this.Syntax.not) {
+      return this.Syntax.not.template(child);
+    }
   }
 
   visitComparison(ctx) {
-    // Skip if fake node
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
@@ -259,19 +272,23 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       }
       const op = this.visit(e);
       if (op === '==' || op === '!=' || op === 'is' || op === 'isnot') {
-        return `${str}${this.Syntax.equality.template(this.visit(arr[i - 1]), op, '')}`;
+        if (this.Syntax.equality) {
+          return `${str}${this.Syntax.equality.template(this.visit(arr[i - 1]), op, '')}`;
+        }
+        return `${str} === ${this.visit(arr[i - 1])} ${op} `;
       }
       if (op === 'in' || op === 'notin') {
         skip = true;
-        return `${str}${this.Syntax.in.template(this.visit(arr[i - 1]), op, this.visit(arr[i + 1]))}`;
+        if (this.Syntax.in) {
+          return `${str}${this.Syntax.in.template(this.visit(arr[i - 1]), op, this.visit(arr[i + 1]))}`;
+        }
+        return `${str} ${this.visit(arr[i - 1])} ${op} ${this.visit(arr[i + 1])}`;
       }
       return `${str}${this.visit(arr[i - 1])} ${op} `;
     }, '');
   }
 
-
   visitIndexAccess(ctx) {
-    // Skip if fake node
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
@@ -320,18 +337,22 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       symbolType.args, this.getArguments(ctx), 'Regex'
     );
 
+    const expectedFlags = this.Syntax.bsonRegexFlags
+      ? this.Syntax.bsonRegexFlags
+      : { i: 'i', m: 'm', x: 'x', s: 's', l: 'l', u: 'u' };
+
     let flags = null;
     const pattern = args[0];
     if (args.length === 2) {
       flags = args[1];
       for (let i = 1; i < flags.length - 1; i++) {
-        if (!(flags[i] in this.Syntax.bsonRegexFlags)) {
+        if (!(flags[i] in expectedFlags)) {
           throw new BsonTranspilersRuntimeError(
             `Invalid flag '${flags[i]}' passed to Regexp`
           );
         }
       }
-      flags = flags.replace(/[imxlsu]/g, m => this.Syntax.bsonRegexFlags[m]);
+      flags = flags.replace(/[imxlsu]/g, m => expectedFlags[m]);
     }
 
     return this.generateCall(

@@ -138,7 +138,10 @@ Templates:
             return literal;
         }
     ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate !!js/function >
-        (arg, depth) => {
+        (args, depth) => {
+            if (args.length === 0) {
+                return 'new BsonDocument()';
+            }
             depth++;
             const indent = '\n' + '    '.repeat(depth);
             const initialIndent = '\n' + '    '.repeat(depth-1);
@@ -152,11 +155,11 @@ Templates:
                 return `"${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}"`;
             }
 
-            if (arg.length === 1) {
-              return `new BsonDocument(${doubleStringify(arg[0][0])}, ${arg[0][1]})`;
+            if (args.length === 1) {
+              return `new BsonDocument(${doubleStringify(args[0][0])}, ${args[0][1]})`;
             }
 
-            const pairs = arg.map((pair) => {
+            const pairs = args.map((pair) => {
                 return `${indent}{ ${doubleStringify(pair[0])}, ${pair[1]} }`;
             }).join(', ');
 

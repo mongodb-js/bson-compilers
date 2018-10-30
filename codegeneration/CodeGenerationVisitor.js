@@ -341,6 +341,31 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
       : `${lhs}${rhs}`;
   }
 
+  generateObjectLiteral(ctx) {
+    if (this.idiomatic && 'emitIdiomaticObjectLiteral' in this) {
+      return this.emitIdiomaticObjectLiteral(ctx);
+    }
+    this.requiredImports[10] = true;
+    ctx.type = this.Types._object;
+    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
+    let args = '';
+    const keysAndValues = this.getKeyValueList(ctx);
+    if (ctx.type.argsTemplate) {
+      args = ctx.type.argsTemplate(
+        this.getKeyValueList(ctx).map((k) => {
+          return [this.getKeyStr(k), this.visit(this.getValue(k))];
+        }),
+        ctx.indentDepth);
+    } else {
+      args = this.visit(keysAndValues);
+    }
+    ctx.indentDepth--;
+    if (ctx.type.template) {
+      return ctx.type.template(args, ctx.indentDepth);
+    }
+    return this.visitChildren(ctx);
+  }
+
   /**
    * Same as generateCall but for type literals instead of function calls.
    *

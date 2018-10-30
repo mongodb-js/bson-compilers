@@ -1,7 +1,6 @@
 /* eslint complexity: 0 camelcase: 0*/
 const {
   BsonTranspilersArgumentError,
-  BsonTranspilersAttributeError,
   BsonTranspilersRuntimeError,
   BsonTranspilersInternalError,
   BsonTranspilersUnimplementedError
@@ -85,38 +84,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     if (ctx.dictorsetmaker()) {
       this.testComprehension(ctx.dictorsetmaker());
     }
-    if (this.idiomatic && 'emitIdiomaticObjectLiteral' in this) {
-      return this.emitIdiomaticObjectLiteral(ctx);
-    }
-    this.requiredImports[10] = true;
-    ctx.type = this.Types._object;
-    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
-    let args = '';
-    if (ctx.dictorsetmaker()) {
-      const properties = ctx.dictorsetmaker().test();
-      if (ctx.type.argsTemplate) {
-        args = ctx.type.argsTemplate(
-          properties
-            .map((key, i) => {
-              if (i % 2 === 0) {
-                return [
-                  this.visit(key),
-                  this.visit(properties[i + 1])
-                ];
-              }
-              return null;
-            })
-            .filter((k) => (k !== null)),
-          ctx.indentDepth);
-      } else {
-        args = this.visit(properties);
-      }
-    }
-    ctx.indentDepth--;
-    if (ctx.type.template) {
-      return ctx.type.template(args, ctx.indentDepth);
-    }
-    return this.visitChildren(ctx);
+    return this.generateObjectLiteral(ctx);
   }
 
   visitSet_literal(ctx) {

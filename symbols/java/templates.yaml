@@ -153,6 +153,9 @@ Templates:
         }
     ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate !!js/function >
         (args, depth) => {
+            if (args.length === 0) {
+                return 'new Document()';
+            }
             depth++;
             const indent = '\n' + '    '.repeat(depth);
             const doubleStringify = (str) => {

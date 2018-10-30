@@ -3,7 +3,6 @@ const bson = require('bson');
 const Context = require('context-eval');
 const {
   BsonTranspilersArgumentError,
-  BsonTranspilersAttributeError,
   BsonTranspilersRuntimeError,
   BsonTranspilersUnimplementedError
 } = require('../../helper/error');
@@ -86,35 +85,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
    * @return {String}
    */
   visitObjectLiteral(ctx) {
-    if (this.idiomatic && 'emitIdiomaticObjectLiteral' in this) {
-      return this.emitIdiomaticObjectLiteral(ctx);
-    }
-    this.requiredImports[10] = true;
-    ctx.type = this.Types._object;
-    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
-    let args = '';
-    if (ctx.propertyNameAndValueList()) {
-      const properties = ctx.propertyNameAndValueList().propertyAssignment();
-      if (ctx.type.argsTemplate) {
-        args = ctx.type.argsTemplate(properties.map((pair) => {
-          const key = this.visit(pair.propertyName());
-          let value = pair.singleExpression();
-          if (removeQuotes(key) === '$where') {
-            value = this.Types._string.template(value.getText());
-          } else {
-            value = this.visit(value);
-          }
-          return [key, value];
-        }), ctx.indentDepth);
-      } else {
-        args = this.visit(properties);
-      }
-    }
-    if (ctx.type.template) {
-      return ctx.type.template(args, ctx.indentDepth);
-    }
-    ctx.indentDepth--;
-    return this.visitChildren(ctx);
+    return this.generateObjectLiteral(ctx);
   }
 
   /**

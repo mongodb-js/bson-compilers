@@ -65,7 +65,7 @@ module.exports = (Visitor) => class Generator extends Visitor {
    */
   emitIdiomaticObjectLiteral(ctx) {
     ctx.type = this.Types._object;
-    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
+    ctx.indentDepth = this.findIndentDepth(ctx) + 1;
     let multiOps = false;
     let args = '';
     const properties = this.getKeyValueList(ctx);

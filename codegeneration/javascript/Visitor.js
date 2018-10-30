@@ -239,30 +239,8 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
    * @return {string}
    */
   processBSONRegExp(ctx) {
-    ctx.type = this.Types.BSONRegExpType;
-    const symbolType = this.Symbols.BSONRegExp;
-
-    const args = this.checkArguments(
-      symbolType.args, this.getArguments(ctx), 'BSONRegExp'
-    );
-
-    let flags = null;
-    const pattern = args[0];
-    if (args.length === 2) {
-      flags = args[1];
-      for (let i = 1; i < flags.length - 1; i++) {
-        if (!(flags[i] in this.Syntax.bsonRegexFlags)) {
-          throw new BsonTranspilersRuntimeError(
-            `Invalid flag '${flags[i]}' passed to BSONRegExp`
-          );
-        }
-      }
-      flags = flags.replace(/[imxlsu]/g, m => this.Syntax.bsonRegexFlags[m]);
-    }
-
-    return this.generateCall(
-      ctx, symbolType, [pattern, flags], 'BSONRegExp',
-      `(${pattern}${flags ? ', ' + flags : ''})`
+    return this.generateBSONRegex(
+      ctx, this.Types.BSONRegExpType, this.Symbols.BSONRegExp
     );
   }
 
@@ -275,33 +253,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
    * @return {String}
    */
   processCodeFromJS(ctx) {
-    ctx.type = this.Types.Code;
-    const symbolType = this.Symbols.Code;
-    const argList = this.getArguments(ctx);
-    if (!(argList.length === 1 || argList.length === 2)) {
-      throw new BsonTranspilersArgumentError(
-        'Argument count mismatch: Code requires one or two arguments'
-      );
-    }
-    const code = this.getArgumentAt(ctx, 0).getText();
-    let scope = undefined;
-    let scopestr = '';
-
-    if (argList.length === 2) {
-      const idiomatic = this.idiomatic;
-      this.idiomatic = false;
-      scope = this.visit(this.getArgumentAt(ctx, 1));
-      this.idiomatic = idiomatic;
-      scopestr = `, ${scope}`;
-      if (this.findTypedNode(this.getArgumentAt(ctx, 1)).type !== this.Types._object) {
-        throw new BsonTranspilersArgumentError(
-          'Argument type mismatch: Code requires scope to be an object'
-        );
-      }
-      this.requiredImports[113] = true;
-      this.requiredImports[10] = true;
-    }
-    return this.generateCall(ctx, symbolType, [code, scope], 'Code', `(${code}${scopestr})`);
+    return this.generateBSONCode(ctx, this.Types.Code, this.Symbols.Code, false);
   }
 
   /**
@@ -453,35 +405,10 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     );
   }
 
-  /**
-   * Gets a process method because need to tell the template if
-   * the argument is a number or a date.
-   *
-   * @param {ParserRuleContext} ctx
-   * @returns {String} - generated code
-   */
   processObjectIdCreateFromTime(ctx) {
-    const lhsStr = this.visit(ctx.singleExpression());
-    let lhsType = this.findTypedNode(ctx.singleExpression()).type;
-    if (typeof lhsType === 'string') {
-      lhsType = this.Types[lhsType];
-    }
-
-    const args = this.checkArguments(
-      lhsType.args, this.getArguments(ctx), lhsType.id
-    );
-    const isNumber = this.findTypedNode(this.getArgumentAt(ctx, 0)).type.code !== 200;
-    return this.generateCall(
-      ctx, lhsType, [args[0], isNumber], lhsStr, `(${args.join(', ')})`, true
-    );
+    return this.generateObjectIdFromTime(ctx);
   }
 
-  /**
-   * Binary needs preprocessing because it needs to be executed. Manually check
-   * argument length because 'Buffer' not supported.
-   *
-   * TODO: figure out if it ever makes sense to support Binary.
-   */
   processBinary() {
     throw new BsonTranspilersUnimplementedError('Binary type not supported');
   }

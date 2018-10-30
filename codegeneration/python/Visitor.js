@@ -86,7 +86,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
    * set implementation, should move this to the shared visitor. */
   visitSet_literal(ctx) {
     ctx.type = this.Types._array;
-    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
+    ctx.indentDepth = this.findIndentDepth(ctx) + 1;
     this.requiredImports[9] = true;
     let args = '';
     const list = ctx.testlist_comp();
@@ -330,60 +330,15 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
    * @return {string}
    */
   processRegex(ctx) {
-    ctx.type = this.Types.Regex;
-    const symbolType = this.Symbols.Regex;
-
-    const args = this.checkArguments(
-      symbolType.args, this.getArguments(ctx), 'Regex'
-    );
-
-    const expectedFlags = this.Syntax.bsonRegexFlags
-      ? this.Syntax.bsonRegexFlags
-      : { i: 'i', m: 'm', x: 'x', s: 's', l: 'l', u: 'u' };
-
-    let flags = null;
-    const pattern = args[0];
-    if (args.length === 2) {
-      flags = args[1];
-      for (let i = 1; i < flags.length - 1; i++) {
-        if (!(flags[i] in expectedFlags)) {
-          throw new BsonTranspilersRuntimeError(
-            `Invalid flag '${flags[i]}' passed to Regexp`
-          );
-        }
-      }
-      flags = flags.replace(/[imxlsu]/g, m => expectedFlags[m]);
-    }
-
-    return this.generateCall(
-      ctx, symbolType, [pattern, flags], 'Regex',
-      `(${pattern}${flags ? ', ' + flags : ''})`
-    );
+    return this.generateBSONRegex(ctx, this.Types.Regex, this.Symbols.Regex);
   }
   /**
-   * Code is processed in every language because want to generate the scope as
-   * a non-idiomatic document.
    *
    * @param {ParserContext} ctx
    * @return {String}
    */
   processCode(ctx) {
-    ctx.type = this.Types.Code;
-    const symbolType = this.Symbols.Code;
-    const args = this.checkArguments(symbolType.args, this.getArguments(ctx), 'Code');
-    let scopeStr = '';
-
-    if (args.length === 2) {
-      const idiomatic = this.idiomatic;
-      this.idiomatic = false;
-      const scope = this.visit(this.getArgumentAt(ctx, 1));
-      this.idiomatic = idiomatic;
-      scopeStr = `, ${scope}`;
-      this.requiredImports[113] = true;
-      this.requiredImports[10] = true;
-      args[1] = scope;
-    }
-    return this.generateCall(ctx, symbolType, args, 'Code', `(${args[0]}${scopeStr})`);
+    return this.generateBSONCode(ctx, this.Types.Code, this.Symbols.Code, true);
   }
 
   processdatetime(ctx) {
@@ -441,35 +396,10 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     );
   }
 
-  /**
-   * Gets a process method because need to tell the template if
-   * the argument is a number or a date.
-   *
-   * @param {ParserRuleContext} ctx
-   * @returns {String} - generated code
-   */
   processObjectIdfrom_datetime(ctx) {
-    const lhsStr = this.visit(ctx.atom());
-    let lhsType = this.findTypedNode(ctx.atom()).type;
-    if (typeof lhsType === 'string') {
-      lhsType = this.Types[lhsType];
-    }
-
-    const args = this.checkArguments(
-      lhsType.args, this.getArguments(ctx), lhsType.id
-    );
-    const isNumber = this.findTypedNode(this.getArgumentAt(ctx, 0)).type.code !== 200;
-    return this.generateCall(
-      ctx, lhsType, [args[0], isNumber], lhsStr, `(${args.join(', ')})`, true
-    );
+    return this.generateObjectIdFromTime(ctx);
   }
 
-  /**
-   * Binary needs preprocessing because it needs to be executed. Manually check
-   * argument length because 'Buffer' not supported.
-   *
-   * TODO: figure out if it ever makes sense to support Binary.
-   */
   processBinary() {
     throw new BsonTranspilersUnimplementedError('Binary type not supported');
   }

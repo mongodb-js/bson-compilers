@@ -4,6 +4,7 @@ const {
   BsonTranspilersArgumentError,
   BsonTranspilersInternalError,
   BsonTranspilersReferenceError,
+  BsonTranspilersRuntimeError,
   BsonTranspilersTypeError,
   BsonTranspilersUnimplementedError
 } = require('../helper/error');
@@ -438,7 +439,7 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     }
     this.requiredImports[10] = true;
     ctx.type = this.Types._object;
-    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
+    ctx.indentDepth = this.findIndentDepth(ctx) + 1;
     let args = '';
     const keysAndValues = this.getKeyValueList(ctx);
     if (ctx.type.argsTemplate) {
@@ -459,7 +460,7 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
 
   generateArrayLiteral(ctx) {
     ctx.type = this.Types._array;
-    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
+    ctx.indentDepth = this.findIndentDepth(ctx) + 1;
     this.requiredImports[9] = true;
     let args = '';
     const list = this.getList(ctx);
@@ -569,7 +570,7 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
   }
 
-  getIndentDepth(ctx) {
+  findIndentDepth(ctx) {
     while (ctx.indentDepth === undefined) {
       ctx = ctx.parentCtx;
       if (ctx === undefined || ctx === null) {
@@ -577,6 +578,119 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
       }
     }
     return ctx.indentDepth;
+  }
+
+  /**
+   * Process required for BSON regex types so we can validate the flags.
+   *
+   * @param {ParserRuleContext} ctx
+   * @param {Object} type - The type of the LHS
+   * @param {Object} symbolType - The type of the Symbol
+   * @return {String}
+   */
+  generateBSONRegex(ctx, type, symbolType) {
+    ctx.type = type;
+
+    const args = this.checkArguments(
+      symbolType.args, this.getArguments(ctx), type.id
+    );
+
+    const expectedFlags = this.Syntax.bsonRegexFlags
+      ? this.Syntax.bsonRegexFlags
+      : { i: 'i', m: 'm', x: 'x', s: 's', l: 'l', u: 'u' };
+
+    let flags = null;
+    const pattern = args[0];
+    if (args.length === 2) {
+      flags = args[1];
+      for (let i = 1; i < flags.length - 1; i++) {
+        if (!(flags[i] in expectedFlags)) {
+          throw new BsonTranspilersRuntimeError(
+            `Invalid flag '${flags[i]}' passed to Regexp`
+          );
+        }
+      }
+      flags = flags.replace(/[imxlsu]/g, m => expectedFlags[m]);
+    }
+
+    return this.generateCall(
+      ctx, symbolType, [pattern, flags], 'Regex',
+      `(${pattern}${flags ? ', ' + flags : ''})`
+    );
+  }
+
+  /**
+   * Code is processed in every language because want to generate the scope as
+   * a non-idiomatic document.
+   *
+   * @param {ParserRuleContext} ctx
+   * @param {Object} type - The type of the LHS
+   * @param {Object} symbolType - The type of the Symbol
+   * @param {boolean} requireString - if the code argument must be a string.
+   * @return {String}
+   */
+  generateBSONCode(ctx, type, symbolType, requireString) {
+    ctx.type = type;
+    const argList = this.getArguments(ctx);
+    if (!(argList.length === 1 || argList.length === 2)) {
+      throw new BsonTranspilersArgumentError(
+        'Argument count mismatch: Code requires one or two arguments'
+      );
+    }
+    let code = '';
+    if (requireString) {
+      const arg = this.getArgumentAt(ctx, 0);
+      code = this.visit(arg);
+      if (this.findTypedNode(arg).type !== this.Types._string) {
+        throw new BsonTranspilersArgumentError(
+          'Argument type mismatch: Code requires first argument to be a string'
+        );
+      }
+    } else {
+      code = this.getArgumentAt(ctx, 0).getText();
+    }
+    let scope = undefined;
+    let scopestr = '';
+
+    if (argList.length === 2) {
+      const idiomatic = this.idiomatic;
+      this.idiomatic = false;
+      scope = this.visit(this.getArgumentAt(ctx, 1));
+      this.idiomatic = idiomatic;
+      scopestr = `, ${scope}`;
+      if (this.findTypedNode(this.getArgumentAt(ctx, 1)).type !== this.Types._object) {
+        throw new BsonTranspilersArgumentError(
+          'Argument type mismatch: Code requires scope to be an object'
+        );
+      }
+      this.requiredImports[113] = true;
+      this.requiredImports[10] = true;
+    }
+    return this.generateCall(ctx, symbolType, [code, scope], 'Code', `(${code}${scopestr})`);
+  }
+
+  /**
+   * Gets a process method because need to tell the template if
+   * the argument is a number or a date.
+   *
+   * @param {ParserRuleContext} ctx
+   * @returns {String} - generated code
+   */
+  generateObjectIdFromTime(ctx) {
+    const funcNameNode = this.getFunctionCallName(ctx);
+    const lhsStr = this.visit(funcNameNode);
+    let lhsType = this.findTypedNode(funcNameNode).type;
+    if (typeof lhsType === 'string') {
+      lhsType = this.Types[lhsType];
+    }
+
+    const args = this.checkArguments(
+      lhsType.args, this.getArguments(ctx), lhsType.id
+    );
+    const isNumber = this.findTypedNode(this.getArgumentAt(ctx, 0)).type.code !== 200;
+    return this.generateCall(
+      ctx, lhsType, [args[0], isNumber], lhsStr, `(${args.join(', ')})`, true
+    );
   }
 
   /**

@@ -3,8 +3,7 @@ const bson = require('bson');
 const Context = require('context-eval');
 const {
   BsonTranspilersRuntimeError,
-  BsonTranspilersUnimplementedError,
-  BsonTranspilersArgumentError
+  BsonTranspilersUnimplementedError
 } = require('../../helper/error');
 
 /**
@@ -18,9 +17,11 @@ const {
 module.exports = (JavascriptVisitor) => class Visitor extends JavascriptVisitor {
   constructor() {
     super();
-    this.processNumberLong = this.processNumber;
   }
 
+  processNumberLong(ctx) {
+    return this.generateNumericClass(ctx);
+  }
   executeJavascript(input) {
     const sandbox = {
       RegExp: RegExp,
@@ -119,8 +120,7 @@ module.exports = (JavascriptVisitor) => class Visitor extends JavascriptVisitor 
   }
 
   /**
-   * We want to ensure that the scope argument is not generated as a builder if
-   * idiomatic is turned on
+   * Also accepts no arguments.
    *
    * @param {FuncCallExpressionContext} ctx
    * @return {String}
@@ -129,41 +129,12 @@ module.exports = (JavascriptVisitor) => class Visitor extends JavascriptVisitor 
     ctx.type = this.Types.Code;
     const symbolType = this.Symbols.Code;
     const lhs = symbolType.template ? symbolType.template() : 'Code';
-    const argList = ctx.arguments().argumentList();
-    if (!argList ||
-      !(argList.singleExpression().length === 1 ||
-        argList.singleExpression().length === 2)) {
+    if (this.getArguments(ctx).length === 0) {
       const code = `${lhs}${symbolType.argsTemplate ? symbolType.argsTemplate(lhs) : '()'}`;
       return this.Syntax.new.template
         ? this.Syntax.new.template(code, false, ctx.type.code)
         : code;
     }
-    const args = argList.singleExpression();
-    const code = this.visit(args[0]);
-    let scope = undefined;
-    let scopestr = '';
-
-    if (args.length === 2) {
-      const idiomatic = this.idiomatic;
-      this.idiomatic = false;
-      scope = this.visit(args[1]);
-      this.idiomatic = idiomatic;
-      scopestr = `, ${scope}`;
-      if (this.findTypedNode(args[1]).type !== this.Types._object) {
-        throw new BsonTranspilersArgumentError(
-          'Argument type mismatch: Code requires scope to be an object'
-        );
-      }
-      this.requiredImports[113] = true;
-      this.requiredImports[10] = true;
-    }
-    if ('emitCode' in this) {
-      return this.emitCode(ctx, code, scope);
-    }
-    const rhs = symbolType.argsTemplate ? symbolType.argsTemplate(lhs, code, scope) : `(${code}${scopestr})`;
-    return this.Syntax.new.template
-      ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
-      : `${lhs}${rhs}`;
+    return this.generateBSONCode(ctx, ctx.type, symbolType, true);
   }
-
 };

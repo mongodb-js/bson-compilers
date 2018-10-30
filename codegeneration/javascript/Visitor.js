@@ -21,9 +21,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     super();
     this.startRule = 'program'; // Name of the ANTLR rule to start
 
-    this.processInt32 = this.processNumber;
-    this.processDouble = this.processNumber;
-
     // Throw UnimplementedError for nodes with expressions that we don't support
     this.visitThisExpression =
     this.visitDeleteExpression =
@@ -77,42 +74,17 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.generateArrayLiteral(ctx);
   }
 
-  /**
-   * Need process method because we want to pass the argument type to the template
-   * so that we can determine if the generated number needs to be parsed or casted.
-   *
-   * @param {FuncCallExpressionContext} ctx
-   * @returns {String}
-   */
+  /* Numerical process methods */
   processNumber(ctx) {
-    const lhsStr = this.visit(ctx.singleExpression());
-    let lhsType = this.findTypedNode(ctx.singleExpression()).type;
-    if (typeof lhsType === 'string') {
-      lhsType = this.Types[lhsType];
-    }
-    ctx.type = lhsType.id === 'Number' ? this.Types._decimal : lhsType.type;
+    return this.generateNumericClass(ctx);
+  }
 
-    // Get the original type of the argument
-    const expectedArgs = lhsType.args;
-    let args = this.checkArguments(
-      expectedArgs, this.getArguments(ctx), lhsType.id
-    );
-    let argType;
+  processInt32(ctx) {
+    return this.generateNumericClass(ctx);
+  }
 
-    if (args.length === 0) {
-      args = ['0'];
-      argType = this.Types._integer;
-    } else {
-      const argNode = this.getArgumentAt(ctx, 0);
-      const typed = this.findTypedNode(argNode);
-      argType = typed.originalType !== undefined ?
-        typed.originalType :
-        typed.type;
-    }
-
-    return this.generateCall(
-      ctx, lhsType, [args[0], argType.id], lhsStr, `(${args.join(', ')})`
-    );
+  processDouble(ctx) {
+    return this.generateNumericClass(ctx);
   }
 
 

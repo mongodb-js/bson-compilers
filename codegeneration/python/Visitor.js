@@ -19,9 +19,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     super();
     this.startRule = 'file_input'; // Name of the ANTLR rule to start
 
-    this.processfloat = this.processint;
-    this.processInt64 = this.processint;
-
 
     // Throw UnimplementedError for nodes with expressions that we don't support
     this.visitDel_stmt =
@@ -71,11 +68,13 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   visitObject_literal(ctx) {
+    // Test for dict comprehension
     this.testForComprehension(ctx.dictorsetmaker());
     return this.generateObjectLiteral(ctx);
   }
 
   visitArray_literal(ctx) {
+    // Test for list comprehension
     this.testForComprehension(ctx.testlist_comp());
     return this.generateArrayLiteral(ctx);
   }
@@ -121,44 +120,18 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.visitChildren(ctx);
   }
 
-  /**
-   * Need process method because we want to pass the argument type to the template
-   * so that we can determine if the generated number needs to be parsed or casted.
-   *
-   * @param {Object} ctx
-   * @returns {String}
-   */
-
+  /* Numerical process methods */
   processint(ctx) {
-    const lhsStr = this.visit(ctx.atom());
-    let lhsType = this.findTypedNode(ctx.atom()).type;
-    if (typeof lhsType === 'string') {
-      lhsType = this.Types[lhsType];
-    }
-
-    // Get the original type of the argument
-    const expectedArgs = lhsType.args;
-    let args = this.checkArguments(
-      expectedArgs, this.getArguments(ctx), lhsType.id
-    );
-    let argType;
-
-    if (args.length === 0) {
-      args = ['0'];
-      argType = this.Types._integer;
-    } else {
-      const argNode = this.getArgumentAt(ctx, 0);
-      const typed = this.findTypedNode(argNode);
-      argType = typed.originalType !== undefined ?
-        typed.originalType :
-        typed.type;
-    }
-
-    return this.generateCall(
-      ctx, lhsType, [args[0], argType.id], lhsStr, `(${args.join(', ')})`
-    );
+    return this.generateNumericClass(ctx);
   }
 
+  processfloat(ctx) {
+    return this.generateNumericClass(ctx);
+  }
+
+  processInt64(ctx) {
+    return this.generateNumericClass(ctx);
+  }
 
   /**
    * Convert between numeric types. Required so that we don't end up with

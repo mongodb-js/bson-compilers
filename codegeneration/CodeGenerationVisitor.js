@@ -388,6 +388,47 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
   }
 
   /**
+   * Called from the process methods of numeric class constructors.
+   * Required because we want to pass the argument type to the template
+   * so that we can determine if the generated number needs to be parsed or
+   * casted.
+   *
+   * @param {ParserRuleContext} ctx
+   * @returns {String}
+   */
+  generateNumericClass(ctx) {
+    const funcNameNode = this.getFunctionCallName(ctx);
+    const lhsStr = this.visit(funcNameNode);
+    let lhsType = this.findTypedNode(funcNameNode).type;
+    if (typeof lhsType === 'string') {
+      lhsType = this.Types[lhsType];
+    }
+    ctx.type = lhsType.type;
+
+    // Get the original type of the argument
+    const expectedArgs = lhsType.args;
+    let args = this.checkArguments(
+      expectedArgs, this.getArguments(ctx), lhsType.id
+    );
+    let argType;
+
+    if (args.length === 0) {
+      args = ['0'];
+      argType = this.Types._integer;
+    } else {
+      const argNode = this.getArgumentAt(ctx, 0);
+      const typed = this.findTypedNode(argNode);
+      argType = typed.originalType !== undefined ?
+        typed.originalType :
+        typed.type;
+    }
+
+    return this.generateCall(
+      ctx, lhsType, [args[0], argType.id], lhsStr, `(${args.join(', ')})`
+    );
+  }
+
+  /**
    * Same as generateCall but for type literals instead of function calls.
    *
    * @param {ParserRuleContext} ctx - The literal node

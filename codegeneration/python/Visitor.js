@@ -1,4 +1,4 @@
-/* camelcase: 0*/
+/* eslint camelcase: 0*/
 const {
   BsonTranspilersArgumentError,
   BsonTranspilersRuntimeError,

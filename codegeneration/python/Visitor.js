@@ -49,16 +49,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       this.unimplemented;
   }
 
-  /**
-   * Takes in the constructor name of a node and returns a human-readable
-   * node name. Used for error reporting.
-   * @param {String} name
-   * @return {String}
-   */
-  renameNode(name) {
-    return name ? name.replace('_stmt', '') : 'Expression';
-  }
-
   visitFunctionCall(ctx) {
     // Skip if fake node
     if (ctx.getChildCount() === 1) {
@@ -81,53 +71,36 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   visitObject_literal(ctx) {
-    if (ctx.dictorsetmaker()) {
-      this.testComprehension(ctx.dictorsetmaker());
-    }
+    this.testForComprehension(ctx.dictorsetmaker());
     return this.generateObjectLiteral(ctx);
   }
 
+  visitArray_literal(ctx) {
+    this.testForComprehension(ctx.testlist_comp());
+    return this.generateArrayLiteral(ctx);
+  }
+
+  /**
+   * So far, this only exists in Python so it hasn't been moved to
+   * CodeGenerationVisitor. However, if another input or output language has a
+   * set implementation, should move this to the shared visitor.
+   *
+   * @param {ParserRuleContext} ctx
+   * @return {String}
+   */
   visitSet_literal(ctx) {
     ctx.type = this.Types._array;
     ctx.indentDepth = this.getIndentDepth(ctx) + 1;
     this.requiredImports[9] = true;
     let args = '';
     const list = ctx.testlist_comp();
-    this.testComprehension(list);
+    this.testForComprehension(list);
     if (list) {
       // Sets of 1 item is the same as the item itself, but keep parens for math
       if (list.children.length === 1) {
         return `(${this.visit(list.children[0])})`;
       }
       const visitedChildren = list.children.map((child) => {
-        return this.visit(child);
-      });
-      const visitedElements = visitedChildren.filter((arg) => {
-        return arg !== ',';
-      });
-      if (ctx.type.argsTemplate) { // NOTE: not currently being used anywhere.
-        args = visitedElements.map((arg, index) => {
-          const last = !visitedElements[index + 1];
-          return ctx.type.argsTemplate(arg, ctx.indentDepth, last);
-        }).join('');
-      } else {
-        args = visitedElements.join(', ');
-      }
-    }
-    if (ctx.type.template) {
-      return ctx.type.template(args, ctx.indentDepth);
-    }
-    return this.visitChildren(ctx);
-  }
-
-  visitArray_literal(ctx) {
-    ctx.type = this.Types._array;
-    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
-    this.requiredImports[9] = true;
-    let args = '';
-    if (ctx.testlist_comp()) {
-      this.testComprehension(ctx.testlist_comp());
-      const visitedChildren = ctx.testlist_comp().children.map((child) => {
         return this.visit(child);
       });
       const visitedElements = visitedChildren.filter((arg) => {
@@ -262,7 +235,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
    * Helper for literals.
    *
    * @param {Object} setType
-   * @param {ParserContext} ctx
+   * @param {ParserRuleContext} ctx
    * @return {String}
    */
   leafHelper(setType, ctx) {
@@ -609,10 +582,10 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
 
   /**
    * Want to throw unimplemented for comprehensions instead of reference errors.
-   * @param {ParserContext} ctx
+   * @param {ParserRuleContext} ctx
    */
-  testComprehension(ctx) {
-    if (ctx === null) {
+  testForComprehension(ctx) {
+    if (ctx === null || ctx === undefined) {
       return;
     }
     if (('comp_for' in ctx && ctx.comp_for() !== null) || ('comp_if' in ctx && ctx.comp_if() !== null)) {
@@ -740,5 +713,16 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   getAttributeRHS(ctx) {
     return ctx.dot_trailer().identifier();
   }
+
+  /**
+   * Takes in the constructor name of a node and returns a human-readable
+   * node name. Used for error reporting.
+   * @param {String} name
+   * @return {String}
+   */
+  renameNode(name) {
+    return name ? name.replace('_stmt', '') : 'Expression';
+  }
+
 };
 

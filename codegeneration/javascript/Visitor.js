@@ -57,16 +57,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       this.unimplemented;
   }
 
-  /**
-   * Takes in the constructor name of a node and returns a human-readable
-   * node name. Used for error reporting.
-   * @param {String} name
-   * @return {String}
-   */
-  renameNode(name) {
-    return name ? name.replace('Context', '') : 'Expression';
-  }
-
   visitFuncCallExpression(ctx) {
     return this.generateFunctionCall(ctx);
   }
@@ -79,45 +69,12 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.generateAttributeAccess(ctx);
   }
 
-  /**
-   * Child nodes: propertyNameAndValueList?
-   * @param {ObjectLiteralContext} ctx
-   * @return {String}
-   */
   visitObjectLiteral(ctx) {
     return this.generateObjectLiteral(ctx);
   }
 
-  /**
-   * Child nodes: elementList*
-   * @param {ArrayLiteralContext} ctx
-   * @return {String}
-   */
   visitArrayLiteral(ctx) {
-    ctx.type = this.Types._array;
-    ctx.indentDepth = this.getIndentDepth(ctx) + 1;
-    this.requiredImports[9] = true;
-    let args = '';
-    if (ctx.elementList()) {
-      const visitedChildren = ctx.elementList().children.map((child) => {
-        return this.visit(child);
-      });
-      const visitedElements = visitedChildren.filter((arg) => {
-        return arg !== ',';
-      });
-      if (ctx.type.argsTemplate) { // NOTE: not currently being used anywhere.
-        args = visitedElements.map((arg, index) => {
-          const last = !visitedElements[index + 1];
-          return ctx.type.argsTemplate(arg, ctx.indentDepth, last);
-        }).join('');
-      } else {
-        args = visitedElements.join(', ');
-      }
-    }
-    if (ctx.type.template) {
-      return ctx.type.template(args, ctx.indentDepth);
-    }
-    return this.visitChildren(ctx);
+    return this.generateArrayLiteral(ctx);
   }
 
   /**
@@ -693,7 +650,11 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     if (!('elementList' in ctx) || !ctx.elementList()) {
       return [];
     }
-    return ctx.elementList().singleExpression();
+    const elisions = ctx.elementList().elision();
+    const elements = ctx.elementList().singleExpression();
+    return ctx.elementList().children.filter((c) => {
+      return elisions.indexOf(c) !== -1 || elements.indexOf(c) !== -1;
+    });
   }
   getArray(ctx) {
     if (!('arrayLiteral' in ctx)) {
@@ -743,6 +704,16 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
   getAttributeRHS(ctx) {
     return ctx.identifierName();
+  }
+
+  /**
+   * Takes in the constructor name of a node and returns a human-readable
+   * node name. Used for error reporting.
+   * @param {String} name
+   * @return {String}
+   */
+  renameNode(name) {
+    return name ? name.replace('Context', '') : 'Expression';
   }
 };
 

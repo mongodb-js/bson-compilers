@@ -1,4 +1,5 @@
 const {
+  BsonTranspilersArgumentError,
   BsonTranspilersUnimplementedError,
   BsonTranspilersInternalError
 } = require('../helper/error');
@@ -14,30 +15,34 @@ const {
 module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisitor {
   constructor() {
     super();
-    this.idiomatic = true;
+    this.idiomatic = true; // PUBLIC
     this.requiredImports = {};
   }
 
+  /**
+   * PUBLIC: This is the entry point for the compiler. Each visitor must define
+   * an attribute called "startNode".
+   *
+   * @param {ParserRuleContext} ctx
+   * @return {String}
+   */
   start(ctx) {
+    const rule = `visit${this.startRule.replace(/^\w/, c => c.toUpperCase())}`;
+    if (!this.startRule || !(rule in this)) {
+      throw new BsonTranspilersInternalError(
+        'Unimplemented Visitor: the entry rule for the compiler must be set'
+      );
+    }
     this.requiredImports = {};
     [300, 301, 302, 303, 304, 305, 306].forEach(
       (i) => (this.requiredImports[i] = [])
     );
-    return this.startNode(ctx).trim();
-  }
-
-
-  deepCopyRequiredImports() {
-    const copy = Object.assign({}, this.requiredImports);
-    [300, 301, 302, 303, 304, 305, 306].forEach((i) => {
-      copy[i] = Array.from(this.requiredImports[i]);
-    });
-    return copy;
+    return this[rule](ctx).trim();
   }
 
   /**
-   * As code is generated, any classes that require imports are tracked in
-   * this.Imports. Each class has a "code" that is defined in the symbol table.
+   * PUBLIC: As code is generated, any classes that require imports are tracked
+   * in this.Imports. Each class has a "code" defined in the symbol table.
    * The imports are then generated based on the output language templates.
    *
    *  @return {String} - The list of imports in the target language.
@@ -72,11 +77,114 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     return importTemplate(imports);
   }
 
+  /**
+   * Used by the generators. Makes a copy of the required imports so
+   * can be rolled back after a recursion if needed.
+   *
+   * @return {Object}
+   */
+  deepCopyRequiredImports() {
+    const copy = Object.assign({}, this.requiredImports);
+    [300, 301, 302, 303, 304, 305, 306].forEach((i) => {
+      copy[i] = Array.from(this.requiredImports[i]);
+    });
+    return copy;
+  }
+
+  /**
+   * If the compiler reaches a expression in the input language
+   * that is not implemented yet.
+   *
+   * @param {ParserRuleContext} ctx
+   */
   unimplemented(ctx) {
     const name = this.renameNode(ctx.constructor.name);
     throw new BsonTranspilersUnimplementedError(
       `'${name}' not yet implemented`
     );
+  }
+
+  _getType(ctx) {
+    if (ctx.type !== undefined) {
+      return ctx;
+    }
+    if (!ctx.children) {
+      return null;
+    }
+    for (const c of ctx.children) {
+      const typed = this._getType(c);
+      if (typed) {
+        return typed;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Recursively descend down the tree looking for a node with the type set.
+   * Returns the first child node with a type set.
+   *
+   * @param {ParserRuleContext} ctx
+   * @return {ParserRuleContext}
+   */
+  findTypedNode(ctx) {
+    const typed = this._getType(ctx);
+    if (!typed) {
+      throw new BsonTranspilersInternalError('Type not set on any child nodes');
+    }
+    return typed;
+  }
+
+
+  /**
+   * Validate each argument against the expected argument types defined in the
+   * Symbol table.
+   *
+   * @param {Array} expected - An array of arrays where each subarray represents
+   * possible argument types for that index.
+   * @param {Array} args - empty if no args.
+   * @param {String} name - The name of the function for error reporting.
+   *
+   * @returns {Array} - Array containing the generated output for each argument.
+   */
+  checkArguments(expected, args, name) {
+    const argStr = [];
+    if (args.length === 0) {
+      if (expected.length === 0 || expected[0].indexOf(null) !== -1) {
+        return argStr;
+      }
+      throw new BsonTranspilersArgumentError(
+        `Argument count mismatch: '${name}' requires least one argument`
+      );
+    }
+    if (args.length > expected.length) {
+      throw new BsonTranspilersArgumentError(
+        `Argument count mismatch: '${name}' expects ${expected.length} args and got ${args.length}`
+      );
+    }
+    for (let i = 0; i < expected.length; i++) {
+      if (args[i] === undefined) {
+        if (expected[i].indexOf(null) !== -1) {
+          return argStr;
+        }
+        throw new BsonTranspilersArgumentError(
+          `Argument count mismatch: too few arguments passed to '${name}'`
+        );
+      }
+      const result = this.castType(expected[i], args[i]);
+      if (result === null) {
+        const typeStr = expected[i].map((e) => {
+          const id = e && e.id ? e.id : e;
+          return e ? id : '[optional]';
+        }).join(', ');
+        const message = `Argument type mismatch: '${name}' expects types ${
+          typeStr} but got type ${this.findTypedNode(args[i]).type.id} for argument at index ${i}`;
+
+        throw new BsonTranspilersArgumentError(message);
+      }
+      argStr.push(result);
+    }
+    return argStr;
   }
 
   /**
@@ -107,6 +215,7 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
 
   /**
    * Same as generateCall but for type literals instead of function calls.
+   *
    * @param {ParserRuleContext} ctx - The literal node
    * @param {Object} lhsType - The type
    * @param {Array} args - Arguments to the template
@@ -138,33 +247,8 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     return ctx.indentDepth;
   }
 
-  _getType(ctx) {
-    if (ctx.type !== undefined) {
-      return ctx;
-    }
-    if (!ctx.children) {
-      return null;
-    }
-    for (const c of ctx.children) {
-      const typed = this._getType(c);
-      if (typed) {
-        return typed;
-      }
-    }
-    return null;
-  }
-
-  getTyped(actual) {
-    const typed = this._getType(actual);
-    if (!typed) {
-      throw new BsonTranspilersInternalError('Type not set on any child nodes');
-    }
-    return typed;
-  }
-
-
   /**
-   * Selectively visits children of a node.
+   * Selectively visits children of a node. NOTE not currently being used.
    *
    * @param {ParserRuleContext} ctx
    * @param {Object} options:
@@ -195,7 +279,7 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
   }
 
   /**
-   * Visit a end-of-file symbol.
+   * Visit a end-of-file symbol. Universal for all grammars.
    * *
    * @returns {String}
    */
@@ -207,7 +291,7 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
   }
 
   /**
-   * Visit a end-of-line symbol.
+   * Visit a end-of-line symbol. Universal for all grammars.
    * *
    * @returns {String}
    */
@@ -219,7 +303,7 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
   }
 
   /**
-   * Visit a leaf node and return a string.
+   * Visit a leaf node and return a string. Universal for all grammars.
    * *
    * @param {ParserRuleContext} ctx
    * @returns {String}
@@ -227,7 +311,4 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
   visitTerminal(ctx) {
     return ctx.getText();
   }
-
-
-
 };

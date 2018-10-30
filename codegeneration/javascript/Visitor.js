@@ -7,7 +7,6 @@ const {
   BsonTranspilersRuntimeError,
   BsonTranspilersTypeError,
   BsonTranspilersReferenceError,
-  BsonTranspilersInternalError,
   BsonTranspilersUnimplementedError
 } = require('../../helper/error');
 const { removeQuotes } = require('../../helper/format');
@@ -23,7 +22,7 @@ const { removeQuotes } = require('../../helper/format');
 module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGenerationVisitor {
   constructor() {
     super();
-    this.startNode = this.visitProgram;
+    this.startRule = 'program'; // Name of the ANTLR rule to start
 
     this.processInt32 = this.processNumber;
     this.processDouble = this.processNumber;
@@ -72,64 +71,13 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   /**
-   * Validate each argument against the expected argument types defined in the
-   * Symbol table.
-   *
-   * @param {Array} expected - An array of arrays where each subarray represents
-   * possible argument types for that index.
-   * @param {Array} args - empty if no args.
-   * @param {String} name - The name of the function for error reporting.
-   *
-   * @returns {Array} - Array containing the generated output for each argument.
-   */
-  checkArguments(expected, args, name) {
-    const argStr = [];
-    if (args.length === 0) { // TODO: if pass array, can skip this?
-      if (expected.length === 0 || expected[0].indexOf(null) !== -1) {
-        return argStr;
-      }
-      throw new BsonTranspilersArgumentError(
-        `Argument count mismatch: '${name}' requires least one argument`
-      );
-    }
-    if (args.length > expected.length) {
-      throw new BsonTranspilersArgumentError(
-        `Argument count mismatch: '${name}' expects ${expected.length} args and got ${args.length}`
-      );
-    }
-    for (let i = 0; i < expected.length; i++) {
-      if (args[i] === undefined) {
-        if (expected[i].indexOf(null) !== -1) {
-          return argStr;
-        }
-        throw new BsonTranspilersArgumentError(
-          `Argument count mismatch: too few arguments passed to '${name}'`
-        );
-      }
-      const result = this.castType(expected[i], args[i]);
-      if (result === null) {
-        const typeStr = expected[i].map((e) => {
-          const id = e && e.id ? e.id : e;
-          return e ? id : '[optional]';
-        });
-        const message = `Argument type mismatch: '${name}' expects types ${
-          typeStr} but got type ${this.getTyped(args[i]).type.id} for argument at index ${i}`;
-
-        throw new BsonTranspilersArgumentError(message);
-      }
-      argStr.push(result);
-    }
-    return argStr;
-  }
-
-  /**
    * Child nodes: singleExpression arguments
    * @param {FuncCallExpressionContext} ctx
    * @return {String}
    */
   visitFuncCallExpression(ctx) {
     const lhs = this.visit(ctx.singleExpression());
-    let lhsType = this.getTyped(ctx.singleExpression()).type;
+    let lhsType = this.findTypedNode(ctx.singleExpression()).type;
     if (typeof lhsType === 'string') {
       lhsType = this.Types[lhsType];
     }
@@ -206,7 +154,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       );
     }
 
-    let type = this.getTyped(ctx.singleExpression()).type;
+    let type = this.findTypedNode(ctx.singleExpression()).type;
     if (typeof type === 'string') {
       type = this.Types[type];
     }
@@ -316,7 +264,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
    */
   processNumber(ctx) {
     const lhsStr = this.visit(ctx.singleExpression());
-    let lhsType = this.getTyped(ctx.singleExpression()).type;
+    let lhsType = this.findTypedNode(ctx.singleExpression()).type;
     if (typeof lhsType === 'string') {
       lhsType = this.Types[lhsType];
     }
@@ -334,7 +282,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       argType = this.Types._integer;
     } else {
       const argNode = this.getArgumentAt(ctx, 0);
-      const typed = this.getTyped(argNode);
+      const typed = this.findTypedNode(argNode);
       argType = typed.originalType !== undefined ?
         typed.originalType :
         typed.type;
@@ -358,7 +306,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   castType(expectedType, actualCtx) {
     const result = this.visit(actualCtx);
     const originalCtx = actualCtx;
-    actualCtx = this.getTyped(actualCtx);
+    actualCtx = this.findTypedNode(actualCtx);
 
     // If the types are exactly the same, just return.
     if (expectedType.indexOf(actualCtx.type) !== -1 ||
@@ -446,7 +394,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   visitNewExpression(ctx) {
     ctx.singleExpression().wasNew = true; // for dates only
     const res = this.visit(ctx.singleExpression());
-    ctx.type = this.getTyped(ctx.singleExpression()).type;
+    ctx.type = this.findTypedNode(ctx.singleExpression()).type;
     return res;
   }
 
@@ -671,7 +619,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       scope = this.visit(this.getArgumentAt(ctx, 1));
       this.idiomatic = idiomatic;
       scopestr = `, ${scope}`;
-      if (this.getTyped(this.getArgumentAt(ctx, 1)).type !== this.Types._object) {
+      if (this.findTypedNode(this.getArgumentAt(ctx, 1)).type !== this.Types._object) {
         throw new BsonTranspilersArgumentError(
           'Argument type mismatch: Code requires scope to be an object'
         );
@@ -850,7 +798,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
    */
   processObjectIdCreateFromTime(ctx) {
     const lhsStr = this.visit(ctx.singleExpression());
-    let lhsType = this.getTyped(ctx.singleExpression()).type;
+    let lhsType = this.findTypedNode(ctx.singleExpression()).type;
     if (typeof lhsType === 'string') {
       lhsType = this.Types[lhsType];
     }

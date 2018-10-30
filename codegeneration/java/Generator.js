@@ -812,7 +812,7 @@ module.exports = (Visitor) => class Generator extends Visitor {
     const copy = this.deepCopyRequiredImports();
     const value = this.visit(ctx.parentCtx);
     this.requiredImports = copy;
-    if (this.getTyped(ctx.parentCtx).type.id === '_string') {
+    if (this.findTypedNode(ctx.parentCtx).type.id === '_string') {
       return `unwind(${value})`;
     }
     return this.handleOptionsObject(

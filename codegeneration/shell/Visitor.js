@@ -149,7 +149,7 @@ module.exports = (JavascriptVisitor) => class Visitor extends JavascriptVisitor 
       scope = this.visit(args[1]);
       this.idiomatic = idiomatic;
       scopestr = `, ${scope}`;
-      if (this.getTyped(args[1]).type !== this.Types._object) {
+      if (this.findTypedNode(args[1]).type !== this.Types._object) {
         throw new BsonTranspilersArgumentError(
           'Argument type mismatch: Code requires scope to be an object'
         );

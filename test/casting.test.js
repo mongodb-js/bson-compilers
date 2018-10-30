@@ -46,7 +46,9 @@ describe('Casting tests', () => {
         const getGenerator = require(`../codegeneration/${output}/Generator`);
         const symbols = require(`../lib/symbol-table/${input}to${output}`);
 
-        const Transpiler = getGenerator(getVisitor(getCodeGenerationVisitor(ANTLRVisitor)));
+        const Transpiler = getGenerator(
+          getVisitor(getCodeGenerationVisitor(ANTLRVisitor))
+        );
         const transpiler = new Transpiler();
         const doc = yaml.load(symbols);
         transpiler.Types = Object.assign({}, doc.BasicTypes, doc.BsonTypes);
@@ -71,7 +73,7 @@ describe('Casting tests', () => {
                 return t.map((k) => ( k !== null ? transpiler.Types[k] : k ));
               });
             }
-            const str = getTree[input](test.input[input].code);
+            const str = getTree[input](test.input[input].code, transpiler.startRule);
             expect(transpiler.start(str)).to.equal(test.output[output]);
           });
         });

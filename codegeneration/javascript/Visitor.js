@@ -149,48 +149,53 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
    *
    * @returns {String} - visited result, or null on error.
    */
-  castType(expectedType, actualCtx) {
-    const result = this.visit(actualCtx);
-    const originalCtx = actualCtx;
-    actualCtx = this.findTypedNode(actualCtx);
+  castType(expectedType, ctx) {
+    const result = this.visit(ctx);
+    const typedCtx = this.findTypedNode(ctx);
+    const type = typedCtx.type;
 
     // If the types are exactly the same, just return.
-    if (expectedType.indexOf(actualCtx.type) !== -1 ||
-      expectedType.indexOf(actualCtx.type.id) !== -1) {
+    if (expectedType.indexOf(type) !== -1 ||
+      expectedType.indexOf(type.id) !== -1) {
       return result;
     }
 
     const numericTypes = [
       this.Types._integer, this.Types._decimal, this.Types._hex,
-      this.Types._octal, this.Types._long, this.Types._numeric
+      this.Types._octal, this.Types._long
     ];
-    // If the expected type is "numeric", accept the numeric basic types + numeric bson types
+    // If both expected and node are numeric literals, cast + return
+    for (let i = 0; i < expectedType.length; i++) {
+      if (numericTypes.indexOf(type) !== -1 &&
+          numericTypes.indexOf(expectedType[i]) !== -1) {
+        // Need to visit the octal node always
+        if (type.id === '_octal') {
+          return this.leafHelper(
+            expectedType[i],
+            {
+              type: expectedType[i],
+              originalType: type.id,
+              getText: () => ( this.visit(ctx) )
+            }
+          );
+        }
+        ctx.originalType = type;
+        ctx.type = expectedType[i];
+        return this.leafHelper(expectedType[i], ctx);
+      }
+    }
+
+    // If the expected type is "numeric", accept the number basic & bson types
     if (expectedType.indexOf(this.Types._numeric) !== -1 &&
-      (numericTypes.indexOf(actualCtx.type) !== -1 ||
-        (actualCtx.type.id === 'Long' ||
-          actualCtx.type.id === 'Int32' ||
-          actualCtx.type.id === 'Double'))) {
+        (numericTypes.indexOf(type) !== -1 || (type.code === 106 || type.code === 105 || type.code === 104))) {
+      return result;
+    }
+    // If the expected type is any number, accept float/int/_numeric
+    if ((numericTypes.some((t) => ( expectedType.indexOf(t) !== -1))) &&
+        (type.code === 106 || type.code === 105 || type.code === 104 || type === this.Types._numeric)) {
       return result;
     }
 
-    // Check if the arguments are both numbers. If so then cast to expected type.
-    for (let i = 0; i < expectedType.length; i++) {
-      if (numericTypes.indexOf(actualCtx.type) !== -1 &&
-        numericTypes.indexOf(expectedType[i]) !== -1) {
-        // Need to interpret octal always
-        if (actualCtx.type.id === '_octal') {
-          const node = {
-            type: expectedType[i],
-            originalType: actualCtx.type.id,
-            getText: () => ( this.visit(actualCtx) )
-          };
-          return this.leafHelper(expectedType[i], node);
-        }
-        actualCtx.originalType = actualCtx.type;
-        actualCtx.type = expectedType[i];
-        return this.leafHelper(expectedType[i], originalCtx);
-      }
-    }
     return null;
   }
 

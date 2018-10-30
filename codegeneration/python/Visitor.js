@@ -232,7 +232,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     // If both expected and node are numeric literals, cast + return
     for (let i = 0; i < expectedType.length; i++) {
       if (numericTypes.indexOf(type) !== -1 &&
-        numericTypes.indexOf(expectedType[i]) !== -1) {
+          numericTypes.indexOf(expectedType[i]) !== -1) {
         // Need to visit the octal node always
         if (type.id === '_octal') {
           return this.leafHelper(

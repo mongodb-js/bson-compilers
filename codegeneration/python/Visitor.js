@@ -134,77 +134,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   /**
-   * Convert between numeric types. Required so that we don't end up with
-   * strange conversions like 'Int32(Double(2))', and can just generate '2'.
-   *
-   * @param {Array} expectedType - types to cast to.
-   * @param {antlr4.ParserRuleContext} ctx - ctx to cast from, if valid.
-   *
-   * @returns {String} - visited result, or null on error.
-   */
-  castType(expectedType, ctx) {
-    const result = this.visit(ctx);
-    const typedCtx = this.findTypedNode(ctx);
-    const type = typedCtx.type;
-
-    // If the types are exactly the same, just return.
-    if (expectedType.indexOf(type) !== -1 ||
-      expectedType.indexOf(type.id) !== -1) {
-      return result;
-    }
-
-    const numericTypes = [
-      this.Types._integer, this.Types._decimal, this.Types._hex,
-      this.Types._octal, this.Types._long
-    ];
-    // If both expected and node are numeric literals, cast + return
-    for (let i = 0; i < expectedType.length; i++) {
-      if (numericTypes.indexOf(type) !== -1 &&
-        numericTypes.indexOf(expectedType[i]) !== -1) {
-        // Need to visit the octal node always
-        if (type.id === '_octal') {
-          return this.leafHelper(
-            expectedType[i],
-            {
-              type: expectedType[i],
-              originalType: type.id,
-              getText: () => ( this.visit(ctx) )
-            }
-          );
-        }
-        const child = this.skipFakeNodesDown(ctx);
-        child.originalType = type;
-        child.type = expectedType[i];
-        return this.leafHelper(expectedType[i], child);
-      }
-    }
-
-    // If the expected type is "numeric", accept the number basic & bson types
-    if (expectedType.indexOf(this.Types._numeric) !== -1 &&
-      (numericTypes.indexOf(type) !== -1 || (type.code === 106 || type.code === 105 || type.code === 104))) {
-      return result;
-    }
-    // If the expected type is any number, accept float/int
-    if ((numericTypes.some((t) => ( expectedType.indexOf(t) !== -1))) &&
-      (type.code === 106 || type.code === 105 || type.code === 104)) {
-      return result;
-    }
-
-    return null;
-  }
-
-
-  getParentOriginalType(ctx) {
-    if (ctx.originalType !== undefined) {
-      return ctx.originalType;
-    }
-    if (ctx.parentCtx) {
-      return this.getParentOriginalType(ctx.parentCtx);
-    }
-    return null;
-  }
-
-  /**
    * Helper for literals.
    *
    * @param {Object} setType
@@ -273,6 +202,78 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       );
     }
     return this.visitChildren(ctx);
+  }
+
+
+  /**
+   * Convert between numeric types. Required so that we don't end up with
+   * strange conversions like 'Int32(Double(2))', and can just generate '2'.
+   *
+   * @param {Array} expectedType - types to cast to.
+   * @param {antlr4.ParserRuleContext} ctx - ctx to cast from, if valid.
+   *
+   * @returns {String} - visited result, or null on error.
+   */
+  castType(expectedType, ctx) {
+    const result = this.visit(ctx);
+    const typedCtx = this.findTypedNode(ctx);
+    const type = typedCtx.type;
+
+    // If the types are exactly the same, just return.
+    if (expectedType.indexOf(type) !== -1 ||
+      expectedType.indexOf(type.id) !== -1) {
+      return result;
+    }
+
+    const numericTypes = [
+      this.Types._integer, this.Types._decimal, this.Types._hex,
+      this.Types._octal, this.Types._long
+    ];
+    // If both expected and node are numeric literals, cast + return
+    for (let i = 0; i < expectedType.length; i++) {
+      if (numericTypes.indexOf(type) !== -1 &&
+        numericTypes.indexOf(expectedType[i]) !== -1) {
+        // Need to visit the octal node always
+        if (type.id === '_octal') {
+          return this.leafHelper(
+            expectedType[i],
+            {
+              type: expectedType[i],
+              originalType: type.id,
+              getText: () => ( this.visit(ctx) )
+            }
+          );
+        }
+        const child = this.skipFakeNodesDown(ctx);
+        child.originalType = type;
+        child.type = expectedType[i];
+        return this.leafHelper(expectedType[i], child);
+      }
+    }
+
+    // If the expected type is "numeric", accept the number basic & bson types
+    if (expectedType.indexOf(this.Types._numeric) !== -1 &&
+      (numericTypes.indexOf(type) !== -1 || (type.code === 106 || type.code === 105 || type.code === 104))) {
+      return result;
+    }
+    // If the expected type is any number, accept float/int
+    if ((numericTypes.some((t) => ( expectedType.indexOf(t) !== -1))) &&
+      (type.code === 106 || type.code === 105 || type.code === 104)) {
+      return result;
+    }
+
+    return null;
+  }
+
+
+  getParentOriginalType(ctx) {
+    if (ctx.originalType !== undefined) {
+      return ctx.originalType;
+    }
+    if (ctx.parentCtx) {
+      return this.getParentOriginalType(ctx.parentCtx);
+    }
+    return null;
   }
 
   /**

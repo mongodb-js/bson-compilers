@@ -87,6 +87,64 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.generateNumericClass(ctx);
   }
 
+  /**
+   * Child nodes: literal
+   * @param {LiteralExpressionContext} ctx
+   * @return {String}
+   */
+  visitLiteralExpression(ctx) {
+    if (!ctx.type) {
+      ctx.type = this.getPrimitiveType(ctx.literal());
+    }
+    this.requiredImports[ctx.type.code] = true;
+    // Pass the original argument type to the template, not the casted type.
+    const type = ctx.originalType === undefined ? ctx.type : ctx.originalType;
+    if (`process${ctx.type.id}` in this) {
+      return this[`process${ctx.type.id}`](ctx);
+    }
+    const children = this.visitChildren(ctx);
+    return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
+  }
+
+  /**
+   * Get the type of a node. TODO: nicer way to write it?
+   * @param {LiteralContext} ctx
+   * @return {Symbol}
+   */
+  getPrimitiveType(ctx) {
+    if ('NullLiteral' in ctx) {
+      return this.Types._null;
+    }
+    if ('UndefinedLiteral' in ctx) {
+      return this.Types._undefined;
+    }
+    if ('BooleanLiteral' in ctx) {
+      return this.Types._bool;
+    }
+    if ('StringLiteral' in ctx) {
+      return this.Types._string;
+    }
+    if ('RegularExpressionLiteral' in ctx) {
+      return this.Types._regex;
+    }
+    if ('numericLiteral' in ctx) {
+      const number = ctx.numericLiteral();
+      if ('IntegerLiteral' in number) {
+        return this.Types._long;
+      }
+      if ('DecimalLiteral' in number) {
+        return this.Types._decimal;
+      }
+      if ('HexIntegerLiteral' in number) {
+        return this.Types._hex;
+      }
+      if ('OctalIntegerLiteral' in number) {
+        return this.Types._octal;
+      }
+    }
+    // TODO: or raise error?
+    return this.Types._undefined;
+  }
 
   /**
    * Convert between numeric types. Required so that we don't end up with
@@ -148,25 +206,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   /**
-   * Child nodes: literal
-   * @param {LiteralExpressionContext} ctx
-   * @return {String}
-   */
-  visitLiteralExpression(ctx) {
-    if (!ctx.type) {
-      ctx.type = this.getPrimitiveType(ctx.literal());
-    }
-    this.requiredImports[ctx.type.code] = true;
-    // Pass the original argument type to the template, not the casted type.
-    const type = ctx.originalType === undefined ? ctx.type : ctx.originalType;
-    if (`process${ctx.type.id}` in this) {
-      return this[`process${ctx.type.id}`](ctx);
-    }
-    const children = this.visitChildren(ctx);
-    return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
-  }
-
-  /**
    * One terminal child.
    * @param {ElisionContext} ctx
    * @return {String}
@@ -195,46 +234,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   // //////////
   // Helpers //
   // //////////
-  /**
-   * Get the type of a node. TODO: nicer way to write it?
-   * @param {LiteralContext} ctx
-   * @return {Symbol}
-   */
-  getPrimitiveType(ctx) {
-    if ('NullLiteral' in ctx) {
-      return this.Types._null;
-    }
-    if ('UndefinedLiteral' in ctx) {
-      return this.Types._undefined;
-    }
-    if ('BooleanLiteral' in ctx) {
-      return this.Types._bool;
-    }
-    if ('StringLiteral' in ctx) {
-      return this.Types._string;
-    }
-    if ('RegularExpressionLiteral' in ctx) {
-      return this.Types._regex;
-    }
-    if ('numericLiteral' in ctx) {
-      const number = ctx.numericLiteral();
-      if ('IntegerLiteral' in number) {
-        return this.Types._long;
-      }
-      if ('DecimalLiteral' in number) {
-        return this.Types._decimal;
-      }
-      if ('HexIntegerLiteral' in number) {
-        return this.Types._hex;
-      }
-      if ('OctalIntegerLiteral' in number) {
-        return this.Types._octal;
-      }
-    }
-    // TODO: or raise error?
-    return this.Types._undefined;
-  }
-
   visitRelationalExpression(ctx) {
     return ctx.children.map((n) => ( this.visit(n) )).join(' ');
   }

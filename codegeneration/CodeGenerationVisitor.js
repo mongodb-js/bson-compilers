@@ -389,6 +389,9 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
 
   /**
    * Called from the process methods of numeric class constructors.
+   * We know there will be a single (sometimes optional) argument that is
+   * a number or string.
+   *
    * Required because we want to pass the argument type to the template
    * so that we can determine if the generated number needs to be parsed or
    * casted.

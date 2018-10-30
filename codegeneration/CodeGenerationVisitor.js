@@ -1,4 +1,5 @@
 const {
+  BsonTranspilersAttributeError,
   BsonTranspilersArgumentError,
   BsonTranspilersInternalError,
   BsonTranspilersReferenceError,
@@ -257,6 +258,61 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
       return ctx.type.template();
     }
     return name;
+  }
+
+  /**
+   * Generate attribute access. Visitors are in charge of making sure that
+   * if lhs type attribute access is not supported, an error is thrown.
+   *
+   * NOTE: If the attribute isn't defined on the lhsType, then it will check the
+   * lhsType.type to see if defined. It will loop, checking the lhs type's type,
+   * until the attribute exists or the .type is null. If the type is null,
+   * and the class is a BSON class, then error. If it is a native type however,
+   * do not error and just return the original attribute. This is to not annoy
+   * people with attribute errors in languages where it wouldn't throw anyway.
+   * It feels better to be strict about BSON than the whole language, but it's
+   * up for debate. TODO: could set type checking to 'strict' or 'non-strict' in
+   * the visitor, and then only error if we are compiling from a strictly typed
+   * langauge.
+   *
+   * @param {ParserRuleContext} ctx
+   * @return {String}
+   */
+  generateAttributeAccess(ctx) {
+    const lhsNode = this.getAttributeLHS(ctx);
+    const lhs = this.visit(lhsNode);
+    const rhs = this.getAttributeRHS(ctx).getText();
+
+    let type = this.findTypedNode(lhsNode).type;
+    if (typeof type === 'string') {
+      type = this.Types[type];
+    }
+    while (type !== null) {
+      if (!(type.attr.hasOwnProperty(rhs))) {
+        if (type.id in this.BsonTypes && this.BsonTypes[type.id].id !== null) {
+          throw new BsonTranspilersAttributeError(
+            `'${rhs}' not an attribute of ${type.id}`
+          );
+        }
+        type = type.type;
+        if (typeof type === 'string') {
+          type = this.Types[type];
+        }
+      } else {
+        break;
+      }
+    }
+    if (type === null) {
+      ctx.type = this.Types._undefined;
+      // TODO: how strict do we want to be?
+      return `${lhs}.${rhs}`;
+    }
+    ctx.type = type.attr[rhs];
+    if (type.attr[rhs].template) {
+      return type.attr[rhs].template(lhs, rhs);
+    }
+
+    return `${lhs}.${rhs}`;
   }
 
   /**

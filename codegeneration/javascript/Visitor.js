@@ -76,56 +76,8 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.generateIdentifier(ctx);
   }
 
-  /**
-   * This will check the type of the attribute, and error if it's a BSON symbol
-   * or a JS Symbol and it is undefined. If it's not either of those symbols, it
-   * doesn't error. TODO: should always error? never error?
-   *
-   * Child nodes: singleExpression identifierName
-   * @param {GetAttributeExpressionContext} ctx
-   * @return {String}
-   */
   visitGetAttributeExpression(ctx) {
-    const lhs = this.visit(ctx.singleExpression());
-    const rhs = this.visit(ctx.identifierName());
-
-    if (!ctx.singleExpression().constructor.name.includes('Identifier') &&
-      !ctx.singleExpression().constructor.name.includes('FuncCall')) {
-      throw new BsonTranspilersUnimplementedError(
-        'Attribute access for non-symbols not currently supported'
-      );
-    }
-
-    let type = this.findTypedNode(ctx.singleExpression()).type;
-    if (typeof type === 'string') {
-      type = this.Types[type];
-    }
-    while (type !== null) {
-      if (!(type.attr.hasOwnProperty(rhs))) {
-        if (type.id in this.BsonTypes && this.BsonTypes[type.id].id !== null) {
-          throw new BsonTranspilersAttributeError(
-            `'${rhs}' not an attribute of ${type.id}`
-          );
-        }
-        type = type.type;
-        if (typeof type === 'string') {
-          type = this.Types[type];
-        }
-      } else {
-        break;
-      }
-    }
-    if (type === null) {
-      ctx.type = this.Types._undefined;
-      // TODO: how strict do we want to be?
-      return `${lhs}.${rhs}`;
-    }
-    ctx.type = type.attr[rhs];
-    if (type.attr[rhs].template) {
-      return type.attr[rhs].template(lhs, rhs);
-    }
-
-    return `${lhs}.${rhs}`;
+    return this.generateAttributeAccess(ctx);
   }
 
   /**
@@ -809,14 +761,17 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   getFunctionCallName(ctx) {
     return ctx.singleExpression();
   }
-  getFunctionCallIdentifier(ctx) {
-    return ctx.singleExpression();
-  }
   getIfIdentifier(ctx) {
     if ('identifierName' in ctx) {
       return ctx.singleExpression();
     }
     return ctx;
+  }
+  getAttributeLHS(ctx) {
+    return ctx.singleExpression();
+  }
+  getAttributeRHS(ctx) {
+    return ctx.identifierName();
   }
 };
 

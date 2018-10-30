@@ -401,14 +401,6 @@ tests:
       input:
           javascript: "{x: 1}[1]"
       errorCode: E_BSONTRANSPILERS_UNIMPLEMENTED
-    - description: array attribute
-      input:
-          javascript: "[1,2,3].x"
-      errorCode: E_BSONTRANSPILERS_UNIMPLEMENTED
-    - description: object attribute
-      input:
-          javascript: "{x: 1}.y"
-      errorCode: E_BSONTRANSPILERS_UNIMPLEMENTED
 
     ternary:
     - description: ternary

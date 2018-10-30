@@ -78,39 +78,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
-    const lhs = this.visit(ctx.atom());
-    const rhs = ctx.dot_trailer().identifier().getText();
-
-    let type = this.findTypedNode(ctx.atom()).type;
-    if (typeof type === 'string') {
-      type = this.Types[type];
-    }
-    while (type !== null) {
-      if (!(type.attr.hasOwnProperty(rhs))) {
-        if (type.id in this.BsonTypes && this.BsonTypes[type.id].id !== null) {
-          throw new BsonTranspilersAttributeError(
-            `'${rhs}' not an attribute of ${type.id}`
-          );
-        }
-        type = type.type;
-        if (typeof type === 'string') {
-          type = this.Types[type];
-        }
-      } else {
-        break;
-      }
-    }
-    if (type === null) {
-      ctx.type = this.Types._undefined;
-      // TODO: how strict do we want to be?
-      return `${lhs}.${rhs}`;
-    }
-    ctx.type = type.attr[rhs];
-    if (type.attr[rhs].template) {
-      return type.attr[rhs].template(lhs, rhs);
-    }
-
-    return `${lhs}.${rhs}`;
+    return this.generateAttributeAccess(ctx);
   }
 
   visitObject_literal(ctx) {
@@ -797,6 +765,12 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       return ctx.identifier();
     }
     return ctx;
+  }
+  getAttributeLHS(ctx) {
+    return ctx.atom();
+  }
+  getAttributeRHS(ctx) {
+    return ctx.dot_trailer().identifier();
   }
 };
 

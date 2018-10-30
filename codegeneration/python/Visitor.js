@@ -3,7 +3,6 @@ const {
   BsonTranspilersArgumentError,
   BsonTranspilersAttributeError,
   BsonTranspilersRuntimeError,
-  BsonTranspilersReferenceError,
   BsonTranspilersInternalError,
   BsonTranspilersUnimplementedError
 } = require('../../helper/error');
@@ -70,17 +69,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   visitIdentifier(ctx) {
-    const name = this.visitChildren(ctx);
-    ctx.type = this.Symbols[name];
-    if (ctx.type === undefined) {
-      throw new BsonTranspilersReferenceError(`Symbol '${name}' is undefined`);
-    }
-    this.requiredImports[ctx.type.code] = true;
-
-    if (ctx.type.template) {
-      return ctx.type.template();
-    }
-    return name;
+    return this.generateIdentifier(ctx);
   }
 
 

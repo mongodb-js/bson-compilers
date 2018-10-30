@@ -1,4 +1,4 @@
-/* eslint complexity: 0 camelcase: 0*/
+/* camelcase: 0*/
 const {
   BsonTranspilersArgumentError,
   BsonTranspilersRuntimeError,
@@ -46,8 +46,13 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       this.unimplemented;
   }
 
+  /*
+   *
+   * Visit Methods
+   *
+   */
+
   visitFunctionCall(ctx) {
-    // Skip if fake node
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
@@ -60,7 +65,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
 
 
   visitAttributeAccess(ctx) {
-    // Skip if fake node
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
@@ -68,25 +72,18 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   visitObject_literal(ctx) {
-    // Test for dict comprehension
     this.testForComprehension(ctx.dictorsetmaker());
     return this.generateObjectLiteral(ctx);
   }
 
   visitArray_literal(ctx) {
-    // Test for list comprehension
     this.testForComprehension(ctx.testlist_comp());
     return this.generateArrayLiteral(ctx);
   }
 
-  /**
-   * So far, this only exists in Python so it hasn't been moved to
+  /* So far, this only exists in Python so it hasn't been moved to
    * CodeGenerationVisitor. However, if another input or output language has a
-   * set implementation, should move this to the shared visitor.
-   *
-   * @param {ParserRuleContext} ctx
-   * @return {String}
-   */
+   * set implementation, should move this to the shared visitor. */
   visitSet_literal(ctx) {
     ctx.type = this.Types._array;
     ctx.indentDepth = this.getIndentDepth(ctx) + 1;
@@ -120,41 +117,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.visitChildren(ctx);
   }
 
-  /* Numerical process methods */
-  processint(ctx) {
-    return this.generateNumericClass(ctx);
-  }
-
-  processfloat(ctx) {
-    return this.generateNumericClass(ctx);
-  }
-
-  processInt64(ctx) {
-    return this.generateNumericClass(ctx);
-  }
-
-  /**
-   * Helper for literals.
-   *
-   * @param {Object} setType
-   * @param {ParserRuleContext} ctx
-   * @return {String}
-   */
-  leafHelper(setType, ctx) {
-    ctx.type = setType;
-    this.requiredImports[ctx.type.code] = true;
-
-    // Pass the original argument type to the template, not the casted type.
-    const parentOriginalType = this.getParentOriginalType(ctx);
-    const type = parentOriginalType === null ? ctx.type : parentOriginalType;
-
-    if (`process${ctx.type.id}` in this) {
-      return this[`process${ctx.type.id}`](ctx);
-    }
-    const children = ctx.getText();
-    return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
-  }
-
   visitStringAtom(ctx) {
     ctx.type = this.Types._string;
     this.requiredImports[ctx.type.code] = true;
@@ -166,27 +128,35 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     result = result.replace(/(["]{3}|["]|[']{3}|['])$/, '');
     return this.generateLiteral(ctx, ctx.type, [result, type.id], `'${result}'`, true);
   }
+
   visitInteger_literal(ctx) {
     return this.leafHelper(this.Types._long, ctx);
   }
+
   visitOct_literal(ctx) {
     return this.leafHelper(this.Types._octal, ctx);
   }
+
   visitHex_literal(ctx) {
     return this.leafHelper(this.Types._hex, ctx);
   }
+
   visitBin_literal(ctx) {
     return this.leafHelper(this.Types._bin, ctx);
   }
+
   visitFloat_literal(ctx) {
     return this.leafHelper(this.Types._decimal, ctx);
   }
+
   visitImag_literal(ctx) {
     return this.leafHelper(this.Types._long, ctx); // TODO: imaginary numbers?
   }
+
   visitBoolean_literal(ctx) {
     return this.leafHelper(this.Types._bool, ctx);
   }
+
   visitNone_literal(ctx) {
     return this.leafHelper(this.Types._null, ctx);
   }
@@ -204,88 +174,12 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.visitChildren(ctx);
   }
 
-
-  /**
-   * Convert between numeric types. Required so that we don't end up with
-   * strange conversions like 'Int32(Double(2))', and can just generate '2'.
-   *
-   * @param {Array} expectedType - types to cast to.
-   * @param {antlr4.ParserRuleContext} ctx - ctx to cast from, if valid.
-   *
-   * @returns {String} - visited result, or null on error.
-   */
-  castType(expectedType, ctx) {
-    const result = this.visit(ctx);
-    const typedCtx = this.findTypedNode(ctx);
-    const type = typedCtx.type;
-
-    // If the types are exactly the same, just return.
-    if (expectedType.indexOf(type) !== -1 ||
-      expectedType.indexOf(type.id) !== -1) {
-      return result;
-    }
-
-    const numericTypes = [
-      this.Types._integer, this.Types._decimal, this.Types._hex,
-      this.Types._octal, this.Types._long
-    ];
-    // If both expected and node are numeric literals, cast + return
-    for (let i = 0; i < expectedType.length; i++) {
-      if (numericTypes.indexOf(type) !== -1 &&
-          numericTypes.indexOf(expectedType[i]) !== -1) {
-        // Need to visit the octal node always
-        if (type.id === '_octal') {
-          return this.leafHelper(
-            expectedType[i],
-            {
-              type: expectedType[i],
-              originalType: type.id,
-              getText: () => ( this.visit(ctx) )
-            }
-          );
-        }
-        const child = this.skipFakeNodesDown(ctx);
-        child.originalType = type;
-        child.type = expectedType[i];
-        return this.leafHelper(expectedType[i], child);
-      }
-    }
-
-    // If the expected type is "numeric", accept the number basic & bson types
-    if (expectedType.indexOf(this.Types._numeric) !== -1 &&
-      (numericTypes.indexOf(type) !== -1 || (type.code === 106 || type.code === 105 || type.code === 104))) {
-      return result;
-    }
-    // If the expected type is any number, accept float/int
-    if ((numericTypes.some((t) => ( expectedType.indexOf(t) !== -1))) &&
-      (type.code === 106 || type.code === 105 || type.code === 104)) {
-      return result;
-    }
-
-    return null;
-  }
-
-
-  getParentOriginalType(ctx) {
-    if (ctx.originalType !== undefined) {
-      return ctx.originalType;
-    }
-    if (ctx.parentCtx) {
-      return this.getParentOriginalType(ctx.parentCtx);
-    }
-    return null;
-  }
-
-  /**
-   * For the expression "+1", set the type to the child's type.
-   * @param {ParserContext} ctx
-   * @return {String}
-   */
   visitFactor(ctx) {
     // Skip if fake node
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
+    // For the expression "+1", set the type to the child's type.
     const result = this.visitChildren(ctx);
     ctx.type = this.findTypedNode(ctx.factor()).type;
     return result;
@@ -383,6 +277,25 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     }
     throw new BsonTranspilersUnimplementedError('Indexing not currently supported');
   }
+
+  /*
+   *
+   * Process Methods
+   *
+   */
+
+  processint(ctx) {
+    return this.generateNumericClass(ctx);
+  }
+
+  processfloat(ctx) {
+    return this.generateNumericClass(ctx);
+  }
+
+  processInt64(ctx) {
+    return this.generateNumericClass(ctx);
+  }
+
 
   // TODO: translate flags
   // process_regex(ctx) { // eslint-disable-line camelcase
@@ -540,19 +453,11 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     throw new BsonTranspilersUnimplementedError('Binary type not supported');
   }
 
-
-  /**
-   * Returns true if the type of the child is a literal.
+  /*
    *
-   * @param {ParserRuleContext} ctx
-   * @return {boolean}
+   * Helper Methods
+   *
    */
-  isLiteralCtx(ctx) {
-    return [
-      'integer_literal', 'oct_literal', 'hex_literal', 'bin_literal',
-      'float_literal', 'string_literal', 'none_literal', 'boolean_literal'
-    ].filter((n) => ( n in ctx.parentCtx )).length > 0;
-  }
 
   /**
    * Want to throw unimplemented for comprehensions instead of reference errors.
@@ -627,13 +532,46 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   /*
-   * The rest of the functions in the file are accessor functions.
+   *
+   * Accessor Functions.
    *
    * These MUST be defined by every visitor. Each function is a wrapper around
    * a tree node. They are required so that the CodeGenerationVisitor and the
    * Generators can access tree elements without needing to know which tree they
    * are visiting or the ANTLR name of the node.
+   *
    */
+
+  getArguments(ctx) {
+    const trailer = ctx.paren_trailer();
+    if (!('arglist' in trailer) || trailer.arglist() === null) {
+      return [];
+    }
+    return trailer.arglist().argument();
+  }
+
+  getArgumentAt(ctx, i) {
+    return this.getArguments(ctx)[i];
+  }
+
+  getFunctionCallName(ctx) {
+    return ctx.atom();
+  }
+
+  getIfIdentifier(ctx) {
+    if ('identifier' in ctx) {
+      return ctx.identifier();
+    }
+    return ctx;
+  }
+
+  getAttributeLHS(ctx) {
+    return ctx.atom();
+  }
+
+  getAttributeRHS(ctx) {
+    return ctx.dot_trailer().identifier();
+  }
 
   getList(ctx) {
     if (!('testlist_comp' in ctx) || !ctx.testlist_comp()) {
@@ -641,12 +579,15 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     }
     return ctx.testlist_comp().test();
   }
+
   getArray(ctx) {
     return this.skipFakeNodesDown(ctx, 'array_literal');
   }
+
   getObject(ctx) {
     return this.skipFakeNodesDown(ctx, 'object_literal');
   }
+
   getKeyValueList(ctx) {
     if ('dictorsetmaker' in ctx && ctx.dictorsetmaker()) {
       const properties = ctx.dictorsetmaker().test();
@@ -664,10 +605,21 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     }
     return [];
   }
+
   getKeyStr(k) {
     return removeQuotes(this.visit(k[0]));
   }
+
+  getValue(k) {
+    return k[1];
+  }
+
+  isSubObject(ctx) {
+    return this.getParentUntil(ctx.parentCtx, 'dictorsetmaker', 1);
+  }
+
   getParentKeyStr(ctx) { // TODO: fix for long list
+    // For a given sub document, get its key.
     const topNode = this.getParentUntil(ctx.parentCtx, 'dictorsetmaker', 1);
     const objNode = topNode.parentCtx;
     const index = objNode.test().indexOf(topNode);
@@ -675,40 +627,9 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     const key = this.visit(keyNode);
     return removeQuotes(key);
   }
-  getValue(k) {
-    return k[1];
-  }
-  getArguments(ctx) {
-    const trailer = ctx.paren_trailer();
-    if (!('arglist' in trailer) || trailer.arglist() === null) {
-      return [];
-    }
-    return trailer.arglist().argument();
-  }
-  getArgumentAt(ctx, i) {
-    return this.getArguments(ctx)[i];
-  }
-  isSubObject(ctx) {
-    return this.getParentUntil(ctx.parentCtx, 'dictorsetmaker', 1);
-  }
+
   getObjectChild(ctx) {
     return this.skipFakeNodesDown(ctx);
   }
-  getFunctionCallName(ctx) {
-    return ctx.atom();
-  }
-  getIfIdentifier(ctx) {
-    if ('identifier' in ctx) {
-      return ctx.identifier();
-    }
-    return ctx;
-  }
-  getAttributeLHS(ctx) {
-    return ctx.atom();
-  }
-  getAttributeRHS(ctx) {
-    return ctx.dot_trailer().identifier();
-  }
-
 };
 

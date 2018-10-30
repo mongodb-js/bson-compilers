@@ -1,3 +1,4 @@
+/* eslint complexity: 0 camelcase: 0*/
 const {
   BsonTranspilersAttributeError,
   BsonTranspilersArgumentError,
@@ -138,6 +139,96 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     return typed;
   }
 
+  /**
+   * Get the 'originalType' of ctx, of if it's undefined, keep checking parent
+   * nodes until an original type is found. Otherwise null.
+   *
+   * @param {ParserRuleContext} ctx
+   * @return {ParserRuleContext}
+   */
+  getParentOriginalType(ctx) {
+    if (ctx.originalType !== undefined) {
+      return ctx.originalType;
+    }
+    if (ctx.parentCtx) {
+      return this.getParentOriginalType(ctx.parentCtx);
+    }
+    return null;
+  }
+
+
+  /**
+   * Convert between numeric types. Required so that we don't end up with
+   * strange conversions like 'Int32(Double(2))', and can just generate '2'.
+   *
+   * @param {Array} expectedType - types to cast to.
+   * @param {ParserRuleContext} ctx - ctx to cast from, if valid.
+   *
+   * @returns {String} - visited result, or null on error.
+   */
+  castType(expectedType, ctx) {
+    const result = this.visit(ctx);
+    const typedCtx = this.findTypedNode(ctx);
+    const type = typedCtx.type;
+
+    // If the types are exactly the same, just return.
+    if (expectedType.indexOf(type) !== -1 ||
+      expectedType.indexOf(type.id) !== -1) {
+      return result;
+    }
+
+    const numericTypes = [
+      this.Types._integer, this.Types._decimal, this.Types._hex,
+      this.Types._octal, this.Types._long
+    ];
+    // If both expected and node are numeric literals, cast + return
+    for (let i = 0; i < expectedType.length; i++) {
+      if (numericTypes.indexOf(type) !== -1 &&
+        numericTypes.indexOf(expectedType[i]) !== -1) {
+        // Need to visit the octal node always
+        if (type.id === '_octal') {
+          return this.leafHelper(
+            expectedType[i],
+            {
+              type: expectedType[i],
+              originalType: type.id,
+              getText: () => ( this.visit(ctx) )
+            }
+          );
+        }
+        const child = this.skipFakeNodesDown(ctx);
+        child.originalType = type;
+        child.type = expectedType[i];
+        return this.leafHelper(expectedType[i], child);
+      }
+    }
+
+    // If the expected type is "numeric", accept the number basic & bson types
+    if (expectedType.indexOf(this.Types._numeric) !== -1 &&
+      (numericTypes.indexOf(type) !== -1 || (type.code === 106 || type.code === 105 || type.code === 104))) {
+      return result;
+    }
+    // If the expected type is any number, accept float/int/_numeric
+    if ((numericTypes.some((t) => ( expectedType.indexOf(t) !== -1))) &&
+      (type.code === 106 || type.code === 105 || type.code === 104 || type === this.Types._numeric)) {
+      return result;
+    }
+
+    return null;
+  }
+
+  /**
+   * Some grammar definitions are written so that comparisons will chain and add
+   * nodes with a single child when the expression does *not* match. This is a
+   * helper method (right now used just by Python) that skips nodes downwards
+   * until a node with multiple children is found.
+   *
+   * @param {ParserRuleContext} ctx
+   * @return {ParserRuleContext}
+   */
+  skipFakeNodesDown(ctx) {
+    return ctx;
+  }
 
   /**
    * Validate each argument against the expected argument types defined in the
@@ -455,6 +546,29 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     return defaultT;
   }
 
+  /**
+   * Helper method for generating literals. Called from the visit methods for
+   * literal nodes.
+   *
+   * @param {Object} setType - the type to set the literal to.
+   * @param {ParserRuleContext} ctx - the tree node.
+   * @return {String}
+   */
+  leafHelper(setType, ctx) {
+    ctx.type = setType;
+    this.requiredImports[ctx.type.code] = true;
+
+    // Pass the original argument type to the template, not the casted type.
+    const parentOriginalType = this.getParentOriginalType(ctx);
+    const type = parentOriginalType === null ? ctx.type : parentOriginalType;
+
+    if (`process${ctx.type.id}` in this) {
+      return this[`process${ctx.type.id}`](ctx);
+    }
+    const children = ctx.getText();
+    return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
+  }
+
   getIndentDepth(ctx) {
     while (ctx.indentDepth === undefined) {
       ctx = ctx.parentCtx;
@@ -466,14 +580,14 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
   }
 
   /**
-   * Selectively visits children of a node. NOTE not currently being used.
+   * Overrides the ANTLR visitChildren method so that options can be set.
    *
    * @param {ParserRuleContext} ctx
    * @param {Object} options:
    *    start - child index to start iterating at.
    *    end - child index to end iterating after.
    *    step - how many children to increment each step, 1 visits all children.
-   *    separator - a string separator to go between children.
+   *    separator - a string separator to go between generated children.
    *    ignore - an array of child indexes to skip.
    *    children - the set of children to visit.
    * @returns {String}

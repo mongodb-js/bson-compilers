@@ -54,6 +54,12 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       this.unimplemented;
   }
 
+  /*
+   *
+   * Visit Methods
+   *
+   */
+
   visitFuncCallExpression(ctx) {
     return this.generateFunctionCall(ctx);
   }
@@ -74,141 +80,46 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.generateArrayLiteral(ctx);
   }
 
-  /* Numerical process methods */
-  processNumber(ctx) {
-    return this.generateNumericClass(ctx);
-  }
-
-  processInt32(ctx) {
-    return this.generateNumericClass(ctx);
-  }
-
-  processDouble(ctx) {
-    return this.generateNumericClass(ctx);
-  }
-
-  getParentOriginalType(ctx) {
-    if (ctx.originalType !== undefined) {
-      return ctx.originalType;
-    }
-    if (ctx.parentCtx) {
-      return this.getParentOriginalType(ctx.parentCtx);
-    }
-    return null;
-  }
-
-  leafHelper(setType, ctx) {
-    ctx.type = setType;
-    this.requiredImports[ctx.type.code] = true;
-
-    // Pass the original argument type to the template, not the casted type.
-    const parentOriginalType = this.getParentOriginalType(ctx);
-    const type = parentOriginalType === null ? ctx.type : parentOriginalType;
-
-    if (`process${ctx.type.id}` in this) {
-      return this[`process${ctx.type.id}`](ctx);
-    }
-    const children = ctx.getText();
-    return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
-  }
-
   visitNullLiteral(ctx) {
     return this.leafHelper(this.Types._null, ctx);
   }
+
   visitUndefinedLiteral(ctx) {
     return this.leafHelper(this.Types._undefined, ctx);
   }
+
   visitBooleanLiteral(ctx) {
     return this.leafHelper(this.Types._bool, ctx);
   }
+
   visitStringLiteral(ctx) {
     return this.leafHelper(this.Types._string, ctx);
   }
+
   visitRegularExpressionLiteral(ctx) {
     return this.leafHelper(this.Types._regex, ctx);
   }
+
   visitIntegerLiteral(ctx) {
     return this.leafHelper(this.Types._long, ctx);
   }
+
   visitDecimalLiteral(ctx) {
     return this.leafHelper(this.Types._decimal, ctx);
   }
+
   visitHexIntegerLiteral(ctx) {
     return this.leafHelper(this.Types._hex, ctx);
   }
+
   visitOctalIntegerLiteral(ctx) {
     return this.leafHelper(this.Types._octal, ctx);
   }
-
-  /**
-   * Convert between numeric types. Required so that we don't end up with
-   * strange conversions like 'Int32(Double(2))', and can just generate '2'.
-   *
-   * @param {Array} expectedType - types to cast to.
-   * @param {antlr4.ParserRuleContext} actualCtx - ctx to cast from, if valid.
-   *
-   * @returns {String} - visited result, or null on error.
-   */
-  castType(expectedType, ctx) {
-    const result = this.visit(ctx);
-    const typedCtx = this.findTypedNode(ctx);
-    const type = typedCtx.type;
-
-    // If the types are exactly the same, just return.
-    if (expectedType.indexOf(type) !== -1 ||
-      expectedType.indexOf(type.id) !== -1) {
-      return result;
-    }
-
-    const numericTypes = [
-      this.Types._integer, this.Types._decimal, this.Types._hex,
-      this.Types._octal, this.Types._long
-    ];
-    // If both expected and node are numeric literals, cast + return
-    for (let i = 0; i < expectedType.length; i++) {
-      if (numericTypes.indexOf(type) !== -1 &&
-          numericTypes.indexOf(expectedType[i]) !== -1) {
-        // Need to visit the octal node always
-        if (type.id === '_octal') {
-          return this.leafHelper(
-            expectedType[i],
-            {
-              type: expectedType[i],
-              originalType: type.id,
-              getText: () => ( this.visit(ctx) )
-            }
-          );
-        }
-        ctx.originalType = type;
-        ctx.type = expectedType[i];
-        return this.leafHelper(expectedType[i], ctx);
-      }
-    }
-
-    // If the expected type is "numeric", accept the number basic & bson types
-    if (expectedType.indexOf(this.Types._numeric) !== -1 &&
-        (numericTypes.indexOf(type) !== -1 || (type.code === 106 || type.code === 105 || type.code === 104))) {
-      return result;
-    }
-    // If the expected type is any number, accept float/int/_numeric
-    if ((numericTypes.some((t) => ( expectedType.indexOf(t) !== -1))) &&
-        (type.code === 106 || type.code === 105 || type.code === 104 || type === this.Types._numeric)) {
-      return result;
-    }
-
-    return null;
-  }
-
 
   visitEmptyStatement() {
     return '\n';
   }
 
-  /**
-   * One terminal child.
-   * @param {ElisionContext} ctx
-   * @return {String}
-   */
   visitElision(ctx) {
     ctx.type = this.Types._undefined;
     if (ctx.type.template) {
@@ -217,22 +128,14 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return 'null';
   }
 
-  /**
-   * Skip new because already included in function calls for constructors
-   *
-   * @param {NewExpressionContext} ctx
-   * @return {String}
-   */
   visitNewExpression(ctx) {
+    // Skip new because already included in function calls for constructors.
     ctx.singleExpression().wasNew = true; // for dates only
     const res = this.visit(ctx.singleExpression());
     ctx.type = this.findTypedNode(ctx.singleExpression()).type;
     return res;
   }
 
-  // //////////
-  // Helpers //
-  // //////////
   visitRelationalExpression(ctx) {
     return ctx.children.map((n) => ( this.visit(n) )).join(' ');
   }
@@ -269,44 +172,23 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.visitChildren(ctx);
   }
 
+  /*
+   *
+   * Process Methods
+   *
+   */
 
-  executeJavascript(input) {
-    const sandbox = {
-      RegExp: RegExp,
-      BSONRegExp: bson.BSONRegExp,
-      // Binary: bson.Binary,
-      DBRef: bson.DBRef,
-      Decimal128: bson.Decimal128,
-      Double: bson.Double,
-      Int32: bson.Int32,
-      Long: bson.Long,
-      Int64: bson.Long,
-      Map: bson.Map,
-      MaxKey: bson.MaxKey,
-      MinKey: bson.MinKey,
-      ObjectID: bson.ObjectID,
-      ObjectId: bson.ObjectID,
-      Symbol: bson.Symbol,
-      Timestamp: bson.Timestamp,
-      Code: function(c, s) {
-        return new bson.Code(c, s);
-      },
-      Date: function(s) {
-        const args = Array.from(arguments);
+  /* Numerical process methods */
+  processNumber(ctx) {
+    return this.generateNumericClass(ctx);
+  }
 
-        if (args.length === 1) {
-          return new Date(s);
-        }
+  processInt32(ctx) {
+    return this.generateNumericClass(ctx);
+  }
 
-        return new Date(Date.UTC(...args));
-      },
-      Buffer: Buffer,
-      __result: {}
-    };
-    const ctx = new Context(sandbox);
-    const res = ctx.evaluate('__result = ' + input);
-    ctx.destroy();
-    return res;
+  processDouble(ctx) {
+    return this.generateNumericClass(ctx);
   }
 
   /**
@@ -604,6 +486,12 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     throw new BsonTranspilersUnimplementedError('Binary type not supported');
   }
 
+  /*
+   *
+   * Helper Methods
+   *
+   */
+
   /**
    * Takes in the constructor name of a node and returns a human-readable
    * node name. Used for error reporting, must be defined by all visitors.
@@ -615,14 +503,60 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return name ? name.replace('_stmt', '') : 'Expression';
   }
 
+  /**
+   * Execute javascript in a sandbox.
+   *
+   * @param {String} input
+   * @return {*} result of execution
+   */
+  executeJavascript(input) {
+    const sandbox = {
+      RegExp: RegExp,
+      BSONRegExp: bson.BSONRegExp,
+      // Binary: bson.Binary,
+      DBRef: bson.DBRef,
+      Decimal128: bson.Decimal128,
+      Double: bson.Double,
+      Int32: bson.Int32,
+      Long: bson.Long,
+      Int64: bson.Long,
+      Map: bson.Map,
+      MaxKey: bson.MaxKey,
+      MinKey: bson.MinKey,
+      ObjectID: bson.ObjectID,
+      ObjectId: bson.ObjectID,
+      Symbol: bson.Symbol,
+      Timestamp: bson.Timestamp,
+      Code: function(c, s) {
+        return new bson.Code(c, s);
+      },
+      Date: function(s) {
+        const args = Array.from(arguments);
+
+        if (args.length === 1) {
+          return new Date(s);
+        }
+
+        return new Date(Date.UTC(...args));
+      },
+      Buffer: Buffer,
+      __result: {}
+    };
+    const ctx = new Context(sandbox);
+    const res = ctx.evaluate('__result = ' + input);
+    ctx.destroy();
+    return res;
+  }
+
   /*
-   * The rest of the functions in the file are accessor functions.
+   * Accessor Functions.
    *
    * These MUST be defined by every visitor. Each function is a wrapper around
    * a tree node. They are required so that the CodeGenerationVisitor and the
    * Generators can access tree elements without needing to know which tree they
    * are visiting or the ANTLR name of the node.
    */
+
   getArguments(ctx) {
     if (!('arguments' in ctx) ||
         !('argumentList' in ctx.arguments()) ||
@@ -631,9 +565,30 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     }
     return ctx.arguments().argumentList().singleExpression();
   }
+
   getArgumentAt(ctx, i) {
     return this.getArguments(ctx)[i];
   }
+
+  getFunctionCallName(ctx) {
+    return ctx.singleExpression();
+  }
+
+  getIfIdentifier(ctx) {
+    if ('identifierName' in ctx) {
+      return ctx.singleExpression();
+    }
+    return ctx;
+  }
+
+  getAttributeLHS(ctx) {
+    return ctx.singleExpression();
+  }
+
+  getAttributeRHS(ctx) {
+    return ctx.identifierName();
+  }
+
   getList(ctx) {
     if (!('elementList' in ctx) || !ctx.elementList()) {
       return [];
@@ -644,54 +599,47 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       return elisions.indexOf(c) !== -1 || elements.indexOf(c) !== -1;
     });
   }
+
   getArray(ctx) {
     if (!('arrayLiteral' in ctx)) {
       return false;
     }
     return ctx.arrayLiteral();
   }
+
   getObject(ctx) {
     if (!('objectLiteral' in ctx)) {
       return false;
     }
     return ctx.objectLiteral();
   }
+
   getKeyValueList(ctx) {
     if ('propertyNameAndValueList' in ctx && ctx.propertyNameAndValueList()) {
       return ctx.propertyNameAndValueList().propertyAssignment();
     }
     return [];
   }
+
   getKeyStr(ctx) {
     return removeQuotes(this.visit(ctx.propertyName()));
   }
+
   getValue(ctx) {
     return ctx.singleExpression();
   }
+
   isSubObject(ctx) {
     return 'propertyName' in ctx.parentCtx.parentCtx;
   }
-  // For a given sub document, get its key.
+
   getParentKeyStr(ctx) {
+    // For a given sub document, get its key.
     return this.getKeyStr(ctx.parentCtx.parentCtx);
   }
+
   getObjectChild(ctx) {
     return ctx.getChild(0);
-  }
-  getFunctionCallName(ctx) {
-    return ctx.singleExpression();
-  }
-  getIfIdentifier(ctx) {
-    if ('identifierName' in ctx) {
-      return ctx.singleExpression();
-    }
-    return ctx;
-  }
-  getAttributeLHS(ctx) {
-    return ctx.singleExpression();
-  }
-  getAttributeRHS(ctx) {
-    return ctx.identifierName();
   }
 };
 

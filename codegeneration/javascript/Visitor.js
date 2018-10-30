@@ -87,63 +87,57 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.generateNumericClass(ctx);
   }
 
-  /**
-   * Child nodes: literal
-   * @param {LiteralExpressionContext} ctx
-   * @return {String}
-   */
-  visitLiteralExpression(ctx) {
-    if (!ctx.type) {
-      ctx.type = this.getPrimitiveType(ctx.literal());
+  getParentOriginalType(ctx) {
+    if (ctx.originalType !== undefined) {
+      return ctx.originalType;
     }
+    if (ctx.parentCtx) {
+      return this.getParentOriginalType(ctx.parentCtx);
+    }
+    return null;
+  }
+
+  leafHelper(setType, ctx) {
+    ctx.type = setType;
     this.requiredImports[ctx.type.code] = true;
+
     // Pass the original argument type to the template, not the casted type.
-    const type = ctx.originalType === undefined ? ctx.type : ctx.originalType;
+    const parentOriginalType = this.getParentOriginalType(ctx);
+    const type = parentOriginalType === null ? ctx.type : parentOriginalType;
+
     if (`process${ctx.type.id}` in this) {
       return this[`process${ctx.type.id}`](ctx);
     }
-    const children = this.visitChildren(ctx);
+    const children = ctx.getText();
     return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
   }
 
-  /**
-   * Get the type of a node. TODO: nicer way to write it?
-   * @param {LiteralContext} ctx
-   * @return {Symbol}
-   */
-  getPrimitiveType(ctx) {
-    if ('NullLiteral' in ctx) {
-      return this.Types._null;
-    }
-    if ('UndefinedLiteral' in ctx) {
-      return this.Types._undefined;
-    }
-    if ('BooleanLiteral' in ctx) {
-      return this.Types._bool;
-    }
-    if ('StringLiteral' in ctx) {
-      return this.Types._string;
-    }
-    if ('RegularExpressionLiteral' in ctx) {
-      return this.Types._regex;
-    }
-    if ('numericLiteral' in ctx) {
-      const number = ctx.numericLiteral();
-      if ('IntegerLiteral' in number) {
-        return this.Types._long;
-      }
-      if ('DecimalLiteral' in number) {
-        return this.Types._decimal;
-      }
-      if ('HexIntegerLiteral' in number) {
-        return this.Types._hex;
-      }
-      if ('OctalIntegerLiteral' in number) {
-        return this.Types._octal;
-      }
-    }
-    // TODO: or raise error?
-    return this.Types._undefined;
+  visitNullLiteral(ctx) {
+    return this.leafHelper(this.Types._null, ctx);
+  }
+  visitUndefinedLiteral(ctx) {
+    return this.leafHelper(this.Types._undefined, ctx);
+  }
+  visitBooleanLiteral(ctx) {
+    return this.leafHelper(this.Types._bool, ctx);
+  }
+  visitStringLiteral(ctx) {
+    return this.leafHelper(this.Types._string, ctx);
+  }
+  visitRegularExpressionLiteral(ctx) {
+    return this.leafHelper(this.Types._regex, ctx);
+  }
+  visitIntegerLiteral(ctx) {
+    return this.leafHelper(this.Types._long, ctx);
+  }
+  visitDecimalLiteral(ctx) {
+    return this.leafHelper(this.Types._decimal, ctx);
+  }
+  visitHexIntegerLiteral(ctx) {
+    return this.leafHelper(this.Types._hex, ctx);
+  }
+  visitOctalIntegerLiteral(ctx) {
+    return this.leafHelper(this.Types._octal, ctx);
   }
 
   /**
@@ -188,13 +182,13 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
           const node = {
             type: expectedType[i],
             originalType: actualCtx.type.id,
-            children: [ actualCtx ]
+            getText: () => ( this.visit(actualCtx) )
           };
-          return this.visitLiteralExpression(node);
+          return this.leafHelper(expectedType[i], node);
         }
         actualCtx.originalType = actualCtx.type;
         actualCtx.type = expectedType[i];
-        return this.visit(originalCtx);
+        return this.leafHelper(expectedType[i], originalCtx);
       }
     }
     return null;
@@ -573,16 +567,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   /**
-   * Binary needs preprocessing because it needs to be executed. Manually check
-   * argument length because 'Buffer' not supported.
-   *
-   * TODO: figure out if it ever makes sense to support Binary.
-   */
-  processBinary() {
-    throw new BsonTranspilersUnimplementedError('Binary type not supported');
-  }
-
-  /**
    * Gets a process method because need to tell the template if
    * the argument is a number or a date.
    *
@@ -599,13 +583,41 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     const args = this.checkArguments(
       lhsType.args, this.getArguments(ctx), lhsType.id
     );
-    const isNumber = this.getArgumentAt(ctx, 0).type.code !== 200;
+    const isNumber = this.findTypedNode(this.getArgumentAt(ctx, 0)).type.code !== 200;
     return this.generateCall(
       ctx, lhsType, [args[0], isNumber], lhsStr, `(${args.join(', ')})`, true
     );
   }
 
-  // Getters
+  /**
+   * Binary needs preprocessing because it needs to be executed. Manually check
+   * argument length because 'Buffer' not supported.
+   *
+   * TODO: figure out if it ever makes sense to support Binary.
+   */
+  processBinary() {
+    throw new BsonTranspilersUnimplementedError('Binary type not supported');
+  }
+
+  /**
+   * Takes in the constructor name of a node and returns a human-readable
+   * node name. Used for error reporting, must be defined by all visitors.
+   *
+   * @param {String} name
+   * @return {String}
+   */
+  renameNode(name) {
+    return name ? name.replace('_stmt', '') : 'Expression';
+  }
+
+  /*
+   * The rest of the functions in the file are accessor functions.
+   *
+   * These MUST be defined by every visitor. Each function is a wrapper around
+   * a tree node. They are required so that the CodeGenerationVisitor and the
+   * Generators can access tree elements without needing to know which tree they
+   * are visiting or the ANTLR name of the node.
+   */
   getArguments(ctx) {
     if (!('arguments' in ctx) ||
         !('argumentList' in ctx.arguments()) ||
@@ -675,16 +687,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
   getAttributeRHS(ctx) {
     return ctx.identifierName();
-  }
-
-  /**
-   * Takes in the constructor name of a node and returns a human-readable
-   * node name. Used for error reporting.
-   * @param {String} name
-   * @return {String}
-   */
-  renameNode(name) {
-    return name ? name.replace('Context', '') : 'Expression';
   }
 };
 

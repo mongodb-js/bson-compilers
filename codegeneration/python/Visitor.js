@@ -143,8 +143,8 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   leafHelper(setType, ctx) {
     ctx.type = setType;
     this.requiredImports[ctx.type.code] = true;
-    // Pass the original argument type to the template, not the casted type.
 
+    // Pass the original argument type to the template, not the casted type.
     const parentOriginalType = this.getParentOriginalType(ctx);
     const type = parentOriginalType === null ? ctx.type : parentOriginalType;
 
@@ -569,7 +569,72 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     }
   }
 
-  // accessors
+  getParentUntil(ctx, name, steps) {
+    steps = steps === undefined ? 0 : steps;
+    let res = ctx;
+    let found = false;
+    const stack = [];
+    while (res !== undefined && res !== null && !found) {
+      if (name in res) {
+        const goal = res[name]();
+        if (goal === stack[stack.length - 1]) {
+          found = true;
+          break;
+        }
+      }
+      stack.push(res);
+      res = res.parentCtx;
+    }
+    return found ? stack[stack.length - 1 - steps] : false;
+  }
+
+  skipFakeNodesDown(ctx, goal) {
+    let res = ctx;
+    while (res.children !== undefined && res.children.length === 1) {
+      res = res.children[0];
+      if (goal && goal in res) {
+        res = res[goal]();
+        break;
+      }
+    }
+    if (res.children === undefined) {
+      return res.parentCtx;
+    }
+    return res;
+  }
+
+  skipFakeNodesUp(ctx, goal) {
+    let res = ctx.parentCtx;
+    while (res !== undefined && res !== null && res.children !== undefined && res.children.length === 1) {
+      if (goal && goal in res) {
+        res = res[goal]();
+        break;
+      }
+      res = res.parentCtx;
+    }
+    return res;
+  }
+
+  /**
+   * Takes in the constructor name of a node and returns a human-readable
+   * node name. Used for error reporting, must be defined by all visitors.
+   *
+   * @param {String} name
+   * @return {String}
+   */
+  renameNode(name) {
+    return name ? name.replace('_stmt', '') : 'Expression';
+  }
+
+  /*
+   * The rest of the functions in the file are accessor functions.
+   *
+   * These MUST be defined by every visitor. Each function is a wrapper around
+   * a tree node. They are required so that the CodeGenerationVisitor and the
+   * Generators can access tree elements without needing to know which tree they
+   * are visiting or the ANTLR name of the node.
+   */
+
   getList(ctx) {
     if (!('testlist_comp' in ctx) || !ctx.testlist_comp()) {
       return [];
@@ -623,49 +688,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   getArgumentAt(ctx, i) {
     return this.getArguments(ctx)[i];
   }
-  getParentUntil(ctx, name, steps) {
-    steps = steps === undefined ? 0 : steps;
-    let res = ctx;
-    let found = false;
-    const stack = [];
-    while (res !== undefined && res !== null && !found) {
-      if (name in res) {
-        const goal = res[name]();
-        if (goal === stack[stack.length - 1]) {
-          found = true;
-          break;
-        }
-      }
-      stack.push(res);
-      res = res.parentCtx;
-    }
-    return found ? stack[stack.length - 1 - steps] : false;
-  }
-  skipFakeNodesDown(ctx, goal) {
-    let res = ctx;
-    while (res.children !== undefined && res.children.length === 1) {
-      res = res.children[0];
-      if (goal && goal in res) {
-        res = res[goal]();
-        break;
-      }
-    }
-    if (res.children === undefined) {
-      return res.parentCtx;
-    }
-    return res;
-  }
-  skipFakeNodesUp(ctx, goal) {
-    let res = ctx.parentCtx;
-    while (res !== undefined && res !== null && res.children !== undefined && res.children.length === 1) {
-      if (goal && goal in res) {
-        res = res[goal]();
-        break;
-      }
-      res = res.parentCtx;
-    }
-    return res;
-  }
   isSubObject(ctx) {
     return this.getParentUntil(ctx.parentCtx, 'dictorsetmaker', 1);
   }
@@ -686,16 +708,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
   getAttributeRHS(ctx) {
     return ctx.dot_trailer().identifier();
-  }
-
-  /**
-   * Takes in the constructor name of a node and returns a human-readable
-   * node name. Used for error reporting.
-   * @param {String} name
-   * @return {String}
-   */
-  renameNode(name) {
-    return name ? name.replace('_stmt', '') : 'Expression';
   }
 
 };

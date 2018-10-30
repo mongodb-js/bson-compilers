@@ -114,7 +114,7 @@ BsonSymbols:
         code: 104
         callable: *constructor
         args:
-            - [ *IntegerType, *StringType ]
+            - [ *NumericType, *StringType ]
         type: *DoubleType
         attr: {}
         template: *DoubleSymbolTemplate

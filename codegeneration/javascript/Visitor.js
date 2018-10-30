@@ -5,7 +5,6 @@ const {
   BsonTranspilersArgumentError,
   BsonTranspilersAttributeError,
   BsonTranspilersRuntimeError,
-  BsonTranspilersTypeError,
   BsonTranspilersReferenceError,
   BsonTranspilersUnimplementedError
 } = require('../../helper/error');
@@ -70,54 +69,8 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return name ? name.replace('Context', '') : 'Expression';
   }
 
-  /**
-   * Child nodes: singleExpression arguments
-   * @param {FuncCallExpressionContext} ctx
-   * @return {String}
-   */
   visitFuncCallExpression(ctx) {
-    const lhs = this.visit(ctx.singleExpression());
-    let lhsType = this.findTypedNode(ctx.singleExpression()).type;
-    if (typeof lhsType === 'string') {
-      lhsType = this.Types[lhsType];
-    }
-
-    // Special case
-    if (`process${lhsType.id}` in this) {
-      return this[`process${lhsType.id}`](ctx);
-    }
-    if (`emit${lhsType.id}` in this) {
-      return this[`emit${lhsType.id}`](ctx);
-    }
-
-    // Check if callable
-    ctx.type = lhsType.type;
-    if (!lhsType.callable) {
-      throw new BsonTranspilersTypeError(`${lhsType.id} is not callable`);
-    }
-
-    // Check arguments
-    const expectedArgs = lhsType.args;
-    let rhs = this.checkArguments(
-      expectedArgs, this.getArguments(ctx), lhsType.id
-    );
-
-    // Apply the arguments template
-    if (lhsType.argsTemplate) {
-      let l = lhs;
-      if ('identifierName' in ctx.singleExpression()) {
-        l = this.visit(ctx.singleExpression().singleExpression());
-      }
-      rhs = lhsType.argsTemplate(l, ...rhs);
-    } else {
-      rhs = `(${rhs.join(', ')})`;
-    }
-    const expr = `${lhs}${rhs}`;
-    const constructor = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR;
-
-    return this.Syntax.new.template
-      ? this.Syntax.new.template(expr, !constructor, lhsType.code)
-      : expr;
+    return this.generateFunctionCall(ctx);
   }
 
   visitIdentifierExpression(ctx) {
@@ -863,6 +816,18 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
   getObjectChild(ctx) {
     return ctx.getChild(0);
+  }
+  getFunctionCallName(ctx) {
+    return ctx.singleExpression();
+  }
+  getFunctionCallIdentifier(ctx) {
+    return ctx.singleExpression();
+  }
+  getIfIdentifier(ctx) {
+    if ('identifierName' in ctx) {
+      return ctx.singleExpression();
+    }
+    return ctx;
   }
 };
 

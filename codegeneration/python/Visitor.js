@@ -3,7 +3,6 @@ const {
   BsonTranspilersArgumentError,
   BsonTranspilersAttributeError,
   BsonTranspilersRuntimeError,
-  BsonTranspilersTypeError,
   BsonTranspilersReferenceError,
   BsonTranspilersInternalError,
   BsonTranspilersUnimplementedError
@@ -67,49 +66,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);
     }
-    const lhs = this.visit(ctx.atom());
-    let lhsType = this.findTypedNode(ctx.atom()).type;
-    if (typeof lhsType === 'string') {
-      lhsType = this.Types[lhsType];
-    }
-
-    // Special case
-    if (`process${lhsType.id}` in this) {
-      return this[`process${lhsType.id}`](ctx);
-    }
-    if (`emit${lhsType.id}` in this) {
-      return this[`emit${lhsType.id}`](ctx);
-    }
-
-    // Check if callable
-    ctx.type = lhsType.type;
-    if (!lhsType.callable) {
-      throw new BsonTranspilersTypeError(`${lhsType.id} is not callable`);
-    }
-
-    // Check arguments
-    const expectedArgs = lhsType.args;
-    let rhs = this.checkArguments(
-      expectedArgs, this.getArguments(ctx), lhsType.id
-    );
-
-    // Apply the arguments template
-    if (lhsType.argsTemplate) {
-      let l = lhs;
-      if ('identifier' in ctx.atom()) {
-        l = this.visit(ctx.atom().identifier());
-      }
-      rhs = lhsType.argsTemplate(l, ...rhs);
-    } else {
-      rhs = `(${rhs.join(', ')})`;
-    }
-
-    const expr = `${lhs}${rhs}`;
-    const constructor = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR;
-
-    return this.Syntax.new.template
-      ? this.Syntax.new.template(expr, !constructor, lhsType.code)
-      : expr;
+    return this.generateFunctionCall(ctx);
   }
 
   visitIdentifier(ctx) {
@@ -842,6 +799,15 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
   getObjectChild(ctx) {
     return this.skipFakeNodesDown(ctx);
+  }
+  getFunctionCallName(ctx) {
+    return ctx.atom();
+  }
+  getIfIdentifier(ctx) {
+    if ('identifier' in ctx) {
+      return ctx.identifier();
+    }
+    return ctx;
   }
 };
 

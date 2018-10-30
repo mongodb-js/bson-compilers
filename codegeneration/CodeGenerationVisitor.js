@@ -1,7 +1,8 @@
 const {
   BsonTranspilersArgumentError,
-  BsonTranspilersUnimplementedError,
-  BsonTranspilersInternalError
+  BsonTranspilersInternalError,
+  BsonTranspilersTypeError,
+  BsonTranspilersUnimplementedError
 } = require('../helper/error');
 
 /**
@@ -188,8 +189,57 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
   }
 
   /**
+   * Generate a function call, diverting to process or emit methods if they
+   * exist.
+   * @param {ParserRuleContext} ctx
+   * @return {String}
+   */
+  generateFunctionCall(ctx) {
+    const funcNameNode = this.getFunctionCallName(ctx);
+    const lhs = this.visit(funcNameNode);
+    let lhsType = this.findTypedNode(funcNameNode).type;
+    if (typeof lhsType === 'string') {
+      lhsType = this.Types[lhsType];
+    }
+
+    // Special case
+    if (`process${lhsType.id}` in this) {
+      return this[`process${lhsType.id}`](ctx);
+    }
+    if (`emit${lhsType.id}` in this) {
+      return this[`emit${lhsType.id}`](ctx);
+    }
+
+    // Check if left-hand-side is callable
+    ctx.type = lhsType.type;
+    if (!lhsType.callable) {
+      throw new BsonTranspilersTypeError(`${lhsType.id} is not callable`);
+    }
+
+    // Check arguments
+    const expectedArgs = lhsType.args;
+    let rhs = this.checkArguments(
+      expectedArgs, this.getArguments(ctx), lhsType.id
+    );
+
+    // Apply the arguments template
+    if (lhsType.argsTemplate) {
+      const l = this.visit(this.getIfIdentifier(funcNameNode));
+      rhs = lhsType.argsTemplate(l, ...rhs);
+    } else {
+      rhs = `(${rhs.join(', ')})`;
+    }
+    const expr = `${lhs}${rhs}`;
+    const constructor = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR;
+
+    return this.Syntax.new.template
+      ? this.Syntax.new.template(expr, !constructor, lhsType.code)
+      : expr;
+  }
+
+  /**
    * This helper function checks for an emit method then applies the templates
-   * if they exist for a function call node.
+   * if they exist for a function call node. Used primarily by process methods.
    *
    * @param {ParserRuleContext} ctx - The function call node
    * @param {Object} lhsType - The type

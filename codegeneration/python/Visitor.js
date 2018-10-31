@@ -452,7 +452,10 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       return [pattern, targetFlags.u];
     }
 
-    const flagsArg = this.skipFakeNodesDown(argList[1]);
+    let flagsArg = argList[1];
+    flagsArg = this.skipFakeNodesDown(this.checkNamedArgs(
+      [this.Types._integer], flagsArg, symbolType.namedArgs
+    )[1]);
     let visited;
     if ('expr' in flagsArg.parentCtx) { // combine bitwise flags
       visited = flagsArg.xor_expr().map(f => this.visit(f));

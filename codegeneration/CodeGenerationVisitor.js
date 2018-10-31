@@ -171,21 +171,7 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     return null;
   }
 
-
-  /**
-   * Convert between numeric types. Required so that we don't end up with
-   * strange conversions like 'Int32(Double(2))', and can just generate '2'.
-   *
-   * @param {Array} expectedType - types to cast to.
-   * @param {ParserRuleContext} ctx - ctx to cast from, if valid.
-   *
-   * @returns {String} - visited result, or null on error.
-   */
-  castType(expectedType, ctx) {
-    const result = this.visit(ctx);
-    const typedCtx = this.findTypedNode(ctx);
-    const type = typedCtx.type;
-
+  compareTypes(expectedType, type, ctx, result) {
     // If the types are exactly the same, just return.
     if (expectedType.indexOf(type) !== -1 ||
       expectedType.indexOf(type.id) !== -1) {
@@ -220,18 +206,42 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
 
     // If the expected type is "numeric", accept the number basic & bson types
     if (expectedType.indexOf(this.Types._numeric) !== -1 &&
-        (numericTypes.indexOf(type) !== -1 || (type.code === 106 ||
-         type.code === 105 || type.code === 104))) {
+      (numericTypes.indexOf(type) !== -1 || (type.code === 106 ||
+        type.code === 105 || type.code === 104))) {
       return result;
     }
     // If the expected type is any number, accept float/int/_numeric
     if ((numericTypes.some((t) => ( expectedType.indexOf(t) !== -1))) &&
       (type.code === 106 || type.code === 105 || type.code === 104 ||
-       type === this.Types._numeric)) {
+        type === this.Types._numeric)) {
       return result;
     }
-
     return null;
+  }
+
+  /**
+   * Convert between numeric types. Required so that we don't end up with
+   * strange conversions like 'Int32(Double(2))', and can just generate '2'.
+   *
+   * @param {Array} expectedType - types to cast to.
+   * @param {ParserRuleContext} ctx - ctx to cast from, if valid.
+   *
+   * @returns {String} - visited result, or null on error.
+   */
+  castType(expectedType, ctx) {
+    const result = this.visit(ctx);
+    const typedCtx = this.findTypedNode(ctx);
+    let type = typedCtx.type;
+
+    let equal = this.compareTypes(expectedType, type, ctx, result);
+    while (equal === null) {
+      if (type.type === null) {
+        return null;
+      }
+      type = type.type;
+      equal = this.compareTypes(expectedType, type, ctx, result);
+    }
+    return equal;
   }
 
   /**

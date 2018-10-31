@@ -153,21 +153,27 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
 
   visitLogicalAndExpression(ctx) {
     if (this.Syntax.and) {
-      return this.Syntax.and.template(ctx.singleExpression().map((t) => (this.visit(t))));
+      return this.Syntax.and.template(
+        ctx.singleExpression().map((t) => (this.visit(t)))
+      );
     }
     return this.visitChildren(ctx);
   }
 
   visitLogicalOrExpression(ctx) {
     if (this.Syntax.or) {
-      return this.Syntax.or.template(ctx.singleExpression().map((t) => ( this.visit(t) )));
+      return this.Syntax.or.template(
+        ctx.singleExpression().map((t) => ( this.visit(t) ))
+      );
     }
     return this.visitChildren(ctx);
   }
 
   visitNotExpression(ctx) {
     if (this.Syntax.not) {
-      return this.Syntax.not.template(this.visit(ctx.singleExpression()));
+      return this.Syntax.not.template(
+        this.visit(ctx.singleExpression())
+      );
     }
     return this.visitChildren(ctx);
   }
@@ -281,7 +287,9 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     } catch (error) {
       throw new BsonTranspilersRuntimeError(error.message);
     }
-    return this.generateCall(ctx, symbolType, [hexstr], 'ObjectId', `(${hexstr})`);
+    return this.generateCall(
+      ctx, symbolType, [hexstr], 'ObjectId', `(${hexstr})`
+    );
   }
 
   /**
@@ -300,7 +308,9 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     } catch (error) {
       throw new BsonTranspilersRuntimeError(error.message);
     }
-    return this.generateCall(ctx, symbolType, [longstr, '_long'], 'Long', `(${longstr})`);
+    return this.generateCall(
+      ctx, symbolType, [longstr, '_long'], 'Long', `(${longstr})`
+    );
   }
 
   processLongfromBits(ctx) {
@@ -336,7 +346,9 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
 
       throw new BsonTranspilersRuntimeError(error.message);
     }
-    return this.generateCall(ctx, symbolType, [decstr], 'Decimal128', `(${decstr})`);
+    return this.generateCall(
+      ctx, symbolType, [decstr], 'Decimal128', `(${decstr})`
+    );
   }
 
   /**
@@ -349,7 +361,9 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     ctx.type = this.Types._string;
     const long = ctx.singleExpression().singleExpression();
     let longstr;
-    this.checkArguments([[this.Types._numeric, null]], this.getArguments(ctx), 'Long toString');
+    this.checkArguments(
+      [[this.Types._numeric, null]], this.getArguments(ctx), 'Long toString'
+    );
 
     try {
       longstr = this.executeJavascript(long.getText()).toString();
@@ -385,7 +399,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
         this.checkArguments(this.Symbols.Date.args, argsList, 'Date');
       } catch (e) {
         throw new BsonTranspilersArgumentError(
-          'Invalid argument to Date: requires either no args, one string or number, or up to 7 numbers'
+          'Invalid argument to Date: requires no args, one string/number, or up to 7 numbers'
         );
       }
 

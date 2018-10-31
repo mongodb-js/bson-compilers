@@ -43,6 +43,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     this.visitAssign_stmt =
     this.visitEllipsesAtom =
     this.visitAugassign =
+    this.visitImag_literal =
       this.unimplemented;
   }
 
@@ -62,7 +63,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   visitIdentifier(ctx) {
     return this.generateIdentifier(ctx);
   }
-
 
   visitAttributeAccess(ctx) {
     if (ctx.getChildCount() === 1) {
@@ -126,7 +126,9 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     let result = this.visitChildren(ctx);
     result = result.replace(/^([rubf]?[rubf]["']|'''|"""|'|")/gi, '');
     result = result.replace(/(["]{3}|["]|[']{3}|['])$/, '');
-    return this.generateLiteral(ctx, ctx.type, [result, type.id], `'${result}'`, true);
+    return this.generateLiteral(
+      ctx, ctx.type, [result, type.id], `'${result}'`, true
+    );
   }
 
   visitInteger_literal(ctx) {
@@ -147,10 +149,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
 
   visitFloat_literal(ctx) {
     return this.leafHelper(this.Types._decimal, ctx);
-  }
-
-  visitImag_literal(ctx) {
-    return this.leafHelper(this.Types._long, ctx); // TODO: imaginary numbers?
   }
 
   visitBoolean_literal(ctx) {
@@ -273,14 +271,16 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       const op = this.visit(e);
       if (op === '==' || op === '!=' || op === 'is' || op === 'isnot') {
         if (this.Syntax.equality) {
-          return `${str}${this.Syntax.equality.template(this.visit(arr[i - 1]), op, '')}`;
+          return `${str}${this.Syntax.equality.template(
+            this.visit(arr[i - 1]), op, '')}`;
         }
         return `${str} === ${this.visit(arr[i - 1])} ${op} `;
       }
       if (op === 'in' || op === 'notin') {
         skip = true;
         if (this.Syntax.in) {
-          return `${str}${this.Syntax.in.template(this.visit(arr[i - 1]), op, this.visit(arr[i + 1]))}`;
+          return `${str}${this.Syntax.in.template(
+            this.visit(arr[i - 1]), op, this.visit(arr[i + 1]))}`;
         }
         return `${str} ${this.visit(arr[i - 1])} ${op} ${this.visit(arr[i + 1])}`;
       }
@@ -351,7 +351,8 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     if (argsList.length !== 0) {
       if (argsList.length < 3) {
         throw new BsonTranspilersArgumentError(
-          `Wrong number of arguments to datetime: needs at at least 3, got ${argsList.length}`
+          `Wrong number of arguments to datetime: needs at at least 3, got ${
+            argsList.length}`
         );
       }
 
@@ -359,7 +360,8 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
         this.checkArguments(symbolType.args, argsList, 'datetime');
       } catch (e) {
         throw new BsonTranspilersArgumentError(
-          `Invalid argument to datetime: requires either no args or up to 7 numbers. ${e.message}`
+          `Invalid argument to datetime: requires no args or up to 7 numbers. ${
+            e.message}`
         );
       }
 
@@ -379,7 +381,8 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
         }
         return v;
       });
-      argvals[1]--; // month is 0-based in node, 1-based in everything else (afaict)
+      /* month is 0-based in node, 1-based in everything else (afaict) */
+      argvals[1]--;
       try {
         date = new Date(Date.UTC(...argvals));
       } catch (e) {
@@ -418,7 +421,10 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     if (ctx === null || ctx === undefined) {
       return;
     }
-    if (('comp_for' in ctx && ctx.comp_for() !== null) || ('comp_if' in ctx && ctx.comp_if() !== null)) {
+    if (
+        ('comp_for' in ctx && ctx.comp_for() !== null) ||
+        ('comp_if' in ctx && ctx.comp_if() !== null)
+    ) {
       throw new BsonTranspilersUnimplementedError(
         'Comprehensions not yet implemented'
       );
@@ -461,7 +467,8 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
 
   skipFakeNodesUp(ctx, goal) {
     let res = ctx.parentCtx;
-    while (res !== undefined && res !== null && res.children !== undefined && res.children.length === 1) {
+    while (res !== undefined && res !== null && res.children !== undefined &&
+           res.children.length === 1) {
       if (goal && goal in res) {
         res = res[goal]();
         break;

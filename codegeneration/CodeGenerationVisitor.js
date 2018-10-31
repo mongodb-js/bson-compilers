@@ -206,12 +206,14 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
 
     // If the expected type is "numeric", accept the number basic & bson types
     if (expectedType.indexOf(this.Types._numeric) !== -1 &&
-      (numericTypes.indexOf(type) !== -1 || (type.code === 106 || type.code === 105 || type.code === 104))) {
+        (numericTypes.indexOf(type) !== -1 || (type.code === 106 ||
+         type.code === 105 || type.code === 104))) {
       return result;
     }
     // If the expected type is any number, accept float/int/_numeric
     if ((numericTypes.some((t) => ( expectedType.indexOf(t) !== -1))) &&
-      (type.code === 106 || type.code === 105 || type.code === 104 || type === this.Types._numeric)) {
+      (type.code === 106 || type.code === 105 || type.code === 104 ||
+       type === this.Types._numeric)) {
       return result;
     }
 
@@ -222,12 +224,13 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
    * Some grammar definitions are written so that comparisons will chain and add
    * nodes with a single child when the expression does *not* match. This is a
    * helper method (right now used just by Python) that skips nodes downwards
-   * until a node with multiple children is found.
+   * until a node with multiple children is found, or a node matches "goal".
    *
    * @param {ParserRuleContext} ctx
+   * @param {String} goal - Optional: the name of the child to find.
    * @return {ParserRuleContext}
    */
-  skipFakeNodesDown(ctx) {
+  skipFakeNodesDown(ctx, goal) { /* eslint no-unused-vars: 0 */
     return ctx;
   }
 
@@ -254,7 +257,8 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     }
     if (args.length > expected.length) {
       throw new BsonTranspilersArgumentError(
-        `Argument count mismatch: '${name}' expects ${expected.length} args and got ${args.length}`
+        `Argument count mismatch: '${name}' expects ${
+          expected.length} args and got ${args.length}`
       );
     }
     for (let i = 0; i < expected.length; i++) {
@@ -273,7 +277,8 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
           return e ? id : '[optional]';
         }).join(', ');
         const message = `Argument type mismatch: '${name}' expects types ${
-          typeStr} but got type ${this.findTypedNode(args[i]).type.id} for argument at index ${i}`;
+          typeStr} but got type ${this.findTypedNode(args[i]).type.id
+        } for argument at index ${i}`;
 
         throw new BsonTranspilersArgumentError(message);
       }
@@ -365,7 +370,7 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
    * It feels better to be strict about BSON than the whole language, but it's
    * up for debate. TODO: could set type checking to 'strict' or 'non-strict' in
    * the visitor, and then only error if we are compiling from a strictly typed
-   * langauge.
+   * language.
    *
    * @param {ParserRuleContext} ctx
    * @return {String}
@@ -425,8 +430,12 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     if (`emit${lhsType.id}` in this) {
       return this[`emit${lhsType.id}`](ctx);
     }
-    const lhsArg = lhsType.template ? lhsType.template() : defaultT;
-    const rhs = lhsType.argsTemplate ? lhsType.argsTemplate(lhsArg, ...args) : defaultA;
+    const lhsArg = lhsType.template
+      ? lhsType.template()
+      : defaultT;
+    const rhs = lhsType.argsTemplate
+      ? lhsType.argsTemplate(lhsArg, ...args)
+      : defaultA;
     const lhs = skipLhs ? '' : lhsArg;
     return this.Syntax.new.template
       ? this.Syntax.new.template(`${lhs}${rhs}`, skipNew, lhsType.code)
@@ -658,7 +667,8 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
       scope = this.visit(this.getArgumentAt(ctx, 1));
       this.idiomatic = idiomatic;
       scopestr = `, ${scope}`;
-      if (this.findTypedNode(this.getArgumentAt(ctx, 1)).type !== this.Types._object) {
+      if (this.findTypedNode(
+          this.getArgumentAt(ctx, 1)).type !== this.Types._object) {
         throw new BsonTranspilersArgumentError(
           'Argument type mismatch: Code requires scope to be an object'
         );
@@ -666,7 +676,9 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
       this.requiredImports[113] = true;
       this.requiredImports[10] = true;
     }
-    return this.generateCall(ctx, symbolType, [code, scope], 'Code', `(${code}${scopestr})`);
+    return this.generateCall(
+      ctx, symbolType, [code, scope], 'Code', `(${code}${scopestr})`
+    );
   }
 
   /**
@@ -687,7 +699,8 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     const args = this.checkArguments(
       lhsType.args, this.getArguments(ctx), lhsType.id
     );
-    const isNumber = this.findTypedNode(this.getArgumentAt(ctx, 0)).type.code !== 200;
+    const isNumber = this.findTypedNode(
+      this.getArgumentAt(ctx, 0)).type.code !== 200;
     return this.generateCall(
       ctx, lhsType, [args[0], isNumber], lhsStr, `(${args.join(', ')})`, true
     );

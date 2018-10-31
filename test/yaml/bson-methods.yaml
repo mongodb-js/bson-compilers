@@ -670,5 +670,21 @@ tests:
           java: Decimal128.parse("5")
           csharp: Decimal128.Parse("5")
           python: Decimal128('5')
+    BSONRegex-utils:
+    - input:
+          python: Regex.from_native(re.compile('^[a-z0-9_-]{3,16}$', re.I | re.M | re.X | re.S | re.L))
+      output:
+          javascript: new BSONRegExp('^[a-z0-9_-]{3,16}$', 'ilmsux')
+          shell: new RegExp('^[a-z0-9_-]{3,16}$', 'ilmsux')
+          java: new BsonRegularExpression("^[a-z0-9_-]{3,16}$", "ilmsux")
+          csharp: new BsonRegularExpression("^[a-z0-9_-]{3,16}$", "imsx")
+    - input:
+          python: Regex.from_native(re.compile('^[a-z0-9_-]{3,16}$', re.I | re.M | re.X | re.S | re.L | re.A))
+      output:
+          javascript: new BSONRegExp('^[a-z0-9_-]{3,16}$', 'ilmsx')
+          shell: new RegExp('^[a-z0-9_-]{3,16}$', 'ilmsx')
+          java: new BsonRegularExpression("^[a-z0-9_-]{3,16}$", "ilmsx")
+          csharp: new BsonRegularExpression("^[a-z0-9_-]{3,16}$", "imsx")
+
 
 

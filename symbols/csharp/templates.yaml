@@ -305,11 +305,11 @@ Templates:
         () => {
             return '';
         }
-    LongToStringTemplate: &LongToStringTemplate !!js/function > # Also has emit method
+    LongToStringTemplate: &LongToStringTemplate !!js/function >
         (lhs) => {
             return lhs;
         }
-    LongToStringArgsTemplate: &LongToStringArgsTemplate null # Also has emit method
+    LongToStringArgsTemplate: &LongToStringArgsTemplate null
     LongToNumberTemplate: &LongToNumberTemplate !!js/function >
         (lhs) => {
             return `(double) ${lhs}`;
@@ -794,19 +794,19 @@ Templates:
           }
           return `(${arg1}, 10)`
         }
-    MinKeySymbolTemplate: &MinKeySymbolTemplate !!js/function > # Also has emit method
+    MinKeySymbolTemplate: &MinKeySymbolTemplate !!js/function >
         () => {
             return 'BsonMinKey';
         }
-    MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate !!js/function > # Also has emit method
+    MinKeySymbolArgsTemplate: &MinKeySymbolArgsTemplate !!js/function >
         () => {
             return '.Value';
         }
-    MaxKeySymbolTemplate: &MaxKeySymbolTemplate !!js/function > # Also has emit method
+    MaxKeySymbolTemplate: &MaxKeySymbolTemplate !!js/function >
         () => {
             return 'BsonMaxKey';
         }
-    MaxKeySymbolArgsTemplate: &MaxKeySymbolArgsTemplate !!js/function > # Also has emit method
+    MaxKeySymbolArgsTemplate: &MaxKeySymbolArgsTemplate !!js/function >
         () => {
             return '.Value';
         }
@@ -835,7 +835,16 @@ Templates:
         }
     BSONRegExpSymbolArgsTemplate: &BSONRegExpSymbolArgsTemplate !!js/function >
         (lhs, pattern, flags) => {
-            return `(${pattern}${flags ? ', ' + flags : ''})`;
+            const doubleStringify = (str) => {
+                let newStr = str;
+                if (
+                  (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
+                  (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"')) {
+                    newStr = str.substr(1, str.length - 2);
+                }
+                return `"${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}"`;
+            }
+            return `(${doubleStringify(pattern)}${flags ? ', ' + doubleStringify(flags) : ''})`;
         }
     Decimal128SymbolTemplate: &Decimal128SymbolTemplate !!js/function >
         () => {
@@ -870,7 +879,7 @@ Templates:
             return `new ${lhs}`;
         }
     ObjectIdCreateFromHexStringArgsTemplate: &ObjectIdCreateFromHexStringArgsTemplate null
-    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function > # Also has emit method
+    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function >
         () => {
             return `new ObjectId.GenerateNewId`;
         }

@@ -1,4 +1,5 @@
 /* eslint camelcase: 0 complexity: 0*/
+const Context = require('context-eval');
 const {
   BsonTranspilersArgumentError,
   BsonTranspilersRuntimeError,
@@ -313,30 +314,96 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.generateNumericClass(ctx);
   }
 
+  executeJavascript(input) {
+    const sandbox = {
+      RegExp: RegExp
+    };
+    const ctx = new Context(sandbox);
+    const res = ctx.evaluate('__result = ' + input);
+    ctx.destroy();
+    return res;
+  }
 
-  // TODO: translate flags
-  // process_regex(ctx) { // eslint-disable-line camelcase
-  //   ctx.type = this.Types._regex;
-  //   let pattern;
-  //   let flags;
-  // }
-  // processcompile(ctx) {
-  //   return this.process_regex(ctx);
-  // }
-  /**
-   * Process BSON regexps because we need to verify the flags are valid.
-   *
-   * @param {FuncCallExpressionContext} ctx
-   * @return {string}
-   */
+  findPatternAndFlags(ctx, pythonFlags, targetFlags) {
+    let pattern;
+
+    const symbolType = this.Symbols.re.attr.compile;
+    const argList = this.getArguments(ctx);
+    const args = this.checkArguments(symbolType.args, argList, symbolType.id);
+
+    // Compile regex without flags
+    const raw = this.getArgumentAt(ctx, 0).getText();
+    let str = raw.replace(/^([rubf]?[rubf]["']|'''|"""|'|")/gi, '');
+    str = str.replace(/(["]{3}|["]|[']{3}|['])$/, '');
+    try {
+      const regexobj = this.executeJavascript(`new RegExp(${raw.substr(-1)}${str}${raw.substr(-1)})`);
+      pattern = regexobj.source;
+    } catch (error) {
+      throw new BsonTranspilersRuntimeError(error.message);
+    }
+
+    // Convert flags
+    if (args.length === 1) {
+      return [pattern, targetFlags.u];
+    }
+
+    const flagsArg = this.skipFakeNodesDown(argList[1]);
+    let visited;
+    if ('expr' in flagsArg.parentCtx) { // combine bitwise flags
+      visited = flagsArg.xor_expr().map(f => this.visit(f));
+    } else {
+      visited = [this.visit(flagsArg)];
+    }
+
+    const translated = visited
+      .map(f => pythonFlags[f])
+      .filter(f => f !== undefined);
+
+    if (visited.indexOf('256') === -1) { // default is unicode without re.A
+      translated.push('u');
+    }
+
+    const target = translated
+      .map(m => targetFlags[m])
+      .filter(f => f !== undefined);
+
+    const flags = target.sort().join('');
+    return [pattern, flags];
+  }
+
+  processfrom_native(ctx) {
+    ctx.type = this.Types.BSONRegExp;
+    const symbolType = this.Symbols.Regex;
+
+    const argList = this.getArguments(ctx);
+    if (argList.length !== 1) {
+      throw new BsonTranspilersArgumentError('RegExp.from_native requires one argument');
+    }
+    const pythonFlags = {
+      256: '', 2: 'i', 128: '', 4: 'l', 8: 'm', 16: 's', 64: 'x'
+    };
+    const native = this.skipFakeNodesDown(this.getArgumentAt(ctx, 0));
+    const args = this.findPatternAndFlags(native, pythonFlags, this.Syntax.bsonRegexFlags);
+
+    return this.generateCall(
+      ctx, symbolType, args, 'Regex',
+      `(${args[0]}${args[1] ? ', ' + args[1] : ''})`
+    );
+  }
+
+  processcompile(ctx) {
+    ctx.type = this.Types._regex;
+    const pythonFlags = {
+      256: '', 2: 'i', 128: '', 4: '', 8: 'm', 16: '', 64: ''
+    };
+    const args = this.findPatternAndFlags(ctx, pythonFlags, this.Syntax.regexFlags);
+    return this.generateLiteral(ctx, ctx.type, args, 'RegExp');
+  }
+
   processRegex(ctx) {
     return this.generateBSONRegex(ctx, this.Types.Regex, this.Symbols.Regex);
   }
-  /**
-   *
-   * @param {ParserContext} ctx
-   * @return {String}
-   */
+
   processCode(ctx) {
     return this.generateBSONCode(ctx, this.Types.Code, this.Symbols.Code, true);
   }

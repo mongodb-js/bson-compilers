@@ -134,13 +134,21 @@ tests:
           shell: RegExp
     - input:
           javascript: RegExp
-          # TODO: python
+          python: re.compile
       output:
-          javascript: ''
+          javascript: RegExp
           python: re
           java: Pattern
           csharp: Regex
           shell: RegExp
+    - input:
+          python: re
+      output:
+          javascript: ''
+          python: ''
+          java: ''
+          csharp: ''
+          shell: ''
     - input:
           javascript: Date
           python: datetime

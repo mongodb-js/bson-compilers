@@ -99,7 +99,7 @@ BsonSymbols:
                 id: "from_native"
                 args:
                 - [ *RegexType ]
-                type: *ObjectIdType
+                type: *BSONRegExpType
                 template: null
                 argsTemplate: null
         template: *BSONRegExpSymbolTemplate
@@ -152,17 +152,120 @@ NativeSymbols:
                 argsTemplate: *DateSymbolNowArgsTemplate
         template: *DateSymbolTemplate
         argsTemplate: *DateSymbolArgsTemplate
-    compile: # Needs process method
-        id: "RegExp"
+    re:
+        id: "re"
         code: 8
-        callable: *constructor
-        args:
-            - [ *StringType ]
-            - [ *IntegerType, null ]
-        type: *RegexType
-        attr: {}
-        template: *RegExpSymbolTemplate
-        argsTemplate: *RegExpSymbolArgsTemplate
+        callable: *var
+        args: null
+        type: null
+        attr:
+            compile:
+                id: "compile"
+                code: 8
+                callable: *constructor
+                args:
+                - [ *StringType ]
+                - [ *IntegerType, null ]
+                type: *RegexType
+                attr: {}
+                template: *RegExpSymbolTemplate
+                argsTemplate: *RegExpSymbolArgsTemplate
+            A:
+                <<: *__type
+                type: *IntegerType
+                template: !!js/function >
+                    () => {
+                        return '256';
+                    }
+            ASCII:
+                <<: *__type
+                type: *IntegerType
+                template: !!js/function >
+                    () => {
+                        return '256';
+                    }
+            I:
+                <<: *__type
+                type: *IntegerType
+                template: !!js/function >
+                    () => {
+                        return '2';
+                    }
+            IGNORECASE:
+                <<: *__type
+                type: *IntegerType
+                template: !!js/function >
+                    () => {
+                        return '2';
+                    }
+            DEBUG:
+                <<: *__type
+                type: *IntegerType
+                template: !!js/function >
+                    () => {
+                        return '128';
+                    }
+            L:
+                <<: *__type
+                type: *IntegerType
+                template: !!js/function >
+                    () => {
+                        return '4';
+                    }
+            LOCAL:
+                <<: *__type
+                type: *IntegerType
+                template: !!js/function >
+                    () => {
+                        return '4';
+                    }
+            M:
+                <<: *__type
+                type: *IntegerType
+                template: !!js/function >
+                    () => {
+                        return '8';
+                    }
+            MULTILINE:
+                <<: *__type
+                type: *IntegerType
+                template: !!js/function >
+                    () => {
+                        return '8';
+                    }
+            S:
+                <<: *__type
+                type: *IntegerType
+                template: !!js/function >
+                    () => {
+                        return '16';
+                    }
+            DOTALL:
+                <<: *__type
+                type: *IntegerType
+                template: !!js/function >
+                    () => {
+                        return '16';
+                    }
+            X:
+                <<: *__type
+                type: *IntegerType
+                template: !!js/function >
+                    () => {
+                        return '64';
+                    }
+            VERBOSE:
+                <<: *__type
+                type: *IntegerType
+                template: !!js/function >
+                    () => {
+                        return '64';
+                    }
+        template: !!js/function >
+            () => {
+                return '';
+            }
+        argsTemplate: null
     float:
         id: "float"
         code: 104

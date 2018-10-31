@@ -296,7 +296,7 @@ Templates:
         (lhs, arg) => {
             return ` ${arg}`;
         }
-    LongToStringTemplate: &LongToStringTemplate !!js/function > # Also has emit method
+    LongToStringTemplate: &LongToStringTemplate !!js/function >
         (lhs) => {
             return lhs;
         }
@@ -803,7 +803,16 @@ Templates:
         }
     BSONRegExpSymbolArgsTemplate: &BSONRegExpSymbolArgsTemplate !!js/function >
         (lhs, pattern, flags) => {
-            return `(${pattern}${flags ? ', ' + flags : ''})`;
+            const doubleStringify = (str) => {
+                let newStr = str;
+                if (
+                  (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
+                  (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"')) {
+                    newStr = str.substr(1, str.length - 2);
+                }
+                return `"${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}"`;
+            }
+            return `(${doubleStringify(pattern)}${flags ? ', ' + doubleStringify(flags) : ''})`;
         }
     Decimal128SymbolTemplate: &Decimal128SymbolTemplate !!js/function >
         () => {
@@ -835,7 +844,7 @@ Templates:
         (lhs, arg) => {
             return `(${arg})`;
         }
-    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function > # Also has emit method
+    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function >
         () => {
             return 'new ObjectId';
         }
@@ -903,12 +912,11 @@ Templates:
             return 'java.util.Date';
         }
     DateSymbolNowArgsTemplate: &DateSymbolNowArgsTemplate null
-    RegExpSymbolTemplate: &RegExpSymbolTemplate !!js/function > # Also has emit method
+    RegExpSymbolTemplate: &RegExpSymbolTemplate !!js/function >
         () => {
             return 'Pattern';
         }
     RegExpSymbolArgsTemplate: &RegExpSymbolArgsTemplate null
-    #!!js/function >\n        () => {\n            return '';\n        }
     ImportTemplate: &ImportTemplate null
     0ImportTemplate: &0ImportTemplate null
     1ImportTemplate: &1ImportTemplate null

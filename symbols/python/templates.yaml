@@ -292,7 +292,7 @@ Templates:
         () => {
             return '';
         }
-    LongToStringTemplate: &LongToStringTemplate !!js/function > # Also has emit method
+    LongToStringTemplate: &LongToStringTemplate !!js/function >
         () => {
             return 'str';
         }
@@ -795,7 +795,16 @@ Templates:
         }
     BSONRegExpSymbolArgsTemplate: &BSONRegExpSymbolArgsTemplate !!js/function >
         (lhs, pattern, flags) => {
-            return `(${pattern}${flags ? ', ' + flags : ''})`;
+            const singleStringify = (str) => {
+                let newStr = str;
+                if (
+                  (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
+                  (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"')) {
+                    newStr = str.substr(1, str.length - 2);
+                }
+                return `'${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}'`;
+            }
+            return `(${singleStringify(pattern)}${flags ? ', ' + singleStringify(flags) : ''})`;
         }
     Decimal128SymbolTemplate: &Decimal128SymbolTemplate !!js/function >
         () => {
@@ -836,7 +845,7 @@ Templates:
         (lhs, arg) => {
             return `(${arg})`;
         }
-    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function > # Also has emit method
+    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function >
         () => {
             return `ObjectId.from_datetime`;
         }
@@ -940,7 +949,10 @@ Templates:
     5ImportTemplate: &5ImportTemplate null
     6ImportTemplate: &6ImportTemplate null
     7ImportTemplate: &7ImportTemplate null
-    8ImportTemplate: &8ImportTemplate null
+    8ImportTemplate: &8ImportTemplate !!js/function >
+        () => {
+            return 'import re';
+        }
     9ImportTemplate: &9ImportTemplate null
     10ImportTemplate: &10ImportTemplate null
     11ImportTemplate: &11ImportTemplate null

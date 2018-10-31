@@ -178,6 +178,7 @@ tests:
       input:
           shell: "{x: RegExp('abc')}"
           javascript: "{x: RegExp('abc')}"
+          python: "{'x': re.compile('abc')}"
       output:
           java: |-
               import java.util.regex.Pattern;
@@ -186,7 +187,7 @@ tests:
               using MongoDB.Bson;
               using MongoDB.Driver;
               using System.Text.RegularExpressions;
-          python: ''
+          python: import re
           javascript: ''
     - description: Single import BSONRegExp
       input:
@@ -212,7 +213,7 @@ tests:
               using MongoDB.Bson;
               using MongoDB.Driver;
               using System.Text.RegularExpressions;
-          python: ''
+          python: import re
           javascript: ''
     - description: Single import Timestamp
       input:
@@ -347,6 +348,7 @@ tests:
               using System.Text.RegularExpressions;
               using System;
           python: |-
+              import re
               from datetime import datetime, tzinfo
               from bson import Code, ObjectId, DBRef, Int64, MinKey, MaxKey, Timestamp, Decimal128
           javascript: |-

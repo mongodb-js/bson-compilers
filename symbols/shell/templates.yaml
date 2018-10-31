@@ -719,7 +719,20 @@ Templates:
         () => {
             return 'RegExp';
         }
-    BSONRegExpSymbolArgsTemplate: &BSONRegExpSymbolArgsTemplate null
+    BSONRegExpSymbolArgsTemplate: &BSONRegExpSymbolArgsTemplate !!js/function >
+        (lhs, pattern, flags) => {
+            const singleStringify = (str) => {
+                let newStr = str;
+                if (
+                  (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') ||
+                  (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"')) {
+                    newStr = str.substr(1, str.length - 2);
+                }
+                return `'${newStr.replace(/\\([\s\S])|(")/g, '\\$1$2')}'`;
+            }
+
+            return `(${singleStringify(pattern)}${flags ? ', ' + singleStringify(flags) : ''})`;
+        }
     Decimal128SymbolTemplate: &Decimal128SymbolTemplate !!js/function >
         () => {
             return 'NumberDecimal';
@@ -744,7 +757,7 @@ Templates:
         (lhs, arg) => {
             return `(${arg})`;
         }
-    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function > # Also has an emit method
+    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function >
         () => {
             return `ObjectId.fromDate`;
         }
@@ -780,7 +793,10 @@ Templates:
             return 'Date.now';
         }
     DateSymbolNowArgsTemplate: &DateSymbolNowArgsTemplate null
-    RegExpSymbolTemplate: &RegExpSymbolTemplate null
+    RegExpSymbolTemplate: &RegExpSymbolTemplate !!js/function >
+        () => {
+            return 'RegExp';
+        }
     RegExpSymbolArgsTemplate: &RegExpSymbolArgsTemplate null
     ImportTemplate: &ImportTemplate null
     0ImportTemplate: &0ImportTemplate null

@@ -832,7 +832,7 @@ tests:
       input:
           javascript: "RegExp('')"
           shell: "RegExp('')"
-          # python:
+          python: "re.compile('', re.A)"
       output:
           javascript: "new RegExp('(?:)')"
           shell: "new RegExp('(?:)')"
@@ -843,7 +843,7 @@ tests:
       input:
           javascript: "new RegExp('abc')"
           shell: "new RegExp('abc')"
-          # python:
+          python: "re.compile('abc', re.A)"
       output:
           javascript: "new RegExp('abc')"
           python: "re.compile(r\"abc\")"
@@ -854,7 +854,7 @@ tests:
       input:
           javascript: "new RegExp('ab+c', 'im')"
           shell: "new RegExp('ab+c', 'im')"
-          # python:
+          python: "re.compile('ab+c', re.I | re.M | re.A)"
       output:
           javascript: "new RegExp('ab+c', 'im')"
           python: "re.compile(r\"ab+c(?im)\")"
@@ -865,7 +865,6 @@ tests:
       input:
           javascript: "new RegExp('ab+c', 'ig')"
           shell: "new RegExp('ab+c', 'ig')"
-          # python:
       output:
           javascript: "new RegExp('ab+c', 'gi')"
           python: "re.compile(r\"ab+c(?is)\")"
@@ -876,7 +875,7 @@ tests:
       input:
           javascript: "new RegExp('ab/cd')"
           shell: "new RegExp('ab/cd')"
-          # python:
+          python: "re.compile('ab/cd', re.A)"
       output:
           javascript: "new RegExp('ab\\/cd')"
           python: "re.compile(r\"ab\\/cd\")"
@@ -886,8 +885,8 @@ tests:
     - description: "regex object with escaped double quote"
       input:
           javascript: "new RegExp('ab\\\"ab')"
-          shell: "new RegExp('ab\"ab')"
-          # python:
+          shell: "new RegExp('ab\\\"ab')"
+          python: "re.compile('ab\\\"ab', re.A)"
       output:
           javascript: "new RegExp('ab\"ab')"
           python: "re.compile(r\"ab\\\"ab\")"
@@ -898,7 +897,7 @@ tests:
       input:
           javascript: "new RegExp('ab\"ab')"
           shell: "new RegExp('ab\"ab')"
-          # python:
+          python: "re.compile('ab\"ab', re.A)"
       output:
           javascript: "new RegExp('ab\"ab')"
           python: "re.compile(r\"ab\\\"ab\")"
@@ -909,7 +908,7 @@ tests:
       input:
           javascript: "new RegExp('ab\\'ab')"
           shell: "new RegExp('ab\\'ab')"
-          # python:
+          python: "re.compile('ab\\'ab', re.A)"
       output:
           javascript: "new RegExp('ab\\'ab')"
           python: "re.compile(r\"ab'ab\")"
@@ -920,7 +919,7 @@ tests:
       input:
           javascript: "new RegExp(\"ab'ab\")"
           shell: "new RegExp(\"ab'ab\")"
-          # python:
+          python: "re.compile(\"ab'ab\", re.A)"
       output:
           javascript: "new RegExp('ab\\'ab')"
           shell: "new RegExp('ab\\'ab')"
@@ -931,7 +930,7 @@ tests:
       input:
           javascript: "new RegExp(\"\\\\n\")"
           shell: "new RegExp(\"\\\\n\")"
-          # python:
+          python: "re.compile('\\\\n', re.A)"
       output:
           javascript: "new RegExp('\\n')"
           shell: "new RegExp('\\n')"
@@ -942,7 +941,6 @@ tests:
       input:
           javascript: "/ab+c/ig"
           shell: "/ab+c/ig"
-          # python:
       output:
           javascript: "new RegExp('ab+c', 'gi')"
           python: "re.compile(r\"ab+c(?is)\")"
@@ -953,10 +951,20 @@ tests:
       input:
           javascript: "new RegExp(/ab+c/, 'i')"
           shell: "new RegExp(/ab+c/, 'i')"
-          # python:
+          python: "re.compile(r'ab+c', re.I | re.A)"
       output:
           javascript: "new RegExp('ab+c', 'i')"
           python: "re.compile(r\"ab+c(?i)\")"
           java: "Pattern.compile(\"ab+c(?i)\")"
           csharp: "new Regex(\"(?i)ab+c\")"
           shell: "new RegExp('ab+c', 'i')"
+    - description: "python regex without ascii flag defaults to unicode"
+      input:
+          python: "re.compile('ab+c')"
+      output:
+          javascript: "new RegExp('ab+c', 'u')"
+          python: "re.compile(r\"ab+c(?u)\")"
+          java: "Pattern.compile(\"ab+c(?u)\")"
+          csharp: "new Regex(\"ab+c\")"
+          shell: "new RegExp('ab+c', 'u')"
+

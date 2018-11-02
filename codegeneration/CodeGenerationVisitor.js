@@ -411,7 +411,7 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     }
     while (type !== null) {
       if (!(type.attr.hasOwnProperty(rhs))) {
-        if (type.id in this.BsonTypes && this.BsonTypes[type.id].id !== null) {
+        if (type.id in this.BsonTypes && this.BsonTypes[type.id].id !== null) { // TODO: tell symbols vs types
           throw new BsonTranspilersAttributeError(
             `'${rhs}' not an attribute of ${type.id}`
           );
@@ -427,6 +427,9 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     if (type === null) {
       ctx.type = this.Types._undefined;
       // TODO: how strict do we want to be?
+      if (this.object) {
+        return lhs[rhs];
+      }
       return `${lhs}.${rhs}`;
     }
     ctx.type = type.attr[rhs];

@@ -22,6 +22,7 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     super();
     this.idiomatic = true; // PUBLIC
     this.requiredImports = {};
+    this.object = false;
   }
 
   /**
@@ -42,7 +43,11 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     [300, 301, 302, 303, 304, 305, 306].forEach(
       (i) => (this.requiredImports[i] = [])
     );
-    return this[rule](ctx).trim();
+    const result = this[rule](ctx);
+    if (this.object) {
+      return result;
+    }
+    return result.trim();
   }
 
   /**
@@ -340,9 +345,9 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
       const l = this.visit(this.getIfIdentifier(funcNameNode));
       rhs = lhsType.argsTemplate(l, ...rhs);
     } else {
-      rhs = `(${rhs.join(', ')})`;
+      rhs = this.object ? rhs : `(${rhs.join(', ')})`;
     }
-    const expr = `${lhs}${rhs}`;
+    const expr = this.object ? lhs(...rhs) : `${lhs}${rhs}`;
     const constructor = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR;
 
     return this.Syntax.new.template
@@ -358,6 +363,9 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
    * @return {String}
    */
   generateIdentifier(ctx) {
+    if ('emitIdentifier' in this) {
+      return this.emitIdentifier(ctx);
+    }
     const name = this.visitChildren(ctx);
     ctx.type = this.Symbols[name];
     if (ctx.type === undefined) {
@@ -390,6 +398,9 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
    * @return {String}
    */
   generateAttributeAccess(ctx) {
+    if ('emitAttributeAccess' in this) {
+      return this.emitAttributeAccess(ctx);
+    }
     const lhsNode = this.getAttributeLHS(ctx);
     const lhs = this.visit(lhsNode);
     const rhs = this.getAttributeRHS(ctx).getText();
@@ -423,6 +434,9 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
       return type.attr[rhs].template(lhs, rhs);
     }
 
+    if (this.object) {
+      return lhs[rhs];
+    }
     return `${lhs}.${rhs}`;
   }
 
@@ -460,8 +474,12 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     if (this.idiomatic && 'emitIdiomaticObjectLiteral' in this) {
       return this.emitIdiomaticObjectLiteral(ctx);
     }
+    const type = this.Types._object;
+    if (`emit${type.id}` in this) {
+      return this[`emit${type.id}`](ctx);
+    }
+    ctx.type = type;
     this.requiredImports[10] = true;
-    ctx.type = this.Types._object;
     ctx.indentDepth = this.findIndentDepth(ctx) + 1;
     let args = '';
     const keysAndValues = this.getKeyValueList(ctx);
@@ -482,7 +500,11 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
   }
 
   generateArrayLiteral(ctx) {
-    ctx.type = this.Types._array;
+    const type = this.Types._array;
+    if (`emit${type.id}` in this) {
+      return this[`emit${type.id}`](ctx);
+    }
+    ctx.type = type;
     ctx.indentDepth = this.findIndentDepth(ctx) + 1;
     this.requiredImports[9] = true;
     let args = '';
@@ -522,6 +544,9 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
       lhsType = this.Types[lhsType];
     }
     ctx.type = lhsType.type;
+    if (`emit${lhsType.id}` in this) {
+      this[`emit${lhsType.id}`](ctx);
+    }
 
     // Get the original type of the argument
     const expectedArgs = lhsType.args;
@@ -589,6 +614,9 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     if (`process${ctx.type.id}` in this) {
       return this[`process${ctx.type.id}`](ctx);
     }
+    if (`emit${ctx.type.id}` in this) {
+      return this[`emit${ctx.type.id}`](ctx);
+    }
     const children = ctx.getText();
     return this.generateLiteral(ctx, ctx.type, [children, type.id], children, true);
   }
@@ -612,6 +640,9 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
    * @return {String}
    */
   generateBSONRegex(ctx, type, symbolType) {
+    if (`emit${type.id}` in this) {
+      return this[`emit${type.id}`](ctx);
+    }
     ctx.type = type;
 
     const args = this.checkArguments(
@@ -653,6 +684,9 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
    * @return {String}
    */
   generateBSONCode(ctx, type, symbolType, requireString) {
+    if (`emit${type.id}` in this) {
+      return this[`emit${type.id}`](ctx);
+    }
     ctx.type = type;
     const argList = this.getArguments(ctx);
     if (!(argList.length === 1 || argList.length === 2)) {

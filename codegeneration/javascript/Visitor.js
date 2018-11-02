@@ -117,6 +117,9 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   visitEmptyStatement() {
+    if ('emitEmptyStatement' in this) {
+      return this.emitEmptyStatement();
+    }
     return '\n';
   }
 
@@ -271,14 +274,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   processObjectId(ctx) {
     ctx.type = this.Types.ObjectId;
     const symbolType = this.Symbols.ObjectId;
-    const lhs = symbolType.template ? symbolType.template() : 'ObjectId';
     const argsList = this.getArguments(ctx);
-
-    if (argsList.length === 0) {
-      return this.Syntax.new.template
-        ? this.Syntax.new.template(`${lhs}()`, false, ctx.type.code)
-        : `${lhs}()`;
-    }
 
     this.checkArguments(symbolType.args, argsList, 'ObjectId');
     let hexstr;
@@ -287,8 +283,10 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     } catch (error) {
       throw new BsonTranspilersRuntimeError(error.message);
     }
+    const args = argsList.length === 0 ? [] : [hexstr];
+
     return this.generateCall(
-      ctx, symbolType, [hexstr], 'ObjectId', `(${hexstr})`
+      ctx, symbolType, args, 'ObjectId', `(${hexstr})`
     );
   }
 

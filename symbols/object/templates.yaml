@@ -44,13 +44,49 @@ Templates:
     #                                           #
     #############################################
 
-    EqualitySyntaxTemplate: &EqualitySyntaxTemplate null # Args: lhs, operation, rhs
-    InSyntaxTemplate: &InSyntaxTemplate null # Args: lhs, operation, rhs
-    AndSyntaxTemplate: &AndSyntaxTemplate null # Args: items to compare as an array
-    OrSyntaxTemplate: &OrSyntaxTemplate  null # Args: items to compare as an array
-    NotSyntaxTemplate: &NotSyntaxTemplate null # Args: item to negate
-    EosTemplate: &EosSyntaxTemplate null # No args. End-of-line
-    EofTemplate: &EofSyntaxTemplate null # No args. End-of-file
+    EqualitySyntaxTemplate: &EqualitySyntaxTemplate !!js/function >
+        (lhs, op, rhs) => {
+            if (op.includes('!')) {
+                return lhs !== rhs;
+            }
+            else {
+                return lhs !== rhs;
+            }
+        }
+    InSyntaxTemplate: &InSyntaxTemplate !!js/function >
+        (lhs, op, rhs) => {
+            if (op.includes('!') || op.includes('not')) {
+                if (typeof rhs === 'array') {
+                    return rhs.indexOf(lhs) === -1;
+                }
+                return !(lhs in rhs);
+            }
+            if (typeof rhs === 'array') {
+                return rhs.indexOf(lhs) !== -1;
+            }
+            return lhs in rhs;
+        }
+
+    AndSyntaxTemplate: &AndSyntaxTemplate !!js/function >
+        (args) => {
+            return args.every((k) => k);
+        }
+    OrSyntaxTemplate: &OrSyntaxTemplate !!js/function >
+        (args) => {
+            return args.some((k) => k);
+        }
+    NotSyntaxTemplate: &NotSyntaxTemplate !!js/function >
+        (arg) => {
+            return !arg;
+        }
+    EosTemplate: &EosSyntaxTemplate !!js/function >
+        () => {
+            return 'a unique thing';
+        }
+    EofTemplate: &EofSyntaxTemplate !!js/function >
+        () => {
+            return 'a unique thing';
+        }
     FloorDivTemplate: &FloorDivSyntaxTemplate null # Args: lhs, rhs
     PowerTemplate: &PowerSyntaxTemplate null # Args: lhs, rhs
     NewTemplate: &NewSyntaxTemplate null # Args: expression, skip?, code# [to check if meant to be skipped]
@@ -62,22 +98,67 @@ Templates:
     # get passed the literal itself as an arg.  #
     #                                           #
     #############################################
-    StringTypeTemplate: &StringTypeTemplate null
-    RegexTypeTemplate: &RegexTypeTemplate null # Args: pattern, flag
+    StringTypeTemplate: &StringTypeTemplate !!js/function >
+        (str) => {
+            let newStr = str.toString();
+            if (
+                (newStr.charAt(0) === '"' && newStr.charAt(newStr.length - 1) === '"') ||
+                (newStr.charAt(0) === '\'' && newStr.charAt(newStr.length - 1) === '\'')
+            ) {
+                newStr = newStr.substr(1, newStr.length - 2);
+            }
+            return newStr;
+        }
+    RegexTypeTemplate: &RegexTypeTemplate !!js/function >
+        (pattern, flags) => {
+            return new RegExp(pattern, flags);
+        }
     BoolTypeTemplate: &BoolTypeTemplate !!js/function >
         (str) => {
-            return str.toLower() === 'true';
+            return str.toLowerCase() === 'true';
         }
-    IntegerTypeTemplate: &IntegerTypeTemplate null # args: literal, argType (i.e. '_string', '_decimal' etc)
-    DecimalTypeTemplate: &DecimalTypeTemplate null # args: literal, argType
-    LongBasicTypeTemplate: &LongBasicTypeTemplate null # args: literal, argType
-    HexTypeTemplate: &HexTypeTemplate null # args: literal, argType
-    OctalTypeTemplate: &OctalTypeTemplate null # args: literal, argType
-    NumericTypeTemplate: &NumericTypeTemplate null # args: literal, argType
-    ArrayTypeTemplate: &ArrayTypeTemplate null # Args: the interior of the array (i.e. '1, 2'), nestedness#
+    IntegerTypeTemplate: &IntegerTypeTemplate !!js/function >
+        (arg) => {
+            return parseInt(arg, 10);
+        }
+    DecimalTypeTemplate: &DecimalTypeTemplate !!js/function >
+        (arg) => {
+            return parseFloat(arg);
+        }
+    LongBasicTypeTemplate: &LongBasicTypeTemplate !!js/function >
+        (arg) => {
+            return parseInt(arg, 10);
+        }
+    HexTypeTemplate: &HexTypeTemplate !!js/function >
+        (arg) => {
+            return parseInt(arg, 16);
+        }
+    OctalTypeTemplate: &OctalTypeTemplate !!js/function >
+        (arg) => {
+            arg = arg.replace(/[o]/g, '')
+            return parseInt(arg, 8);
+        }
+    NumericTypeTemplate: &NumericTypeTemplate !!js/function >
+        (arg) => {
+            if (arg.contains('x')) {
+                return parseInt(arg, 16);
+            }
+            if (arg.contains('o') || arg.startsWith('0')) {
+                arg = arg.replace(/o/g, '')
+                return parseInt(arg, 8);
+            }
+            return parseFloat(arg);
+        }
+    ArrayTypeTemplate: &ArrayTypeTemplate null
     ArrayTypeArgsTemplate: &ArrayTypeArgsTemplate null # Args: single array element, nestedness, lastElement? (note: not being used atm)
-    NullTypeTemplate: &NullTypeTemplate null # No args
-    UndefinedTypeTemplate: &UndefinedTypeTemplate null # No args:
+    NullTypeTemplate: &NullTypeTemplate !!js/function >
+        () => {
+            return null;
+        }
+    UndefinedTypeTemplate: &UndefinedTypeTemplate !!js/function >
+        () => {
+            return undefined;
+        }
     ObjectTypeTemplate: &ObjectTypeTemplate null # Args: literal (for empty array, is empty string. Otherwise all set)
     ObjectTypeArgsTemplate: &ObjectTypeArgsTemplate null # Args: single object element [2] (i.e. array with [key, value]), nestedness#
 

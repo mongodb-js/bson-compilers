@@ -21,7 +21,6 @@ BsonTypes:
                 type: *StringType
                 template: *CodeScopeTemplate
                 argsTemplate: *CodeScopeArgsTemplate
-        template: *CodeTypeTemplate
     ObjectId: &ObjectIdType
         <<: *__type
         id: "ObjectId"

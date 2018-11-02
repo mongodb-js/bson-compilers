@@ -62,9 +62,12 @@ Templates:
     # get passed the literal itself as an arg.  #
     #                                           #
     #############################################
-    StringTypeTemplate: &StringTypeTemplate null # Args: literal (can be w/w/out quotes and unescaped interior quotes.)
+    StringTypeTemplate: &StringTypeTemplate null
     RegexTypeTemplate: &RegexTypeTemplate null # Args: pattern, flag
-    BoolTypeTemplate: &BoolTypeTemplate null # Args: literal
+    BoolTypeTemplate: &BoolTypeTemplate !!js/function >
+        (str) => {
+            return str.toLower() === 'true';
+        }
     IntegerTypeTemplate: &IntegerTypeTemplate null # args: literal, argType (i.e. '_string', '_decimal' etc)
     DecimalTypeTemplate: &DecimalTypeTemplate null # args: literal, argType
     LongBasicTypeTemplate: &LongBasicTypeTemplate null # args: literal, argType

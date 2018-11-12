@@ -18,6 +18,7 @@ tests:
           java: "eq(\"x\", \"1\")"
           csharp: "new BsonDocument(\"x\", \"1\")"
           shell: "{\n  'x': '1'\n}"
+          object: "{x: '1'}"
     - input:
           javascript: "{x: '1',}"
           shell: "{x: '1',}"
@@ -28,6 +29,7 @@ tests:
           java: "eq(\"x\", \"1\")"
           csharp: "new BsonDocument(\"x\", \"1\")"
           shell: "{\n  'x': '1'\n}"
+          object: "{x: '1'}"
     - input:
           javascript: "{x: ['1', '2']}"
           shell: "{x: ['1', '2']}"
@@ -38,6 +40,7 @@ tests:
           java: "eq(\"x\", Arrays.asList(\"1\", \"2\"))"
           csharp: "new BsonDocument(\"x\", new BsonArray\n    {\n        \"1\",\n        \"2\"\n    })"
           shell: "{\n  'x': [\n    '1', '2'\n  ]\n}"
+          object: "{x: ['1', '2']}"
     - input:
           javascript: "{x: {y: 2}}"
           shell: "{x: {y: 2}}"
@@ -48,6 +51,7 @@ tests:
           java: "eq(\"x\", eq(\"y\", 2L))"
           csharp: "new BsonDocument(\"x\", new BsonDocument(\"y\", 2))"
           shell: "{\n  'x': {\n    'y': 2\n  }\n}"
+          object: "{x: {y: 2}}"
     - input:
           javascript: "{}"
           shell: "{}"
@@ -58,6 +62,7 @@ tests:
           python: "{}"
           java: "new Document()"
           csharp: "new BsonDocument()"
+          object: "{}"
     - input:
           javascript: "{x: '1', n: '4'}"
           shell: "{x: '1', n: '4'}"
@@ -68,6 +73,7 @@ tests:
           java: "and(eq(\"x\", \"1\"), eq(\"n\", \"4\"))"
           csharp: "new BsonDocument\n{\n    { \"x\", \"1\" }, \n    { \"n\", \"4\" }\n}"
           shell: "{\n  'x': '1', \n  'n': '4'\n}"
+          object: "{x: '1', n: '4'}"
     - input:
           javascript: "Object.create({x: '1'})"
           shell: "Object.create({x: '1'})"
@@ -77,6 +83,7 @@ tests:
           java: "eq(\"x\", \"1\")"
           csharp: "new BsonDocument(\"x\", \"1\")"
           shell: "Object.create({\n  'x': '1'\n})"
+#          object: "{x: '1'}"
     - input:
           javascript: "{ graphLookup : { \"from\" : \"raw_data\", \"startWith\" : \"$_id\", \"connectFromField\" : \"_id\", \"connectToField\" : \"manager\", \"as\" : \"reports\" } }"
           shell: "{ graphLookup : { \"from\" : \"raw_data\", \"startWith\" : \"$_id\", \"connectFromField\" : \"_id\", \"connectToField\" : \"manager\", \"as\" : \"reports\" } }"
@@ -87,6 +94,7 @@ tests:
           java: "eq(\"graphLookup\", and(eq(\"from\", \"raw_data\"), eq(\"startWith\", \"$_id\"), eq(\"connectFromField\", \"_id\"), eq(\"connectToField\", \"manager\"), eq(\"as\", \"reports\")))"
           csharp: "new BsonDocument(\"graphLookup\", new BsonDocument\n    {\n        { \"from\", \"raw_data\" }, \n        { \"startWith\", \"$_id\" }, \n        { \"connectFromField\", \"_id\" }, \n        { \"connectToField\", \"manager\" }, \n        { \"as\", \"reports\" }\n    })"
           shell: "{\n  'graphLookup': {\n    'from': 'raw_data', \n    'startWith': '$_id', \n    'connectFromField': '_id', \n    'connectToField': 'manager', \n    'as': 'reports'\n  }\n}"
+          object: "{ graphLookup : { \"from\" : \"raw_data\", \"startWith\" : \"$_id\", \"connectFromField\" : \"_id\", \"connectToField\" : \"manager\", \"as\" : \"reports\" } }"
     - input:
           javascript: "{ status: 'A', $or: [{ qty: { $lt: 30 } }, { item: { $regex: '^p' } }] }"
           shell: "{ status: 'A', $or: [{ qty: { $lt: 30 } }, { item: { $regex: '^p' } }] }"
@@ -97,6 +105,7 @@ tests:
           java: "and(eq(\"status\", \"A\"), or(Arrays.asList(lt(\"qty\", 30L), regex(\"item\", \"^p\"))))"
           csharp: "new BsonDocument\n{\n    { \"status\", \"A\" }, \n    { \"$or\", new BsonArray\n    {\n        new BsonDocument(\"qty\", \n        new BsonDocument(\"$lt\", 30)),\n        new BsonDocument(\"item\", \n        new BsonDocument(\"$regex\", \"^p\"))\n    } }\n}"
           shell: "{\n  'status': 'A', \n  '$or': [\n    {\n      'qty': {\n        '$lt': 30\n      }\n    }, {\n      'item': {\n        '$regex': '^p'\n      }\n    }\n  ]\n}"
+          object: "{ status: 'A', $or: [{ qty: { $lt: 30 } }, { item: { $regex: '^p' } }] }"
     - input:
           python: "{ 'status': 'A', '$or': [{'qty': { '$lt': 30}}, {'item': { '$regex': '^p'}}]}"
       output:
@@ -105,6 +114,7 @@ tests:
           java: "and(eq(\"status\", \"A\"), or(Arrays.asList(lt(\"qty\", 30L), regex(\"item\", \"^p\"))))"
           csharp: "new BsonDocument\n{\n    { \"status\", \"A\" }, \n    { \"$or\", new BsonArray\n    {\n        new BsonDocument(\"qty\", \n        new BsonDocument(\"$lt\", 30)),\n        new BsonDocument(\"item\", \n        new BsonDocument(\"$regex\", \"^p\"))\n    } }\n}"
           shell: "{\n  'status': 'A', \n  '$or': [\n    {\n      'qty': {\n        '$lt': 30\n      }\n    }, {\n      'item': {\n        '$regex': '^p'\n      }\n    }\n  ]\n}"
+          object: "{ 'status': 'A', '$or': [{'qty': { '$lt': 30}}, {'item': { '$regex': '^p'}}]}"
     Array:
     - input:
           python: "['1', '2']"
@@ -116,6 +126,7 @@ tests:
           csharp: "new BsonArray\n{\n    \"1\",\n    \"2\"\n}"
           shell: "[\n  '1', '2'\n]"
           python: "[\n    '1', '2'\n]"
+          object: "['1', '2']"
     - input:
           python: "['1', '2',]"
           javascript: "['1', '2',]"
@@ -126,6 +137,7 @@ tests:
           csharp: "new BsonArray\n{\n    \"1\",\n    \"2\"\n}"
           shell: "[\n  '1', '2'\n]"
           python: "[\n    '1', '2'\n]"
+          object: "['1', '2']"
     - input:
           python: "['1', { 'settings': 'http2' }]"
           javascript: "['1', { settings: 'http2' }]"
@@ -136,6 +148,7 @@ tests:
           csharp: "new BsonArray\n{\n    \"1\",\n    new BsonDocument(\"settings\", \"http2\")\n}"
           shell: "[\n  '1', {\n    'settings': 'http2'\n  }\n]"
           python: "[\n    '1', {\n        'settings': 'http2'\n    }\n]"
+          object: "['1', { settings: 'http2' }]"
     - input:
           python: "{ 'pipeline': [{'$match': {'$expr': { '$eq': [ '$manager', '$$me' ] } } }, { '$project': { 'managers': 0}}, {'$sort': { 'startQuarter': 1, 'notes': 1, 'job_code': 1}}]}"
           javascript: "{\"pipeline\": [ { $match: { $expr: { \"$eq\": [ \"$manager\", \"$$me\" ] } } }, { $project: { managers : 0 } }, { $sort: { startQuarter: 1, notes:1, job_code: 1 } } ]}"
@@ -146,9 +159,10 @@ tests:
           csharp: "new BsonDocument(\"pipeline\", new BsonArray\n    {\n        new BsonDocument(\"$match\", \n        new BsonDocument(\"$expr\", \n        new BsonDocument(\"$eq\", \n        new BsonArray\n                    {\n                        \"$manager\",\n                        \"$$me\"\n                    }))),\n        new BsonDocument(\"$project\", \n        new BsonDocument(\"managers\", 0)),\n        new BsonDocument(\"$sort\", \n        new BsonDocument\n            {\n                { \"startQuarter\", 1 }, \n                { \"notes\", 1 }, \n                { \"job_code\", 1 }\n            })\n    })"
           shell: "{\n  'pipeline': [\n    {\n      '$match': {\n        '$expr': {\n          '$eq': [\n            '$manager', '$$me'\n          ]\n        }\n      }\n    }, {\n      '$project': {\n        'managers': 0\n      }\n    }, {\n      '$sort': {\n        'startQuarter': 1, \n        'notes': 1, \n        'job_code': 1\n      }\n    }\n  ]\n}"
           python: "{\n    'pipeline': [\n        {\n            '$match': {\n                '$expr': {\n                    '$eq': [\n                        '$manager', '$$me'\n                    ]\n                }\n            }\n        }, {\n            '$project': {\n                'managers': 0\n            }\n        }, {\n            '$sort': {\n                'startQuarter': 1, \n                'notes': 1, \n                'job_code': 1\n            }\n        }\n    ]\n}"
+          object: "{\"pipeline\": [ { $match: { $expr: { \"$eq\": [ \"$manager\", \"$$me\" ] } } }, { $project: { managers : 0 } }, { $sort: { startQuarter: 1, notes:1, job_code: 1 } } ]}"
     - input:
           python: "['1', ['2', '3']]"
-          "javpscript": "['1', ['2', '3']]"
+          javascript: "['1', ['2', '3']]"
           shell: "['1', ['2', '3']]"
       output:
           javascript: "[\n  '1', [\n    '2', '3'\n  ]\n]"
@@ -156,6 +170,7 @@ tests:
           csharp: "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}"
           shell: "[\n  '1', [\n    '2', '3'\n  ]\n]"
           python: "[\n    '1', [\n        '2', '3'\n    ]\n]"
+          object: "['1', ['2', '3']]"
     - input:
           python: "[]"
           javascript: "[]"
@@ -166,6 +181,7 @@ tests:
           csharp: "new BsonArray()"
           shell: "[]"
           python: "[]"
+          object: "[]"
     - input:
           python: "['1', ('2', '3')]"
       output:
@@ -174,6 +190,7 @@ tests:
           csharp: "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}"
           shell: "[\n  '1', [\n    '2', '3'\n  ]\n]"
           python: "[\n    '1', [\n        '2', '3'\n  ]\n]"
+          object: "['1', ['2', '3']]"
     ArrayElision:
     - input:
           javascript: "[,'1', '2',]"
@@ -184,6 +201,7 @@ tests:
           csharp: "new BsonArray\n{\n    BsonUndefined.Value,\n    \"1\",\n    \"2\"\n}"
           shell: "[\n  undefined, '1', '2'\n]"
           javascript: "[\n  undefined, '1', '2'\n]"
+          object: "[undefined, '1', '2']"
     - input:
           javascript: "[,]"
           shell: "[,]"
@@ -193,6 +211,7 @@ tests:
           csharp: "new BsonArray\n{\n    BsonUndefined.Value\n}"
           shell: "[\n  undefined\n]"
           javascript: "[\n  undefined\n]"
+          object: "[undefined]"
     - input:
           javascript: "[,,]"
           shell: "[,,]"
@@ -202,6 +221,7 @@ tests:
           csharp: "new BsonArray\n{\n    BsonUndefined.Value,\n    BsonUndefined.Value\n}"
           shell: "[\n  undefined, undefined\n]"
           javascript: "[\n  undefined, undefined\n]"
+          object: "[undefined, undefined]"
     - input:
           javascript: "['1',,,,'2']"
           shell: "['1',,,,'2']"
@@ -211,6 +231,7 @@ tests:
           csharp: "new BsonArray\n{\n    \"1\",\n    BsonUndefined.Value,\n    BsonUndefined.Value,\n    BsonUndefined.Value,\n    \"2\"\n}"
           shell: "[\n  '1', undefined, undefined, undefined, '2'\n]"
           javascript: "[\n  '1', undefined, undefined, undefined, '2'\n]"
+          object: "['1', undefined, undefined, undefined, '2']"
     Tuple:
     - input:
           python: "()"
@@ -220,6 +241,7 @@ tests:
           java: "Arrays.asList()"
           csharp: "new BsonArray()"
           shell: "[]"
+          object: "[]"
     - input:
           python: "(1,)"
       output:
@@ -228,6 +250,7 @@ tests:
           java: "Arrays.asList(1L)"
           csharp: "new BsonArray\n{\n    1\n}"
           shell: "[\n  1\n]"
+          object: "[1]"
     - input:
           python: "(1)"
       output:
@@ -236,6 +259,7 @@ tests:
           java: "(1L)"
           csharp: "(1)"
           shell: "(1)"
+          object: "(1)"
     - input:
           python: "('1', { 'settings': 'http2' })"
       output:
@@ -244,6 +268,7 @@ tests:
           java: "Arrays.asList(\"1\", eq(\"settings\", \"http2\"))"
           csharp: "new BsonArray\n{\n    \"1\",\n    new BsonDocument(\"settings\", \"http2\")\n}"
           shell: "[\n  '1', {\n    'settings': 'http2'\n  }\n]"
+          object: "['1', { 'settings': 'http2' }]"
     - input:
           python: "('1', ['2', '3'])"
       output:
@@ -252,6 +277,7 @@ tests:
           java: "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))"
           csharp: "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}"
           shell: "[\n  '1', [\n    '2', '3'\n  ]\n]"
+          object: "['1', ['2', '3']]"
     - input:
           python: "['1', ('2', '3')]"
       output:
@@ -260,35 +286,40 @@ tests:
           java: "Arrays.asList(\"1\", Arrays.asList(\"2\", \"3\"))"
           csharp: "new BsonArray\n{\n    \"1\",\n    new BsonArray\n    {\n        \"2\",\n        \"3\"\n    }\n}"
           shell: "[\n  '1', [\n    '2', '3'\n  ]\n]"
+          object: "['1', ['2', '3']]"
     binops:
     - input:
-          javascript: 2+5-1
-          shell: 2+5-1
-          python: 2+5-1
+          javascript: 2 + 5 - 1
+          shell: 2 + 5 - 1
+          python: 2 + 5 - 1
       output:
-          javascript: 2+5-1
-          shell: 2+5-1
-          python: 2+5-1
-          java: 2L+5L-1L
-          csharp: 2+5-1
+          javascript: 2 + 5 - 1
+          shell: 2 + 5 - 1
+          python: 2 + 5 - 1
+          java: 2L + 5L - 1L
+          csharp: 2 + 5 - 1
+          object: 2 + 5 - 1
     - input:
-          javascript: 2+(4*36)/3
-          shell: 2+(4*36)/3
-          python: 2+(4*36)/3
+          javascript: 2 + (4 * 36) / 3
+          shell: 2 + (4 * 36) / 3
+          python: 2 + (4 * 36) / 3
+          object: 2 + (4 * 36) / 3
       output:
-          javascript: 2+(4*36)/3
-          shell: 2+(4*36)/3
-          python: 2+(4*36)/3
-          java: 2L+(4L*36L)/3L
-          csharp: 2+(4*36)/3
+          javascript: 2 + (4 * 36) / 3
+          shell: 2 + (4 * 36) / 3
+          python: 2 + (4 * 36) / 3
+          java: 2L + (4L * 36L) / 3L
+          csharp: 2 + (4 * 36) / 3
+          object: 2 + (4 * 36) / 3
     - input:
           python: 10 // 2 % 3
       output:
-          javascript: Math.floor(10, 2)%3
-          shell: Math.floor(10, 2)%3
+          javascript: Math.floor(10, 2) % 3
+          shell: Math.floor(10, 2) % 3
           python: 10 // 2 % 3
-          java: floor(10L, 2L)%3L
-          csharp: Math.floor(10, 2)%3
+          java: floor(10L, 2L) % 3L
+          csharp: Math.floor(10, 2) % 3
+#          object: Math.floor(10, 2)%3
     - input:
           python: 6 ** 7
       output:
@@ -297,26 +328,29 @@ tests:
           python: 6 ** 7
           java: pow(6L, 7L)
           csharp: Math.pow(6, 7)
+#          object: Math.pow(6, 7)
     - input:
           javascript: 1 | 2 ^ 3 & 4 << 6 >> 7
           shell: 1 | 2 ^ 3 & 4 << 6 >> 7
           python: 1 | 2 ^ 3 & 4 << 6 >> 7
       output:
-          javascript: 1|2^3&4<<6>>7
-          shell: 1|2^3&4<<6>>7
-          python: 1|2^3&4<<6>>7
-          java: 1L|2L^3L&4L<<6L>>7L
-          csharp: 1|2^3&4<<6>>7
+          javascript: 1 | 2 ^ 3 & 4 << 6 >> 7
+          shell: 1 | 2 ^ 3 & 4 << 6 >> 7
+          python: 1 | 2 ^ 3 & 4 << 6 >> 7
+          java: 1L | 2L ^ 3L & 4L << 6L >> 7L
+          csharp: 1 | 2 ^ 3 & 4 << 6 >> 7
+          object: 1 | 2 ^ 3 & 4 << 6 >> 7
     - input:
-          javascript: 2+ +5 - -6
-          shell: 2+ +5 - -6
-          python: 2+ +5- -6
+          javascript: 2 + +5- -6
+          shell: 2 + +5- -6
+          python: 2 + +5- -6
       output:
-          javascript: 2++5--6
-          shell: 2++5--6
-          python: 2++5--6
-          java: 2L++5L--6L
-          csharp: 2++5--6
+          javascript: 2 + +5 - -6
+          shell: 2 + +5 - -6
+          python: 2 + +5 - -6
+          java: 2L + +5L - -6L
+          csharp: 2 + +5 - -6
+          object: 2 + +5 - -6
     unaryops:
     - input:
           javascript: '+1'
@@ -328,6 +362,7 @@ tests:
           python: '+1'
           java: '+1L'
           csharp: '+1'
+          object: '+1'
     - input:
           javascript: '-1'
           shell: '-1'
@@ -338,6 +373,7 @@ tests:
           python: '-1'
           java: '-1L'
           csharp: '-1'
+          object: '-1'
     - input:
           javascript: '~1'
           shell: '~1'
@@ -348,6 +384,7 @@ tests:
           python: '~1'
           java: '~1L'
           csharp: '~1'
+          object: '~1'
     Number:
     - input:
           javascript: new Number(2)
@@ -358,6 +395,7 @@ tests:
           python: '2'
           java: 2d
           csharp: (int) 2
+          object: 2
     - input:
           javascript: Number(2)
           shell: Number(2)
@@ -367,6 +405,7 @@ tests:
           python: '2'
           java: 2d
           csharp: (int) 2
+          object: '2'
     - input:
           javascript: Number('2')
           shell: Number('2')
@@ -376,6 +415,7 @@ tests:
           python: float('2')
           java: Double.parseDouble("2")
           csharp: int.Parse("2")
+          object: '2'
     - input:
           shell: Number()
       output:
@@ -384,6 +424,7 @@ tests:
           python: '0'
           java: 0d
           csharp: (int) 0
+          object: '0'
     numeric_literals:
     - input:
           javascript: '2'
@@ -395,6 +436,7 @@ tests:
           python: '2'
           java: '2L'
           csharp: '2'
+          object: '2'
     - input:
           javascript: '429496729601'
           shell: '429496729601'
@@ -405,6 +447,7 @@ tests:
           python: '429496729601'
           java: '429496729601L'
           csharp: '429496729601'
+          object: '429496729601'
     - input:
           javascript: '2.001'
           shell: '2.001'
@@ -415,6 +458,7 @@ tests:
           python: '2.001'
           java: '2.001d'
           csharp: '2.001'
+          object: '2.001'
     - input:
           javascript: '0X123ABC'
           shell: '0X123ABC'
@@ -425,6 +469,7 @@ tests:
           python: '0X123ABC'
           java: '0X123ABC'
           csharp: '0X123ABC'
+          object: '0X123ABC'
     - input:
           javascript: '0x123abc'
           shell: '0x123abc'
@@ -435,6 +480,7 @@ tests:
           python: '0x123abc'
           java: '0x123abc'
           csharp: '0x123abc'
+          object: '0x123abc'
     - input:
           javascript: '0o1234567'
           shell: '0o1234567'
@@ -445,6 +491,7 @@ tests:
           python: '0o1234567'
           java: '01234567'
           csharp: '342391'
+          object: '0o1234567'
     - input:
           javascript: '01234567'
           shell: '01234567'
@@ -454,6 +501,7 @@ tests:
           python: '0o1234567'
           java: '01234567'
           csharp: '342391'
+          object: '01234567'
     - input:
           javascript: '001234567'
           shell: '001234567'
@@ -463,6 +511,7 @@ tests:
           python: '0o1234567'
           java: '01234567'
           csharp: '342391'
+          object: '001234567'
     - input:
           javascript: '0O1234567'
           shell: '0O1234567'
@@ -473,6 +522,7 @@ tests:
           python: '0o1234567'
           java: '01234567'
           csharp: '342391'
+          object: '0O1234567'
     misc_literals:
     - input:
           javascript: 'true'
@@ -484,6 +534,7 @@ tests:
           python: 'True'
           java: 'true'
           csharp: 'true'
+          object: 'true'
     - input:
           javascript: 'false'
           shell: 'false'
@@ -494,6 +545,7 @@ tests:
           python: 'False'
           java: 'false'
           csharp: 'false'
+          object: 'false'
     - input:
           javascript: 'null'
           shell: 'null'
@@ -504,6 +556,7 @@ tests:
           python: 'None'
           java: 'new BsonNull()'
           csharp: 'BsonNull.Value'
+          object: 'null'
     - input:
           javascript: 'undefined'
           shell: 'undefined'
@@ -513,6 +566,7 @@ tests:
           python: 'None'
           java: 'new BsonUndefined()'
           csharp: 'BsonUndefined.Value'
+          object: 'undefined'
     string_literals:
     - input:
           javascript: "'string'"
@@ -524,6 +578,7 @@ tests:
           python: "'string'"
           java: "\"string\""
           csharp: "\"string\""
+          object: "'string'"
     - input:
           javascript: "\"string\""
           shell: "\"string\""
@@ -534,6 +589,7 @@ tests:
           python: "'string'"
           java: "\"string\""
           csharp: "\"string\""
+          object: "\"string\""
     python_strings:
     - input:
           python: "'''string'''"
@@ -542,6 +598,7 @@ tests:
           java": "\"string\""
           csharp": "\"string\""
           shell": "'string'"
+          object: "\"string\""
     - input:
           python: "\"\"\"string\"\"\""
       output:
@@ -549,6 +606,7 @@ tests:
           java: "\"string\""
           csharp: "\"string\""
           shell: "'string'"
+          object: "\"string\""
     - input:
         python: "b'abc'"
       output:
@@ -556,6 +614,7 @@ tests:
           java: "\"abc\""
           csharp: "\"abc\""
           shell: "'abc'"
+          object: "\"string\""
     - input:
         python: "B'abc'"
       output:
@@ -563,6 +622,7 @@ tests:
           java: "\"abc\""
           csharp: "\"abc\""
           shell: "'abc'"
+          object: "\"string\""
     - input:
         python: "b\"abc\""
       output:
@@ -570,6 +630,7 @@ tests:
           java: "\"abc\""
           csharp: "\"abc\""
           shell: "'abc'"
+          object: "\"abc\""
     - input:
           python: "B'abc'"
       output:
@@ -577,6 +638,7 @@ tests:
           java: "\"abc\""
           csharp: "\"abc\""
           shell: "'abc'"
+          object: "\"abc\""
     - input:
           python: "u'abc'"
       output:
@@ -584,6 +646,7 @@ tests:
           java: "\"abc\""
           csharp: "\"abc\""
           shell: "'abc'"
+          object: "\"abc\""
     - input:
           python: "U'abc'"
       output:
@@ -591,6 +654,7 @@ tests:
           java: "\"abc\""
           csharp: "\"abc\""
           shell: "'abc'"
+          object: "\"abc\""
     - input:
           python: "u\"abc\""
       output:
@@ -598,6 +662,7 @@ tests:
           java: "\"abc\""
           csharp: "\"abc\""
           shell: "'abc'"
+          object: "\"abc\""
     - input:
           python: "U'abc'"
       output:
@@ -605,6 +670,7 @@ tests:
           java: "\"abc\""
           csharp: "\"abc\""
           shell: "'abc'"
+          object: "\"abc\""
     - input:
           python: "fR'abc'"
       output:
@@ -612,6 +678,7 @@ tests:
           java: "\"abc\""
           csharp: "\"abc\""
           shell: "'abc'"
+          object: "\"abc\""
     - input:
           python: "rB'abc'"
       output:
@@ -619,6 +686,7 @@ tests:
           java: "\"abc\""
           csharp: "\"abc\""
           shell: "'abc'"
+          object: "\"abc\""
     # TODO: unescape escaped quotes
     number_methods:
     - input:
@@ -629,6 +697,7 @@ tests:
           python: int(3)
           java: '3'
           csharp: '3'
+          object: '3'
     - input:
           python: int('3')
       output:
@@ -637,6 +706,7 @@ tests:
           python: int('3')
           java: Integer.parseInt("3")
           csharp: Convert.ToInt32("3")
+          object: '3'
     - input:
           python: int(3.001)
       output:
@@ -645,6 +715,7 @@ tests:
           python: int(3.001)
           java: (int) 3.001d
           csharp: Convert.ToInt32(3.001)
+          object: 'new Int32(3.001)'
     - input:
           python: int(0x3)
       output:
@@ -653,6 +724,7 @@ tests:
           python: int(0x3)
           java: (int) 0x3
           csharp: Convert.ToInt32(0x3)
+          object: 'new Int32(0x3)'
     - input:
           python: int(0o3)
       output:
@@ -661,6 +733,7 @@ tests:
           python: int(0o3)
           java: (int) 03
           csharp: '3'
+          object: new Int32(0o3)
     - input:
           python: float(3)
       output:
@@ -669,6 +742,7 @@ tests:
           python: float(3)
           java: '3d'
           csharp: '3.0'
+          object: new Double(3)
     - input:
           python: float('3')
       output:
@@ -677,6 +751,7 @@ tests:
           python: float('3')
           java: Double.parseDouble("3")
           csharp: Convert.ToDouble("3")
+          object: new Double('3')
     - input:
           python: float(3.001)
       output:
@@ -685,6 +760,7 @@ tests:
           python: float(3.001)
           java: 3.001d
           csharp: '3.001'
+          object: new Double(3.001)
     - input:
           python: float(0x3)
       output:
@@ -693,6 +769,7 @@ tests:
           python: float(0x3)
           java: (double) 0x3
           csharp: Convert.ToDouble(0x3)
+          object: new Double(0x3)
     - input:
           python: float(0o3)
       output:
@@ -701,6 +778,7 @@ tests:
           python: float(0o3)
           java: (double) 03
           csharp: '3.0'
+          object: new Double(0o3)
     Date:
     - input:
           javascript: new Date()
@@ -712,6 +790,7 @@ tests:
           python: datetime.utcnow()
           java: new java.util.Date()
           csharp: DateTime.Now
+          object: new Date()
     - input:
           javascript: Date.now()
           shell: Date.now()
@@ -722,6 +801,7 @@ tests:
           python: datetime.utcnow()
           java: new java.util.Date()
           csharp: DateTime.Now
+          object: new Date()
     - input:
           javascript: new Date(1995, 11, 17)
           shell: new Date(1995, 11, 17)
@@ -732,6 +812,7 @@ tests:
           python: datetime(1995, 12, 17, 0, 0, 0, tzinfo=timezone.utc)
           java: new java.util.Date(819158400000L)
           csharp: new DateTime(1995, 12, 17, 0, 0, 0)
+          object: new Date(1995, 11, 17)
     - input:
           javascript: new Date(1995, 11, 17, 3, 24)
           shell: new Date(1995, 11, 17, 3, 24)
@@ -742,6 +823,7 @@ tests:
           python: datetime(1995, 12, 17, 3, 24, 0, tzinfo=timezone.utc)
           java: new java.util.Date(819170640000L)
           csharp: new DateTime(1995, 12, 17, 3, 24, 0)
+          object: new Date(1995, 11, 17, 3, 24)
     - input:
           javascript: new Date(1995, 11, 17, 3, 24, 55)
           shell: new Date(1995, 11, 17, 3, 24, 55)
@@ -752,6 +834,7 @@ tests:
           python: datetime(1995, 12, 17, 3, 24, 55, tzinfo=timezone.utc)
           java: new java.util.Date(819170695000L)
           csharp: new DateTime(1995, 12, 17, 3, 24, 55)
+          object: new Date('Sun, 17 Dec 1995 03:24:55 GMT')
     - input:
           javascript: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
           shell: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
@@ -761,6 +844,7 @@ tests:
           csharp: new DateTime(1995, 12, 17, 3, 24, 0)
           javascript: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
           shell: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
+          object: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
     - input:
           javascript: new Date(819167040000)
           shell: new Date(819167040000)
@@ -770,6 +854,7 @@ tests:
           python: datetime(1995, 12, 17, 2, 24, 0, tzinfo=timezone.utc)
           java: new java.util.Date(819167040000L)
           csharp: new DateTime(1995, 12, 17, 2, 24, 0)
+          object: new Date(819167040000)
     date_string:
     - input:
           javascript: Date('Sun, 17 Dec 1995 03:24:00 GMT')
@@ -780,6 +865,7 @@ tests:
           csharp: new DateTime(1995, 12, 17, 3, 24, 0).ToString("ddd MMM dd yyyy HH':'mm':'ss UTC")
           javascript: Date('Sun, 17 Dec 1995 03:24:00 GMT')
           shell: Date('Sun, 17 Dec 1995 03:24:00 GMT')
+          object: Date('Sun, 17 Dec 1995 03:24:00 GMT')
     - input:
           javascript: Date(819167040000)
           shell: Date(819167040000)
@@ -789,6 +875,7 @@ tests:
           python: datetime(1995, 12, 17, 2, 24, 0, tzinfo=timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')
           java: new SimpleDateFormat("EEE MMMMM dd yyyy HH:mm:ss").format(new java.util.Date(819167040000L))
           csharp: new DateTime(1995, 12, 17, 2, 24, 0).ToString("ddd MMM dd yyyy HH':'mm':'ss UTC")
+          object: Date(819167040000)
     - input:
           javascript: Date(1995, 11, 17)
           shell: Date(1995, 11, 17)
@@ -798,6 +885,7 @@ tests:
           python: datetime(1995, 12, 17, 0, 0, 0, tzinfo=timezone.utc).strftime('%a %b %d %Y %H:%M:%S %Z')
           java: new SimpleDateFormat("EEE MMMMM dd yyyy HH:mm:ss").format(new java.util.Date(819158400000L))
           csharp: new DateTime(1995, 12, 17, 0, 0, 0).ToString("ddd MMM dd yyyy HH':'mm':'ss UTC")
+          object: Date(1995, 11, 17)
     ISODate:
     - input:
           shell: new ISODate('1995-12-17T03:24:00.000Z')
@@ -806,6 +894,7 @@ tests:
           java: new java.util.Date(819170640000L)
           csharp: new DateTime(1995, 12, 17, 3, 24, 0)
           javascript: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
+          object: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
     - input:
           shell: ISODate('1995-12-17T03:24:00.000Z')
       output:
@@ -813,6 +902,7 @@ tests:
           java: new java.util.Date(819170640000L)
           csharp: new DateTime(1995, 12, 17, 3, 24, 0)
           javascript: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
+          object: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
     - input:
           shell: ISODate()
       output:
@@ -820,6 +910,7 @@ tests:
           python: datetime.utcnow()
           java: new java.util.Date()
           csharp: DateTime.Now
+          object: new Date()
     - input:
           shell: new ISODate()
       output:
@@ -827,6 +918,7 @@ tests:
           python: datetime.utcnow()
           java: new java.util.Date()
           csharp: DateTime.Now
+          object: new Date()
     regular_expressions:
     - description: "empty RegExp"
       input:
@@ -839,6 +931,7 @@ tests:
           python: "re.compile(r\"(?:)\")"
           java: "Pattern.compile(\"(?:)\")"
           csharp: "new Regex(\"(?:)\")"
+          object: "RegExp('')"
     - description: "RegExp without options"
       input:
           javascript: "new RegExp('abc')"
@@ -850,6 +943,7 @@ tests:
           java: "Pattern.compile(\"abc\")"
           csharp: "new Regex(\"abc\")"
           shell: "new RegExp('abc')"
+          object: "new RegExp('abc')"
     - description: "RegExp with named but only A flag"
       input:
           python: "re.compile('abc', flags=re.A)"
@@ -858,6 +952,7 @@ tests:
           java: "Pattern.compile(\"abc\")"
           csharp: "new Regex(\"abc\")"
           shell: "new RegExp('abc')"
+          object: "new RegExp('abc')"
     - description: "regex object with im flags as args"
       input:
           javascript: "new RegExp('ab+c', 'im')"
@@ -869,6 +964,7 @@ tests:
           java: "Pattern.compile(\"ab+c(?im)\")"
           csharp: "new Regex(\"(?im)ab+c\")"
           shell: "new RegExp('ab+c', 'im')"
+          object: "new RegExp('ab+c', 'im')"
     - description: "regex object with named flags as args"
       input:
           python: "re.compile('ab+c', flags=re.I | re.M | re.A)"
@@ -877,6 +973,7 @@ tests:
           java: "Pattern.compile(\"ab+c(?im)\")"
           csharp: "new Regex(\"(?im)ab+c\")"
           shell: "new RegExp('ab+c', 'im')"
+          object: "new RegExp('ab+c', 'im')"
     - description: "regex object with ig flags as args"
       input:
           javascript: "new RegExp('ab+c', 'ig')"
@@ -887,6 +984,7 @@ tests:
           java: "Pattern.compile(\"ab+c(?i)\")"
           csharp: "new Regex(\"(?i)ab+c\")"
           shell: "new RegExp('ab+c', 'gi')"
+          object: "new RegExp('ab+c', 'gi')"
     - description: "regex object with forward slash"
       input:
           javascript: "new RegExp('ab/cd')"
@@ -898,6 +996,7 @@ tests:
           java: "Pattern.compile(\"ab\\\\/cd\")"
           csharp: "new Regex(\"ab\\/cd\")"
           shell: "new RegExp('ab\\/cd')"
+          object: "new RegExp('ab\\/cd')"
     - description: "regex object with escaped double quote"
       input:
           javascript: "new RegExp('ab\\\"ab')"
@@ -909,6 +1008,7 @@ tests:
           java: "Pattern.compile(\"ab\\\"ab\")"
           csharp: "new Regex(\"ab\\\"ab\")"
           shell: "new RegExp('ab\"ab')"
+          object: "new RegExp('ab\"ab')"
     - description: "regex object with nonescaped double quote"
       input:
           javascript: "new RegExp('ab\"ab')"
@@ -920,6 +1020,7 @@ tests:
           java: "Pattern.compile(\"ab\\\"ab\")"
           csharp: "new Regex(\"ab\\\"ab\")"
           shell: "new RegExp('ab\"ab')"
+          object: "new RegExp('ab\"ab')"
     - description: "regex object with escaped single quote"
       input:
           javascript: "new RegExp('ab\\'ab')"
@@ -931,6 +1032,7 @@ tests:
           java: "Pattern.compile(\"ab'ab\")"
           csharp: "new Regex(\"ab'ab\")"
           shell: "new RegExp('ab\\'ab')"
+          object: "new RegExp('ab\\'ab')"
     - description: "regex object with nonescaped single quote"
       input:
           javascript: "new RegExp(\"ab'ab\")"
@@ -942,6 +1044,7 @@ tests:
           python: "re.compile(r\"ab'ab\")"
           java: "Pattern.compile(\"ab'ab\")"
           csharp: "new Regex(\"ab'ab\")"
+          object: "new RegExp('ab\\'ab')"
     - description: "regex object with newline"
       input:
           javascript: "new RegExp(\"\\\\n\")"
@@ -953,6 +1056,7 @@ tests:
           python: "re.compile(r\"\\\\n\")"
           java: "Pattern.compile(\"\\\\n\")"
           csharp: "new Regex(\"\\n\")"
+          object: "new RegExp('\\n')"
     - description: "regex literal with ig flags"
       input:
           javascript: "/ab+c/ig"
@@ -963,6 +1067,7 @@ tests:
           java: "Pattern.compile(\"ab+c(?i)\")"
           csharp: "new Regex(\"(?i)ab+c\")"
           shell: "new RegExp('ab+c', 'gi')"
+          object: "new RegExp('ab+c', 'gi')"
     - description: "regex object with regex literal arg"
       input:
           javascript: "new RegExp(/ab+c/, 'i')"
@@ -974,6 +1079,7 @@ tests:
           java: "Pattern.compile(\"ab+c(?i)\")"
           csharp: "new Regex(\"(?i)ab+c\")"
           shell: "new RegExp('ab+c', 'i')"
+          object: "new RegExp('ab+c', 'i')"
     - description: "python regex without ascii flag defaults to unicode"
       input:
           python: "re.compile('ab+c')"
@@ -983,4 +1089,5 @@ tests:
           java: "Pattern.compile(\"ab+c(?u)\")"
           csharp: "new Regex(\"ab+c\")"
           shell: "new RegExp('ab+c', 'u')"
+          object: "new RegExp('ab+c', 'u')"
 

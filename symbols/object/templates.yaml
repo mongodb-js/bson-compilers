@@ -79,11 +79,61 @@ Templates:
         (arg) => {
             return !arg;
         }
-    EosTemplate: &EosSyntaxTemplate !!js/function >
+    UnarySyntaxTemplate: &UnarySyntaxTemplate !!js/function >
+        (op, arg) => {
+            switch(op) {
+                case '+':
+                    return +arg;
+                case '-':
+                    return -arg;
+                case '~':
+                    return ~arg;
+                default:
+                    return null;
+            }
+        }
+    BinarySyntaxTemplate: &BinarySyntaxTemplate !!js/function >
+        (args) => {
+            return args.reduce((s, op, i, arr) => {
+                if (i % 2 === 0) {
+                    return s;
+                }
+                const rhs = arr[i + 1];
+                switch(op) {
+                    case '+':
+                        return s + rhs;
+                    case '-':
+                        return s - rhs;
+                    case '*':
+                        return s * rhs;
+                    case '/':
+                        return s / rhs;
+                    case '**':
+                        return Math.power(s, rhs);
+                    case '//':
+                        return Math.floor(s, rhs);
+                    case '%':
+                        return s % rhs;
+                    case '>>':
+                        return s >> rhs;
+                    case '<<':
+                        return s << rhs;
+                    case '|':
+                        return s | rhs;
+                    default:
+                        return s; // TODO: error?
+                }
+            }, args[0]);
+        }
+    ParensSyntaxTemplate: &ParensSyntaxTemplate !!js/function >
+        (arg) => {
+            return arg;
+        }
+    EosSyntaxTemplate: &EosSyntaxTemplate !!js/function >
         () => {
             return 'a unique thing';
         }
-    EofTemplate: &EofSyntaxTemplate !!js/function >
+    EofSyntaxTemplate: &EofSyntaxTemplate !!js/function >
         () => {
             return 'a unique thing';
         }

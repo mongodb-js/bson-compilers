@@ -63,7 +63,7 @@ module.exports = (Visitor) => class Generator extends Visitor {
       100: bson.Code, 101: bson.ObjectId, 102: bson.Binary, 103: bson.DBRef,
       104: bson.Double, 105: bson.Int32, 106: bson.Long, 107: bson.MinKey,
       108: bson.MaxKey, 109: bson.BSONRegExp, 110: bson.Timestamp,
-      111: bson.Symbol, 112: bson.Decimal128, 200: Date, 8: RegExp
+      111: bson.Symbol, 112: bson.Decimal128, 200: Date, 8: RegExp, 2: Number
     };
     return types[ctx.type.code];
   }
@@ -88,4 +88,5 @@ module.exports = (Visitor) => class Generator extends Visitor {
 
     return new lhs(...rhs);
   }
+
 };

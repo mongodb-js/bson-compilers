@@ -49,6 +49,8 @@ Templates:
     AndSyntaxTemplate: &AndSyntaxTemplate null # Args: items to compare as an array
     OrSyntaxTemplate: &OrSyntaxTemplate  null # Args: items to compare as an array
     NotSyntaxTemplate: &NotSyntaxTemplate null # Args: item to negate
+    UnarySyntaxTemplate: &UnarySyntaxTemplate null
+    BinarySyntaxTemplate: &BinarySyntaxTemplate null
     EosTemplate: &EosSyntaxTemplate null # No args. End-of-line
     EofTemplate: &EofSyntaxTemplate null # No args. End-of-file
     FloorDivTemplate: &FloorDivSyntaxTemplate null # Args: lhs, rhs

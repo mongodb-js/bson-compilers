@@ -44,16 +44,27 @@ Templates:
         (arg) => {
             return `not ${arg}`;
         }
-    EosTemplate: &EosSyntaxTemplate null
-    EofTemplate: &EofSyntaxTemplate null
-    FloorDivTemplate: &FloorDivSyntaxTemplate !!js/function >
-        (lhs, rhs) => {
-            return `${lhs}//${rhs}`;
+    UnarySyntaxTemplate: &UnarySyntaxTemplate null
+    BinarySyntaxTemplate: &BinarySyntaxTemplate !!js/function >
+        (args) => {
+            return args.reduce((s, op, i, arr) => {
+                if (i % 2 === 0) {
+                    return s;
+                }
+                const rhs = arr[i + 1];
+                switch(op) {
+                    case '//':
+                        return `${s} // ${rhs}`;
+                    case '**':
+                        return `${s} ** ${rhs}`;
+                    default:
+                        return `${s} ${op} ${rhs}`;
+                }
+            }, args[0]);
         }
-    PowerTemplate: &PowerSyntaxTemplate !!js/function >
-        (lhs, rhs) => {
-            return `${lhs}**${rhs}`;
-        }
+    ParensSyntaxTemplate: &ParensSyntaxTemplate null
+    EosSyntaxTemplate: &EosSyntaxTemplate null
+    EofSyntaxTemplate: &EofSyntaxTemplate null
     NewTemplate: &NewSyntaxTemplate null
     # BSON Object Type templates
     CodeTypeTemplate: &CodeTypeTemplate null

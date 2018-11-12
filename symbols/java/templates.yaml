@@ -44,16 +44,27 @@ Templates:
         (arg) => {
             return `!${arg}`;
         }
+    UnarySyntaxTemplate: &UnarySyntaxTemplate null
+    BinarySyntaxTemplate: &BinarySyntaxTemplate !!js/function >
+        (args) => {
+            return args.reduce((s, op, i, arr) => {
+                if (i % 2 === 0) {
+                    return s;
+                }
+                const rhs = arr[i + 1];
+                switch(op) {
+                    case '//':
+                        return `floor(${s}, ${rhs})`;
+                    case '**':
+                        return `pow(${s}, ${rhs})`;
+                    default:
+                        return `${s} ${op} ${rhs}`;
+                }
+            }, args[0]);
+        }
+    ParensSyntaxTemplate: &ParensSyntaxTemplate null
     EosSyntaxTemplate: &EosSyntaxTemplate null
     EofSyntaxTemplate: &EofSyntaxTemplate null
-    FloorDivTemplate: &FloorDivSyntaxTemplate !!js/function >
-        (lhs, rhs) => {
-            return `floor(${lhs}, ${rhs})`;
-        }
-    PowerTemplate: &PowerSyntaxTemplate !!js/function >
-        (lhs, rhs) => {
-            return `pow(${lhs}, ${rhs})`;
-        }
     NewTemplate: &NewSyntaxTemplate !!js/function >
         (expr, skip, code) => {
             // Add codes of classes that don't need new.

@@ -181,6 +181,90 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.visitChildren(ctx);
   }
 
+  visitBitAndExpression(ctx) {
+    if (this.Syntax.binary.template) {
+      const kids = ctx.children.map(m => this.visit(m));
+      return this.Syntax.binary.template(kids);
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitBitXOrExpression(ctx) {
+    if (this.Syntax.binary.template) {
+      const kids = ctx.children.map(m => this.visit(m));
+      return this.Syntax.binary.template(kids);
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitBitOrExpression(ctx) {
+    if (this.Syntax.binary.template) {
+      const kids = ctx.children.map(m => this.visit(m));
+      return this.Syntax.binary.template(kids);
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitBitNotExpression(ctx) {
+    if (this.Syntax.unary.template) {
+      return this.Syntax.unary.template(
+        '~',
+        this.visit(ctx.singleExpression())
+      );
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitUnaryPlusExpression(ctx) {
+    if (this.Syntax.unary.template) {
+      return this.Syntax.unary.template(
+        '+',
+        this.visit(ctx.singleExpression())
+      );
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitUnaryMinusExpression(ctx) {
+    if (this.Syntax.unary.template) {
+      return this.Syntax.unary.template(
+        '-',
+        this.visit(ctx.singleExpression())
+      );
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitAdditiveExpression(ctx) {
+    if (this.Syntax.binary.template) {
+      const kids = ctx.children.map(m => this.visit(m));
+      return this.Syntax.binary.template(kids);
+    }
+    return this.visitChildren(ctx);
+  }
+  visitMultiplicativeExpression(ctx) {
+    if (this.Syntax.binary.template) {
+      const kids = ctx.children.map(m => this.visit(m));
+      return this.Syntax.binary.template(kids);
+    }
+    return this.visitChildren(ctx);
+  }
+  visitBitShiftExpression(ctx) {
+    if (this.Syntax.binary.template) {
+      const kids = ctx.children.map(m => this.visit(m));
+      return this.Syntax.binary.template(kids);
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitParenthesizedExpression(ctx) {
+    if (this.Syntax.parens.template) {
+      const kids = this.visit(ctx.expressionSequence());
+      return this.Syntax.parens.template(kids);
+    }
+    return this.visitChildren(ctx);
+  }
+
   /*
    *
    * Process Methods

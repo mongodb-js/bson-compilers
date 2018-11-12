@@ -109,7 +109,7 @@ Templates:
                     case '/':
                         return s / rhs;
                     case '**':
-                        return Math.power(s, rhs);
+                        return Math.pow(s, rhs);
                     case '//':
                         return Math.floor(s, rhs);
                     case '%':
@@ -120,6 +120,10 @@ Templates:
                         return s << rhs;
                     case '|':
                         return s | rhs;
+                    case '&':
+                        return s & rhs;
+                    case '^':
+                        return s ^ rhs;
                     default:
                         return s; // TODO: error?
                 }
@@ -185,7 +189,7 @@ Templates:
         }
     OctalTypeTemplate: &OctalTypeTemplate !!js/function >
         (arg) => {
-            arg = arg.replace(/[o]/g, '')
+            arg = arg.replace(/[oO]/g, '')
             return parseInt(arg, 8);
         }
     NumericTypeTemplate: &NumericTypeTemplate !!js/function >
@@ -266,10 +270,19 @@ Templates:
     # non bson-specific
     ObjectSymbolTemplate: &ObjectSymbolTemplate null # No args
     ObjectSymbolArgsTemplate: &ObjectSymbolArgsTemplate null # Args: lhs, arg
-    NumberSymbolTemplate: &NumberSymbolTemplate null # No args
+    NumberSymbolTemplate: &NumberSymbolTemplate !!js/function >
+        () => {
+            return Number;
+        }
     NumberSymbolArgsTemplate: &NumberSymbolArgsTemplate null # Args: lhs, arg, argType
     DateSymbolTemplate: &DateSymbolTemplate null # No args
-    DateSymbolArgsTemplate: &DateSymbolArgsTemplate null # Args: lhs, date (Date object), isString? (if the result needs to be a date string instead of a date instance)
+    DateSymbolArgsTemplate: &DateSymbolArgsTemplate !!js/function >
+        (lhs, date, isString) => {
+            if (isString) {
+                return date.toString();
+            }
+            return date;
+        }
 
     #############################################
     #         Object Attributes/Methods         #
@@ -406,7 +419,10 @@ Templates:
     Decimal128ToStringTemplate: &Decimal128ToStringTemplate null
     Decimal128ToStringArgsTemplate: &Decimal128ToStringArgsTemplate null
     # non bson-specific
-    DateSymbolNowTemplate: &DateSymbolNowTemplate null
+    DateSymbolNowTemplate: &DateSymbolNowTemplate !!js/function >
+        () => {
+            return Date.now;
+        }
     DateSymbolNowArgsTemplate: &DateSymbolNowArgsTemplate null
 
     #############################################

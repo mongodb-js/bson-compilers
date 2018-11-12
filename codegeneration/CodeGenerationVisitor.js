@@ -1,4 +1,4 @@
-/* eslint complexity: 0 camelcase: 0*/
+/* eslint complexity: 0, camelcase: 0, "new-cap": 0 */
 const {
   BsonTranspilersAttributeError,
   BsonTranspilersArgumentError,
@@ -8,6 +8,7 @@ const {
   BsonTranspilersTypeError,
   BsonTranspilersUnimplementedError
 } = require('../helper/error');
+const bson = require('mongodb');
 
 /**
  * Class for code generation. Goes in between ANTLR generated visitor and
@@ -347,7 +348,15 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     } else {
       rhs = this.object ? rhs : `(${rhs.join(', ')})`;
     }
-    const expr = this.object ? lhs(...rhs) : `${lhs}${rhs}`;
+    // TODO: move into generator
+    let expr = `${lhs}${rhs}`;
+    if (this.object) {
+      try {
+        expr = new lhs(...rhs);
+      } catch (e) {
+        expr = lhs(...rhs);
+      }
+    }
     const constructor = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR;
 
     return this.Syntax.new.template

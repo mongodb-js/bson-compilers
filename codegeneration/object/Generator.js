@@ -1,4 +1,4 @@
-/* eslint new-cap: 0*/
+/* eslint new-cap: 0 camelcase: 0 */
 const bson = require('bson');
 const {
   BsonTranspilersReferenceError
@@ -63,9 +63,37 @@ module.exports = (Visitor) => class Generator extends Visitor {
       100: bson.Code, 101: bson.ObjectId, 102: bson.Binary, 103: bson.DBRef,
       104: bson.Double, 105: bson.Int32, 106: bson.Long, 107: bson.MinKey,
       108: bson.MaxKey, 109: bson.BSONRegExp, 110: bson.Timestamp,
-      111: bson.Symbol, 112: bson.Decimal128, 200: Date, 8: RegExp, 2: Number
+      111: bson.Symbol, 112: bson.Decimal128, 200: Date, 8: RegExp, 2: Number,
+      10: Object
     };
     return types[ctx.type.code];
+  }
+
+  emitdatetime(ctx, date, isString) {
+    if (date === null && isString) {
+      return Date();
+    } else if (date === null) {
+      return new Date();
+    }
+    return date;
+  }
+  emitDate(ctx, date, isString) {
+    if (date === null && isString) {
+      return Date();
+    } else if (date === null) {
+      return new Date();
+    }
+    return date;
+  }
+
+  emitNumber(ctx, arg) {
+    return Number(arg);
+  }
+  emitint(ctx, arg) {
+    return new bson.Int32(arg);
+  }
+  emitfloat(ctx, arg) {
+    return new bson.Double(arg);
   }
 
   /**
@@ -79,7 +107,7 @@ module.exports = (Visitor) => class Generator extends Visitor {
    */
   generateCall(ctx, lhsType, args) {
     if (`emit${lhsType.id}` in this) {
-      return this[`emit${lhsType.id}`](ctx);
+      return this[`emit${lhsType.id}`](ctx, ...args);
     }
     const lhs = this.visit(this.getFunctionCallName(ctx));
     const rhs = lhsType.argsTemplate

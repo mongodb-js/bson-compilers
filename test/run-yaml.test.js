@@ -101,7 +101,16 @@ fs.readdirSync(testpath).map((file) => {
                   const expected = executeJavascript(test.output.object);
                   it(`${input}: ${test.input[input]} => runnable object`, () => {
                     const actual = transpiler[input].object.compile(test.input[input]);
-                    expect(actual).to.deep.equal(expected);
+                    if (expected && typeof expected === 'object' && '_bsontype' in expected) {
+                      expect(actual._bsontype).to.equal(expected._bsontype);
+                      expect(actual.value).to.equal(expected.value);
+                    } else if (test.description && test.description.includes('now date')) {
+                      expect(actual instanceof Date).to.equal(true);
+                    } else if (test.description && test.description.includes('date.now')) {
+                      expect(typeof actual).to.equal('number');
+                    } else {
+                      expect(actual).to.deep.equal(expected);
+                    }
                   });
                 } else if (input !== output) {
                   tests.runner(it, expect, input, output, transpiler, test);

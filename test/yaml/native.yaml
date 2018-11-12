@@ -83,7 +83,7 @@ tests:
           java: "eq(\"x\", \"1\")"
           csharp: "new BsonDocument(\"x\", \"1\")"
           shell: "Object.create({\n  'x': '1'\n})"
-#          object: "{x: '1'}"
+          object: "{x: '1'}"
     - input:
           javascript: "{ graphLookup : { \"from\" : \"raw_data\", \"startWith\" : \"$_id\", \"connectFromField\" : \"_id\", \"connectToField\" : \"manager\", \"as\" : \"reports\" } }"
           shell: "{ graphLookup : { \"from\" : \"raw_data\", \"startWith\" : \"$_id\", \"connectFromField\" : \"_id\", \"connectToField\" : \"manager\", \"as\" : \"reports\" } }"
@@ -319,7 +319,7 @@ tests:
           python: 10 // 2 % 3
           java: floor(10L, 2L) % 3L
           csharp: Math.floor(10, 2) % 3
-#          object: Math.floor(10, 2)%3
+          object: Math.floor(10, 2)%3
     - input:
           python: 6 ** 7
       output:
@@ -328,7 +328,7 @@ tests:
           python: 6 ** 7
           java: pow(6L, 7L)
           csharp: Math.pow(6, 7)
-#          object: Math.pow(6, 7)
+          object: Math.pow(6, 7)
     - input:
           javascript: 1 | 2 ^ 3 & 4 << 6 >> 7
           shell: 1 | 2 ^ 3 & 4 << 6 >> 7
@@ -395,7 +395,7 @@ tests:
           python: '2'
           java: 2d
           csharp: (int) 2
-          object: 2
+          object: Number(2)
     - input:
           javascript: Number(2)
           shell: Number(2)
@@ -405,7 +405,7 @@ tests:
           python: '2'
           java: 2d
           csharp: (int) 2
-          object: '2'
+          object: Number(2)
     - input:
           javascript: Number('2')
           shell: Number('2')
@@ -415,7 +415,7 @@ tests:
           python: float('2')
           java: Double.parseDouble("2")
           csharp: int.Parse("2")
-          object: '2'
+          object: Number(2)
     - input:
           shell: Number()
       output:
@@ -614,7 +614,7 @@ tests:
           java: "\"abc\""
           csharp: "\"abc\""
           shell: "'abc'"
-          object: "\"string\""
+          object: "'abc'"
     - input:
         python: "B'abc'"
       output:
@@ -622,7 +622,7 @@ tests:
           java: "\"abc\""
           csharp: "\"abc\""
           shell: "'abc'"
-          object: "\"string\""
+          object: "\"abc\""
     - input:
         python: "b\"abc\""
       output:
@@ -697,7 +697,7 @@ tests:
           python: int(3)
           java: '3'
           csharp: '3'
-          object: '3'
+          object: 'new Int32(3)'
     - input:
           python: int('3')
       output:
@@ -706,7 +706,7 @@ tests:
           python: int('3')
           java: Integer.parseInt("3")
           csharp: Convert.ToInt32("3")
-          object: '3'
+          object: new Int32('3')
     - input:
           python: int(3.001)
       output:
@@ -733,7 +733,7 @@ tests:
           python: int(0o3)
           java: (int) 03
           csharp: '3'
-          object: new Int32(0o3)
+          object: 'new Int32(0o3)'
     - input:
           python: float(3)
       output:
@@ -780,7 +780,8 @@ tests:
           csharp: '3.0'
           object: new Double(0o3)
     Date:
-    - input:
+    - description: now date
+      input:
           javascript: new Date()
           shell: new Date()
           python: datetime()
@@ -790,8 +791,9 @@ tests:
           python: datetime.utcnow()
           java: new java.util.Date()
           csharp: DateTime.Now
-          object: new Date()
-    - input:
+          object: "new Date()"
+    - description: date.now
+      input:
           javascript: Date.now()
           shell: Date.now()
           python: datetime.utcnow()
@@ -801,7 +803,7 @@ tests:
           python: datetime.utcnow()
           java: new java.util.Date()
           csharp: DateTime.Now
-          object: new Date()
+          object: "new Date()"
     - input:
           javascript: new Date(1995, 11, 17)
           shell: new Date(1995, 11, 17)
@@ -903,7 +905,8 @@ tests:
           csharp: new DateTime(1995, 12, 17, 3, 24, 0)
           javascript: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
           object: new Date('Sun, 17 Dec 1995 03:24:00 GMT')
-    - input:
+    - description: now date
+      input:
           shell: ISODate()
       output:
           javascript: new Date()
@@ -911,14 +914,15 @@ tests:
           java: new java.util.Date()
           csharp: DateTime.Now
           object: new Date()
-    - input:
+    - description: now date
+      input:
           shell: new ISODate()
       output:
           javascript: new Date()
           python: datetime.utcnow()
           java: new java.util.Date()
           csharp: DateTime.Now
-          object: new Date()
+          object: "new Date()"
     regular_expressions:
     - description: "empty RegExp"
       input:
@@ -1056,7 +1060,7 @@ tests:
           python: "re.compile(r\"\\\\n\")"
           java: "Pattern.compile(\"\\\\n\")"
           csharp: "new Regex(\"\\n\")"
-          object: "new RegExp('\\n')"
+          object: /\n/
     - description: "regex literal with ig flags"
       input:
           javascript: "/ab+c/ig"

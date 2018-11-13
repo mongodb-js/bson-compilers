@@ -10,10 +10,42 @@ const {
 module.exports = (Visitor) => class Generator extends Visitor {
   constructor() {
     super();
-    this.object = true;
     this.IGNORE = 'a unique thing';
   }
 
+  start(ctx) {
+    return this.returnResult(ctx);
+  }
+
+  /**
+   * Overrides the helper function to instantiate the object instead of
+   * concatenating the strings.
+   *
+   * @param {ParserRuleContext} ctx - The function call node
+   * @param {Object} lhsType - The type
+   * @param {Array} args - Arguments to the template
+   *
+   * @return {String}
+   */
+  generateCall(ctx, lhsType, args) {
+    if (`emit${lhsType.id}` in this) {
+      return this[`emit${lhsType.id}`](ctx, ...args);
+    }
+    const lhs = this.visit(this.getFunctionCallName(ctx));
+    const rhs = lhsType.argsTemplate
+      ? lhsType.argsTemplate(lhs, ...args)
+      : args;
+
+    return new lhs(...rhs);
+  }
+
+  /**
+   * Don't concatenate child nodes, return them as array.
+   *
+   * @param {ParserRuleContext} ctx
+   * @param {Object} options
+   * @return {Array}
+   */
   visitChildren(ctx, options) {
     const opts = {
       start: 0, step: 1, separator: '', ignore: [], children: ctx.children
@@ -34,6 +66,36 @@ module.exports = (Visitor) => class Generator extends Visitor {
       return result[0];
     }
     return result;
+  }
+
+  returnFunctionCallRhs(rhs) {
+    return rhs;
+  }
+
+  returnFunctionCallLhsRhs(lhs, rhs) {
+    let expr;
+    try {
+      expr = new lhs(...rhs);
+    } catch (e) {
+      if (e.message.includes('constructor')) {
+        expr = lhs(...rhs);
+      } else {
+        throw e;
+      }
+    }
+    return expr;
+  }
+
+  returnAttributeAccess(lhs, rhs) {
+    return lhs[rhs];
+  }
+
+  returnParenthesis(expr) {
+    return expr;
+  }
+
+  returnSet(args) {
+    return args;
   }
 
   emit_array(ctx) {
@@ -86,35 +148,17 @@ module.exports = (Visitor) => class Generator extends Visitor {
     return date;
   }
 
+  /* Numbers need emit methods because they also take type args */
+
   emitNumber(ctx, arg) {
     return Number(arg);
   }
+
   emitint(ctx, arg) {
     return new bson.Int32(arg);
   }
+
   emitfloat(ctx, arg) {
     return new bson.Double(arg);
   }
-
-  /**
-   * Overrides the helper function to instantiate the object.
-   *
-   * @param {ParserRuleContext} ctx - The function call node
-   * @param {Object} lhsType - The type
-   * @param {Array} args - Arguments to the template
-   *
-   * @return {String}
-   */
-  generateCall(ctx, lhsType, args) {
-    if (`emit${lhsType.id}` in this) {
-      return this[`emit${lhsType.id}`](ctx, ...args);
-    }
-    const lhs = this.visit(this.getFunctionCallName(ctx));
-    const rhs = lhsType.argsTemplate
-      ? lhsType.argsTemplate(lhs, ...args)
-      : args;
-
-    return new lhs(...rhs);
-  }
-
 };

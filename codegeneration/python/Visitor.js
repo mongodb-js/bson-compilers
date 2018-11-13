@@ -152,10 +152,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     if (list) {
       // Sets of 1 item is the same as the item itself, but keep parens for math
       if (list.children.length === 1) {
-        if (this.object) {
-          return (this.visit(list.children[0]));
-        }
-        return `(${this.visit(list.children[0])})`;
+        return this.returnParenthesis(this.visit(list.children[0]));
       }
       const visitedChildren = list.children.map((child) => {
         return this.visit(child);
@@ -177,10 +174,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     if (ctx.type.template) {
       return ctx.type.template(args.join(join), ctx.indentDepth);
     }
-    if (this.object) {
-      return args;
-    }
-    return this.visitChildren(ctx);
+    return this.returnSet(args, ctx);
   }
 
   visitStringAtom(ctx) {

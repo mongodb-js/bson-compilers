@@ -321,6 +321,9 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
   returnFunctionCallRhs(rhs) {
     return `(${rhs.join(', ')})`;
   }
+  returnFunctionCallLhs(code, name) {
+    return name;
+  }
   returnFunctionCallLhsRhs(lhs, rhs) {
     return `${lhs}${rhs}`;
   }
@@ -391,9 +394,6 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
    * @return {*}
    */
   generateIdentifier(ctx) {
-    if ('emitIdentifier' in this) {
-      return this.emitIdentifier(ctx);
-    }
     const name = this.visitChildren(ctx);
     ctx.type = this.Symbols[name];
     if (ctx.type === undefined) {
@@ -404,7 +404,7 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     if (ctx.type.template) {
       return ctx.type.template();
     }
-    return name;
+    return this.returnFunctionCallLhs(ctx.type.code, name);
   }
 
   /**

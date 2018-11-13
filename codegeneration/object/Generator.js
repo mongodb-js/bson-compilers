@@ -32,11 +32,14 @@ module.exports = (Visitor) => class Generator extends Visitor {
       return this[`emit${lhsType.id}`](ctx, ...args);
     }
     const lhs = this.visit(this.getFunctionCallName(ctx));
-    const rhs = lhsType.argsTemplate
+    let rhs = lhsType.argsTemplate
       ? lhsType.argsTemplate(lhs, ...args)
       : args;
 
-    return new lhs(...rhs);
+    if (rhs.length === 1 && rhs[0] === undefined) {
+      rhs = [];
+    }
+    return this.returnFunctionCallLhsRhs(lhs, rhs);
   }
 
   /**
@@ -70,6 +73,21 @@ module.exports = (Visitor) => class Generator extends Visitor {
 
   returnFunctionCallRhs(rhs) {
     return rhs;
+  }
+
+  returnFunctionCallLhs(code, name) {
+    const types = {
+      100: bson.Code, 101: bson.ObjectId, 102: bson.Binary, 103: bson.DBRef,
+      104: bson.Double, 105: bson.Int32, 106: bson.Long, 107: bson.MinKey,
+      108: bson.MaxKey, 109: bson.BSONRegExp, 110: bson.Timestamp,
+      111: bson.Symbol, 112: bson.Decimal128, 200: Date, 8: RegExp, 2: Number,
+      10: Object
+    };
+    const result = types[code];
+    if (result === undefined) {
+      throw new BsonTranspilersReferenceError(`Cannot instantiate ${name} with code=${code}`);
+    }
+    return result;
   }
 
   returnFunctionCallLhsRhs(lhs, rhs) {
@@ -112,23 +130,6 @@ module.exports = (Visitor) => class Generator extends Visitor {
       object[this.getKeyStr(k)] = this.visit(this.getValue(k));
     });
     return object;
-  }
-
-  emitIdentifier(ctx) {
-    const name = this.visitChildren(ctx);
-    ctx.type = this.Symbols[name];
-    if (ctx.type === undefined) {
-      throw new BsonTranspilersReferenceError(`Symbol '${name}' is undefined`);
-    }
-    this.requiredImports[ctx.type.code] = true;
-    const types = {
-      100: bson.Code, 101: bson.ObjectId, 102: bson.Binary, 103: bson.DBRef,
-      104: bson.Double, 105: bson.Int32, 106: bson.Long, 107: bson.MinKey,
-      108: bson.MaxKey, 109: bson.BSONRegExp, 110: bson.Timestamp,
-      111: bson.Symbol, 112: bson.Decimal128, 200: Date, 8: RegExp, 2: Number,
-      10: Object
-    };
-    return types[ctx.type.code];
   }
 
   emitdatetime(ctx, date, isString) {

@@ -100,11 +100,15 @@ module.exports = (JavascriptVisitor) => class Visitor extends JavascriptVisitor 
     if ('emitNumberDecimal' in this) {
       return this.emitNumberDecimal(ctx, decstr);
     }
-    const lhs = symbolType.template ? symbolType.template() : 'NumberDecimal';
-    const rhs = symbolType.argsTemplate ? symbolType.argsTemplate(lhs, decstr) : `(${decstr})`;
+    const lhs = symbolType.template
+      ? symbolType.template()
+      : this.returnFunctionCallLhs(symbolType.code, 'NumberDecimal');
+    const rhs = symbolType.argsTemplate
+      ? symbolType.argsTemplate(lhs, decstr) :
+      this.returnFunctionCallRhs([decstr]);
     return this.Syntax.new.template
       ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
-      : `${lhs}${rhs}`;
+      : this.returnFunctionCallLhsRhs(lhs, rhs);
   }
 
   /**
@@ -128,13 +132,20 @@ module.exports = (JavascriptVisitor) => class Visitor extends JavascriptVisitor 
   processCode(ctx) {
     ctx.type = this.Types.Code;
     const symbolType = this.Symbols.Code;
-    const lhs = symbolType.template ? symbolType.template() : 'Code';
+    const lhs = symbolType.template
+      ? symbolType.template()
+      : this.returnFunctionCallLhs(symbolType.code, 'Code');
+
     if (this.getArguments(ctx).length === 0) {
-      const code = `${lhs}${symbolType.argsTemplate ? symbolType.argsTemplate(lhs) : '()'}`;
+      const args = symbolType.argsTemplate
+        ? symbolType.argsTemplate(lhs)
+        : this.returnFunctionCallRhs([]);
+      const code = this.returnFunctionCallLhsRhs(lhs, args);
       return this.Syntax.new.template
         ? this.Syntax.new.template(code, false, ctx.type.code)
         : code;
     }
+
     return this.generateBSONCode(ctx, ctx.type, symbolType, true);
   }
 };

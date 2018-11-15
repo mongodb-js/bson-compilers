@@ -346,7 +346,7 @@ BsonTypes:
         <<: *__type
         id: "BSONRegExp"
         code: 109
-        type: *ObjectType
+        type: *ObjectType #TODO: add pattern + options
     Timestamp: &TimestampType
         <<: *__type
         id: "Timestamp"

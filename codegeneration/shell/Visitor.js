@@ -103,12 +103,12 @@ module.exports = (JavascriptVisitor) => class Visitor extends JavascriptVisitor 
     const lhs = symbolType.template
       ? symbolType.template()
       : this.returnFunctionCallLhs(symbolType.code, 'NumberDecimal');
-    const rhs = symbolType.argsTemplate
-      ? symbolType.argsTemplate(lhs, decstr) :
-      this.returnFunctionCallRhs([decstr]);
+
+    const res = this.returnFunctionCallLhsRhs(lhs, [decstr], symbolType, lhs);
+
     return this.Syntax.new.template
-      ? this.Syntax.new.template(`${lhs}${rhs}`, false, ctx.type.code)
-      : this.returnFunctionCallLhsRhs(lhs, rhs);
+      ? this.Syntax.new.template(res, false, ctx.type.code)
+      : this.returnFunctionCallLhsRhs(lhs, [decstr], symbolType, lhs);
   }
 
   /**
@@ -137,10 +137,7 @@ module.exports = (JavascriptVisitor) => class Visitor extends JavascriptVisitor 
       : this.returnFunctionCallLhs(symbolType.code, 'Code');
 
     if (this.getArguments(ctx).length === 0) {
-      const args = symbolType.argsTemplate
-        ? symbolType.argsTemplate(lhs)
-        : this.returnFunctionCallRhs([]);
-      const code = this.returnFunctionCallLhsRhs(lhs, args);
+      const code = this.returnFunctionCallLhsRhs(lhs, [], symbolType, lhs);
       return this.Syntax.new.template
         ? this.Syntax.new.template(code, false, ctx.type.code)
         : code;

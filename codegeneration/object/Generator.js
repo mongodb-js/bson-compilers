@@ -32,14 +32,14 @@ module.exports = (Visitor) => class Generator extends Visitor {
       return this[`emit${lhsType.id}`](ctx, ...args);
     }
     const lhs = this.visit(this.getFunctionCallName(ctx));
-    let rhs = lhsType.argsTemplate
-      ? lhsType.argsTemplate(lhs, ...args)
-      : args;
-
-    if (rhs.length === 1 && rhs[0] === undefined) {
-      rhs = [];
-    }
-    return this.returnFunctionCallLhsRhs(lhs, rhs);
+    // let rhs = lhsType.argsTemplate
+    //   ? lhsType.argsTemplate(lhs, ...args)
+    //   : args;
+    //
+    // if (rhs.length === 1 && rhs[0] === undefined) {
+    //   rhs = [];
+    // }
+    return this.returnFunctionCallLhsRhs(lhs, args, lhsType);
   }
 
   /**
@@ -90,22 +90,43 @@ module.exports = (Visitor) => class Generator extends Visitor {
     return result;
   }
 
-  returnFunctionCallLhsRhs(lhs, rhs) {
+  returnFunctionCallLhsRhs(lhs, args, lhsType) {
+    if (args.length === 1 && args[0] === undefined) {
+      args = [];
+    }
+
+    if (lhsType && lhsType.argsTemplate) {
+      return lhsType.argsTemplate(lhs, ...args);
+    }
+
     let expr;
     try {
-      expr = new lhs(...rhs);
+      expr = new lhs(...args);
     } catch (e) {
       if (e.message.includes('constructor')) {
-        expr = lhs(...rhs);
+        try {
+          expr = lhs(...args);
+        } catch (e2) {
+          e2.message = `Error constructing type ${lhs}: ${e2.message}`;
+          throw e2;
+        }
       } else {
+        e.message = `Error constructing type ${lhs}: ${e.message}`;
         throw e;
       }
     }
     return expr;
   }
 
-  returnAttributeAccess(lhs, rhs) {
-    return lhs[rhs];
+  returnAttributeAccess(lhs, rhs, type) {
+    let expr = lhs[rhs];
+    if (type.attr[rhs].template) {
+      expr = type.attr[rhs].template(lhs, rhs);
+    }
+    if (typeof expr === 'function') {
+      return () => lhs[rhs](...arguments);
+    }
+    return expr;
   }
 
   returnParenthesis(expr) {

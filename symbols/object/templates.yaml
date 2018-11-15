@@ -301,8 +301,14 @@ Templates:
     CodeCodeArgsTemplate: &CodeCodeArgsTemplate null
     CodeScopeTemplate: &CodeScopeTemplate null
     CodeScopeArgsTemplate: &CodeScopeArgsTemplate null
-    ObjectIdToStringTemplate: &ObjectIdToStringTemplate null
-    ObjectIdToStringArgsTemplate: &ObjectIdToStringArgsTemplate null
+    ObjectIdToStringTemplate: &ObjectIdToStringTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs.toString();
+        }
+    ObjectIdToStringArgsTemplate: &ObjectIdToStringArgsTemplate !!js/function >
+        (lhs) => {
+            return lhs;
+        }
     ObjectIdEqualsTemplate: &ObjectIdEqualsTemplate null
     ObjectIdEqualsArgsTemplate: &ObjectIdEqualsArgsTemplate null
     ObjectIdGetTimestampTemplate: &ObjectIdGetTimestampTemplate null

@@ -9,6 +9,8 @@ const {
   BsonTranspilersUnimplementedError
 } = require('../helper/error');
 
+const { removeQuotes } = require('../helper/format');
+
 /**
  * Class for code generation. Goes in between ANTLR generated visitor and
  * language-specific visitor code. These are basically all helper methods
@@ -318,16 +320,22 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
   /*
    * Overriden only by the object generator.
    */
-  returnFunctionCallRhs(rhs) {
-    return `(${rhs.join(', ')})`;
-  }
   returnFunctionCallLhs(code, name) {
     return name;
   }
-  returnFunctionCallLhsRhs(lhs, rhs) {
+  returnFunctionCallLhsRhs(lhs, rhs, lhsType, l) {
+    if (lhsType.argsTemplate) {
+      rhs = lhsType.argsTemplate(l, ...rhs);
+    } else {
+      rhs = `(${rhs.join(', ')})`;
+    }
     return `${lhs}${rhs}`;
   }
-  returnAttributeAccess(lhs, rhs) {
+
+  returnAttributeAccess(lhs, rhs, type) {
+    if (type && type.attr[rhs].template) {
+      return type.attr[rhs].template(lhs, rhs);
+    }
     return `${lhs}.${rhs}`;
   }
   returnParenthesis(expr) {
@@ -346,6 +354,7 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
   generateFunctionCall(ctx) {
     const funcNameNode = this.getFunctionCallName(ctx);
     const lhs = this.visit(funcNameNode);
+    let l = lhs;
     let lhsType = this.findTypedNode(funcNameNode).type;
     if (typeof lhsType === 'string') {
       lhsType = this.Types[lhsType];
@@ -367,18 +376,15 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
 
     // Check arguments
     const expectedArgs = lhsType.args;
-    let rhs = this.checkArguments(
+    const rhs = this.checkArguments(
       expectedArgs, this.getArguments(ctx), lhsType.id, lhsType.namedArgs
     );
 
     // Apply the arguments template
     if (lhsType.argsTemplate) {
-      const l = this.visit(this.getIfIdentifier(funcNameNode));
-      rhs = lhsType.argsTemplate(l, ...rhs);
-    } else {
-      rhs = this.returnFunctionCallRhs(rhs);
+      l = this.visit(this.getIfIdentifier(funcNameNode));
     }
-    const expr = this.returnFunctionCallLhsRhs(lhs, rhs);
+    const expr = this.returnFunctionCallLhsRhs(lhs, rhs, lhsType, l);
     const constructor = lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR;
 
     return this.Syntax.new.template
@@ -455,13 +461,10 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
     if (type === null) {
       ctx.type = this.Types._undefined;
       // TODO: how strict do we want to be?
-      return this.returnAttributeAccess(lhs, rhs);
+      return this.returnAttributeAccess(lhs, rhs, type);
     }
     ctx.type = type.attr[rhs];
-    if (type.attr[rhs].template) {
-      return type.attr[rhs].template(lhs, rhs);
-    }
-    return this.returnAttributeAccess(lhs, rhs);
+    return this.returnAttributeAccess(lhs, rhs, type);
   }
 
   /**
@@ -728,7 +731,7 @@ module.exports = (ANTLRVisitor) => class CodeGenerationVisitor extends ANTLRVisi
         );
       }
     } else {
-      code = this.getArgumentAt(ctx, 0).getText();
+      code = removeQuotes(this.getArgumentAt(ctx, 0).getText());
     }
     let scope = undefined;
     let scopestr = '';

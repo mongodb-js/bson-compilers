@@ -32,13 +32,6 @@ module.exports = (Visitor) => class Generator extends Visitor {
       return this[`emit${lhsType.id}`](ctx, ...args);
     }
     const lhs = this.visit(this.getFunctionCallName(ctx));
-    // let rhs = lhsType.argsTemplate
-    //   ? lhsType.argsTemplate(lhs, ...args)
-    //   : args;
-    //
-    // if (rhs.length === 1 && rhs[0] === undefined) {
-    //   rhs = [];
-    // }
     return this.returnFunctionCallLhsRhs(lhs, args, lhsType);
   }
 
@@ -107,11 +100,11 @@ module.exports = (Visitor) => class Generator extends Visitor {
         try {
           expr = lhs(...args);
         } catch (e2) {
-          e2.message = `Error constructing type ${lhs}: ${e2.message}`;
+          e2.message = `Error constructing type: ${e2.message}`;
           throw e2;
         }
       } else {
-        e.message = `Error constructing type ${lhs}: ${e.message}`;
+        e.message = `Error constructing type: ${e.message}`;
         throw e;
       }
     }
@@ -135,6 +128,24 @@ module.exports = (Visitor) => class Generator extends Visitor {
 
   returnSet(args) {
     return args;
+  }
+
+  returnComparison(ctx) {
+    return ctx.children.reduce((s, node, i, arr) => {
+      if (i === arr.length - 1) { // Always visit the last element
+        return s;
+      }
+      if (i % 2 === 0) { // Only ops
+        return s;
+      }
+      const op = this.visit(node);
+      if (op === '==' || op === '!=' || op === 'is' || op === 'isnot') {
+        return this.Syntax.equality.template(s, op, this.visit(arr[i + 1]));
+      }
+      if (op === 'in' || op === 'notin') {
+        return this.Syntax.in.template(s, op, this.visit(arr[i + 1]));
+      }
+    }, this.visit(ctx.children[0]));
   }
 
   emit_array(ctx) {

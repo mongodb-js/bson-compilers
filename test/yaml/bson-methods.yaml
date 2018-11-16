@@ -78,10 +78,10 @@ tests:
             javascript: ObjectId('5ab901c29ee65f5c8550c5b9').equals(ObjectId('5ab901c29ee65f5c8550c5b9'))
             shell: ObjectId('5ab901c29ee65f5c8550c5b9').equals(ObjectId('5ab901c29ee65f5c8550c5b9'))
         output:
-            python: ObjectId('5ab901c29ee65f5c8550c5b9') == ObjectId('5ab901c29ee65f5c8550c5b9'))
+            python: ObjectId('5ab901c29ee65f5c8550c5b9') == ObjectId('5ab901c29ee65f5c8550c5b9')
             java: new ObjectId("5ab901c29ee65f5c8550c5b9").equals(new ObjectId("5ab901c29ee65f5c8550c5b9"))
             csharp: new ObjectId("5ab901c29ee65f5c8550c5b9").Equals(new ObjectId("5ab901c29ee65f5c8550c5b9"))
-            shell: new ObjectId('5ab901c29ee65f5c8550c5b9').equals(new ObjectId('5ab901c29ee65f5c8550c5b9')))
+            shell: new ObjectId('5ab901c29ee65f5c8550c5b9').equals(new ObjectId('5ab901c29ee65f5c8550c5b9'))
             object: true
     -   input:
             javascript: ObjectId().equals(ObjectId())

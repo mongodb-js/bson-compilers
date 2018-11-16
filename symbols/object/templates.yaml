@@ -46,12 +46,28 @@ Templates:
 
     EqualitySyntaxTemplate: &EqualitySyntaxTemplate !!js/function >
         (lhs, op, rhs) => {
-            if (op.includes('!')) {
+            if (op.includes('!') || op.includes('not')) {
                 return lhs !== rhs;
             }
-            else {
-                return lhs !== rhs;
+            if (op === '==' || op === '===' || op === 'is') {
+                if ('equals' in lhs) {
+                    return lhs.equals(rhs);
+                }
+                return lhs === rhs;
             }
+            if (op === '>') {
+                return lhs > rhs;
+            }
+            if (op === '<') {
+                return lhs < rhs;
+            }
+            if (op === '>=') {
+                return lhs >= rhs;
+            }
+            if (op === '>=') {
+                return lhs >= rhs;
+            }
+            return null;
         }
     InSyntaxTemplate: &InSyntaxTemplate !!js/function >
         (lhs, op, rhs) => {
@@ -309,8 +325,14 @@ Templates:
         (lhs) => {
             return lhs;
         }
-    ObjectIdEqualsTemplate: &ObjectIdEqualsTemplate null
-    ObjectIdEqualsArgsTemplate: &ObjectIdEqualsArgsTemplate null
+    ObjectIdEqualsTemplate: &ObjectIdEqualsTemplate !!js/function >
+        (lhs) => {
+            return lhs;
+        }
+    ObjectIdEqualsArgsTemplate: &ObjectIdEqualsArgsTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs.equals(rhs);
+        }
     ObjectIdGetTimestampTemplate: &ObjectIdGetTimestampTemplate null
     ObjectIdGetTimestampArgsTemplate: &ObjectIdGetTimestampArgsTemplate null
     ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate null

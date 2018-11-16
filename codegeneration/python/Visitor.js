@@ -305,10 +305,7 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     }
   }
 
-  visitComparison(ctx) {
-    if (ctx.getChildCount() === 1) {
-      return this.visitChildren(ctx);
-    }
+  returnComparison(ctx) {
     let skip = false;
     return ctx.children.reduce((str, e, i, arr) => {
       if (skip) { // Skip for 'in' statements because swallows rhs
@@ -339,6 +336,13 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
       }
       return `${str}${this.visit(arr[i - 1])} ${op} `;
     }, '');
+  }
+
+  visitComparison(ctx) {
+    if (ctx.getChildCount() === 1) {
+      return this.visitChildren(ctx);
+    }
+    return this.returnComparison(ctx);
   }
 
   visitIndexAccess(ctx) {

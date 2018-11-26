@@ -75,16 +75,6 @@ tests:
           shell: "{\n  'x': '1', \n  'n': '4'\n}"
           object: "{x: '1', n: '4'}"
     - input:
-          javascript: "Object.create({x: '1'})"
-          shell: "Object.create({x: '1'})"
-      output:
-          javascript: "Object.create({\n  'x': '1'\n})"
-          python: "{\n    'x': '1'\n}"
-          java: "eq(\"x\", \"1\")"
-          csharp: "new BsonDocument(\"x\", \"1\")"
-          shell: "Object.create({\n  'x': '1'\n})"
-          object: "{x: '1'}"
-    - input:
           javascript: "{ graphLookup : { \"from\" : \"raw_data\", \"startWith\" : \"$_id\", \"connectFromField\" : \"_id\", \"connectToField\" : \"manager\", \"as\" : \"reports\" } }"
           shell: "{ graphLookup : { \"from\" : \"raw_data\", \"startWith\" : \"$_id\", \"connectFromField\" : \"_id\", \"connectToField\" : \"manager\", \"as\" : \"reports\" } }"
           python: "{'graphLookup': {'from': 'raw_data', 'startWith': '$_id', 'connectFromField': '_id', 'connectToField': 'manager', 'as': 'reports'}}"

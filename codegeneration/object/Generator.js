@@ -1,7 +1,8 @@
 /* eslint new-cap: 0 camelcase: 0 */
 const bson = require('bson');
 const {
-  BsonTranspilersReferenceError
+  BsonTranspilersReferenceError,
+  BsonTranspilersTypeError
 } = require('../../helper/error');
 
 /*
@@ -112,12 +113,18 @@ module.exports = (Visitor) => class Generator extends Visitor {
   }
 
   returnAttributeAccess(lhs, rhs, type) {
+    if (type === null) {
+      throw new BsonTranspilersTypeError(`Error: ${rhs} is undefined and cannot be called`);
+    }
     let expr = lhs[rhs];
     if (type.attr[rhs].template) {
       expr = type.attr[rhs].template(lhs, rhs);
+      if (typeof expr === 'function') {
+        return () => { return expr(...arguments); };
+      }
     }
     if (typeof expr === 'function') {
-      return () => lhs[rhs](...arguments);
+      return () => { return lhs[rhs](...arguments); };
     }
     return expr;
   }

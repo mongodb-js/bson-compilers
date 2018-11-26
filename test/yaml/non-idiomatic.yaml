@@ -36,12 +36,6 @@ tests:
           python: "{'x': {'y': 'x'}}"
       output:
           java: new Document("x", new Document("y", "x"))
-    - description: Object.create()
-      input:
-          javascript: 'Object.create({x: ''x''})'
-          shell: 'Object.create({x: ''x''})'
-      output:
-          java: new Document("x", "x")
     - description: Empty object
       input:
           javascript: "{}"

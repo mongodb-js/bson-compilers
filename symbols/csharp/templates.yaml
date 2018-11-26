@@ -907,16 +907,6 @@ Templates:
         }
     ObjectIdIsValidArgsTemplate: &ObjectIdIsValidArgsTemplate null
     # JS Symbol Templates
-    ObjectSymbolTemplate: &ObjectSymbolTemplate null
-    ObjectSymbolArgsTemplate: &ObjectSymbolArgsTemplate null
-    ObjectSymbolCreateTemplate: &ObjectSymbolCreateTemplate !!js/function >
-        () => {
-            return '';
-        }
-    ObjectSymbolCreateArgsTemplate: &ObjectSymbolCreateArgsTemplate !!js/function >
-        (lhs, arg) => {
-            return arg;
-        }
     NumberSymbolTemplate: &NumberSymbolTemplate !!js/function >
         () => {
             return '';

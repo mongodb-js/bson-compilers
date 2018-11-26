@@ -132,8 +132,6 @@ Templates:
     TimestampSymbolTemplate: &TimestampSymbolTemplate null # No args
     TimestampSymbolArgsTemplate: &TimestampSymbolArgsTemplate null # Args: lhs, low, high
     # non bson-specific
-    ObjectSymbolTemplate: &ObjectSymbolTemplate null # No args
-    ObjectSymbolArgsTemplate: &ObjectSymbolArgsTemplate null # Args: lhs, arg
     NumberSymbolTemplate: &NumberSymbolTemplate null # No args
     NumberSymbolArgsTemplate: &NumberSymbolArgsTemplate null # Args: lhs, arg, argType
     DateSymbolTemplate: &DateSymbolTemplate null # No args
@@ -320,9 +318,7 @@ Templates:
     ObjectIdCreateFromHexStringArgsTemplate: &ObjectIdCreateFromHexStringArgsTemplate null
     ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate null
     ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate null
-    # non bson-specific
-    ObjectSymbolCreateTemplate: &ObjectSymbolCreateTemplate null
-    ObjectSymbolCreateArgsTemplate: &ObjectSymbolCreateArgsTemplate null
+    # non bson-specific would go here, but there aren't any atm.
 
     #############################################
     #                 Imports                   #

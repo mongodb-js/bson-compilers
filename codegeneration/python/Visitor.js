@@ -54,6 +54,14 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
    *
    */
 
+  visitFile_input(ctx) {
+    if (ctx.stmt().length !== 1) {
+      throw new BsonTranspilersRuntimeError(`Expression contains ${
+        ctx.stmt().length} statements. Input should be a single statement`);
+    }
+    return this.visitChildren(ctx);
+  }
+
   visitFunctionCall(ctx) {
     if (ctx.getChildCount() === 1) {
       return this.visitChildren(ctx);

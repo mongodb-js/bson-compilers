@@ -7,75 +7,7 @@ runner: !!js/function >
         });
     }
 tests:
-    empty:
-    - input:
-          javascript: ""
-          shell: ""
-          python: ""
-      output:
-          javascript: ""
-          shell: ""
-          python: ""
-          java: ""
-          csharp: ""
-    - input:
-          javascript: "  "
-          shell: "  "
-          python: "  "
-      output:
-          javascript: ""
-          shell: ""
-          python: ""
-          java: ""
-          csharp: ""
-    - input:
-          javascript: ";"
-          shell: ";"
-          python: ";"
-      output:
-          javascript: ""
-          shell: ""
-          python: ""
-          java: ""
-          csharp: ""
-    - input:
-          javascript: "\n\n\n"
-          shell: "\n\n\n"
-          python: "\n\n\n"
-      output:
-          javascript: ""
-          shell: ""
-          python: ""
-          java: ""
-          csharp: ""
     whitespace:
-    - input:
-          python: "1\n+2"
-      output:
-          javascript: "1\n+2"
-          shell: "1\n+2"
-          python: "1\n+2"
-          java: "1L\n+2L"
-          csharp: "1\n+2"
-    - input:
-          javascript: "1 \n +2"
-          shell: "1 \n +2"
-      output:
-          javascript: "1 + 2"
-          shell: "1 + 2"
-          python: "1 + 2"
-          java: "1L + 2L"
-          csharp: "1 + 2"
-    - input:
-          javascript: "1; +2"
-          shell: "1; +2"
-          python: "1; +2"
-      output:
-          javascript: "1\n+2"
-          shell: "1\n+2"
-          python: "1\n+2"
-          java: "1L\n+2L"
-          csharp: "1\n+2"
     - input:
           javascript: "1 \t\t +2"
           shell: "1 \t\t +2"
@@ -86,16 +18,18 @@ tests:
           python: "1 + 2"
           java: "1L + 2L"
           csharp: "1 + 2"
+          object: "3"
     - input:
-          javascript: "\r\t\n"
-          shell: "\r\t\n"
-          python: "\r\t\n"
+          javascript: "1 \n +2"
+          shell: "1 \t\t +2"
+          python: "1 \t\t +2"
       output:
-          javascript: ""
-          shell: ""
-          python: ""
-          java: ""
-          csharp: ""
+          javascript: "1 + 2"
+          shell: "1 + 2"
+          python: "1 + 2"
+          java: "1L + 2L"
+          csharp: "1 + 2"
+          object: "3"
     compare:
     - input:
           javascript: "1 === 2"
@@ -234,17 +168,6 @@ tests:
           csharp: "1"
           object: "1"
     - input:
-          javascript: "1 // a comment\n2"
-          shell: "1 // a comment\n2"
-          python: "1 # a comment\n2"
-      output:
-          javascript: "1\n2"
-          shell: "1\n2"
-          python: "1\n2"
-          java: "1L\n2L"
-          csharp: "1\n2"
-          # TODO: error if more than one line
-    - input:
           javascript: "1 /* a comment*/"
           shell: "1 /* a comment*/"
       output:
@@ -277,16 +200,6 @@ tests:
     - input:
           javascript: "1 /* a comment*/+2"
           shell: "1 /* a comment*/+2"
-      output:
-          javascript: "1 + 2"
-          shell: "1 + 2"
-          python: "1 + 2"
-          java: "1L + 2L"
-          csharp: "1 + 2"
-          object: "3"
-    - input:
-          javascript: "1 /* a \ncomn\nmen\nt*/\n+2"
-          shell:  "1 /* a \ncomn\nmen\nt*/\n+2"
       output:
           javascript: "1 + 2"
           shell: "1 + 2"

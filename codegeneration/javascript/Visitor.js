@@ -60,6 +60,29 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
    *
    */
 
+  visitProgram(ctx) {
+    if (ctx.getChildCount() < 2) {
+      throw new BsonTranspilersRuntimeError(
+        'Expression contains 0 statements. Input should be a single statement'
+      );
+    }
+    return this.visitChildren(ctx);
+  }
+
+  visitSourceElements(ctx) {
+    if (ctx.sourceElement().length !== 1) {
+      throw new BsonTranspilersRuntimeError(`Expression contains ${
+        ctx.sourceElement().length} statements. Input should be a single statement`);
+    }
+    return this.visitChildren(ctx);
+  }
+  visitEmptyStatement() {
+    throw new BsonTranspilersRuntimeError(
+      'Expression contains 0 statements. Input should be a single statement'
+    );
+  }
+
+
   visitFuncCallExpression(ctx) {
     return this.generateFunctionCall(ctx);
   }
@@ -114,13 +137,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
 
   visitOctalIntegerLiteral(ctx) {
     return this.leafHelper(this.Types._octal, ctx);
-  }
-
-  visitEmptyStatement() {
-    if ('emitEmptyStatement' in this) {
-      return this.emitEmptyStatement();
-    }
-    return '\n';
   }
 
   visitElision(ctx) {

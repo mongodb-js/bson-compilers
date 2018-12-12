@@ -110,7 +110,7 @@ Templates:
                 case '~':
                     return ~arg;
                 default:
-                    return null;
+                    throw new Error(`unrecognized operation: ${op}`);
             }
         }
     BinarySyntaxTemplate: &BinarySyntaxTemplate !!js/function >
@@ -146,7 +146,7 @@ Templates:
                     case '^':
                         return s ^ rhs;
                     default:
-                        return s; // TODO: error?
+                        throw new Error(`unrecognized operation: ${op}`);
                 }
             }, args[0]);
         }

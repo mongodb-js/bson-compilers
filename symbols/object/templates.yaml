@@ -50,7 +50,8 @@ Templates:
                 return lhs !== rhs;
             }
             if (op === '==' || op === '===' || op === 'is') {
-                if ('equals' in lhs) {
+                if (typeof(lhs) === 'object' && 'equals' in lhs) {
+                    // Use '.equals' for objects, if it exists.
                     return lhs.equals(rhs);
                 }
                 return lhs === rhs;
@@ -64,10 +65,10 @@ Templates:
             if (op === '>=') {
                 return lhs >= rhs;
             }
-            if (op === '>=') {
-                return lhs >= rhs;
+            if (op === '<=') {
+                return lhs <= rhs;
             }
-            return null;
+            throw new Error(`unrecognized operation: ${op}`);
         }
     InSyntaxTemplate: &InSyntaxTemplate !!js/function >
         (lhs, op, rhs) => {
@@ -85,11 +86,15 @@ Templates:
 
     AndSyntaxTemplate: &AndSyntaxTemplate !!js/function >
         (args) => {
-            return args.every((k) => k);
+            return args.reduce((t, k, i) => {
+                return t && k;
+            });
         }
     OrSyntaxTemplate: &OrSyntaxTemplate !!js/function >
         (args) => {
-            return args.some((k) => k);
+            return args.reduce((t, k, i) => {
+                return t || k;
+            });
         }
     NotSyntaxTemplate: &NotSyntaxTemplate !!js/function >
         (arg) => {

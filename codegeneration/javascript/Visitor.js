@@ -140,7 +140,14 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   visitRelationalExpression(ctx) {
-    return ctx.children.map((n) => ( this.visit(n) )).join(' ');
+    ctx.type = this.Types._boolean;
+    const lhs = this.visit(ctx.singleExpression()[0]);
+    const rhs = this.visit(ctx.singleExpression()[1]);
+    const op = this.visit(ctx.children[1]);
+    if (this.Syntax.equality) {
+      return this.Syntax.equality.template(lhs, op, rhs);
+    }
+    return this.visitChildren(ctx);
   }
 
   visitEqualityExpression(ctx) {

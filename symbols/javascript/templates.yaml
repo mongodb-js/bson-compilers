@@ -19,8 +19,10 @@ Templates:
         (lhs, op, rhs) => {
             if (op.includes('!') || op.includes('not')) {
                 return `${lhs} !== ${rhs}`;
+            } else if (op === '==' || op === '===' || op === 'is') {
+                return `${lhs} === ${rhs}`;
             }
-            return `${lhs} === ${rhs}`;
+            return `${lhs} ${op} ${rhs}`;
         }
     InSyntaxTemplate: &InSyntaxTemplate !!js/function >
         (lhs, op, rhs) => {

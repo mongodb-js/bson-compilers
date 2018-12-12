@@ -2,7 +2,8 @@
 const bson = require('bson');
 const {
   BsonTranspilersReferenceError,
-  BsonTranspilersTypeError
+  BsonTranspilersTypeError,
+  BsonTranspilersRuntimeError
 } = require('../../helper/error');
 
 /*
@@ -146,12 +147,16 @@ module.exports = (Visitor) => class Generator extends Visitor {
         return s;
       }
       const op = this.visit(node);
-      if (op === '==' || op === '!=' || op === 'is' || op === 'isnot') {
+      if (typeof op === 'object' && op.length === 2 && op.every((k) => (['in', 'is', 'not'].indexOf(k) !== -1))) {
+        return this.Syntax.equality.template(s, '!=', this.visit(arr[i + 1]));
+      }
+      if (['>', '<', '<=', '>=', '<>', '==', '!=', 'is'].indexOf(op) !== -1) {
         return this.Syntax.equality.template(s, op, this.visit(arr[i + 1]));
       }
       if (op === 'in' || op === 'notin') {
         return this.Syntax.in.template(s, op, this.visit(arr[i + 1]));
       }
+      throw new BsonTranspilersRuntimeError(`Unrecognized operation ${op}`);
     }, this.visit(ctx.children[0]));
   }
 

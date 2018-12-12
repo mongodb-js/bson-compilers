@@ -5,6 +5,7 @@ const {
   BsonTranspilersTypeError,
   BsonTranspilersRuntimeError
 } = require('../../helper/error');
+const { removeQuotes } = require('../../helper/format');
 
 /*
  * Class for handling edge cases for shell code generation. Defines "emit" methods.
@@ -171,7 +172,12 @@ module.exports = (Visitor) => class Generator extends Visitor {
     this.requiredImports[10] = true;
     const object = {};
     this.getKeyValueList(ctx).map((k) => {
-      object[this.getKeyStr(k)] = this.visit(this.getValue(k));
+      const key = this.getKeyStr(k);
+      if (key === '$where') {
+        object[key] = removeQuotes(this.getValue(k).getText());
+      } else {
+        object[key] = this.visit(this.getValue(k));
+      }
     });
     return object;
   }

@@ -336,8 +336,14 @@ Templates:
         (lhs, rhs) => {
             return lhs.equals(rhs);
         }
-    ObjectIdGetTimestampTemplate: &ObjectIdGetTimestampTemplate null
-    ObjectIdGetTimestampArgsTemplate: &ObjectIdGetTimestampArgsTemplate null
+    ObjectIdGetTimestampTemplate: &ObjectIdGetTimestampTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs.getTimestamp();
+        }
+    ObjectIdGetTimestampArgsTemplate: &ObjectIdGetTimestampArgsTemplate !!js/function >
+        (lhs) => {
+            return lhs;
+        }
     ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate null
     ObjectIdIsValidArgsTemplate: &ObjectIdIsValidArgsTemplate null
     BinaryValueTemplate: &BinaryValueTemplate null

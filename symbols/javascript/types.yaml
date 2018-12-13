@@ -86,12 +86,6 @@ BsonTypes:
         code: 103
         type: *ObjectType
         attr:
-            toString:
-                <<: *__func
-                id: "toString"
-                type: *StringType
-                template: *DBRefToStringTemplate
-                argsTemplate: *DBRefToStringArgsTemplate
             db:
                 callable: *var
                 args: null

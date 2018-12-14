@@ -273,7 +273,10 @@ Templates:
     Int32SymbolTemplate: &Int32SymbolTemplate null # No args
     Int32SymbolArgsTemplate: &Int32SymbolArgsTemplate null # Args: lhs, arg, argType
     LongSymbolTemplate: &LongSymbolTemplate null # No args
-    LongSymbolArgsTemplate: &LongSymbolArgsTemplate null # Args: lhs, arg, argType
+    LongSymbolArgsTemplate: &LongSymbolArgsTemplate !!js/function > # Args: lhs, arg, argType
+        (lhs, arg) => {
+            return lhs.fromNumber(arg);
+        }
     RegExpSymbolTemplate: &RegExpSymbolTemplate null # No args
     RegExpSymbolArgsTemplate: &RegExpSymbolArgsTemplate null # Args: lhs, pattern, flags
     SymbolSymbolTemplate: &SymbolSymbolTemplate null # No args
@@ -430,21 +433,54 @@ Templates:
     LongLessThanArgsTemplate: &LongLessThanArgsTemplate null
     LongLessThanOrEqualTemplate: &LongLessThanOrEqualTemplate null
     LongLessThanOrEqualArgsTemplate: &LongLessThanOrEqualArgsTemplate null
-    LongFloatApproxTemplate: &LongFloatApproxTemplate null
-    LongTopTemplate: &LongTopTemplate null
-    LongBottomTemplate: &LongBottomTemplate null
+    LongFloatApproxTemplate: &LongFloatApproxTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs.toNumber();
+        }
+    LongTopTemplate: &LongTopTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs.high_;
+        }
+    LongBottomTemplate: &LongBottomTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs.low_;
+        }
     TimestampToStringTemplate: &TimestampToStringTemplate null
     TimestampToStringArgsTemplate: &TimestampToStringArgsTemplate null
     TimestampEqualsTemplate: &TimestampEqualsTemplate null
     TimestampEqualsArgsTemplate: &TimestampEqualsArgsTemplate null
-    TimestampGetLowBitsTemplate: &TimestampGetLowBitsTemplate null
-    TimestampGetLowBitsArgsTemplate: &TimestampGetLowBitsArgsTemplate null
-    TimestampGetHighBitsTemplate: &TimestampGetHighBitsTemplate null
-    TimestampGetHighBitsArgsTemplate: &TimestampGetHighBitsArgsTemplate null
-    TimestampTTemplate: &TimestampTTemplate null
-    TimestampITemplate: &TimestampITemplate null
-    TimestampAsDateTemplate: &TimestampAsDateTemplate null
-    TimestampAsDateArgsTemplate: &TimestampAsDateArgsTemplate null
+    TimestampGetLowBitsTemplate: &TimestampGetLowBitsTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs.getLowBits();
+        }
+    TimestampGetLowBitsArgsTemplate: &TimestampGetLowBitsArgsTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs;
+        }
+    TimestampGetHighBitsTemplate: &TimestampGetHighBitsTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs.getHighBits();
+        }
+    TimestampGetHighBitsArgsTemplate: &TimestampGetHighBitsArgsTemplate  !!js/function >
+        (lhs, rhs) => {
+            return lhs;
+        }
+    TimestampTTemplate: &TimestampTTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs.getLowBits();
+        }
+    TimestampITemplate: &TimestampITemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs.getHighBits();
+        }
+    TimestampAsDateTemplate: &TimestampAsDateTemplate !!js/function >
+        (lhs, rhs) => {
+            return new Date(lhs.getHighBits() * 1000);
+        }
+    TimestampAsDateArgsTemplate: &TimestampAsDateArgsTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs;
+        }
     TimestampCompareTemplate: &TimestampCompareTemplate null
     TimestampCompareArgsTemplate: &TimestampCompareArgsTemplate null
     TimestampNotEqualsTemplate: &TimestampNotEqualsTemplate null

@@ -283,14 +283,6 @@ Templates:
         () => {
             return '';
         }
-    LongValueOfTemplate: &LongValueOfTemplate !!js/function >
-        (lhs) => {
-            return `(int) ${lhs}`;
-        }
-    LongValueOfArgsTemplate: &LongValueOfArgsTemplate !!js/function >
-        () => {
-            return '';
-        }
     LongToStringTemplate: &LongToStringTemplate !!js/function >
         (lhs) => {
             return lhs;

@@ -294,14 +294,6 @@ Templates:
         () => {
             return '';
         }
-    LongValueOfTemplate: &LongValueOfTemplate !!js/function >
-        (lhs) => {
-            return `(int) ${lhs}`;
-        }
-    LongValueOfArgsTemplate: &LongValueOfArgsTemplate !!js/function >
-        () => {
-            return '';
-        }
     LongToNumberTemplate: &LongToNumberTemplate !!js/function >
         (lhs) => {
             return `(double) ${lhs}`;
@@ -884,9 +876,12 @@ Templates:
         }
     DateSymbolNowTemplate: &DateSymbolNowTemplate !!js/function >
         () => {
-            return 'java.util.Date';
+            return '';
         }
-    DateSymbolNowArgsTemplate: &DateSymbolNowArgsTemplate null
+    DateSymbolNowArgsTemplate: &DateSymbolNowArgsTemplate !!js/function >
+        () => {
+            return 'new java.util.Date().getTime()';
+        }
     RegExpSymbolTemplate: &RegExpSymbolTemplate !!js/function >
         () => {
             return 'Pattern';

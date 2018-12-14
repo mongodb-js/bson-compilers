@@ -786,14 +786,13 @@ tests:
       input:
           javascript: Date.now()
           shell: Date.now()
-          python: datetime.utcnow()
       output:
           javascript: Date.now()
           shell: Date.now()
           python: datetime.utcnow()
-          java: new java.util.Date()
+          java: new java.util.Date().getTime()
           csharp: DateTime.Now
-          object: "new Date()"
+          object: "1" # just checks type and not value
     - input:
           javascript: new Date(1995, 11, 17)
           shell: new Date(1995, 11, 17)

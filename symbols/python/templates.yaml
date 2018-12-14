@@ -280,14 +280,6 @@ Templates:
         (lhs) => {
             return `(${lhs})`;
         }
-    LongValueOfTemplate: &LongValueOfTemplate !!js/function >
-        (lhs) => {
-            return `long(${lhs})`;
-        }
-    LongValueOfArgsTemplate: &LongValueOfArgsTemplate !!js/function >
-        () => {
-            return '';
-        }
     LongToNumberTemplate: &LongToNumberTemplate !!js/function >
         (lhs) => {
             return `float(${lhs})`;

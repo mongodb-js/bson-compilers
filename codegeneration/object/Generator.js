@@ -97,7 +97,11 @@ module.exports = (Visitor) => class Generator extends Visitor {
 
     let expr;
     try {
-      expr = new lhs(...args);
+      if (lhsType.callable === this.SYMBOL_TYPE.CONSTRUCTOR) {
+        expr = new lhs(...args);
+      } else {
+        expr = lhs(...args);
+      }
     } catch (e) {
       if (e.message.includes('constructor')) {
         try {
@@ -122,11 +126,15 @@ module.exports = (Visitor) => class Generator extends Visitor {
     if (type.attr[rhs].template) {
       expr = type.attr[rhs].template(lhs, rhs);
       if (typeof expr === 'function') {
-        return () => { return expr(...arguments); };
+        return function() {
+          return expr(...arguments);
+        };
       }
     }
     if (typeof expr === 'function') {
-      return () => { return lhs[rhs](...arguments); };
+      return function() {
+        return lhs[rhs](...arguments);
+      };
     }
     return expr;
   }

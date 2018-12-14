@@ -229,11 +229,6 @@ Templates:
             return `${lhs}.toInt`;
         }
     LongToIntArgsTemplate: &LongToIntArgsTemplate null
-    LongValueOfTemplate: &LongValueOfTemplate !!js/function >
-        (lhs) => {
-            return `${lhs}.toInt`;
-        }
-    LongValueOfArgsTemplate: &LongValueOfArgsTemplate null
     LongToNumberTemplate: &LongToNumberTemplate null
     LongToNumberArgsTemplate: &LongToNumberArgsTemplate null
     LongAddTemplate: &LongAddTemplate null

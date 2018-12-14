@@ -241,8 +241,6 @@ Templates:
             return `${lhs}.valueOf`;
         }
     LongToIntArgsTemplate: &LongToIntArgsTemplate null
-    LongValueOfTemplate: &LongValueOfTemplate null
-    LongValueOfArgsTemplate: &LongValueOfArgsTemplate null
     LongToNumberTemplate: &LongToNumberTemplate !!js/function >
         (lhs) => {
             return `${lhs}.floatApprox`;

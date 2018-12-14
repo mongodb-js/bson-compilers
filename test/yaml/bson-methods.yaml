@@ -154,7 +154,7 @@ tests:
             java: 429496729601L >> 32
             csharp: 429496729601L >> 32
             python: Int64(429496729601) >> 32
-#            object: '100'
+            object: '100'
     -   input:
             shell: NumberLong(429496729601).bottom
         output:
@@ -162,15 +162,7 @@ tests:
             java: 429496729601L & 0x0000ffff
             csharp: 429496729601L & 0x0000ffff
             python: Int64(429496729601) & 0x0000ffff
-#            object: '1'
-    -  input:
-            shell: NumberLong(429496729601).valueOf()
-       output:
-            javascript: Long.fromNumber(429496729601).toInt()
-            java: "(int) 429496729601L"
-            csharp: "(int) 429496729601L"
-            python: long(Int64(429496729601))
-#            object: '429496729601'
+            object: '1'
     -  input:
             shell: NumberLong(429496729601).floatApprox
        output:
@@ -178,7 +170,7 @@ tests:
             java: "(float) 429496729601L"
             csharp: "(float) 429496729601L"
             python: float(Int64(429496729601))
-#            object: '429496729601'
+            object: '429496729601'
     -   input:
             javascript: Long(1, 100).toInt()
         output:
@@ -186,7 +178,7 @@ tests:
             java: "(int) 429496729601L"
             csharp: "(int) 429496729601L"
             shell: new NumberLong(429496729601).valueOf()
-            #TODO: number, toInt=top
+            object: '1'
     -   input:
             javascript: Long(1, 100).toNumber()
         output:
@@ -194,7 +186,7 @@ tests:
             java: "(double) 429496729601L"
             csharp: "(double) 429496729601L"
             shell: new NumberLong(429496729601).floatApprox
-#            object: '429496729601'
+            object: '429496729601'
     -   input:
             javascript: Long(1, 100).toString()
             shell: NumberLong(429496729601).toString()
@@ -203,7 +195,7 @@ tests:
             java: '"429496729601"'
             csharp: '"429496729601"'
             shell: "'429496729601'"
-#            object: "'429496729601'"
+            object: "'429496729601'"
     -   input:
             javascript: Long(1, 100).toString(10)
         output:
@@ -211,7 +203,7 @@ tests:
             java: '"429496729601"'
             csharp: '"429496729601"'
             shell: "'429496729601'"
-#            object: "'429496729601'"
+            object: "'429496729601'"
     -   input:
             javascript: Long(1, 100).isZero()
         output:
@@ -219,7 +211,7 @@ tests:
             java: 429496729601L == 0
             csharp: 429496729601L == 0
             shell: new NumberLong(429496729601) === 0
-#            object: 'false'
+            object: 'false'
     -   input:
             javascript: Long(1, 100).isNegative()
         output:
@@ -227,7 +219,7 @@ tests:
             java: 429496729601L < 0
             csharp: 429496729601L < 0
             shell: new NumberLong(429496729601) < 0
-#            object: 'false'
+            object: 'false'
     -   input:
             javascript: Long(1, 100).isOdd()
         output:
@@ -235,7 +227,7 @@ tests:
             java: "(429496729601L % 2) == 1"
             csharp: 429496729601L % 2 == 1
             shell: "(new NumberLong(429496729601) % 2) === 1"
-#            object: 'true'
+            object: 'true'
     -   input:
             javascript: Long(1, 100).equals(Long(9, 1))
         output:
@@ -243,7 +235,7 @@ tests:
             java: 429496729601L == 4294967305L
             csharp: 429496729601L == 4294967305L
             shell: new NumberLong(429496729601) === new NumberLong(4294967305)
-#            object: 'false'
+            object: 'false'
     -   input:
             javascript: Long(1, 100).notEquals(Long(9, 1))
         output:
@@ -251,7 +243,7 @@ tests:
             java: 429496729601L != 4294967305L
             csharp: 429496729601L != 4294967305L
             shell: new NumberLong(429496729601) !== new NumberLong(4294967305)
-#            object: 'true'
+            object: 'true'
     -   input:
             javascript: Long(1, 100).compare(Long(9, 1))
         output:
@@ -259,7 +251,7 @@ tests:
             java: 429496729601L - 4294967305L
             csharp: 429496729601L - 4294967305L
             shell: new NumberLong(429496729601) - new NumberLong(4294967305)
-#            object: "425201762296"
+            object: "1"
     -   input:
             javascript: Long(1, 100).greaterThan(Long(9, 1))
         output:
@@ -267,7 +259,7 @@ tests:
             java: 429496729601L > 4294967305L
             csharp: 429496729601L > 4294967305L
             shell: new NumberLong(429496729601) > new NumberLong(4294967305)
-#            object: 'true'
+            object: 'true'
     -   input:
             javascript: Long(1, 100).greaterThanOrEqual(Long(9, 1))
         output:
@@ -275,7 +267,7 @@ tests:
             java: 429496729601L >= 4294967305L
             csharp: 429496729601L >= 4294967305L
             shell: new NumberLong(429496729601) >= new NumberLong(4294967305)
-#            object: 'true'
+            object: 'true'
     -   input:
             javascript: Long(1, 100).lessThan(Long(9, 1))
         output:
@@ -283,7 +275,7 @@ tests:
             java: 429496729601L < 4294967305L
             csharp: 429496729601L < 4294967305L
             shell: new NumberLong(429496729601) < new NumberLong(4294967305)
-#            object: 'false'
+            object: 'false'
     -   input:
             javascript: Long(1, 100).lessThanOrEqual(Long(9, 1))
         output:
@@ -291,7 +283,7 @@ tests:
             java: 429496729601L <= 4294967305L
             csharp: 429496729601L <= 4294967305L
             shell: new NumberLong(429496729601) <= new NumberLong(4294967305)
-#            object: 'false'
+            object: 'false'
     -   input:
             javascript: Long(1, 100).negate()
         output:
@@ -299,7 +291,7 @@ tests:
             java: "-429496729601L"
             csharp: "-429496729601L"
             shell: "-new NumberLong(429496729601)"
-#            output: "-429496729601"
+            output: "-429496729601"
     -   input:
             javascript: Long(1, 100).add(Long(9, 1))
         output:
@@ -307,7 +299,7 @@ tests:
             java: 429496729601L + 4294967305L
             csharp: 429496729601L + 4294967305L
             shell: new NumberLong(429496729601) + new NumberLong(4294967305)
-#            object: 433791696906
+            object: Long(10, 101)
     -   input:
             javascript: Long(1, 100).subtract(Long(9, 1))
         output:
@@ -315,7 +307,7 @@ tests:
             java: 429496729601L - 4294967305L
             csharp: 429496729601L - 4294967305L
             shell: new NumberLong(429496729601) - new NumberLong(4294967305)
-#            object: Long(-8, 98)
+            object: Long(-8, 98)
     -   input:
             javascript: Long(1, 100).multiply(Long(9, 1))
         output:
@@ -323,7 +315,7 @@ tests:
             java: 429496729601L * 4294967305L
             csharp: 429496729601L * 4294967305L
             shell: new NumberLong(429496729601) * new NumberLong(4294967305)
-#            output: Long(9, 901)
+            output: Long(9, 901)
     -   input:
             javascript: Long(1, 100).div(Long(9, 1))
         output:
@@ -331,7 +323,7 @@ tests:
             java: 429496729601L / 4294967305L
             csharp: 429496729601L / 4294967305L
             shell: new NumberLong(429496729601) / new NumberLong(4294967305)
-#            output: Long(99, 0)
+            output: Long(99, 0)
     -   input:
             javascript: Long(1, 100).modulo(Long(9, 1))
         output:
@@ -339,7 +331,7 @@ tests:
             java: 429496729601L % 4294967305L
             csharp: 429496729601L % 4294967305L
             shell: new NumberLong(429496729601) % new NumberLong(4294967305)
-#            output: Long(-890, 0)
+            output: Long(-890, 0)
     -   input:
             javascript: Long(1, 100).not()
         output:
@@ -347,7 +339,7 @@ tests:
             java: "~429496729601L"
             csharp: "~429496729601L"
             shell: "~new NumberLong(429496729601)"
-#            output: Long(-1, -101)
+            output: Long(-1, -101)
     -   input:
             javascript: Long(1, 100).and(Long(9, 1))
         output:
@@ -355,7 +347,7 @@ tests:
             java: 429496729601L & 4294967305L
             csharp: 429496729601L & 4294967305L
             shell: new NumberLong(429496729601) & new NumberLong(4294967305)
-#            output: Long(1, 0)
+            output: Long(1, 0)
     -   input:
             javascript: Long(1, 100).or(Long(9, 1))
         output:
@@ -363,7 +355,7 @@ tests:
             java: 429496729601L | 4294967305L
             csharp: 429496729601L | 4294967305L
             shell: new NumberLong(429496729601) | new NumberLong(4294967305)
-#            object: Long(9, 101)
+            object: Long(9, 101)
     -   input:
             javascript: Long(1, 100).xor(Long(9, 1))
         output:
@@ -371,7 +363,7 @@ tests:
             java: 429496729601L ^ 4294967305L
             csharp: 429496729601L ^ 4294967305L
             shell: new NumberLong(429496729601) ^ new NumberLong(4294967305)
-#            object: Long(8, 101)
+            object: Long(8, 101)
     -   input:
             javascript: Long(1, 100).shiftLeft(10)
         output:
@@ -379,7 +371,7 @@ tests:
             java: Long.rotateLeft(429496729601L, 10)
             csharp: 429496729601L << 10
             shell: new NumberLong(429496729601) << 10
-#            object: Long(1024, 102400)
+            object: Long(1024, 102400)
     -   input:
             javascript: Long(1, 100).shiftRight(10)
         output:
@@ -387,17 +379,16 @@ tests:
             java: Long.rotateRight(429496729601L, 10)
             csharp: 429496729601L >> 10
             shell: new NumberLong(429496729601) >> 10
-#            output: Long(419430400, 0)
+            output: Long(419430400, 0)
     Decimal128-methods:
     -   input:
             javascript: new Decimal128(Buffer.from('5')).toString()
-            shell: NumberDecimal('5.3E-6175').toString()
         output:
             python: str(Decimal128('5.3E-6175'))
             java: Decimal128.parse("5.3E-6175").toString()
             csharp: Decimal128.Parse("5.3E-6175").ToString()
             shell: new NumberDecimal(5.3E-6175).toString()
-#            output: '5.3E-6175'
+            output: "'5.3E-6175'"
     Timestamp-methods:
     -   input:
             javascript: Timestamp(1, 100).toString()
@@ -407,7 +398,7 @@ tests:
             java: new BSONTimestamp(1, 100).toString()
             csharp: new BsonTimestamp(1, 100).ToString()
             shell: new Timestamp(1, 100).toString()
-#            object: "'429496729601'"
+            object: "'429496729601'"
     -   input:
             javascript: Timestamp(1, 100).equals(Timestamp(2, 99))
         output:
@@ -415,7 +406,7 @@ tests:
             java: new BSONTimestamp(1, 100).equals(new BSONTimestamp(2, 99))
             csharp: new BsonTimestamp(1, 100).Equals(new BsonTimestamp(2, 99))
             shell: new Timestamp(1, 100) === new Timestamp(2, 99)
-#            object: 'false'
+            object: 'false'
     -   input:
             javascript: Timestamp(1, 100).compare(Timestamp(2, 99))
         output:
@@ -423,7 +414,7 @@ tests:
             java: new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99))
             csharp: new BsonTimestamp(1, 100).CompareTo(new BsonTimestamp(2, 99))
             shell: new Timestamp(1, 100) - new Timestamp(2, 99)
-#            object: '1'
+            object: '1'
     -   input:
             javascript: Timestamp(1, 100).notEquals(Timestamp(2, 99))
         output:
@@ -431,7 +422,7 @@ tests:
             java: new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) != 0
             csharp: new BsonTimestamp(1, 100) != new BsonTimestamp(2, 99)
             shell: new Timestamp(1, 100) !== new Timestamp(2, 99)
-#            object: 'true'
+            object: 'true'
     -   input:
             javascript: Timestamp(1, 100).greaterThan(Timestamp(2, 99))
         output:
@@ -439,7 +430,7 @@ tests:
             java: new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) > 0
             csharp: new BsonTimestamp(1, 100) > new BsonTimestamp(2, 99)
             shell: new Timestamp(1, 100) > new Timestamp(2, 99)
-#            object: 'true'
+            object: 'true'
     -   input:
             javascript: Timestamp(1, 100).greaterThanOrEqual(Timestamp(2, 99))
         output:
@@ -447,7 +438,7 @@ tests:
             java: new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) >= 0
             csharp: new BsonTimestamp(1, 100) >= new BsonTimestamp(2, 99)
             shell: new Timestamp(1, 100) >= new Timestamp(2, 99)
-#            object: 'true'
+            object: 'true'
     -   input:
             javascript: Timestamp(1, 100).lessThan(Timestamp(2, 99))
         output:
@@ -455,7 +446,7 @@ tests:
             java: new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) < 0
             csharp: new BsonTimestamp(1, 100) < new BsonTimestamp(2, 99)
             shell: new Timestamp(1, 100) < new Timestamp(2, 99)
-#            object: 'false'
+            object: 'false'
     -   input:
             javascript: Timestamp(1, 100).lessThanOrEqual(Timestamp(2, 99))
         output:
@@ -463,7 +454,7 @@ tests:
             java: new BSONTimestamp(1, 100).compareTo(new BSONTimestamp(2, 99)) <= 0
             csharp: new BsonTimestamp(1, 100) <= new BsonTimestamp(2, 99)
             shell: new Timestamp(1, 100) <= new Timestamp(2, 99)
-#            object: 'false'
+            object: 'false'
     -   input:
             javascript: Timestamp(1, 100).getLowBits()
             python: Timestamp(1, 100).time
@@ -473,7 +464,7 @@ tests:
             java: new BSONTimestamp(1, 100).getTime()
             csharp: new BsonTimestamp(1, 100).ToUniversalTime()
             shell: new Timestamp(1, 100).getTime()
-#            object: '1'
+            object: '1'
     -   input:
             javascript: Timestamp(1, 100).getHighBits()
             python: Timestamp(1, 100).inc
@@ -483,7 +474,7 @@ tests:
             java: new BSONTimestamp(1, 100).getInc()
             csharp: new BsonTimestamp(1, 100).Increment
             shell: new Timestamp(1, 100).getInc()
-#            object: '100'
+            object: '100'
     -   input:
             shell: Timestamp(1, 100).t
         output:
@@ -491,7 +482,7 @@ tests:
             java: new BSONTimestamp(1, 100).getTime()
             csharp: new BsonTimestamp(1, 100).ToUniversalTime()
             shell: new Timestamp(1, 100).getTime()
-#            object: '1'
+            object: '1'
     -   input:
             shell: Timestamp(1, 100).i
         output:
@@ -499,7 +490,7 @@ tests:
             java: new BSONTimestamp(1, 100).getInc()
             csharp: new BsonTimestamp(1, 100).Increment
             shell: new Timestamp(1, 100).getInc()
-#            object: '100'
+            object: '100'
     - input:
           python: Timestamp(1, 100).as_datetime
       output:
@@ -507,7 +498,7 @@ tests:
           java: new Date(new BSONTimestamp(1, 100).getTime())
           csharp: new DateTime(1970, 1, 1).AddSeconds(new BsonTimestamp(1, 100).Timestamp)
           shell: new Date(new Timestamp(1, 100).getHighBits() * 1000)
-#          object: "new Date('1970-01-01T00:01:40.000Z')"
+          object: "new Date('1970-01-01T00:01:40.000Z')"
     Symbol-methods:
     -   input:
             javascript: Symbol('2').valueOf()
@@ -516,7 +507,7 @@ tests:
             java: new Symbol("2").getSymbol()
             csharp: '"2"'
             shell: "'2'"
-#            object: "'2'"
+            object: "'2'"
     -   input:
             javascript: Symbol('2').toString()
         output:
@@ -524,7 +515,7 @@ tests:
             java: new Symbol("2").toString()
             csharp: '"2"'
             shell: "'2'"
-#            output: "'2'"
+            output: "'2'"
     -   input:
             javascript: Symbol('2').inspect()
         output:
@@ -532,7 +523,7 @@ tests:
             java: new Symbol("2").getSymbol()
             csharp: '"2"'
             shell: "'2'"
-#            output: "'2'"
+            output: "'2'"
     ObjectId-utils:
     - input:
           javascript: ObjectId.createFromHexString('5ab901c29ee65f5c8550c5b9')
@@ -692,6 +683,10 @@ tests:
           csharp: 9223372036854775807L
           python: Int64(9223372036854775807)
 #          object: Long(-1, 2147483647)
+    - input:
+          javascript: Long.fromNumber(429496729601)
+      output:
+          object: Long(1, 100)
     Decimal128-utils:
     - input:
           javascript: Decimal128.fromString("5")

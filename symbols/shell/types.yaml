@@ -147,12 +147,6 @@ BsonTypes:
                 <<: *__func
                 id: "LongtoString" # Needs process method
                 type: *StringType
-            valueOf:
-                <<: *__func
-                id: "valueOf"
-                type: *LongBasicType
-                template: *LongValueOfTemplate
-                argsTemplate: *LongValueOfArgsTemplate
             top:
                 callable: *var
                 args: null
@@ -237,13 +231,7 @@ BsonTypes:
         id: "NumberDecimal"
         code: 112
         type: *ObjectType
-        attr:
-            toString:
-                <<: *__func
-                id: "toString"
-                type: *StringType
-                template: *Decimal128ToStringTemplate
-                argsTemplate: *Decimal128ToStringArgsTemplate
+        attr: {}
     SUBTYPE_DEFAULT:
         id: "SUBTYPE_DEFAULT"
         callable: *var

@@ -67,12 +67,15 @@ tests:
     -   input:
             javascript: ObjectId('5ab901c29ee65f5c8550c5b9').equals(ObjectId('5ab901c29ee65f5c8550c5b9'))
             shell: ObjectId('5ab901c29ee65f5c8550c5b9').equals(ObjectId('5ab901c29ee65f5c8550c5b9'))
-            python: ObjectId('5ab901c29ee65f5c8550c5b9') == ObjectId('5ab901c29ee65f5c8550c5b9')
         output:
             python: ObjectId('5ab901c29ee65f5c8550c5b9') == ObjectId('5ab901c29ee65f5c8550c5b9')
             java: new ObjectId("5ab901c29ee65f5c8550c5b9").equals(new ObjectId("5ab901c29ee65f5c8550c5b9"))
             csharp: new ObjectId("5ab901c29ee65f5c8550c5b9").Equals(new ObjectId("5ab901c29ee65f5c8550c5b9"))
             shell: new ObjectId('5ab901c29ee65f5c8550c5b9').equals(new ObjectId('5ab901c29ee65f5c8550c5b9'))
+            object: true
+    -   input:
+            python: ObjectId('5ab901c29ee65f5c8550c5b9') == ObjectId('5ab901c29ee65f5c8550c5b9')
+        output:
             object: true
     -   input:
             javascript: ObjectId().equals(ObjectId())
@@ -85,9 +88,9 @@ tests:
             shell: new DBRef('coll', new ObjectId(), 'db').$db
         output:
             python: DBRef('coll', ObjectId(), 'db').database
-            java: new DBRef("coll", new ObjectId(), "db").getDatabaseName()
+            java: new DBRef("db", "coll", new ObjectId()).getDatabaseName()
             csharp: new MongoDBRef("coll", new ObjectId(), "db").DatabaseName
-            shell: new DBRef('coll', new ObjectId(), 'db').getDb()
+            shell: new DBRef('coll', new ObjectId(), "db").getDb()
             object: "'db'"
     -   input:
             javascript: new DBRef('coll', new ObjectId(), 'db').db
@@ -95,8 +98,8 @@ tests:
             shell: new DBRef('coll', new ObjectId(), 'db').getDb()
         output:
             python: DBRef('coll', ObjectId(), 'db').database
-            java: new DBRef("coll", new ObjectId(), 'db').getDatabaseName()
-            csharp: new MongoDBRef("coll", new ObjectId(), 'db').DatabaseName
+            java: new DBRef("db", "coll", new ObjectId()).getDatabaseName()
+            csharp: new MongoDBRef("coll", new ObjectId(), "db").DatabaseName
             shell: new DBRef('coll', new ObjectId(), 'db').getDb()
             object: "'db'"
     -   input:
@@ -129,8 +132,8 @@ tests:
             shell: new DBRef('coll', new ObjectId('5bfeee5ffa63a31985db9e5e')).$id
         output:
             python: DBRef('coll', ObjectId('5bfeee5ffa63a31985db9e5e')).id
-            java: new DBRef("coll", new ObjectId('5bfeee5ffa63a31985db9e5e')).getId()
-            csharp: new MongoDBRef("coll", new ObjectId('5bfeee5ffa63a31985db9e5e')).Id
+            java: new DBRef("coll", new ObjectId("5bfeee5ffa63a31985db9e5e")).getId()
+            csharp: new MongoDBRef("coll", new ObjectId("5bfeee5ffa63a31985db9e5e")).Id
             shell: new DBRef('coll', new ObjectId('5bfeee5ffa63a31985db9e5e')).getId()
             object: new ObjectId('5bfeee5ffa63a31985db9e5e')
     -   input:
@@ -139,8 +142,8 @@ tests:
             shell: new DBRef('coll', new ObjectId('5bfeee5ffa63a31985db9e5e')).getId()
         output:
             python: DBRef('coll', ObjectId('5bfeee5ffa63a31985db9e5e')).id
-            java: new DBRef("coll", new ObjectId('5bfeee5ffa63a31985db9e5e')).getId()
-            csharp: new MongoDBRef("coll", new ObjectId('5bfeee5ffa63a31985db9e5e')).Id
+            java: new DBRef("coll", new ObjectId("5bfeee5ffa63a31985db9e5e")).getId()
+            csharp: new MongoDBRef("coll", new ObjectId("5bfeee5ffa63a31985db9e5e")).Id
             shell: new DBRef('coll', new ObjectId('5bfeee5ffa63a31985db9e5e')).getId()
             object: new ObjectId('5bfeee5ffa63a31985db9e5e')
     32-int-methods:

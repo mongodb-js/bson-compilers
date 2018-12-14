@@ -178,10 +178,6 @@ tests:
             python: DBRef('coll', ObjectId(), 5)
         errorCode: E_BSONTRANSPILERS_ARGUMENT
 
-    -   description: DBRef .toString() with extra argument
-        input:
-            javascript: new DBRef('coll', new ObjectId()).toString(10)
-        errorCode: E_BSONTRANSPILERS_ARGUMENT
     Int32:
 
     -   description: Int32 without arguments

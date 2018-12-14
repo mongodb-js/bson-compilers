@@ -256,38 +256,6 @@ Templates:
         () => {
             return '';
         }
-    DBRefToStringTemplate: &DBRefToStringTemplate !!js/function >
-        () => {
-            return `str`;
-        }
-    DBRefToStringArgsTemplate: &DBRefToStringArgsTemplate !!js/function >
-        (lhs) => {
-            return `(${lhs})`;
-        }
-    DoubleValueOfTemplate: &DoubleValueOfTemplate !!js/function >
-        (lhs) => {
-            return lhs;
-        }
-    DoubleValueOfArgsTemplate: &DoubleValueOfArgsTemplate !!js/function >
-        () => {
-            return '';
-        }
-    Int32ValueOfTemplate: &Int32ValueOfTemplate !!js/function >
-        (lhs) => {
-            return lhs;
-        }
-    Int32ValueOfArgsTemplate: &Int32ValueOfArgsTemplate !!js/function >
-        () => {
-            return '';
-        }
-    Int32ToStringTemplate: &Int32ToStringTemplate !!js/function >
-        () => {
-            return 'str';
-        }
-    Int32ToStringArgsTemplate: &Int32ToStringArgsTemplate !!js/function >
-        (lhs) => {
-            return `(${lhs})`;
-        }
     LongEqualsTemplate: &LongEqualsTemplate !!js/function >
         (lhs) => {
             return `${lhs} ==`;

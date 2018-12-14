@@ -115,25 +115,13 @@ BsonTypes:
         id: "Double"
         code: 104
         type: *ObjectType
-        attr:
-            valueOf:
-                <<: *__func
-                id: "valueOf"
-                type: *IntegerType
-                template: *DoubleValueOfTemplate
-                argsTemplate: *DoubleValueOfArgsTemplate
+        attr: {}
     Int32: &Int32Type
         <<: *__type
         id: "Int32"
         code: 105
         type: *ObjectType
-        attr:
-            valueOf:
-                <<: *__func
-                id: "valueOf"
-                type: *IntegerType
-                template: *Int32ValueOfTemplate
-                argsTemplate: *Int32ValueOfArgsTemplate
+        attr: {}
     Long: &LongType
         <<: *__type
         id: "Long"

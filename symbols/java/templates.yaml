@@ -273,32 +273,6 @@ Templates:
         () => {
             return '';
         }
-    DBRefToStringTemplate: &DBRefToStringTemplate null
-    DBRefToStringArgsTemplate: &DBRefToStringArgsTemplate null
-    DoubleValueOfTemplate: &DoubleValueOfTemplate !!js/function >
-        (lhs) => {
-            return lhs;
-        }
-    DoubleValueOfArgsTemplate: &DoubleValueOfArgsTemplate !!js/function >
-        () => {
-            return '';
-        }
-    Int32ValueOfTemplate: &Int32ValueOfTemplate !!js/function >
-        (lhs) => {
-            return lhs;
-        }
-    Int32ValueOfArgsTemplate: &Int32ValueOfArgsTemplate !!js/function >
-        () => {
-            return '';
-        }
-    Int32ToStringTemplate: &Int32ToStringTemplate !!js/function >
-        () => {
-            return '';
-        }
-    Int32ToStringArgsTemplate: &Int32ToStringArgsTemplate !!js/function >
-        (lhs) => {
-            return `Integer.toString(${lhs})`;
-        }
     LongEqualsTemplate: &LongEqualsTemplate !!js/function >
         (lhs) => {
             return `${lhs} ==`;

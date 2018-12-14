@@ -136,19 +136,7 @@ BsonTypes:
         id: "NumberInt"
         code: 105
         type: *ObjectType
-        attr:
-            toString:
-                <<: *__func
-                id: "toString"
-                type: *StringType
-                template: *Int32ToStringTemplate
-                argsTemplate: *Int32ToStringArgsTemplate
-            valueOf: # TODO: needed?
-                <<: *__func
-                id: "valueOf"
-                type: *Int32Type
-                template: *Int32ValueOfTemplate
-                argsTemplate: *Int32ValueOfArgsTemplate
+        attr: {}
     NumberLong: &LongType
         <<: *__type
         id: "NumberLong"

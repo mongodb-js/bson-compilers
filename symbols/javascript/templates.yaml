@@ -220,14 +220,6 @@ Templates:
         () => {
             return '';
         }
-    DBRefToStringTemplate: &DBRefToStringTemplate null
-    DBRefToStringArgsTemplate: &DBRefToStringArgsTemplate null
-    DoubleValueOfTemplate: &DoubleValueOfTemplate null
-    DoubleValueOfArgsTemplate: &DoubleValueOfArgsTemplate null
-    Int32ValueOfTemplate: &Int32ValueOfTemplate null
-    Int32ValueOfArgsTemplate: &Int32ValueOfArgsTemplate null
-    Int32ToStringTemplate: &Int32ToStringTemplate null
-    Int32ToStringArgsTemplate: &Int32ToStringArgsTemplate null
     LongEqualsTemplate: &LongEqualsTemplate null
     LongEqualsArgsTemplate: &LongEqualsArgsTemplate null
     LongToStringTemplate: &LongToStringTemplate null

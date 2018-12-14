@@ -354,14 +354,30 @@ Templates:
     BinaryToStringArgsTemplate: &BinaryToStringArgsTemplate null
     BinarySubtypeTemplate: &BinarySubtypeTemplate null
     BinarySubtypeArgsTemplate: &BinarySubtypeArgsTemplate null
-    DBRefGetDBTemplate: &DBRefGetDBTemplate null
-    DBRefGetCollectionTemplate: &DBRefGetCollectionTemplate null
-    DBRefGetIdTemplate: &DBRefGetIdTemplate null
-    DBRefGetDBArgsTemplate: &DBRefGetDBArgsTemplate null
-    DBRefGetCollectionArgsTemplate: &DBRefGetCollectionArgsTemplate null
-    DBRefGetIdArgsTemplate: &DBRefGetIdArgsTemplate null
-    DBRefToStringTemplate: &DBRefToStringTemplate null
-    DBRefToStringArgsTemplate: &DBRefToStringArgsTemplate null
+    DBRefGetDBTemplate: &DBRefGetDBTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs.db;
+        }
+    DBRefGetCollectionTemplate: &DBRefGetCollectionTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs.collection;
+        }
+    DBRefGetIdTemplate: &DBRefGetIdTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs.oid;
+        }
+    DBRefGetDBArgsTemplate: &DBRefGetDBArgsTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs;
+        }
+    DBRefGetCollectionArgsTemplate: &DBRefGetCollectionArgsTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs;
+        }
+    DBRefGetIdArgsTemplate: &DBRefGetIdArgsTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs;
+        }
     DoubleValueOfTemplate: &DoubleValueOfTemplate null
     DoubleValueOfArgsTemplate: &DoubleValueOfArgsTemplate null
     Int32ValueOfTemplate: &Int32ValueOfTemplate null

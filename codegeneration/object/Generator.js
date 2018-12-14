@@ -169,6 +169,19 @@ module.exports = (Visitor) => class Generator extends Visitor {
     }, this.visit(ctx.children[0]));
   }
 
+  emitLongfromBits(ctx) {
+    ctx.type = this.Types.Long;
+    const symbolType = this.Symbols.Long.attr.fromBits;
+    const rhs = this.checkArguments(
+      symbolType.args, this.getArguments(ctx), 'Long.fromBits'
+    );
+    return bson.Long.fromBits(...rhs);
+  }
+
+  emitRegex(ctx, pattern, flags) {
+    return new bson.BSONRegExp(pattern, flags);
+  }
+
   emit_array(ctx) {
     ctx.type = this.Types._array;
     this.requiredImports[9] = true;

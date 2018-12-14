@@ -419,6 +419,9 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
   }
 
   processLongfromBits(ctx) {
+    if ('emitLongfromBits' in this) {
+      return this.emitLongfromBits(ctx);
+    }
     return this.processLong(ctx);
   }
 

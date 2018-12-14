@@ -532,7 +532,7 @@ tests:
           java: new ObjectId("5ab901c29ee65f5c8550c5b9")
           csharp: new ObjectId("5ab901c29ee65f5c8550c5b9")
           python: ObjectId('5ab901c29ee65f5c8550c5b9')
-#          object: ObjectId('5ab901c29ee65f5c8550c5b9')
+          object: ObjectId('5ab901c29ee65f5c8550c5b9')
     - input:
           python: ObjectId.from_datetime(datetime(1, 2, 3))
           shell: ObjectId.fromDate(new Date('Sun, 03 Feb 1901 00:00:00 GMT')) # TODO: just takes in number?
@@ -541,7 +541,7 @@ tests:
           java: new ObjectId(new java.util.Date(-2174601600000L))
           csharp: new ObjectId.GenerateNewId(new DateTime(1901, 2, 3, 0, 0, 0))
           shell: ObjectId.fromDate(new Date('Sun, 03 Feb 1901 00:00:00 GMT'))
-#          object: ObjectId('7e6236800000000000000000')
+          object: ObjectId('7e6236800000000000000000')
     - input:
           javascript: ObjectId.createFromTime(1522075031642)
       output:
@@ -550,7 +550,7 @@ tests:
           java: new ObjectId(new java.util.Date(1522075031642L))
           csharp: new ObjectId.GenerateNewId(Convert.ToInt32(1522075031642))
           python: ObjectId.from_datetime(datetime.fromtimestamp(1522075031642))
-#          object: ObjectId('62bdd85a0000000000000000')
+          object: ObjectId('62bdd85a0000000000000000')
     - input:
           javascript: ObjectId.isValid('5ab901c29ee65f5c8550c5b9')
           python: ObjectId.is_valid('5ab901c29ee65f5c8550c5b9')
@@ -559,7 +559,7 @@ tests:
           java: ObjectId.isValid("5ab901c29ee65f5c8550c5b9")
           csharp: new ObjectId("5ab901c29ee65f5c8550c5b9")
           python: ObjectId.is_valid('5ab901c29ee65f5c8550c5b9')
-#          object: 'true'
+          object: 'true'
 #    Binary-utils:
 #    - input:
 #          javascript: Binary.SUBTYPE_DEFAULT
@@ -618,7 +618,7 @@ tests:
           java: Long.MAX_VALUE
           csharp: Int64.MaxValue
           python: sys.maxsize
-#          object: Long(-1, 2147483647)
+          object: Long(-1, 2147483647)
     - input:
           javascript: Long.MIN_VALUE
       output:
@@ -626,7 +626,7 @@ tests:
           java: Long.MIN_VALUE
           csharp: Int64.MinValue
           python: "-sys.maxsize -1"
-#          object: Long(0, -2147483648)
+          object: Long(0, -2147483648)
     - input:
           javascript: Long.ZERO
       output:
@@ -634,7 +634,7 @@ tests:
           java: 0L
           csharp: 0L
           python: Int64(0)
-#          object: Long(0, 0)
+          object: Long(0, 0)
     - input:
           javascript: Long.ONE
       output:
@@ -642,7 +642,7 @@ tests:
           java: 1L
           csharp: 1L
           python: Int64(1)
-#          object: Long(1, 0)
+          object: Long(1, 0)
     - input:
           javascript: Long.NEG_ONE
       output:
@@ -650,7 +650,7 @@ tests:
           java: "-1L"
           csharp: "-1L"
           python: Int64(-1)
-#          object: Long(-1, -1)
+          object: Long(-1, -1)
     - input:
           javascript: Long.fromInt(5)
       output:
@@ -658,7 +658,7 @@ tests:
           java: 5L
           csharp: 5L
           python: Int64(5)
-#          object: Long(5, 0)
+          object: Long(5, 0)
     - input:
           javascript: Long.fromString('5')
       output:
@@ -666,7 +666,7 @@ tests:
           java: Long.parseLong("5")
           csharp: Convert.ToInt64("5", 10)
           python: Int64(int('5'))
-#          object: Long(5, 0)
+          object: Long(5, 0)
     - input:
           javascript: Long.fromString('5', 10)
       output:
@@ -674,7 +674,7 @@ tests:
           java: Long.parseLong("5", 10)
           csharp: Convert.ToInt64("5", 10)
           python: Int64(int('5'))
-#          object: Long(5, 0)
+          object: Long(5, 0)
     - input:
           javascript: Long.fromBits(-1, 2147483647)
       output:
@@ -682,7 +682,7 @@ tests:
           java: 9223372036854775807L
           csharp: 9223372036854775807L
           python: Int64(9223372036854775807)
-#          object: Long(-1, 2147483647)
+          object: Long(-1, 2147483647)
     - input:
           javascript: Long.fromNumber(429496729601)
       output:
@@ -695,7 +695,7 @@ tests:
           java: Decimal128.parse("5")
           csharp: Decimal128.Parse("5")
           python: Decimal128('5')
-#          object: Decimal128.fromString("5")
+          object: Decimal128.fromString("5")
     BSONRegex-utils:
     - input:
           python: Regex.from_native(re.compile('^[a-z0-9_-]{3,16}$', re.I | re.M | re.X | re.S | re.L))
@@ -704,7 +704,7 @@ tests:
           shell: new RegExp('^[a-z0-9_-]{3,16}$', 'ilmsux')
           java: new BsonRegularExpression("^[a-z0-9_-]{3,16}$", "ilmsux")
           csharp: new BsonRegularExpression("^[a-z0-9_-]{3,16}$", "imsx")
-#          object: new BSONRegExp('^[a-z0-9_-]{3,16}$', 'ilmsux')
+          object: new BSONRegExp('^[a-z0-9_-]{3,16}$', 'ilmsux')
     - input:
           python: Regex.from_native(re.compile('^[a-z0-9_-]{3,16}$', re.I | re.M | re.X | re.S | re.L | re.A))
       output:
@@ -712,7 +712,7 @@ tests:
           shell: new RegExp('^[a-z0-9_-]{3,16}$', 'ilmsx')
           java: new BsonRegularExpression("^[a-z0-9_-]{3,16}$", "ilmsx")
           csharp: new BsonRegularExpression("^[a-z0-9_-]{3,16}$", "imsx")
-#          object: new BSONRegExp('^[a-z0-9_-]{3,16}$', 'ilmsx')
+          object: new BSONRegExp('^[a-z0-9_-]{3,16}$', 'ilmsx')
 
 
 

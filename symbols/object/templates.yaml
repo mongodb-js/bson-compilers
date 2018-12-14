@@ -347,7 +347,10 @@ Templates:
         (lhs) => {
             return lhs;
         }
-    ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate null
+    ObjectIdIsValidTemplate: &ObjectIdIsValidTemplate !!js/function >
+        (lhs, rhs) => {
+            return  lhs.isValid;
+        }
     ObjectIdIsValidArgsTemplate: &ObjectIdIsValidArgsTemplate null
     BinaryValueTemplate: &BinaryValueTemplate null
     BinaryValueArgsTemplate: &BinaryValueArgsTemplate null
@@ -549,7 +552,10 @@ Templates:
     Decimal128SymbolFromStringArgsTemplate: &Decimal128SymbolFromStringArgsTemplate null
     ObjectIdCreateFromHexStringTemplate: &ObjectIdCreateFromHexStringTemplate null
     ObjectIdCreateFromHexStringArgsTemplate: &ObjectIdCreateFromHexStringArgsTemplate null
-    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate null
+    ObjectIdCreateFromTimeTemplate: &ObjectIdCreateFromTimeTemplate !!js/function >
+        (lhs, rhs) => {
+            return lhs.createFromTime;
+        }
     ObjectIdCreateFromTimeArgsTemplate: &ObjectIdCreateFromTimeArgsTemplate null
     # non bson-specific would go here, but there aren't any atm.
 

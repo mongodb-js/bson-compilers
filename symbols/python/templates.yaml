@@ -15,8 +15,19 @@ Templates:
         l: 'l'
         u: 'u'
     # Syntax
+
+   # filter, project, sort, collation, skip, limit, maxTimeMS
     DriverTemplate: &DriverTemplate !!js/function >
         (spec) => {
+            const translateKey = {
+                filter: 'filter',
+                project: 'projection',
+                sort: 'sort',
+                collation: 'collation',
+                skip: 'skip',
+                limit: 'limit',
+                maxTimeMS: 'max_time_ms'
+            };
             const options = spec.options;
             delete spec.options;
 
@@ -36,7 +47,9 @@ Templates:
 
             const args = Object.keys(spec).reduce(
                 (result, k) => {
-                    return `${result === '' ? '' : `${result}, `}${k}=${k}`;
+                    return `${result === '' ? '' : `${result}, `}${
+                        k in translateKey ? translateKey[k] : k
+                    }=${k}`;
                 },
                 ''
             );

@@ -15,6 +15,10 @@ Templates:
         l: 'l'
         u: 'u'
     # Syntax
+    DriverTemplate: &DriverTemplate !!js/function >
+        (args) => {
+            retuern '';
+        }
     EqualitySyntaxTemplate: &EqualitySyntaxTemplate !!js/function >
         (lhs, op, rhs) => {
             if (op.includes('!')) {
@@ -902,6 +906,10 @@ Templates:
                 other.push(`from bson import ${bson.join(', ')}`);
             }
             return other.join('\n');
+        }
+    DriverImportTemplate: &DriverImportTemplate !!js/function >
+        () => {
+            return 'from pymongo import MongoClient';
         }
     0ImportTemplate: &0ImportTemplate null
     1ImportTemplate: &1ImportTemplate null

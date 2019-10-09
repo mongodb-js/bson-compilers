@@ -114,23 +114,35 @@ const getTranspiler = (loadTree, visitor, generator, symbols) => {
     Imports: doc.Imports
   });
 
-  return {
-    compile: (input, idiomatic) => {
-      try {
-        const tree = loadTree(input, transpiler.startRule);
-        transpiler.idiomatic = idiomatic === undefined ?
-          transpiler.idiomatic :
-          idiomatic;
-        return transpiler.start(tree);
-      } catch (e) {
-        if (e.code && e.code.includes('BSONTRANSPILERS')) {
-          throw e;
-        }
-        throw new BsonTranspilersInternalError(e.message, e);
-      } finally {
-        transpiler.idiomatic = true;
+  const compile = (input, idiomatic, driverSyntax) => {
+    try {
+      const tree = loadTree(input, transpiler.startRule);
+      transpiler.idiomatic = idiomatic === undefined ?
+        transpiler.idiomatic :
+        idiomatic;
+      transpiler.useDriverSyntax(
+        driverSyntax === undefined ? transpiler.driverSyntax : driverSyntax
+      );
+      return transpiler.start(tree);
+    } catch (e) {
+      if (e.code && e.code.includes('BSONTRANSPILERS')) {
+        throw e;
       }
+      throw new BsonTranspilersInternalError(e.message, e);
+    } finally {
+      transpiler.idiomatic = true;
+    }
+  };
+
+  return {
+    compileWithDriver: (input, idiomatic) => {
+      transpiler.clearImports();
+      Object.keys(input).map((k) => {
+        input[k] = k === 'options' ? input[k] : compile(input[k], idiomatic, true);
+      });
+      return transpiler.Syntax.driver(input);
     },
+    compile: compile,
     getImports: () => {
       return transpiler.getImports();
     }

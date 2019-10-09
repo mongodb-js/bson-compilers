@@ -16,8 +16,33 @@ Templates:
         u: 'u'
     # Syntax
     DriverTemplate: &DriverTemplate !!js/function >
-        (args) => {
-            retuern '';
+        (spec) => {
+            const options = spec.options;
+            delete spec.options;
+
+            const connect = `client = MongoClient('${options.uri}')`;
+            const coll = `client['${options.database}']['${options.collection}']`;
+
+            if ('aggregation' in spec) {
+                return `${connect}\nresult = ${coll}.aggregate(${spec.aggregation})`;
+            }
+
+            const vars = Object.keys(spec).reduce(
+                (result, k) => {
+                    return `${result}\n${k}=${spec[k]}`;
+                },
+                connect
+            );
+
+            const args = Object.keys(spec).reduce(
+                (result, k) => {
+                    return `${result === '' ? '' : `${result}, `}${k}=${k}`;
+                },
+                ''
+            );
+            const cmd = `result = ${coll}.find(${args})`;
+
+            return `${vars}\n\n${cmd}`;
         }
     EqualitySyntaxTemplate: &EqualitySyntaxTemplate !!js/function >
         (lhs, op, rhs) => {

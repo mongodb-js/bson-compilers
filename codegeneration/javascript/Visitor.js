@@ -28,7 +28,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     this.visitTypeofExpression =
     this.visitInExpression =
     this.visitInstanceofExpression =
-    this.visitFuncDefExpression =
     this.visitAssignmentExpression =
     this.visitAssignmentOperatorExpression =
     this.visitMemberIndexExpression =
@@ -288,11 +287,20 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
     return this.visitChildren(ctx);
   }
 
+  visitFuncDefExpression(ctx) {
+    return this.generateFuncDefExpression(ctx);
+  }
+
   /*
    *
    * Process Methods
    *
    */
+  generateFuncDefExpression() {
+    throw new BsonTranspilersUnimplementedError(
+      'Support for exporting functions to languages other than javascript is not yet available.'
+    );
+  }
 
   /* Numerical process methods */
   processNumber(ctx) {

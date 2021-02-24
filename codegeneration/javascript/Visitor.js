@@ -296,11 +296,6 @@ module.exports = (CodeGenerationVisitor) => class Visitor extends CodeGeneration
    * Process Methods
    *
    */
-  generateFuncDefExpression() {
-    throw new BsonTranspilersUnimplementedError(
-      'Support for exporting functions to languages other than javascript is not yet available.'
-    );
-  }
 
   /* Numerical process methods */
   processNumber(ctx) {

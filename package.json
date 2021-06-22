@@ -33,17 +33,17 @@
   ],
   "license": "Apache-2.0",
   "devDependencies": {
+    "chai": "^4.3.4",
     "eslint-config-mongodb-js": "^2.1.0",
     "eslint-plugin-react": "^6.10.3",
+    "js-yaml": "^3.11.0",
+    "mocha": "^8.4.0",
     "mongodb-js-precommit": "^0.2.8",
-    "pre-commit": "^1.2.2",
-    "chai": "^4.1.2",
-    "mocha": "^5.0.2",
-    "js-yaml": "^3.11.0"
+    "pre-commit": "^1.2.2"
   },
   "dependencies": {
     "antlr4": "4.7.2",
-    "bson": "^4.4.0",
+    "bson": "4.1.0",
     "context-eval": "^0.1.0"
   }
 }

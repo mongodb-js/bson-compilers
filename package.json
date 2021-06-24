@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "antlr4": "4.7.2",
-    "bson": "4.1.0",
+    "bson": "^4.4.0",
     "context-eval": "^0.1.0"
   }
 }

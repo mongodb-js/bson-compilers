@@ -8,7 +8,7 @@ on:
 jobs:
   check-and-test:
     name: Check and Test
-    runs-on: ubuntu-20.04
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -23,3 +23,4 @@ jobs:
           npm run check
           npm run compile
           npm run test
+        shell: bash
